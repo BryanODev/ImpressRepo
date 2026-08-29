@@ -96,5 +96,5 @@ window.TrelloPowerUp.initialize({
   }
 }, {
   appKey: API_KEY,
-  appName: 'Impress Ticket Counter'
+  appName: 'Impress New Task'
 });
