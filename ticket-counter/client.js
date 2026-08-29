@@ -1,4 +1,3 @@
-```javascript
 var WHITE_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
 var BLACK_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
 
@@ -485,4 +484,3 @@ window.TrelloPowerUp.initialize({
 
   appName: 'Impress New Task'
 });
-```
