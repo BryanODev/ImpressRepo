@@ -2,7 +2,7 @@ var WHITE_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline
 var BLACK_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
 var TARGET_LIST_NAME = 'Inbox Solicitudes Nuevas';
 var TEMPLATE_CARD_ID = 'bdxPq3px';
-var API_KEY = 'eb1974fbb9e6a0def3d070da33e9cf05'; // public, safe to expose client-side
+var API_KEY = 'eb1974fbb9e6a0def3d070da33e9cf05';
 
 window.TrelloPowerUp.initialize({
   'board-buttons': function (t, opts) {
@@ -94,4 +94,8 @@ window.TrelloPowerUp.initialize({
   'show-authorization': function (t, opts) {
     return t.getRestApi().authorize({ scope: 'read,write', expiration: 'never' });
   }
+}, {
+  // Pass your credentials here so t.getRestApi() configures properly
+  appKey: API_KEY,
+  appName: 'Impress Ticket Counter'
 });
