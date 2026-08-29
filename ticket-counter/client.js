@@ -1,50 +1,27 @@
-var WHITE_ICON =
-  'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
-
-var BLACK_ICON =
-  'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
+```javascript
+var WHITE_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
+var BLACK_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
 
 var TARGET_LIST_NAME = 'Inbox Solicitudes Nuevas';
-
 var TEMPLATE_CARD_ID = '6a8cd9ecc1d994336094ee4b';
-
-/*
- * This is your Trello Power-Up API key.
- *
- * Important:
- * The API key identifies the Power-Up.
- * The user's REST API token is obtained through Trello authorization.
- */
 var API_KEY = 'eb1974fbb9e6a0def3d070da33e9cf05';
 
 
-/*
- * ============================================================
- * CREATE TICKET
- * ============================================================
- */
+// ============================================================
+// CREATE TICKET
+// ============================================================
 
 async function createTicket(t, formData) {
 
   try {
 
-    console.log('Creating ticket with form data:', formData);
-
-
-    /*
-     * ----------------------------------------------------------
-     * Get REST API access
-     * ----------------------------------------------------------
-     */
+    console.log('CREATE TICKET CALLED');
+    console.log('Form data:', formData);
 
     var restApi = await t.getRestApi();
-
     var token = await restApi.getToken();
 
     if (!token) {
-
-      console.warn('No Trello REST API token available.');
-
       return t.popup({
         title: 'Authorize to continue',
         url: 'authorize.html',
@@ -53,11 +30,9 @@ async function createTicket(t, formData) {
     }
 
 
-    /*
-     * ----------------------------------------------------------
-     * Get current ticket counter
-     * ----------------------------------------------------------
-     */
+    // ----------------------------------------------------------
+    // Get ticket counter
+    // ----------------------------------------------------------
 
     var currentCount = await t.get(
       'board',
@@ -73,16 +48,9 @@ async function createTicket(t, formData) {
     }
 
 
-    /*
-     * ----------------------------------------------------------
-     * Create formatted ticket number
-     *
-     * Example:
-     * 1    -> #0001
-     * 25   -> #0025
-     * 1234 -> #1234
-     * ----------------------------------------------------------
-     */
+    // ----------------------------------------------------------
+    // Create ticket number
+    // ----------------------------------------------------------
 
     var formattedId = String(currentCount).padStart(4, '0');
 
@@ -93,25 +61,17 @@ async function createTicket(t, formData) {
       formData.cardTitleInput;
 
 
-    /*
-     * ----------------------------------------------------------
-     * Find target list
-     * ----------------------------------------------------------
-     */
+    // ----------------------------------------------------------
+    // Find target list
+    // ----------------------------------------------------------
 
     var lists = await t.lists('id', 'name');
 
-    var targetList = lists.find(function (list) {
+    var targetList = lists.find(function(list) {
       return list.name === TARGET_LIST_NAME;
     });
 
-
     if (!targetList) {
-
-      console.error(
-        'Target list not found:',
-        TARGET_LIST_NAME
-      );
 
       return t.alert({
         message:
@@ -123,43 +83,29 @@ async function createTicket(t, formData) {
     }
 
 
-    /*
-     * ----------------------------------------------------------
-     * Calculate due date
-     *
-     * Currently this sets the due date to 7 days from today.
-     * ----------------------------------------------------------
-     */
+    // ----------------------------------------------------------
+    // Due date = 7 days from today
+    // ----------------------------------------------------------
 
     var today = new Date();
+    var weekLater = new Date();
 
-    var weekLater = new Date(today);
-
-    weekLater.setDate(
-      today.getDate() + 7
-    );
+    weekLater.setDate(today.getDate() + 7);
 
     var fechaSolicitada =
       weekLater.toISOString().split('T')[0];
 
 
-    /*
-     * ----------------------------------------------------------
-     * Create the Trello card
-     * ----------------------------------------------------------
-     */
+    // ----------------------------------------------------------
+    // CREATE CARD
+    // ----------------------------------------------------------
 
-    console.log(
-      'Creating Trello card:',
-      cardTitle
-    );
+    console.log('ABOUT TO CREATE CARD:', cardTitle);
 
     var response = await fetch(
       'https://api.trello.com/1/cards' +
-      '?key=' +
-      encodeURIComponent(API_KEY) +
-      '&token=' +
-      encodeURIComponent(token),
+      '?key=' + encodeURIComponent(API_KEY) +
+      '&token=' + encodeURIComponent(token),
       {
         method: 'POST',
 
@@ -169,24 +115,14 @@ async function createTicket(t, formData) {
 
         body: JSON.stringify({
           name: cardTitle,
-
           idList: targetList.id,
-
           pos: 'top',
-
           idCardSource: TEMPLATE_CARD_ID,
-
           due: fechaSolicitada
         })
       }
     );
 
-
-    /*
-     * ----------------------------------------------------------
-     * Handle Trello API errors
-     * ----------------------------------------------------------
-     */
 
     if (!response.ok) {
 
@@ -201,25 +137,12 @@ async function createTicket(t, formData) {
     }
 
 
-    /*
-     * ----------------------------------------------------------
-     * Card successfully created
-     * ----------------------------------------------------------
-     */
-
     var newCard = await response.json();
 
-    console.log(
-      'Ticket created successfully:',
-      newCard
-    );
 
-
-    /*
-     * ----------------------------------------------------------
-     * Increment ticket counter
-     * ----------------------------------------------------------
-     */
+    // ----------------------------------------------------------
+    // Increment counter ONLY after successful card creation
+    // ----------------------------------------------------------
 
     await t.set(
       'board',
@@ -229,11 +152,9 @@ async function createTicket(t, formData) {
     );
 
 
-    /*
-     * ----------------------------------------------------------
-     * Notify user
-     * ----------------------------------------------------------
-     */
+    // ----------------------------------------------------------
+    // Success
+    // ----------------------------------------------------------
 
     t.alert({
       message:
@@ -242,13 +163,6 @@ async function createTicket(t, formData) {
         '!',
       duration: 'success'
     });
-
-
-    /*
-     * ----------------------------------------------------------
-     * Open newly created card
-     * ----------------------------------------------------------
-     */
 
     return t.showCard(newCard.id);
 
@@ -269,25 +183,52 @@ async function createTicket(t, formData) {
 }
 
 
-/*
- * ============================================================
- * OPEN TICKET FORM
- * ============================================================
- */
+// ============================================================
+// OPEN TICKET FORM
+// ============================================================
 
 async function openTicketForm(t) {
 
   try {
 
-    /*
-     * Open the modal.
-     *
-     * IMPORTANT:
-     * t.modal() does NOT return the form's object.
-     *
-     * The form calls t.notifyParent('done'), which triggers
-     * this callback.
-     */
+    console.log('OPENING TICKET FORM');
+
+
+    // ----------------------------------------------------------
+    // IMPORTANT:
+    //
+    // Delete any old submission BEFORE opening the form.
+    //
+    // This prevents an old submission from accidentally causing
+    // a new card to be created when a new modal is opened.
+    // ----------------------------------------------------------
+
+    try {
+
+      await t.remove(
+        'member',
+        'private',
+        'pendingTicketSubmission'
+      );
+
+    } catch (cleanupError) {
+
+      console.log(
+        'No previous ticket submission to clear.'
+      );
+    }
+
+
+    // ----------------------------------------------------------
+    // Prevent duplicate callback processing
+    // ----------------------------------------------------------
+
+    var processingSubmission = false;
+
+
+    // ----------------------------------------------------------
+    // OPEN MODAL
+    // ----------------------------------------------------------
 
     return t.modal({
 
@@ -297,87 +238,115 @@ async function openTicketForm(t) {
 
       height: 600,
 
-      /*
-       * This callback runs when form.html calls:
-       *
-       *     t.notifyParent('done')
-       *
-       * It can also run when the user closes the modal.
-       */
-      callback: async function () {
+
+      // --------------------------------------------------------
+      // THIS CALLBACK DOES NOT AUTOMATICALLY CREATE A CARD.
+      //
+      // It ONLY creates a card if form.html explicitly saved
+      // "submitted: true".
+      // --------------------------------------------------------
+
+      callback: async function() {
 
         console.log(
-          'Ticket form modal callback triggered.'
+          'MODAL CALLBACK FIRED'
         );
+
+
+        // Prevent duplicate execution.
+        if (processingSubmission) {
+
+          console.log(
+            'Submission already being processed.'
+          );
+
+          return;
+        }
 
 
         try {
 
-          /*
-           * Retrieve the data saved by form.html.
-           */
-          var formData = await t.get(
+          // ----------------------------------------------------
+          // Read the submission marker
+          // ----------------------------------------------------
+
+          var submission = await t.get(
             'member',
             'private',
-            'pendingTicketFormData'
+            'pendingTicketSubmission'
           );
 
 
-          /*
-           * If there is no data, the user probably closed
-           * the modal using X / Escape.
-           */
+          // ----------------------------------------------------
+          // If nothing was submitted, this was simply:
+          //
+          // X
+          // Escape
+          // Trello closing the modal
+          //
+          // DO NOT CREATE A CARD.
+          // ----------------------------------------------------
+
           if (
-            !formData ||
-            typeof formData !== 'object' ||
-            !formData.cardTitleInput
+            !submission ||
+            submission.submitted !== true ||
+            !submission.formData
           ) {
 
             console.log(
-              'Ticket creation cancelled or modal closed.'
+              'Modal closed WITHOUT submitting.'
             );
 
             return;
           }
 
 
+          // ----------------------------------------------------
+          // Mark as processing immediately.
+          //
+          // This prevents a second callback from creating
+          // another card.
+          // ----------------------------------------------------
+
+          processingSubmission = true;
+
+
+          var formData = submission.formData;
+
+
           console.log(
-            'Received ticket form data:',
+            'VALID SUBMISSION RECEIVED:',
             formData
           );
 
 
-          /*
-           * Remove the temporary form data immediately.
-           *
-           * This prevents old form data from being reused
-           * if the modal is opened again.
-           */
+          // ----------------------------------------------------
+          // Delete submission BEFORE creating card.
+          //
+          // This is important.
+          // ----------------------------------------------------
+
           try {
 
             await t.remove(
               'member',
               'private',
-              'pendingTicketFormData'
+              'pendingTicketSubmission'
             );
 
           } catch (removeError) {
 
-            /*
-             * Removing the temporary data isn't critical
-             * to ticket creation, so don't fail the ticket
-             * if this cleanup operation has an issue.
-             */
             console.warn(
-              'Could not remove temporary form data:',
+              'Could not remove submission marker:',
               removeError
             );
           }
 
 
-          /*
-           * Create the actual Trello ticket.
-           */
+          // ----------------------------------------------------
+          // NOW — AND ONLY NOW — CREATE THE CARD
+          // ----------------------------------------------------
+
           await createTicket(
             t,
             formData
@@ -387,7 +356,7 @@ async function openTicketForm(t) {
         } catch (error) {
 
           console.error(
-            'Failed processing ticket form:',
+            'Error processing ticket submission:',
             error
           );
 
@@ -399,6 +368,7 @@ async function openTicketForm(t) {
         }
       }
     });
+
 
   } catch (error) {
 
@@ -416,11 +386,9 @@ async function openTicketForm(t) {
 }
 
 
-/*
- * ============================================================
- * AUTHORIZATION
- * ============================================================
- */
+// ============================================================
+// AUTHORIZATION
+// ============================================================
 
 function authorizeUser(t) {
 
@@ -432,91 +400,68 @@ function authorizeUser(t) {
 }
 
 
-/*
- * ============================================================
- * TRELLO POWER-UP INITIALIZATION
- * ============================================================
- */
+// ============================================================
+// POWER-UP INITIALIZATION
+// ============================================================
 
 window.TrelloPowerUp.initialize({
 
-  /*
-   * ----------------------------------------------------------
-   * Board button
-   * ----------------------------------------------------------
-   */
+  // ----------------------------------------------------------
+  // BOARD BUTTON
+  // ----------------------------------------------------------
 
-  'board-buttons': function (t, opts) {
+  'board-buttons': function(t, opts) {
 
-    return [
-      {
-        icon: {
-          dark: WHITE_ICON,
-          light: BLACK_ICON
-        },
+    return [{
+      icon: {
+        dark: WHITE_ICON,
+        light: BLACK_ICON
+      },
 
-        text: 'Create Ticket',
+      text: 'Create Ticket',
 
-        condition: 'edit',
+      condition: 'edit',
 
-        callback: async function (t) {
+      callback: async function(t) {
 
-          try {
-
-            /*
-             * Check whether the user has authorized
-             * REST API access.
-             */
-
-            var restApi =
-              await t.getRestApi();
-
-            var isAuthorized =
-              await restApi.isAuthorized();
+        console.log(
+          'BOARD CREATE TICKET BUTTON CLICKED'
+        );
 
 
-            if (!isAuthorized) {
+        var restApi = await t.getRestApi();
 
-              return authorizeUser(t);
-            }
-
-
-            /*
-             * User is authorized, so open the form.
-             */
-
-            return openTicketForm(t);
+        var isAuthorized =
+          await restApi.isAuthorized();
 
 
-          } catch (error) {
+        if (!isAuthorized) {
 
-            console.error(
-              'Authorization check failed:',
-              error
-            );
-
-            return t.alert({
-              message:
-                'Could not check authorization.',
-              duration: 'error'
-            });
-          }
+          return authorizeUser(t);
         }
+
+
+        // ------------------------------------------------------
+        // IMPORTANT:
+        //
+        // This ONLY opens the form.
+        //
+        // It does NOT call createTicket().
+        // ------------------------------------------------------
+
+        return openTicketForm(t);
       }
-    ];
+    }];
   },
 
 
-  /*
-   * ----------------------------------------------------------
-   * Authorization status
-   * ----------------------------------------------------------
-   */
+  // ----------------------------------------------------------
+  // AUTHORIZATION STATUS
+  // ----------------------------------------------------------
 
-  'authorization-status': async function (t, opts) {
+  'authorization-status': async function(t, opts) {
 
-    var restApi =
-      await t.getRestApi();
+    var restApi = await t.getRestApi();
 
     return {
       authorized:
@@ -525,26 +470,19 @@ window.TrelloPowerUp.initialize({
   },
 
 
-  /*
-   * ----------------------------------------------------------
-   * Show authorization UI
-   * ----------------------------------------------------------
-   */
+  // ----------------------------------------------------------
+  // SHOW AUTHORIZATION
+  // ----------------------------------------------------------
 
-  'show-authorization': function (t, opts) {
+  'show-authorization': function(t, opts) {
 
     return authorizeUser(t);
   }
 
 }, {
 
-  /*
-   * Your Trello Power-Up API key.
-   */
   appKey: API_KEY,
 
-  /*
-   * Name shown for your Power-Up.
-   */
   appName: 'Impress New Task'
 });
+```

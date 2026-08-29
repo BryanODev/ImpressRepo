@@ -1,85 +1,155 @@
+```html
 <!DOCTYPE html>
 <html>
+
 <head>
+
   <meta charset="utf-8">
-  <title>New Ticket Details">
+
+  <title>New Ticket Details</title>
 
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
 
+
   <style>
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        sans-serif !important;
+
       padding: 15px !important;
+
       color: #ffffff !important;
+
       background: #1d2125 !important;
+
       margin: 0 !important;
     }
 
+
     label {
       display: block !important;
+
       margin-top: 12px !important;
+
       font-weight: 600 !important;
+
       font-size: 12px !important;
+
       color: #9fadbc !important;
     }
 
+
     input,
     select {
+
       width: 100% !important;
+
       padding: 8px 10px !important;
+
       margin-top: 4px !important;
+
       box-sizing: border-box !important;
-      border: 1px solid #38414a !important;
+
+      border:
+        1px solid
+        #38414a !important;
+
       border-radius: 4px !important;
-      background-color: #22272b !important;
+
+      background-color:
+        #22272b !important;
+
       color: #ffffff !important;
+
       font-size: 14px !important;
     }
+
 
     input::placeholder {
       color: #738496 !important;
     }
 
+
     input:focus,
     select:focus {
+
       outline: none !important;
-      border-color: #579dff !important;
+
+      border-color:
+        #579dff !important;
     }
+
 
     select option {
-      background-color: #22272b !important;
-      color: #ffffff !important;
+
+      background-color:
+        #22272b !important;
+
+      color:
+        #ffffff !important;
     }
 
+
     button {
+
       margin-top: 20px !important;
-      background-color: #0079bf !important;
+
+      background-color:
+        #0079bf !important;
+
       color: white !important;
+
       border: none !important;
-      padding: 10px 15px !important;
+
+      padding:
+        10px 15px !important;
+
       font-weight: bold !important;
+
       border-radius: 4px !important;
+
       cursor: pointer !important;
+
       width: 100% !important;
+
       font-size: 14px !important;
     }
 
+
     button:hover {
-      background-color: #026aa7 !important;
+
+      background-color:
+        #026aa7 !important;
     }
 
+
     button:disabled {
+
       opacity: 0.6 !important;
+
       cursor: not-allowed !important;
     }
+
   </style>
+
 </head>
+
 
 <body>
 
+
   <div id="ticketForm">
 
-    <label>Card Title Identifier (e.g. Company Name) *</label>
+
+    <label>
+      Card Title Identifier (e.g. Company Name) *
+    </label>
+
     <input
       type="text"
       id="cardNameInput"
@@ -87,17 +157,47 @@
       placeholder="Will format as #0000 - [Input Here]"
     >
 
-    <label>Vendedor *</label>
-    <select id="vendedor" required>
-      <option value="Yoemi">Yoemi</option>
-      <option value="Mairita">Mairita</option>
-      <option value="There">There</option>
-      <option value="Joshua">Joshua</option>
-      <option value="Luis">Luis</option>
-      <option value="Michi">Michi</option>
+
+    <label>
+      Vendedor *
+    </label>
+
+    <select
+      id="vendedor"
+      required
+    >
+
+      <option value="Yoemi">
+        Yoemi
+      </option>
+
+      <option value="Mairita">
+        Mairita
+      </option>
+
+      <option value="There">
+        There
+      </option>
+
+      <option value="Joshua">
+        Joshua
+      </option>
+
+      <option value="Luis">
+        Luis
+      </option>
+
+      <option value="Michi">
+        Michi
+      </option>
+
     </select>
 
-    <label>Nombre Cliente (Full Name) *</label>
+
+    <label>
+      Nombre Cliente (Full Name) *
+    </label>
+
     <input
       type="text"
       id="nombreCliente"
@@ -105,128 +205,332 @@
       placeholder="John Doe"
     >
 
-    <label>Email</label>
+
+    <label>
+      Email
+    </label>
+
     <input
       type="email"
       id="email"
       placeholder="john@example.com"
     >
 
-    <label>Numero Telefono</label>
+
+    <label>
+      Numero Telefono
+    </label>
+
     <input
       type="tel"
       id="telefono"
       placeholder="555-0199"
     >
 
-    <label>Prioridad *</label>
-    <select id="prioridad" required>
-      <option value="Normal">Normal</option>
-      <option value="Rush">Rush</option>
-      <option value="Super Rush">Super Rush</option>
+
+    <label>
+      Prioridad *
+    </label>
+
+    <select
+      id="prioridad"
+      required
+    >
+
+      <option value="Normal">
+        Normal
+      </option>
+
+      <option value="Rush">
+        Rush
+      </option>
+
+      <option value="Super Rush">
+        Super Rush
+      </option>
+
     </select>
 
-    <label>Metodo de Entrega</label>
+
+    <label>
+      Metodo de Entrega
+    </label>
+
     <select id="metodoEntrega">
-      <option value="Pickup">Pickup</option>
-      <option value="Delivery">Delivery</option>
-      <option value="Shipping">Shipping</option>
-      <option value="Instalación">Instalación</option>
+
+      <option value="Pickup">
+        Pickup
+      </option>
+
+      <option value="Delivery">
+        Delivery
+      </option>
+
+      <option value="Shipping">
+        Shipping
+      </option>
+
+      <option value="Instalación">
+        Instalación
+      </option>
+
     </select>
 
-    <label>Arte</label>
+
+    <label>
+      Arte
+    </label>
+
     <select id="arte">
-      <option value="N/A">N/A</option>
-      <option value="En Espera">En Espera</option>
-      <option value="Recibido">Recibido</option>
-      <option value="En Systema">En Systema</option>
+
+      <option value="N/A">
+        N/A
+      </option>
+
+      <option value="En Espera">
+        En Espera
+      </option>
+
+      <option value="Recibido">
+        Recibido
+      </option>
+
+      <option value="En Systema">
+        En Systema
+      </option>
+
     </select>
 
-    <button type="button" id="submitBtn">
+
+    <button
+      type="button"
+      id="submitBtn"
+    >
       Create Ticket
     </button>
 
+
   </div>
 
+
   <script>
-    var t = window.TrelloPowerUp.iframe();
 
-    var submitBtn = document.getElementById('submitBtn');
+    var t =
+      window.TrelloPowerUp.iframe();
 
-    submitBtn.addEventListener('click', async function () {
 
-      var cardName = document
-        .getElementById('cardNameInput')
-        .value
-        .trim();
+    var submitBtn =
+      document.getElementById(
+        'submitBtn'
+      );
 
-      var clientName = document
-        .getElementById('nombreCliente')
-        .value
-        .trim();
 
-      // Validate required fields
-      if (!cardName || !clientName) {
-        alert(
-          'Please fill out the required Card Title and Client Name fields!'
+    // ==========================================================
+    // SUBMIT
+    // ==========================================================
+
+    submitBtn.addEventListener(
+      'click',
+      async function() {
+
+
+        console.log(
+          'FORM CREATE TICKET BUTTON CLICKED'
         );
-        return;
-      }
 
-      // Prevent double-clicks
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Creating...';
 
-      var formData = {
-        cardTitleInput: cardName,
-        vendedor: document.getElementById('vendedor').value,
-        nombreCliente: clientName,
-        email: document.getElementById('email').value.trim(),
-        telefono: document.getElementById('telefono').value.trim(),
-        prioridad: document.getElementById('prioridad').value,
-        metodoEntrega: document.getElementById('metodoEntrega').value,
-        arte: document.getElementById('arte').value
-      };
+        // ------------------------------------------------------
+        // Read required fields
+        // ------------------------------------------------------
 
-      try {
+        var cardName =
+          document
+            .getElementById(
+              'cardNameInput'
+            )
+            .value
+            .trim();
 
-        /*
-         * Store the form data in member/private Power-Up storage.
-         *
-         * The parent client.js will retrieve this data when
-         * t.notifyParent('done') triggers the modal callback.
-         */
-        await t.set(
-          'member',
-          'private',
-          'pendingTicketFormData',
+
+        var clientName =
+          document
+            .getElementById(
+              'nombreCliente'
+            )
+            .value
+            .trim();
+
+
+        // ------------------------------------------------------
+        // Validate
+        // ------------------------------------------------------
+
+        if (!cardName || !clientName) {
+
+          alert(
+            'Please fill out the required Card Title and Client Name fields!'
+          );
+
+          return;
+        }
+
+
+        // ------------------------------------------------------
+        // Prevent double-click
+        // ------------------------------------------------------
+
+        submitBtn.disabled = true;
+
+        submitBtn.textContent =
+          'Creating...';
+
+
+        // ------------------------------------------------------
+        // Build form data
+        // ------------------------------------------------------
+
+        var formData = {
+
+          cardTitleInput:
+            cardName,
+
+          vendedor:
+            document
+              .getElementById(
+                'vendedor'
+              )
+              .value,
+
+          nombreCliente:
+            clientName,
+
+          email:
+            document
+              .getElementById(
+                'email'
+              )
+              .value
+              .trim(),
+
+          telefono:
+            document
+              .getElementById(
+                'telefono'
+              )
+              .value
+              .trim(),
+
+          prioridad:
+            document
+              .getElementById(
+                'prioridad'
+              )
+              .value,
+
+          metodoEntrega:
+            document
+              .getElementById(
+                'metodoEntrega'
+              )
+              .value,
+
+          arte:
+            document
+              .getElementById(
+                'arte'
+              )
+              .value
+        };
+
+
+        console.log(
+          'FORM DATA:',
           formData
         );
 
-        /*
-         * Tell the parent Power-Up that we're finished.
-         *
-         * This triggers the callback supplied to t.modal()
-         * in client.js.
-         */
-        await t.notifyParent('done');
 
-      } catch (error) {
+        try {
 
-        console.error(
-          'Failed to submit ticket form:',
-          error
-        );
 
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Create Ticket';
+          // ----------------------------------------------------
+          // THIS IS THE CRITICAL PART
+          //
+          // We explicitly mark the form as SUBMITTED.
+          //
+          // Closing the modal without this object will NOT
+          // create a card.
+          // ----------------------------------------------------
 
-        alert(
-          'Could not submit the ticket form. Please try again.'
-        );
+          await t.set(
+
+            'member',
+
+            'private',
+
+            'pendingTicketSubmission',
+
+            {
+              submitted: true,
+
+              formData: formData
+            }
+
+          );
+
+
+          console.log(
+            'SUBMISSION MARKER SAVED'
+          );
+
+
+          // ----------------------------------------------------
+          // Tell parent:
+          //
+          // "The user actually clicked Create Ticket."
+          // ----------------------------------------------------
+
+          await t.notifyParent(
+            'done'
+          );
+
+
+          // ----------------------------------------------------
+          // Close the modal.
+          //
+          // The parent callback will now see submitted:true.
+          // ----------------------------------------------------
+
+          t.closeModal();
+
+
+        } catch (error) {
+
+
+          console.error(
+            'Failed to submit ticket form:',
+            error
+          );
+
+
+          submitBtn.disabled = false;
+
+          submitBtn.textContent =
+            'Create Ticket';
+
+
+          alert(
+            'Could not submit the ticket form. Please try again.'
+          );
+
+        }
+
       }
-    });
+    );
+
   </script>
 
+
 </body>
+
 </html>
+```
