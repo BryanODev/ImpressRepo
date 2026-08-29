@@ -2,7 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>New Ticket Details</title>
+  <title>New Ticket Details">
+
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
 
   <style>
@@ -22,7 +23,8 @@
       color: #9fadbc !important;
     }
 
-    input, select {
+    input,
+    select {
       width: 100% !important;
       padding: 8px 10px !important;
       margin-top: 4px !important;
@@ -38,7 +40,8 @@
       color: #738496 !important;
     }
 
-    input:focus, select:focus {
+    input:focus,
+    select:focus {
       outline: none !important;
       border-color: #579dff !important;
     }
@@ -64,6 +67,11 @@
     button:hover {
       background-color: #026aa7 !important;
     }
+
+    button:disabled {
+      opacity: 0.6 !important;
+      cursor: not-allowed !important;
+    }
   </style>
 </head>
 
@@ -72,7 +80,12 @@
   <div id="ticketForm">
 
     <label>Card Title Identifier (e.g. Company Name) *</label>
-    <input type="text" id="cardNameInput" required placeholder="Will format as #0000 - [Input Here]">
+    <input
+      type="text"
+      id="cardNameInput"
+      required
+      placeholder="Will format as #0000 - [Input Here]"
+    >
 
     <label>Vendedor *</label>
     <select id="vendedor" required>
@@ -85,13 +98,26 @@
     </select>
 
     <label>Nombre Cliente (Full Name) *</label>
-    <input type="text" id="nombreCliente" required placeholder="John Doe">
+    <input
+      type="text"
+      id="nombreCliente"
+      required
+      placeholder="John Doe"
+    >
 
     <label>Email</label>
-    <input type="email" id="email" placeholder="john@example.com">
+    <input
+      type="email"
+      id="email"
+      placeholder="john@example.com"
+    >
 
     <label>Numero Telefono</label>
-    <input type="tel" id="telefono" placeholder="555-0199">
+    <input
+      type="tel"
+      id="telefono"
+      placeholder="555-0199"
+    >
 
     <label>Prioridad *</label>
     <select id="prioridad" required>
@@ -116,35 +142,89 @@
       <option value="En Systema">En Systema</option>
     </select>
 
-    <button type="button" id="submitBtn">Create Ticket</button>
+    <button type="button" id="submitBtn">
+      Create Ticket
+    </button>
 
   </div>
 
   <script>
     var t = window.TrelloPowerUp.iframe();
 
-    document.getElementById('submitBtn').addEventListener('click', function(e) {
-      var cardName = document.getElementById('cardNameInput').value.trim();
-      var clientName = document.getElementById('nombreCliente').value.trim();
+    var submitBtn = document.getElementById('submitBtn');
 
+    submitBtn.addEventListener('click', async function () {
+
+      var cardName = document
+        .getElementById('cardNameInput')
+        .value
+        .trim();
+
+      var clientName = document
+        .getElementById('nombreCliente')
+        .value
+        .trim();
+
+      // Validate required fields
       if (!cardName || !clientName) {
-        alert('Please fill out the required Card Title and Client Name fields!');
+        alert(
+          'Please fill out the required Card Title and Client Name fields!'
+        );
         return;
       }
-      
+
+      // Prevent double-clicks
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating...';
+
       var formData = {
         cardTitleInput: cardName,
         vendedor: document.getElementById('vendedor').value,
         nombreCliente: clientName,
-        email: document.getElementById('email').value,
-        telefono: document.getElementById('telefono').value,
+        email: document.getElementById('email').value.trim(),
+        telefono: document.getElementById('telefono').value.trim(),
         prioridad: document.getElementById('prioridad').value,
         metodoEntrega: document.getElementById('metodoEntrega').value,
         arte: document.getElementById('arte').value
       };
 
-      // Pass the data back and close the modal
-      t.closePopup(formData);
+      try {
+
+        /*
+         * Store the form data in member/private Power-Up storage.
+         *
+         * The parent client.js will retrieve this data when
+         * t.notifyParent('done') triggers the modal callback.
+         */
+        await t.set(
+          'member',
+          'private',
+          'pendingTicketFormData',
+          formData
+        );
+
+        /*
+         * Tell the parent Power-Up that we're finished.
+         *
+         * This triggers the callback supplied to t.modal()
+         * in client.js.
+         */
+        await t.notifyParent('done');
+
+      } catch (error) {
+
+        console.error(
+          'Failed to submit ticket form:',
+          error
+        );
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Ticket';
+
+        alert(
+          'Could not submit the ticket form. Please try again.'
+        );
+      }
     });
   </script>
 
