@@ -49,9 +49,7 @@ async function createTicket(t, formData) {
 
     var today = new Date();
     var weekLater = new Date();
-
     weekLater.setDate(today.getDate() + 7);
-
     var fechaSolicitada = weekLater.toISOString().split('T')[0];
 
     var response = await fetch(
@@ -95,7 +93,6 @@ async function createTicket(t, formData) {
 
   } catch (error) {
     console.error('Ticket creation failed:', error);
-
     t.alert({
       message: 'Failed to create ticket card.',
       duration: 'error'
@@ -105,16 +102,13 @@ async function createTicket(t, formData) {
 
 async function openTicketForm(t) {
   try {
-    // NOTE: this MUST be t.popup() (not t.modal()) because form.html
-    // closes itself with t.closePopup(formData). Those two calls have
-    // to match or the returned data isn't reliably passed back.
-    var formData = await t.popup({
+    // MUST be t.modal() so it opens a full dialog window and correctly returns payload data via closeModal()
+    var formData = await t.modal({
       title: 'New Ticket Information',
       url: 'form.html',
       height: 600
     });
 
-    // If the user closed the popup with the "X" button, formData will be null/undefined
     if (!formData || typeof formData !== 'object' || !formData.cardTitleInput) {
       console.log('Ticket creation cancelled or modal closed.');
       return;
@@ -148,10 +142,6 @@ window.TrelloPowerUp.initialize({
       },
       text: 'Create Ticket',
       condition: 'edit',
-      // IMPORTANT: no awaits before opening the popup — Trello requires
-      // t.popup()/t.modal() to fire synchronously off the click event,
-      // or it gets treated as an untrusted call and closes instantly.
-      // Auth is handled as a fallback inside createTicket() instead.
       callback: function(t) {
         return openTicketForm(t);
       }
@@ -160,7 +150,6 @@ window.TrelloPowerUp.initialize({
 
   'authorization-status': async function(t, opts) {
     var restApi = await t.getRestApi();
-
     return {
       authorized: await restApi.isAuthorized()
     };
