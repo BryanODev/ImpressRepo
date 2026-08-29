@@ -2,7 +2,6 @@ var WHITE_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline
 var BLACK_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
 var TARGET_LIST_NAME = 'Inbox Solicitudes Nuevas';
 var TEMPLATE_CARD_ID = 'bdxPq3px';
-
 var API_KEY = 'eb1974fbb9e6a0def3d070da33e9cf05'; // public, safe to expose client-side
 
 window.TrelloPowerUp.initialize({
@@ -46,7 +45,7 @@ window.TrelloPowerUp.initialize({
             });
           }
 
-          // 5. Create the new card by copying the template card and overriding the name
+          // 5. Create the new card by copying the template card and overriding the name via Trello REST API
           let response = await fetch(
             `https://api.trello.com/1/cards?key=${API_KEY}&token=${token}`,
             {
@@ -76,7 +75,7 @@ window.TrelloPowerUp.initialize({
           });
 
         } catch (error) {
-          console.error(error);
+          console.error("Ticket creation failed:", error);
           t.alert({
             message: 'Failed to create ticket card.',
             duration: 'error'
@@ -86,8 +85,6 @@ window.TrelloPowerUp.initialize({
     }];
   },
 
-  // Optional but recommended: lets Trello show an "Authorize account" prompt
-  // elsewhere in the UI (e.g. Power-Up settings) if you want that surfaced.
   'authorization-status': function (t, opts) {
     return t.getRestApi().isAuthorized().then(function (isAuthorized) {
       return { authorized: isAuthorized };
