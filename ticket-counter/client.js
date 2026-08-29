@@ -15,24 +15,28 @@ window.TrelloPowerUp.initialize({
       condition: 'edit',
       callback: async function (t) {
         try {
-          // 1. Ensure the user is authorized; prompt them if not
-          let restApi = t.getRestApi();
+          let restApi = await t.getRestApi();
           let isAuthorized = await restApi.isAuthorized();
 
           if (!isAuthorized) {
-            await restApi.authorize({ scope: 'read,write', expiration: 'never' });
+            await restApi.authorize({
+              scope: 'read,write',
+              expiration: 'never'
+            });
           }
 
           let token = await restApi.getToken();
 
-          // 2. Get the current counter from Trello board storage (defaults to 1)
-          let currentCount = await t.get('board', 'shared', 'ticketCounter', 1);
+          let currentCount = await t.get(
+            'board',
+            'shared',
+            'ticketCounter',
+            1
+          );
 
-          // 3. Format the card name template with the ticket number
           let formattedId = String(currentCount).padStart(4, '0');
           let cardTitle = `#${formattedId} - Impress-Task`;
 
-          // 4. Find the target list by name
           let lists = await t.lists('id', 'name');
           let targetList = lists.find(function (list) {
             return list.name === TARGET_LIST_NAME;
@@ -45,12 +49,13 @@ window.TrelloPowerUp.initialize({
             });
           }
 
-          // 5. Create the new card by copying the template card and overriding the name via Trello REST API
           let response = await fetch(
             `https://api.trello.com/1/cards?key=${API_KEY}&token=${token}`,
             {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: {
+                'Content-Type': 'application/json'
+              },
               body: JSON.stringify({
                 name: cardTitle,
                 idList: targetList.id,
@@ -65,10 +70,13 @@ window.TrelloPowerUp.initialize({
             throw new Error(`Trello API error ${response.status}: ${errorText}`);
           }
 
-          // 6. Increment the counter and save it back to Trello's board storage
-          await t.set('board', 'shared', 'ticketCounter', currentCount + 1);
+          await t.set(
+            'board',
+            'shared',
+            'ticketCounter',
+            currentCount + 1
+          );
 
-          // 7. Success notification
           t.alert({
             message: `Created ticket #${formattedId}!`,
             duration: 'success'
@@ -76,6 +84,7 @@ window.TrelloPowerUp.initialize({
 
         } catch (error) {
           console.error("Ticket creation failed:", error);
+
           t.alert({
             message: 'Failed to create ticket card.',
             duration: 'error'
@@ -85,15 +94,24 @@ window.TrelloPowerUp.initialize({
     }];
   },
 
-  'authorization-status': function (t, opts) {
-    return t.getRestApi().isAuthorized().then(function (isAuthorized) {
-      return { authorized: isAuthorized };
-    });
+  'authorization-status': async function (t, opts) {
+    let restApi = await t.getRestApi();
+    let isAuthorized = await restApi.isAuthorized();
+
+    return {
+      authorized: isAuthorized
+    };
   },
 
-  'show-authorization': function (t, opts) {
-    return t.getRestApi().authorize({ scope: 'read,write', expiration: 'never' });
+  'show-authorization': async function (t, opts) {
+    let restApi = await t.getRestApi();
+
+    return restApi.authorize({
+      scope: 'read,write',
+      expiration: 'never'
+    });
   }
+
 }, {
   appKey: API_KEY,
   appName: 'Impress New Task'
