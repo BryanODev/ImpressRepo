@@ -148,14 +148,11 @@ window.TrelloPowerUp.initialize({
       },
       text: 'Create Ticket',
       condition: 'edit',
-      callback: async function(t) {
-        var restApi = await t.getRestApi();
-        var isAuthorized = await restApi.isAuthorized();
-
-        if (!isAuthorized) {
-          return authorizeUser(t);
-        }
-
+      // IMPORTANT: no awaits before opening the popup — Trello requires
+      // t.popup()/t.modal() to fire synchronously off the click event,
+      // or it gets treated as an untrusted call and closes instantly.
+      // Auth is handled as a fallback inside createTicket() instead.
+      callback: function(t) {
         return openTicketForm(t);
       }
     }];
