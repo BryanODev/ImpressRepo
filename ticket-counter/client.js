@@ -4,18 +4,6 @@ var TARGET_LIST_NAME = 'Inbox Solicitudes Nuevas';
 var TEMPLATE_CARD_ID = '6a8cd9ecc1d994336094ee4b';
 var API_KEY = 'eb1974fbb9e6a0def3d070da33e9cf05';
 
-function buildDescription(formData) {
-  return [
-    `**Vendedor:** ${formData.vendedor || 'N/A'}`,
-    `**Nombre Cliente:** ${formData.nombreCliente || 'N/A'}`,
-    `**Email:** ${formData.email || 'N/A'}`,
-    `**Numero Telefono:** ${formData.telefono || 'N/A'}`,
-    `**Prioridad:** ${formData.prioridad || 'N/A'}`,
-    `**Metodo de Entrega:** ${formData.metodoEntrega || 'N/A'}`,
-    `**Arte:** ${formData.arte || 'N/A'}`
-  ].join('\n');
-}
-
 async function createTicket(t, formData) {
   try {
     var restApi = await t.getRestApi();
@@ -63,7 +51,6 @@ async function createTicket(t, formData) {
         },
         body: JSON.stringify({
           name: cardTitle,
-          desc: buildDescription(formData),
           idList: targetList.id,
           pos: 'top',
           idCardSource: TEMPLATE_CARD_ID,
@@ -105,16 +92,13 @@ async function createTicket(t, formData) {
 
 async function openTicketForm(t) {
   try {
-    // NOTE: this MUST be t.popup() (not t.modal()) because form.html
-    // closes itself with t.closePopup(formData). Those two calls have
-    // to match or the returned data isn't reliably passed back.
-    var formData = await t.popup({
-      title: 'New Ticket Information',
+    var formData = await t.modal({
       url: 'form.html',
+      title: 'New Ticket Information',
       height: 600
     });
 
-    // If the user closed the popup with the "X" button, formData will be null/undefined
+    // If the user closed the modal with the "X" button, formData will be null/undefined
     if (!formData || typeof formData !== 'object' || !formData.cardTitleInput) {
       console.log('Ticket creation cancelled or modal closed.');
       return;
@@ -148,11 +132,14 @@ window.TrelloPowerUp.initialize({
       },
       text: 'Create Ticket',
       condition: 'edit',
-      // IMPORTANT: no awaits before opening the popup — Trello requires
-      // t.popup()/t.modal() to fire synchronously off the click event,
-      // or it gets treated as an untrusted call and closes instantly.
-      // Auth is handled as a fallback inside createTicket() instead.
-      callback: function(t) {
+      callback: async function(t) {
+        var restApi = await t.getRestApi();
+        var isAuthorized = await restApi.isAuthorized();
+
+        if (!isAuthorized) {
+          return authorizeUser(t);
+        }
+
         return openTicketForm(t);
       }
     }];
