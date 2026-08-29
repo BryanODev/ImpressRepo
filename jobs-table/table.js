@@ -23,14 +23,15 @@ async function loadTable() {
 
     try {
 
-        table = await t.get(
+        const savedTable = await t.get(
             'card',
             'shared',
-            STORAGE_KEY,
-            []
+            STORAGE_KEY
         );
 
-        if (!Array.isArray(table)) {
+        if (Array.isArray(savedTable)) {
+            table = savedTable;
+        } else {
             table = [];
         }
 
@@ -40,8 +41,11 @@ async function loadTable() {
 
         console.error('Could not load table:', error);
 
-        document.getElementById('status').textContent =
-            'Error loading data';
+        const status = document.getElementById('status');
+
+        if (status) {
+            status.textContent = 'Error loading data';
+        }
     }
 }
 
@@ -53,7 +57,9 @@ async function saveTable() {
 
     const status = document.getElementById('status');
 
-    status.textContent = 'Saving...';
+    if (status) {
+        status.textContent = 'Saving...';
+    }
 
     try {
 
@@ -64,13 +70,17 @@ async function saveTable() {
             table
         );
 
-        status.textContent = 'Saved';
+        if (status) {
+            status.textContent = 'Saved';
+        }
 
     } catch (error) {
 
         console.error('Could not save table:', error);
 
-        status.textContent = 'Error saving';
+        if (status) {
+            status.textContent = 'Error saving';
+        }
     }
 }
 
@@ -82,17 +92,25 @@ function render() {
 
     const body = document.getElementById('tableBody');
 
+    if (!body) {
+        console.error('ERROR: #tableBody was not found.');
+        return;
+    }
+
     body.innerHTML = '';
 
 
+    /*
+     * Empty table
+     */
     if (table.length === 0) {
 
         body.innerHTML = `
-          <tr>
-            <td colspan="6" class="empty">
-              No items yet. Click "+ Add Row".
-            </td>
-          </tr>
+            <tr>
+                <td colspan="6" class="empty">
+                    No items yet. Click "+ Add Row".
+                </td>
+            </tr>
         `;
 
         updateTotal();
@@ -101,13 +119,20 @@ function render() {
     }
 
 
+    /*
+     * Create each row.
+     */
     table.forEach(function (row) {
 
         const tr = document.createElement('tr');
 
+
         /*
-         * Checkbox
+         * =========================
+         * CHECKBOX
+         * =========================
          */
+
         const checkTd = document.createElement('td');
 
         checkTd.className = 'check';
@@ -115,7 +140,8 @@ function render() {
         const checkbox = document.createElement('input');
 
         checkbox.type = 'checkbox';
-        checkbox.checked = !!row.finished;
+
+        checkbox.checked = Boolean(row.finished);
 
         checkbox.addEventListener('change', async function () {
 
@@ -131,8 +157,11 @@ function render() {
 
 
         /*
-         * Quantity
+         * =========================
+         * QUANTITY
+         * =========================
          */
+
         const quantityTd = document.createElement('td');
 
         quantityTd.className = 'quantity';
@@ -140,8 +169,11 @@ function render() {
         const quantityInput = document.createElement('input');
 
         quantityInput.type = 'number';
+
         quantityInput.min = '0';
+
         quantityInput.step = '1';
+
         quantityInput.value = row.quantity ?? '';
 
         quantityInput.addEventListener('change', async function () {
@@ -160,14 +192,19 @@ function render() {
 
 
         /*
-         * Description
+         * =========================
+         * DESCRIPTION
+         * =========================
          */
+
         const descriptionTd = document.createElement('td');
 
         const descriptionInput = document.createElement('input');
 
         descriptionInput.type = 'text';
+
         descriptionInput.placeholder = 'Description';
+
         descriptionInput.value = row.description || '';
 
         descriptionInput.addEventListener('change', async function () {
@@ -184,8 +221,11 @@ function render() {
 
 
         /*
-         * Cost
+         * =========================
+         * COST
+         * =========================
          */
+
         const costTd = document.createElement('td');
 
         costTd.className = 'cost';
@@ -193,8 +233,11 @@ function render() {
         const costInput = document.createElement('input');
 
         costInput.type = 'number';
+
         costInput.min = '0';
+
         costInput.step = '0.01';
+
         costInput.value = row.cost ?? '';
 
         costInput.addEventListener('change', async function () {
@@ -213,8 +256,11 @@ function render() {
 
 
         /*
-         * File Name
+         * =========================
+         * FILE NAME
+         * =========================
          */
+
         const fileTd = document.createElement('td');
 
         fileTd.className = 'file';
@@ -222,7 +268,9 @@ function render() {
         const fileInput = document.createElement('input');
 
         fileInput.type = 'text';
+
         fileInput.placeholder = 'File name';
+
         fileInput.value = row.fileName || '';
 
         fileInput.addEventListener('change', async function () {
@@ -239,8 +287,11 @@ function render() {
 
 
         /*
-         * Delete
+         * =========================
+         * DELETE BUTTON
+         * =========================
          */
+
         const deleteTd = document.createElement('td');
 
         const deleteButton = document.createElement('button');
@@ -270,6 +321,9 @@ function render() {
         tr.appendChild(deleteTd);
 
 
+        /*
+         * Add row to table.
+         */
         body.appendChild(tr);
 
     });
@@ -282,31 +336,28 @@ function render() {
 /*
  * Add a new row.
  */
-document
-    .getElementById('addRow')
-    .addEventListener('click', async function () {
+async function addRow() {
 
-        table.push({
+    table.push({
 
-            id: generateId(),
+        id: generateId(),
 
-            quantity: 1,
+        quantity: 1,
 
-            description: '',
+        description: '',
 
-            cost: 0,
+        cost: 0,
 
-            fileName: '',
+        fileName: '',
 
-            finished: false
-
-        });
-
-        render();
-
-        await saveTable();
+        finished: false
 
     });
+
+    render();
+
+    await saveTable();
+}
 
 
 /*
@@ -314,7 +365,7 @@ document
  *
  * Cost is treated as UNIT cost.
  *
- * Quantity × Cost
+ * Total = Quantity × Cost
  */
 function updateTotal() {
 
@@ -331,16 +382,48 @@ function updateTotal() {
     });
 
 
-    document.getElementById('total').textContent =
-        'Total: $' + total.toFixed(2);
+    const totalElement = document.getElementById('total');
+
+    if (totalElement) {
+
+        totalElement.textContent =
+            'Total: $' + total.toFixed(2);
+
+    }
 }
 
 
 /*
- * Start.
+ * Initialize the table.
+ *
+ * Trello's t.render() waits until the Power-Up
+ * iframe is ready. At this point we can safely
+ * access the HTML elements.
  */
-t.render(function () {
+t.render(async function () {
 
-    return loadTable();
+    const addRowButton = document.getElementById('addRow');
+
+    if (!addRowButton) {
+
+        console.error(
+            'ERROR: #addRow was not found. ' +
+            'Make sure table.js is loaded after the HTML.'
+        );
+
+        return;
+    }
+
+
+    /*
+     * Add Row button.
+     */
+    addRowButton.addEventListener('click', addRow);
+
+
+    /*
+     * Load existing table data.
+     */
+    await loadTable();
 
 });
