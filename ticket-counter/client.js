@@ -8,8 +8,6 @@ var TEMPLATE_CARD_ID = '6a8cd9ecc1d994336094ee4b';
 
 var API_KEY = 'eb1974fbb9e6a0def3d070da33e9cf05';
 
-
-
 function createTicket(t) {
     return (async function () {
         try {
@@ -96,7 +94,7 @@ function createTicket(t) {
             });
 
             // Open the card automatically for editing
-            return t.showCard(newCard.id);
+            return t.showCard(newCard.shortLink);
 
         } catch (error) {
             console.error('Ticket creation failed:', error);
