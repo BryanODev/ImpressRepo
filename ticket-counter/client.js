@@ -78,7 +78,6 @@ function createTicket(t) {
                 );
             }
 
-            // Parse the response to get the newly created card's data
             let newCard = await response.json();
 
             await t.set(
@@ -93,8 +92,10 @@ function createTicket(t) {
                 duration: 'success'
             });
 
-            // Open the card automatically for editing
-            return t.showCard(newCard.shortLink);
+            // This matches the exact method from your previous working script
+            if (newCard && newCard.id) {
+                return t.showCard(newCard.id);
+            }
 
         } catch (error) {
             console.error('Ticket creation failed:', error);
