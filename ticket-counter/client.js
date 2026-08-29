@@ -1,7 +1,7 @@
 var WHITE_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
 var BLACK_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
 var TARGET_LIST_NAME = 'Inbox Solicitudes Nuevas';
-var TEMPLATE_CARD_ID = 'bdxPq3px';
+var TEMPLATE_CARD_ID = '6a8cd9ecc1d994336094ee4b';
 var API_KEY = 'eb1974fbb9e6a0def3d070da33e9cf05';
 
 function createTicket(t) {
