@@ -95,7 +95,6 @@ window.TrelloPowerUp.initialize({
     return t.getRestApi().authorize({ scope: 'read,write', expiration: 'never' });
   }
 }, {
-  // Pass your credentials here so t.getRestApi() configures properly
   appKey: API_KEY,
   appName: 'Impress Ticket Counter'
 });
