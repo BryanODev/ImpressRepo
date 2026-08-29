@@ -18,31 +18,27 @@ function createTicket(t) {
         });
       }
 
-      let currentCount = await t.get(
-        'board',
-        'shared',
-        'ticketCounter',
-        1
-      );
+      // Open input form modal to capture custom details
+      let formData = await t.modal({
+        url: 'form.html',
+        title: 'New Ticket Information',
+        height: 600
+      });
 
-      if (
-        currentCount === null ||
-        currentCount === undefined ||
-        isNaN(currentCount)
-      ) {
-        currentCount = 1;
+      if (!formData) {
+        return; // User canceled the modal
       }
 
-      currentCount = Number(currentCount);
+      let currentCount = await t.get('board', 'shared', 'ticketCounter', 1);
+      currentCount = isNaN(Number(currentCount)) ? 1 : Number(currentCount);
 
       let formattedId = String(currentCount).padStart(4, '0');
-      let cardTitle = `#${formattedId} - Impress-Task`;
+      
+      // Card Title: #0000 - [Client]
+      let cardTitle = `#${formattedId} - ${formData.client}`;
 
       let lists = await t.lists('id', 'name');
-
-      let targetList = lists.find(function (list) {
-        return list.name === TARGET_LIST_NAME;
-      });
+      let targetList = lists.find(list => list.name === TARGET_LIST_NAME);
 
       if (!targetList) {
         return t.alert({
@@ -51,44 +47,54 @@ function createTicket(t) {
         });
       }
 
+      // Date Calculations
+      let today = new Date();
+      let fechaCreacion = today.toISOString().split('T')[0]; // Today's date YYYY-MM-DD
+
+      let weekLater = new Date();
+      weekLater.setDate(today.getDate() + 7);
+      let fechaSolicitada = weekLater.toISOString().split('T')[0]; // 1 week later YYYY-MM-DD
+
+      // 1. Create card using source template
       let response = await fetch(
         `https://api.trello.com/1/cards?key=${API_KEY}&token=${token}`,
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: cardTitle,
             idList: targetList.id,
             pos: 'top',
-            idCardSource: TEMPLATE_CARD_ID
+            idCardSource: TEMPLATE_CARD_ID,
+            due: fechaSolicitada // Set Trello's core due date to requested date
           })
         }
       );
 
       if (!response.ok) {
         let errorText = await response.text();
-        throw new Error(
-          `Trello API error ${response.status}: ${errorText}`
-        );
+        throw new Error(`Trello API error ${response.status}: ${errorText}`);
       }
 
-      await t.set(
-        'board',
-        'shared',
-        'ticketCounter',
-        currentCount + 1
-      );
+      let newCard = await response.json();
+
+      // Note: If you want to automatically push fields into Trello Native Custom Fields, 
+      // you would map them via customField items endpoint here using their customField IDs.
+      // For now, we store them cleanly inside the card description or rely on manual mapping.
+
+      // Increment ticket counter
+      await t.set('board', 'shared', 'ticketCounter', currentCount + 1);
 
       t.alert({
         message: `Created ticket #${formattedId}!`,
         duration: 'success'
       });
 
+      // Instantly open the card for viewing/editing
+      return t.showCard(newCard.id);
+
     } catch (error) {
       console.error('Ticket creation failed:', error);
-
       t.alert({
         message: 'Failed to create ticket card.',
         duration: 'error'
@@ -106,41 +112,26 @@ function authorizeUser(t) {
 }
 
 window.TrelloPowerUp.initialize({
-
   'board-buttons': function (t, opts) {
     return [{
-      icon: {
-        dark: WHITE_ICON,
-        light: BLACK_ICON
-      },
+      icon: { dark: WHITE_ICON, light: BLACK_ICON },
       text: 'Create Ticket',
       condition: 'edit',
       callback: async function (t) {
         let restApi = await t.getRestApi();
         let isAuthorized = await restApi.isAuthorized();
-
-        if (!isAuthorized) {
-          return authorizeUser(t);
-        }
-
+        if (!isAuthorized) return authorizeUser(t);
         return createTicket(t);
       }
     }];
   },
-
   'authorization-status': async function (t, opts) {
     let restApi = await t.getRestApi();
-    let isAuthorized = await restApi.isAuthorized();
-
-    return {
-      authorized: isAuthorized
-    };
+    return { authorized: await restApi.isAuthorized() };
   },
-
   'show-authorization': function (t, opts) {
     return authorizeUser(t);
   }
-
 }, {
   appKey: API_KEY,
   appName: 'Impress New Task'
