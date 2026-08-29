@@ -1,5 +1,6 @@
 var WHITE_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
 var BLACK_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
+var TARGET_LIST_NAME = 'Inbox Solicitudes Nuevas';
 
 window.TrelloPowerUp.initialize({
   'board-buttons': function (t, opts) {
@@ -19,17 +20,23 @@ window.TrelloPowerUp.initialize({
           let formattedId = String(currentCount).padStart(4, '0');
           let cardTitle = `#${formattedId} - Impress-Task`;
 
-          // 3. Find the first list on the board to put the card into
-          let board = await t.board('id', 'lists');
-          if (!board.lists || board.lists.length === 0) {
-            return t.alert({ message: 'No lists found on this board!', duration: 'error' });
+          // 3. Find the target list by name
+          let lists = await t.lists('id', 'name');
+          let targetList = lists.find(function (list) {
+            return list.name === TARGET_LIST_NAME;
+          });
+
+          if (!targetList) {
+            return t.alert({
+              message: `List "${TARGET_LIST_NAME}" not found on this board!`,
+              duration: 'error'
+            });
           }
-          let targetListId = board.lists[0].id;
 
           // 4. Create the new card by copying your template card (bdxPq3px) and overriding the name
           await t.rest('POST', '/1/cards', {
             name: cardTitle,
-            idList: targetListId,
+            idList: targetList.id,
             pos: 'top',
             idCardSource: 'bdxPq3px'
           });
