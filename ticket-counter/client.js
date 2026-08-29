@@ -132,12 +132,12 @@ window.TrelloPowerUp.initialize({
                     return authorizeUser(t);
                 }
 
-                // 1. Create the ticket and save the returned card object to a variable
+                // 1. Create the ticket and get the card object back
                 let newCard = await createTicket(t);
 
-                // 2. If the card was created successfully, open its card front/back UI modal
-                if (newCard && newCard.id) {
-                    return t.showCard(newCard.id);
+                // 2. Open/navigate directly to the new card using its web URL
+                if (newCard && newCard.url) {
+                    return t.navigate({ url: newCard.url });
                 }
             }
         }];
