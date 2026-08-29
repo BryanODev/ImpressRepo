@@ -59,7 +59,7 @@
   </style>
 </head>
 <body>
-  <form id="ticketForm">
+  <div id="ticketForm">
     <label>Card Title Identifier (e.g. Company Name) *</label>
     <input type="text" id="cardNameInput" required placeholder="Will format as #0000 - [Input Here]">
 
@@ -105,19 +105,27 @@
       <option value="En Systema">En Systema</option>
     </select>
 
-    <button type="submit">Create Ticket</button>
-  </form>
+    <!-- Changed to type="button" so it never auto-submits -->
+    <button type="button" id="submitBtn">Create Ticket</button>
+  </div>
 
   <script>
     var t = window.TrelloPowerUp.iframe();
 
-    document.getElementById('ticketForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    document.getElementById('submitBtn').addEventListener('click', function() {
+      // Basic manual validation
+      var cardName = document.getElementById('cardNameInput').value;
+      var clientName = document.getElementById('nombreCliente').value;
+
+      if (!cardName || !clientName) {
+        alert('Please fill out the required fields!');
+        return;
+      }
       
       var formData = {
-        cardTitleInput: document.getElementById('cardNameInput').value,
+        cardTitleInput: cardName,
         vendedor: document.getElementById('vendedor').value,
-        nombreCliente: document.getElementById('nombreCliente').value,
+        nombreCliente: clientName,
         email: document.getElementById('email').value,
         telefono: document.getElementById('telefono').value,
         prioridad: document.getElementById('prioridad').value,
