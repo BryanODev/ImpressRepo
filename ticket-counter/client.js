@@ -98,7 +98,9 @@ async function openTicketForm(t) {
       height: 600
     });
 
-    if (!formData) {
+    // If the user closed the modal with the "X" button, formData will be null/undefined
+    if (!formData || typeof formData !== 'object' || !formData.cardTitleInput) {
+      console.log('Ticket creation cancelled or modal closed.');
       return;
     }
 
@@ -106,7 +108,6 @@ async function openTicketForm(t) {
 
   } catch (error) {
     console.error('Form failed:', error);
-
     t.alert({
       message: 'Could not open ticket form.',
       duration: 'error'

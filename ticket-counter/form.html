@@ -123,15 +123,15 @@
   <script>
     var t = window.TrelloPowerUp.iframe();
 
-    document.getElementById('submitBtn').addEventListener('click', function() {
+    document.getElementById('submitBtn').addEventListener('click', function(e) {
       var cardName = document.getElementById('cardNameInput').value.trim();
       var clientName = document.getElementById('nombreCliente').value.trim();
 
       if (!cardName || !clientName) {
-        alert('Please fill out the required fields!');
+        alert('Please fill out the required Card Title and Client Name fields!');
         return;
       }
-
+      
       var formData = {
         cardTitleInput: cardName,
         vendedor: document.getElementById('vendedor').value,
@@ -143,7 +143,8 @@
         arte: document.getElementById('arte').value
       };
 
-      t.closeModal(formData);
+      // Pass the data back and close the modal
+      t.closePopup(formData);
     });
   </script>
 
