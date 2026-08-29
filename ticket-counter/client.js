@@ -35,7 +35,7 @@ function createTicket(t) {
       let formattedId = String(currentCount).padStart(4, '0');
       
       // Card Title: #0000 - [Client]
-      let cardTitle = `#${formattedId} - ${formData.client}`;
+      let cardTitle = `#${formattedId} - ${formData.cardTitleInput}`;
 
       let lists = await t.lists('id', 'name');
       let targetList = lists.find(list => list.name === TARGET_LIST_NAME);

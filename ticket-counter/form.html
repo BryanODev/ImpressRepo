@@ -60,6 +60,9 @@
 </head>
 <body>
   <form id="ticketForm">
+    <label>Card Title Identifier (e.g. Company Name) *</label>
+    <input type="text" id="cardNameInput" required placeholder="Will format as #0000 - [Input Here]">
+
     <label>Vendedor *</label>
     <select id="vendedor" required>
       <option value="Yoemi">Yoemi</option>
@@ -69,9 +72,6 @@
       <option value="Luis">Luis</option>
       <option value="Michi">Michi</option>
     </select>
-
-    <label>Cliente (Short Code/Name for Title) *</label>
-    <input type="text" id="client" required placeholder="e.g. Acme Corp">
 
     <label>Nombre Cliente (Full Name) *</label>
     <input type="text" id="nombreCliente" required placeholder="John Doe">
@@ -115,8 +115,8 @@
       e.preventDefault();
       
       var formData = {
+        cardTitleInput: document.getElementById('cardNameInput').value,
         vendedor: document.getElementById('vendedor').value,
-        client: document.getElementById('client').value,
         nombreCliente: document.getElementById('nombreCliente').value,
         email: document.getElementById('email').value,
         telefono: document.getElementById('telefono').value,
