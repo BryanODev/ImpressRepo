@@ -13,7 +13,7 @@ function createTicket(t) {
       if (!token) {
         return t.popup({
           title: 'Authorize to continue',
-          url: './authorize.html',
+          url: 'authorize.html',
           height: 140
         });
       }
