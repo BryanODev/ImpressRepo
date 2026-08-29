@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Authorize</title>
+</head>
+
+<body>
+
+  <button type="button" id="authorize">
+    Click to authorize
+  </button>
+
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+
+  <script>
+    var API_KEY = 'eb1974fbb9e6a0def3d070da33e9cf05';
+
+    var t = window.TrelloPowerUp.iframe({
+      appKey: API_KEY,
+      appName: 'Impress New Task'
+    });
+
+    t.render(function () {
+
+      document
+        .getElementById('authorize')
+        .addEventListener('click', function () {
+
+          t.getRestApi()
+            .authorize({
+              scope: 'read,write',
+              expiration: 'never'
+            })
+            .then(function () {
+              return t.closePopup();
+            })
+            .catch(function (error) {
+              console.error('Authorization failed:', error);
+            });
+
+        }, false);
+
+    });
+  </script>
+
+</body>
+</html>
