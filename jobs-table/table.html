@@ -2,181 +2,458 @@
 <html>
 
 <head>
+
     <meta charset="utf-8">
 
-    <title>Items</title>
+    <title>Task Table</title>
+
 
     <style>
+
         * {
             box-sizing: border-box;
         }
 
+
+        html,
         body {
+
             margin: 0;
-            padding: 12px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+            padding: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
             font-size: 14px;
+
             background: #ffffff;
+
             color: #172b4d;
+
         }
 
-        .table-wrapper {
-            width: 100%;
-            overflow-x: auto;
+
+        body {
+
+            padding: 20px;
+
+            overflow: hidden;
+
         }
+
+
+        .page {
+
+            width: 100%;
+
+            height: 100%;
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+
+        .toolbar {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 12px;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .title {
+
+            font-size: 20px;
+
+            font-weight: 600;
+
+        }
+
+
+        .toolbar-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+        }
+
+
+        .status {
+
+            color: #5e6c84;
+
+            font-size: 12px;
+
+        }
+
+
+        .add-row {
+
+            padding: 8px 14px;
+
+            border: none;
+
+            border-radius: 3px;
+
+            background: #0c66e4;
+
+            color: white;
+
+            cursor: pointer;
+
+            font-weight: 500;
+
+        }
+
+
+        .add-row:hover {
+
+            background: #0055cc;
+
+        }
+
+
+        .table-container {
+
+            flex: 1;
+
+            width: 100%;
+
+            overflow: auto;
+
+            border: 1px solid #dfe1e6;
+
+        }
+
 
         table {
-            width: 100%;
+
+            width: max-content;
+
+            min-width: 100%;
+
             border-collapse: collapse;
+
             table-layout: fixed;
+
         }
+
 
         th {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 2;
+
             background: #f4f5f7;
+
             font-weight: 600;
+
             text-align: left;
-            padding: 8px;
+
+            padding: 10px;
+
             border: 1px solid #dfe1e6;
+
         }
 
+
         td {
+
             padding: 4px;
+
             border: 1px solid #dfe1e6;
+
             vertical-align: middle;
+
+            background: white;
+
         }
+
 
         th.check,
         td.check {
-            width: 42px;
+
+            width: 55px;
+
+            min-width: 55px;
+
             text-align: center;
+
         }
+
 
         th.quantity,
         td.quantity {
-            width: 90px;
+
+            width: 110px;
+
+            min-width: 110px;
+
         }
+
+
+        th.description,
+        td.description {
+
+            width: 350px;
+
+            min-width: 350px;
+
+        }
+
 
         th.cost,
         td.cost {
-            width: 100px;
+
+            width: 130px;
+
+            min-width: 130px;
+
         }
+
 
         th.file,
         td.file {
-            width: 160px;
+
+            width: 300px;
+
+            min-width: 300px;
+
         }
+
+
+        th.delete,
+        td.delete {
+
+            width: 55px;
+
+            min-width: 55px;
+
+            text-align: center;
+
+        }
+
 
         input {
+
             width: 100%;
+
             border: none;
+
             outline: none;
-            padding: 6px;
+
+            padding: 8px;
+
             background: transparent;
+
             color: inherit;
+
             font: inherit;
+
         }
+
 
         input:focus {
-            background: #fff;
-            box-shadow: inset 0 0 0 2px #0c66e4;
+
+            background: #ffffff;
+
+            box-shadow:
+                inset 0 0 0 2px #0c66e4;
+
             border-radius: 3px;
+
         }
+
 
         input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
+
+            width: 17px;
+
+            height: 17px;
+
             cursor: pointer;
+
         }
+
 
         .delete-button {
+
             border: none;
+
             background: transparent;
+
             color: #6b778c;
+
             cursor: pointer;
-            font-size: 16px;
+
+            font-size: 20px;
+
         }
+
 
         .delete-button:hover {
+
             color: #de350b;
+
         }
 
-        .add-row {
-            margin-top: 10px;
-            padding: 7px 12px;
-            border: none;
-            border-radius: 3px;
-            background: #0c66e4;
-            color: white;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .add-row:hover {
-            background: #0055cc;
-        }
-
-        .footer {
-            margin-top: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .total {
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .status {
-            color: #5e6c84;
-            font-size: 12px;
-        }
 
         .empty {
+
             text-align: center;
-            padding: 20px;
+
+            padding: 30px;
+
             color: #6b778c;
+
         }
+
+
+        .bottom-bar {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: flex-end;
+
+            padding-top: 12px;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .total {
+
+            font-size: 18px;
+
+            font-weight: 600;
+
+        }
+
     </style>
+
 </head>
 
+
 <body>
-    <div class="table-wrapper">
 
-        <table>
+    <div class="page">
 
-            <thead>
-                <tr>
-                    <th class="check">✓</th>
-                    <th class="quantity">Quantity</th>
-                    <th>Description</th>
-                    <th class="cost">Cost</th>
-                    <th class="file">File Name</th>
-                    <th style="width:35px;"></th>
-                </tr>
-            </thead>
 
-            <tbody id="tableBody"></tbody>
+        <div class="toolbar">
 
-        </table>
+            <div class="title">
+                Task Table
+            </div>
+
+
+            <div class="toolbar-right">
+
+                <div
+                    id="status"
+                    class="status">
+                    Saved
+                </div>
+
+
+                <button
+                    id="addRow"
+                    class="add-row">
+
+                    + Add Row
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th class="check">
+                            ✓
+                        </th>
+
+                        <th class="quantity">
+                            Quantity
+                        </th>
+
+                        <th class="description">
+                            Description
+                        </th>
+
+                        <th class="cost">
+                            Cost
+                        </th>
+
+                        <th class="file">
+                            File Name
+                        </th>
+
+                        <th class="delete">
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="tableBody"></tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="bottom-bar">
+
+            <div
+                id="total"
+                class="total">
+
+                Total: $0.00
+
+            </div>
+
+        </div>
 
     </div>
 
-    <button class="add-row" id="addRow">
-        + Add Row
-    </button>
-
-    <div class="footer">
-        <div class="total" id="total">
-            Total: $0.00
-        </div>
-
-        <div class="status" id="status">
-            Saved
-        </div>
-    </div>
 
     <script src="https://p.trellocdn.com/power-up.min.js"></script>
+
     <script src="table.js"></script>
 
 </body>
