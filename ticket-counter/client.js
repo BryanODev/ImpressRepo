@@ -1,165 +1,293 @@
 var WHITE_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
+
 var BLACK_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
+
 var TARGET_LIST_NAME = 'Inbox Solicitudes Nuevas';
+
 var TEMPLATE_CARD_ID = '6a8cd9ecc1d994336094ee4b';
+
 var API_KEY = 'eb1974fbb9e6a0def3d070da33e9cf05';
 
-function buildDescription(formData) {
-  return [
-    `**Vendedor:** ${formData.vendedor || 'N/A'}`,
-    `**Nombre Cliente:** ${formData.nombreCliente || 'N/A'}`,
-    `**Email:** ${formData.email || 'N/A'}`,
-    `**Numero Telefono:** ${formData.telefono || 'N/A'}`,
-    `**Prioridad:** ${formData.prioridad || 'N/A'}`,
-    `**Metodo de Entrega:** ${formData.metodoEntrega || 'N/A'}`,
-    `**Arte:** ${formData.arte || 'N/A'}`
-  ].join('\n');
+
+
+function createTicket(t) {
+
+return (async function () {
+
+try {
+
+let restApi = await t.getRestApi();
+
+let token = await restApi.getToken();
+
+
+
+if (!token) {
+
+return t.popup({
+
+title: 'Authorize to continue',
+
+url: 'authorize.html',
+
+height: 140
+
+});
+
 }
 
-async function createTicket(t, formData) {
-  try {
-    var restApi = await t.getRestApi();
-    var token = await restApi.getToken();
 
-    if (!token) {
-      return t.popup({
-        title: 'Authorize to continue',
-        url: 'authorize.html',
-        height: 140
-      });
-    }
 
-    var currentCount = await t.get('board', 'shared', 'ticketCounter', 1);
-    currentCount = isNaN(Number(currentCount)) ? 1 : Number(currentCount);
+let currentCount = await t.get(
 
-    var formattedId = String(currentCount).padStart(4, '0');
-    var cardTitle = `#${formattedId} - ${formData.cardTitleInput}`;
+'board',
 
-    var lists = await t.lists('id', 'name');
-    var targetList = lists.find(function(list) {
-      return list.name === TARGET_LIST_NAME;
-    });
+'shared',
 
-    if (!targetList) {
-      return t.alert({
-        message: `List "${TARGET_LIST_NAME}" not found on this board!`,
-        duration: 'error'
-      });
-    }
+'ticketCounter',
 
-    var today = new Date();
-    var weekLater = new Date();
-    weekLater.setDate(today.getDate() + 7);
-    var fechaSolicitada = weekLater.toISOString().split('T')[0];
+1
 
-    var response = await fetch(
-      `https://api.trello.com/1/cards?key=${API_KEY}&token=${token}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: cardTitle,
-          desc: buildDescription(formData),
-          idList: targetList.id,
-          pos: 'top',
-          idCardSource: TEMPLATE_CARD_ID,
-          due: fechaSolicitada
-        })
-      }
-    );
+);
 
-    if (!response.ok) {
-      var errorText = await response.text();
-      throw new Error(`Trello API error ${response.status}: ${errorText}`);
-    }
 
-    var newCard = await response.json();
 
-    await t.set(
-      'board',
-      'shared',
-      'ticketCounter',
-      currentCount + 1
-    );
+if (
 
-    t.alert({
-      message: `Created ticket #${formattedId}!`,
-      duration: 'success'
-    });
+currentCount === null ||
 
-    return t.showCard(newCard.id);
+currentCount === undefined ||
 
-  } catch (error) {
-    console.error('Ticket creation failed:', error);
-    t.alert({
-      message: 'Failed to create ticket card.',
-      duration: 'error'
-    });
-  }
+isNaN(currentCount)
+
+) {
+
+currentCount = 1;
+
 }
 
-async function openTicketForm(t) {
-  try {
-    // MUST be t.modal() so it opens a full dialog window and correctly returns payload data via closeModal()
-    var formData = await t.modal({
-      title: 'New Ticket Information',
-      url: 'form.html',
-      height: 600
-    });
 
-    if (!formData || typeof formData !== 'object' || !formData.cardTitleInput) {
-      console.log('Ticket creation cancelled or modal closed.');
-      return;
-    }
 
-    return createTicket(t, formData);
+currentCount = Number(currentCount);
 
-  } catch (error) {
-    console.error('Form failed:', error);
-    t.alert({
-      message: 'Could not open ticket form.',
-      duration: 'error'
-    });
-  }
+
+
+let formattedId = String(currentCount).padStart(4, '0');
+
+let cardTitle = `#${formattedId} - Impress-Task`;
+
+
+
+let lists = await t.lists('id', 'name');
+
+
+
+let targetList = lists.find(function (list) {
+
+return list.name === TARGET_LIST_NAME;
+
+});
+
+
+
+if (!targetList) {
+
+return t.alert({
+
+message: `List "${TARGET_LIST_NAME}" not found on this board!`,
+
+duration: 'error'
+
+});
+
 }
+
+
+
+let response = await fetch(
+
+`https://api.trello.com/1/cards?key=${API_KEY}&token=${token}`,
+
+{
+
+method: 'POST',
+
+headers: {
+
+'Content-Type': 'application/json'
+
+},
+
+body: JSON.stringify({
+
+name: cardTitle,
+
+idList: targetList.id,
+
+pos: 'top',
+
+idCardSource: TEMPLATE_CARD_ID
+
+})
+
+}
+
+);
+
+
+
+if (!response.ok) {
+
+let errorText = await response.text();
+
+throw new Error(
+
+`Trello API error ${response.status}: ${errorText}`
+
+);
+
+}
+
+
+
+await t.set(
+
+'board',
+
+'shared',
+
+'ticketCounter',
+
+currentCount + 1
+
+);
+
+
+
+t.alert({
+
+message: `Created ticket #${formattedId}!`,
+
+duration: 'success'
+
+});
+
+
+
+} catch (error) {
+
+console.error('Ticket creation failed:', error);
+
+
+
+t.alert({
+
+message: 'Failed to create ticket card.',
+
+duration: 'error'
+
+});
+
+}
+
+})();
+
+}
+
+
 
 function authorizeUser(t) {
-  return t.popup({
-    title: 'Authorize to continue',
-    url: 'authorize.html',
-    height: 140
-  });
+
+return t.popup({
+
+title: 'Authorize to continue',
+
+url: 'authorize.html',
+
+height: 140
+
+});
+
 }
 
+
+
 window.TrelloPowerUp.initialize({
-  'board-buttons': function(t, opts) {
-    return [{
-      icon: {
-        dark: WHITE_ICON,
-        light: BLACK_ICON
-      },
-      text: 'Create Ticket',
-      condition: 'edit',
-      callback: function(t) {
-        return openTicketForm(t);
-      }
-    }];
-  },
 
-  'authorization-status': async function(t, opts) {
-    var restApi = await t.getRestApi();
-    return {
-      authorized: await restApi.isAuthorized()
-    };
-  },
 
-  'show-authorization': function(t, opts) {
-    return authorizeUser(t);
-  }
+
+'board-buttons': function (t, opts) {
+
+return [{
+
+icon: {
+
+dark: WHITE_ICON,
+
+light: BLACK_ICON
+
+},
+
+text: 'Create Ticket',
+
+condition: 'edit',
+
+callback: async function (t) {
+
+let restApi = await t.getRestApi();
+
+let isAuthorized = await restApi.isAuthorized();
+
+
+
+if (!isAuthorized) {
+
+return authorizeUser(t);
+
+}
+
+
+
+return createTicket(t);
+
+}
+
+}];
+
+},
+
+
+
+'authorization-status': async function (t, opts) {
+
+let restApi = await t.getRestApi();
+
+let isAuthorized = await restApi.isAuthorized();
+
+
+
+return {
+
+authorized: isAuthorized
+
+};
+
+},
+
+
+
+'show-authorization': function (t, opts) {
+
+return authorizeUser(t);
+
+}
+
+
 
 }, {
-  appKey: API_KEY,
-  appName: 'Impress New Task'
+
+appKey: API_KEY,
+
+appName: 'Impress New Task'
+
 });

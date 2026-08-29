@@ -4,68 +4,16 @@
   <meta charset="utf-8">
   <title>New Ticket Details</title>
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
-
   <style>
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important; 
-      padding: 15px !important; 
-      color: #ffffff !important; 
-      background: #1d2125 !important; 
-      margin: 0 !important;
-    }
-    label { 
-      display: block !important; 
-      margin-top: 12px !important; 
-      font-weight: 600 !important; 
-      font-size: 12px !important; 
-      color: #9fadbc !important; 
-    }
-    input, select { 
-      width: 100% !important; 
-      padding: 8px 10px !important; 
-      margin-top: 4px !important; 
-      box-sizing: border-box !important; 
-      border: 1px solid #38414a !important; 
-      border-radius: 4px !important; 
-      background-color: #22272b !important; 
-      color: #ffffff !important; 
-      font-size: 14px !important;
-    }
-    input::placeholder {
-      color: #738496 !important;
-    }
-    input:focus, select:focus {
-      outline: none !important;
-      border-color: #579dff !important;
-    }
-    select option {
-      background-color: #22272b !important;
-      color: #ffffff !important;
-    }
-    button { 
-      margin-top: 20px !important; 
-      background-color: #0079bf !important; 
-      color: white !important; 
-      border: none !important; 
-      padding: 10px 15px !important; 
-      font-weight: bold !important; 
-      border-radius: 4px !important; 
-      cursor: pointer !important; 
-      width: 100% !important; 
-      font-size: 14px !important;
-    }
-    button:hover { 
-      background-color: #026aa7 !important; 
-    }
+    body { font-family: Arial, sans-serif; padding: 15px; color: #333; background: #f4f5f7; }
+    label { display: block; margin-top: 10px; font-weight: bold; font-size: 12px; }
+    input, select { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; border: 1px solid #dfe1e6; border-radius: 3px; background: #fff; }
+    button { margin-top: 15px; background: #0079bf; color: white; border: none; padding: 10px 15px; font-weight: bold; border-radius: 3px; cursor: pointer; width: 100%; }
+    button:hover { background: #026aa7; }
   </style>
 </head>
-
 <body>
-
-  <div id="ticketForm">
-    <label>Card Title Identifier (e.g. Company Name) *</label>
-    <input type="text" id="cardNameInput" required placeholder="Will format as #0000 - [Input Here]">
-
+  <form id="ticketForm">
     <label>Vendedor *</label>
     <select id="vendedor" required>
       <option value="Yoemi">Yoemi</option>
@@ -75,6 +23,9 @@
       <option value="Luis">Luis</option>
       <option value="Michi">Michi</option>
     </select>
+
+    <label>Cliente (Short Code/Name for Title) *</label>
+    <input type="text" id="client" required placeholder="e.g. Acme Corp">
 
     <label>Nombre Cliente (Full Name) *</label>
     <input type="text" id="nombreCliente" required placeholder="John Doe">
@@ -108,25 +59,19 @@
       <option value="En Systema">En Systema</option>
     </select>
 
-    <button type="button" id="submitBtn">Create Ticket</button>
-  </div>
+    <button type="submit">Create Ticket</button>
+  </form>
 
   <script>
     var t = window.TrelloPowerUp.iframe();
 
-    document.getElementById('submitBtn').addEventListener('click', function(e) {
-      var cardName = document.getElementById('cardNameInput').value.trim();
-      var clientName = document.getElementById('nombreCliente').value.trim();
-
-      if (!cardName || !clientName) {
-        alert('Please fill out the required Card Title and Client Name fields!');
-        return;
-      }
+    document.getElementById('ticketForm').addEventListener('submit', function(e) {
+      e.preventDefault();
       
       var formData = {
-        cardTitleInput: cardName,
         vendedor: document.getElementById('vendedor').value,
-        nombreCliente: clientName,
+        client: document.getElementById('client').value,
+        nombreCliente: document.getElementById('nombreCliente').value,
         email: document.getElementById('email').value,
         telefono: document.getElementById('telefono').value,
         prioridad: document.getElementById('prioridad').value,
@@ -134,10 +79,8 @@
         arte: document.getElementById('arte').value
       };
 
-      // Must use closeModal to return data back to t.modal() safely
-      t.closeModal(formData);
+      t.closePopup(formData);
     });
   </script>
-
 </body>
 </html>
