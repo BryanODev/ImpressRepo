@@ -1,293 +1,162 @@
 var WHITE_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
-
 var BLACK_ICON = 'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
-
 var TARGET_LIST_NAME = 'Inbox Solicitudes Nuevas';
-
 var TEMPLATE_CARD_ID = '6a8cd9ecc1d994336094ee4b';
-
 var API_KEY = 'eb1974fbb9e6a0def3d070da33e9cf05';
 
-
-
 function createTicket(t) {
+    return (async function () {
+        try {
+            let restApi = await t.getRestApi();
+            let token = await restApi.getToken();
 
-return (async function () {
+            if (!token) {
+                return t.popup({
+                    title: 'Authorize to continue',
+                    url: 'authorize.html',
+                    height: 140
+                });
+            }
 
-try {
+            let currentCount = await t.get(
+                'board',
+                'shared',
+                'ticketCounter',
+                1
+            );
 
-let restApi = await t.getRestApi();
+            if (
+                currentCount === null ||
+                currentCount === undefined ||
+                isNaN(currentCount)
+            ) {
+                currentCount = 1;
+            }
 
-let token = await restApi.getToken();
+            currentCount = Number(currentCount);
 
+            let formattedId = String(currentCount).padStart(4, '0');
+            let cardTitle = `#${formattedId} - Impress-Task`;
 
+            let lists = await t.lists('id', 'name');
 
-if (!token) {
+            let targetList = lists.find(function (list) {
+                return list.name === TARGET_LIST_NAME;
+            });
 
-return t.popup({
+            if (!targetList) {
+                return t.alert({
+                    message: `List "${TARGET_LIST_NAME}" not found on this board!`,
+                    duration: 'error'
+                });
+            }
 
-title: 'Authorize to continue',
+            let response = await fetch(
+                `https://api.trello.com/1/cards?key=${API_KEY}&token=${token}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: cardTitle,
+                        idList: targetList.id,
+                        pos: 'top',
+                        idCardSource: TEMPLATE_CARD_ID
+                    })
+                }
+            );
 
-url: 'authorize.html',
+            if (!response.ok) {
+                let errorText = await response.text();
+                throw new Error(
+                    `Trello API error ${response.status}: ${errorText}`
+                );
+            }
 
-height: 140
+            // Parse the created card data from the Trello API response
+            let createdCard = await response.json();
 
-});
+            await t.set(
+                'board',
+                'shared',
+                'ticketCounter',
+                currentCount + 1
+            );
 
+            t.alert({
+                message: `Created ticket #${formattedId}!`,
+                duration: 'success'
+            });
+
+            // Return the newly created card object
+            return createdCard;
+
+        } catch (error) {
+            console.error('Ticket creation failed:', error);
+
+            t.alert({
+                message: 'Failed to create ticket card.',
+                duration: 'error'
+            });
+            
+            // Optionally rethrow or return null/error depending on how you want to handle it upstream
+            throw error;
+        }
+    })();
 }
-
-
-
-let currentCount = await t.get(
-
-'board',
-
-'shared',
-
-'ticketCounter',
-
-1
-
-);
-
-
-
-if (
-
-currentCount === null ||
-
-currentCount === undefined ||
-
-isNaN(currentCount)
-
-) {
-
-currentCount = 1;
-
-}
-
-
-
-currentCount = Number(currentCount);
-
-
-
-let formattedId = String(currentCount).padStart(4, '0');
-
-let cardTitle = `#${formattedId} - Impress-Task`;
-
-
-
-let lists = await t.lists('id', 'name');
-
-
-
-let targetList = lists.find(function (list) {
-
-return list.name === TARGET_LIST_NAME;
-
-});
-
-
-
-if (!targetList) {
-
-return t.alert({
-
-message: `List "${TARGET_LIST_NAME}" not found on this board!`,
-
-duration: 'error'
-
-});
-
-}
-
-
-
-let response = await fetch(
-
-`https://api.trello.com/1/cards?key=${API_KEY}&token=${token}`,
-
-{
-
-method: 'POST',
-
-headers: {
-
-'Content-Type': 'application/json'
-
-},
-
-body: JSON.stringify({
-
-name: cardTitle,
-
-idList: targetList.id,
-
-pos: 'top',
-
-idCardSource: TEMPLATE_CARD_ID
-
-})
-
-}
-
-);
-
-
-
-if (!response.ok) {
-
-let errorText = await response.text();
-
-throw new Error(
-
-`Trello API error ${response.status}: ${errorText}`
-
-);
-
-}
-
-
-
-await t.set(
-
-'board',
-
-'shared',
-
-'ticketCounter',
-
-currentCount + 1
-
-);
-
-
-
-t.alert({
-
-message: `Created ticket #${formattedId}!`,
-
-duration: 'success'
-
-});
-
-
-
-} catch (error) {
-
-console.error('Ticket creation failed:', error);
-
-
-
-t.alert({
-
-message: 'Failed to create ticket card.',
-
-duration: 'error'
-
-});
-
-}
-
-})();
-
-}
-
-
 
 function authorizeUser(t) {
-
-return t.popup({
-
-title: 'Authorize to continue',
-
-url: 'authorize.html',
-
-height: 140
-
-});
-
+    return t.popup({
+        title: 'Authorize to continue',
+        url: 'authorize.html',
+        height: 140
+    });
 }
-
-
 
 window.TrelloPowerUp.initialize({
 
+    'board-buttons': function (t, opts) {
+        return [{
+            icon: {
+                dark: WHITE_ICON,
+                light: BLACK_ICON
+            },
+            text: 'Create Ticket',
+            condition: 'edit',
+            callback: async function (t) {
+                let restApi = await t.getRestApi();
+                let isAuthorized = await restApi.isAuthorized();
 
+                if (!isAuthorized) {
+                    return authorizeUser(t);
+                }
 
-'board-buttons': function (t, opts) {
+                // 1. Create the ticket and save the returned card object to a variable
+                let newCard = await createTicket(t);
 
-return [{
+                // 2. If the card was created successfully, open its card front/back UI modal
+                if (newCard && newCard.id) {
+                    return t.showCard(newCard.id);
+                }
+            }
+        }];
+    },
 
-icon: {
+    'authorization-status': async function (t, opts) {
+        let restApi = await t.getRestApi();
+        let isAuthorized = await restApi.isAuthorized();
 
-dark: WHITE_ICON,
+        return {
+            authorized: isAuthorized
+        };
+    },
 
-light: BLACK_ICON
-
-},
-
-text: 'Create Ticket',
-
-condition: 'edit',
-
-callback: async function (t) {
-
-let restApi = await t.getRestApi();
-
-let isAuthorized = await restApi.isAuthorized();
-
-
-
-if (!isAuthorized) {
-
-return authorizeUser(t);
-
-}
-
-
-
-return createTicket(t);
-
-}
-
-}];
-
-},
-
-
-
-'authorization-status': async function (t, opts) {
-
-let restApi = await t.getRestApi();
-
-let isAuthorized = await restApi.isAuthorized();
-
-
-
-return {
-
-authorized: isAuthorized
-
-};
-
-},
-
-
-
-'show-authorization': function (t, opts) {
-
-return authorizeUser(t);
-
-}
-
-
+    'show-authorization': function (t, opts) {
+        return authorizeUser(t);
+    }
 
 }, {
-
-appKey: API_KEY,
-
-appName: 'Impress New Task'
-
+    appKey: API_KEY,
+    appName: 'Impress New Task'
 });
