@@ -6,24 +6,16 @@ window.TrelloPowerUp.initialize({
 
     'card-back-section': function (t) {
 
-        return {
+    return {
+        title: 'Items',
+        icon: ICON,
 
-            title: 'Items',
+        content: {
+            type: 'iframe',
+            url: t.signUrl('./preview.html')
+        }
+    };
 
-            icon: ICON,
-
-            content: {
-
-                type: 'iframe',
-
-                url: t.signUrl('./preview.html'),
-
-                height: 230
-
-            }
-
-        };
-
-    }
+}
 
 });
