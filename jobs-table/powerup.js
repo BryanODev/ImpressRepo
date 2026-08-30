@@ -17,7 +17,7 @@ window.TrelloPowerUp.initialize({
 
                 url: t.signUrl('./preview.html'),
 
-                height: 300
+                height: 100
 
             }
 
