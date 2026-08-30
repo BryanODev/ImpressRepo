@@ -13,11 +13,6 @@ const STORAGE_KEY =
  */
 
 
-/*
- * Change this if the IVU rate changes.
- *
- * 11.5% = 0.115
- */
 const IVU_RATE = 0.115;
 
 
@@ -415,13 +410,9 @@ function getDefaultValue(option) {
     }
 
 
-    /*
-     * Radio fields intentionally start
-     * with nothing selected unless a
-     * default is explicitly supplied.
-     */
     if (
-        option.type === 'radio'
+        option.type === 'radio' ||
+        option.type === 'radioWithCustom'
     ) {
 
         return '';
@@ -430,7 +421,8 @@ function getDefaultValue(option) {
 
 
     if (
-        option.type === 'select'
+        option.type === 'select' ||
+        option.type === 'selectWithCustom'
     ) {
 
         const firstOption =
@@ -536,90 +528,6 @@ function createProductSelect(row) {
     );
 
 
-    /*
-     * Completely removed product.
-     */
-    if (
-        row.productId &&
-        !getProduct(row.productId)
-    ) {
-
-        const oldOption =
-            document.createElement(
-                'option'
-            );
-
-
-        oldOption.value =
-            row.productId;
-
-
-        oldOption.textContent =
-            (
-                row.productName ||
-                row.productId
-            ) +
-            ' (DEPRECATED)';
-
-
-        oldOption.selected =
-            true;
-
-
-        oldOption.className =
-            'deprecated';
-
-
-        select.appendChild(
-            oldOption
-        );
-
-    }
-
-
-    /*
-     * Existing inactive product.
-     */
-    const currentProduct =
-        getProduct(
-            row.productId
-        );
-
-
-    if (
-        currentProduct &&
-        currentProduct.active === false
-    ) {
-
-        const existingOption =
-            Array.from(
-                select.options
-            ).find(
-                function (option) {
-
-                    return (
-                        option.value ===
-                        row.productId
-                    );
-
-                }
-            );
-
-
-        if (existingOption) {
-
-            existingOption.textContent =
-                currentProduct.name +
-                ' (DEPRECATED)';
-
-        }
-
-    }
-
-
-    /*
-     * Product changed.
-     */
     select.addEventListener(
         'change',
         async function () {
@@ -787,6 +695,149 @@ function createCustomInput(
 
 /*
  * ========================================
+ * SELECT / DROPDOWN
+ * ========================================
+ */
+
+
+function createSelectControl(
+    row,
+    optionDefinition,
+    optionId,
+    value
+) {
+
+    const wrapper =
+        document.createElement(
+            'div'
+        );
+
+
+    wrapper.className =
+        'option-radio-group';
+
+
+    const select =
+        document.createElement(
+            'select'
+        );
+
+
+    const options =
+        Array.isArray(
+            optionDefinition.options
+        )
+            ? optionDefinition.options
+            : [];
+
+
+    options.forEach(
+        function (possibleValue) {
+
+            const option =
+                document.createElement(
+                    'option'
+                );
+
+
+            option.value =
+                possibleValue;
+
+
+            option.textContent =
+                possibleValue;
+
+
+            if (
+                value ===
+                possibleValue
+            ) {
+
+                option.selected =
+                    true;
+
+            }
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    wrapper.appendChild(
+        select
+    );
+
+
+    let customInput =
+        null;
+
+
+    /*
+     * Custom input is only created
+     * for selectWithCustom.
+     */
+    if (
+        optionDefinition.type ===
+        'selectWithCustom'
+    ) {
+
+        customInput =
+            createCustomInput(
+                row,
+                optionDefinition,
+                optionId,
+                isCustomOption(
+                    value
+                )
+            );
+
+
+        wrapper.appendChild(
+            customInput
+        );
+
+    }
+
+
+    select.addEventListener(
+        'change',
+        async function () {
+
+            row.options[
+                optionId
+            ] =
+                select.value;
+
+
+            if (customInput) {
+
+                customInput.style.display =
+                    isCustomOption(
+                        select.value
+                    )
+                        ? ''
+                        : 'none';
+
+            }
+
+
+            await saveTable();
+
+        }
+    );
+
+
+    return wrapper;
+
+}
+
+
+/*
+ * ========================================
  * CREATE OPTION CONTROL
  * ========================================
  */
@@ -817,122 +868,24 @@ function createOptionControl(
 
     /*
      * ========================================
-     * SELECT / DROPDOWN
+     * SELECT
      * ========================================
      */
 
 
     if (
         optionDefinition.type ===
-        'select'
+        'select' ||
+        optionDefinition.type ===
+        'selectWithCustom'
     ) {
 
-        const select =
-            document.createElement(
-                'select'
-            );
-
-
-        const options =
-            Array.isArray(
-                optionDefinition.options
-            )
-                ? optionDefinition.options
-                : [];
-
-
-        options.forEach(
-            function (possibleValue) {
-
-                const option =
-                    document.createElement(
-                        'option'
-                    );
-
-
-                option.value =
-                    possibleValue;
-
-
-                option.textContent =
-                    possibleValue;
-
-
-                if (
-                    value ===
-                    possibleValue
-                ) {
-
-                    option.selected =
-                        true;
-
-                }
-
-
-                select.appendChild(
-                    option
-                );
-
-            }
+        return createSelectControl(
+            row,
+            optionDefinition,
+            optionId,
+            value
         );
-
-
-        /*
-         * Preserve old value.
-         */
-        if (
-            value &&
-            !options.includes(value)
-        ) {
-
-            const oldOption =
-                document.createElement(
-                    'option'
-                );
-
-
-            oldOption.value =
-                value;
-
-
-            oldOption.textContent =
-                value +
-                ' (DEPRECATED)';
-
-
-            oldOption.selected =
-                true;
-
-
-            oldOption.className =
-                'deprecated';
-
-
-            select.insertBefore(
-                oldOption,
-                select.firstChild
-            );
-
-        }
-
-
-        select.addEventListener(
-            'change',
-            async function () {
-
-                row.options[
-                    optionId
-                ] =
-                    select.value;
-
-
-                await saveTable();
-
-            }
-        );
-
-
-        return select;
 
     }
 
@@ -941,16 +894,6 @@ function createOptionControl(
      * ========================================
      * RADIO
      * ========================================
-     *
-     * Exactly ONE option can be selected.
-     *
-     * If "Custom" exists, its text input
-     * appears only when Custom is selected.
-     *
-     * Example:
-     *
-     * ○ A    ○ B    ○ Custom [________]
-     *
      */
 
 
@@ -1017,15 +960,9 @@ function createOptionControl(
                     possibleValue;
 
 
-                if (
+                radio.checked =
                     value ===
-                    possibleValue
-                ) {
-
-                    radio.checked =
-                        true;
-
-                }
+                    possibleValue;
 
 
                 const text =
@@ -1048,9 +985,139 @@ function createOptionControl(
                 );
 
 
-                /*
-                 * Custom input.
-                 */
+                radio.addEventListener(
+                    'change',
+                    async function () {
+
+                        if (
+                            !radio.checked
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        row.options[
+                            optionId
+                        ] =
+                            radio.value;
+
+
+                        await saveTable();
+
+                    }
+                );
+
+
+                wrapper.appendChild(
+                    item
+                );
+
+            }
+        );
+
+
+        return wrapper;
+
+    }
+
+
+    /*
+     * ========================================
+     * RADIO + CUSTOM
+     * ========================================
+     */
+
+
+    if (
+        optionDefinition.type ===
+        'radioWithCustom'
+    ) {
+
+        const wrapper =
+            document.createElement(
+                'div'
+            );
+
+
+        wrapper.className =
+            'option-radio-group';
+
+
+        const options =
+            Array.isArray(
+                optionDefinition.options
+            )
+                ? optionDefinition.options
+                : [];
+
+
+        const radioName =
+            'radio-' +
+            row.id +
+            '-' +
+            optionId;
+
+
+        options.forEach(
+            function (
+                possibleValue
+            ) {
+
+                const item =
+                    document.createElement(
+                        'label'
+                    );
+
+
+                item.className =
+                    'option-radio-item';
+
+
+                const radio =
+                    document.createElement(
+                        'input'
+                    );
+
+
+                radio.type =
+                    'radio';
+
+
+                radio.name =
+                    radioName;
+
+
+                radio.value =
+                    possibleValue;
+
+
+                radio.checked =
+                    value ===
+                    possibleValue;
+
+
+                const text =
+                    document.createElement(
+                        'span'
+                    );
+
+
+                text.textContent =
+                    possibleValue;
+
+
+                item.appendChild(
+                    radio
+                );
+
+
+                item.appendChild(
+                    text
+                );
+
+
                 let customInput =
                     null;
 
@@ -1096,10 +1163,6 @@ function createOptionControl(
                             radio.value;
 
 
-                        /*
-                         * Show Custom only when
-                         * Custom is selected.
-                         */
                         if (customInput) {
 
                             customInput.style.display =
@@ -1108,10 +1171,6 @@ function createOptionControl(
                         }
 
 
-                        /*
-                         * Hide all other custom
-                         * inputs in this group.
-                         */
                         const allCustomInputs =
                             wrapper.querySelectorAll(
                                 '.option-custom-input'
@@ -1158,17 +1217,6 @@ function createOptionControl(
      * ========================================
      * CHECKBOX GROUP
      * ========================================
-     *
-     * Multiple options can be selected.
-     *
-     * Example:
-     *
-     * ☑ A    ☐ B    ☑ C    ☐ Custom
-     *
-     * If Custom is checked:
-     *
-     * ☐ A    ☐ B    ☑ Custom [________]
-     *
      */
 
 
@@ -1195,11 +1243,6 @@ function createOptionControl(
                 : [];
 
 
-        /*
-         * Backward compatibility.
-         *
-         * Old/missing values become [].
-         */
         if (
             !Array.isArray(value)
         ) {
@@ -1270,9 +1313,6 @@ function createOptionControl(
                 );
 
 
-                /*
-                 * Custom input.
-                 */
                 let customInput =
                     null;
 
@@ -1356,10 +1396,6 @@ function createOptionControl(
                             selected;
 
 
-                        /*
-                         * Show Custom only when
-                         * Custom is checked.
-                         */
                         if (customInput) {
 
                             customInput.style.display =
@@ -1391,7 +1427,7 @@ function createOptionControl(
 
     /*
      * ========================================
-     * CHECKBOX
+     * SINGLE CHECKBOX
      * ========================================
      */
 
@@ -1623,103 +1659,13 @@ function createOptionsArea(row) {
         );
 
 
-    /*
-     * Completely removed product.
-     */
     if (!product) {
-
-        if (
-            row.options &&
-            typeof row.options === 'object'
-        ) {
-
-            Object.keys(
-                row.options
-            ).forEach(
-                function (optionId) {
-
-                    /*
-                     * Ignore stored custom
-                     * helper values.
-                     */
-                    if (
-                        optionId.endsWith(
-                            '__custom'
-                        )
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    const wrapper =
-                        document.createElement(
-                            'div'
-                        );
-
-
-                    wrapper.className =
-                        'option-row';
-
-
-                    const label =
-                        document.createElement(
-                            'span'
-                        );
-
-
-                    label.className =
-                        'option-label deprecated';
-
-
-                    label.textContent =
-                        optionId +
-                        ' (DEPRECATED)';
-
-
-                    const value =
-                        document.createElement(
-                            'span'
-                        );
-
-
-                    value.textContent =
-                        formatOptionValue(
-                            row.options[
-                                optionId
-                            ]
-                        );
-
-
-                    wrapper.appendChild(
-                        label
-                    );
-
-
-                    wrapper.appendChild(
-                        value
-                    );
-
-
-                    container.appendChild(
-                        wrapper
-                    );
-
-                }
-            );
-
-        }
-
 
         return container;
 
     }
 
 
-    /*
-     * Current product options.
-     */
     if (
         Array.isArray(
             product.options
@@ -1791,115 +1737,6 @@ function createOptionsArea(row) {
     }
 
 
-    /*
-     * Historical options.
-     */
-    const currentOptionIds =
-        Array.isArray(product.options)
-            ? product.options.map(
-                function (option) {
-
-                    return option.id;
-
-                }
-            )
-            : [];
-
-
-    if (
-        row.options &&
-        typeof row.options === 'object'
-    ) {
-
-        Object.keys(
-            row.options
-        ).forEach(
-            function (savedOptionId) {
-
-                /*
-                 * Ignore custom helper values.
-                 */
-                if (
-                    savedOptionId.endsWith(
-                        '__custom'
-                    )
-                ) {
-
-                    return;
-
-                }
-
-
-                if (
-                    currentOptionIds.includes(
-                        savedOptionId
-                    )
-                ) {
-
-                    return;
-
-                }
-
-
-                const wrapper =
-                    document.createElement(
-                        'div'
-                    );
-
-
-                wrapper.className =
-                    'option-row';
-
-
-                const label =
-                    document.createElement(
-                        'span'
-                    );
-
-
-                label.className =
-                    'option-label deprecated';
-
-
-                label.textContent =
-                    savedOptionId +
-                    ' (DEPRECATED)';
-
-
-                const value =
-                    document.createElement(
-                        'span'
-                    );
-
-
-                value.textContent =
-                    formatOptionValue(
-                        row.options[
-                            savedOptionId
-                        ]
-                    );
-
-
-                wrapper.appendChild(
-                    label
-                );
-
-
-                wrapper.appendChild(
-                    value
-                );
-
-
-                container.appendChild(
-                    wrapper
-                );
-
-            }
-        );
-
-    }
-
-
     return container;
 
 }
@@ -1917,9 +1754,6 @@ function formatOptionValue(
     customValue
 ) {
 
-    /*
-     * Boolean.
-     */
     if (
         typeof value === 'boolean'
     ) {
@@ -1931,9 +1765,6 @@ function formatOptionValue(
     }
 
 
-    /*
-     * Multiple checkbox values.
-     */
     if (
         Array.isArray(value)
     ) {
@@ -1973,9 +1804,6 @@ function formatOptionValue(
     }
 
 
-    /*
-     * Custom radio value.
-     */
     if (
         isCustomOption(value) &&
         customValue
@@ -2069,6 +1897,8 @@ function render() {
             /*
              * CHECK
              */
+
+
             const checkTd =
                 document.createElement(
                     'td'
@@ -2120,6 +1950,8 @@ function render() {
             /*
              * QUANTITY
              */
+
+
             const quantityTd =
                 document.createElement(
                     'td'
@@ -2184,6 +2016,8 @@ function render() {
             /*
              * PRODUCT
              */
+
+
             const productTd =
                 document.createElement(
                     'td'
@@ -2213,6 +2047,8 @@ function render() {
             /*
              * OPTIONS
              */
+
+
             const optionsTd =
                 document.createElement(
                     'td'
@@ -2238,6 +2074,8 @@ function render() {
             /*
              * COST
              */
+
+
             const costTd =
                 document.createElement(
                     'td'
@@ -2302,6 +2140,8 @@ function render() {
             /*
              * FILE
              */
+
+
             const fileTd =
                 document.createElement(
                     'td'
@@ -2357,6 +2197,8 @@ function render() {
             /*
              * DELETE
              */
+
+
             const deleteTd =
                 document.createElement(
                     'td'
@@ -2716,7 +2558,6 @@ async function openPrintWindow() {
 
 
 t.render(async function () {
-
 
     const addRowButton =
         document.getElementById(
