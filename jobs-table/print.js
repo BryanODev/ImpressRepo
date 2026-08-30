@@ -9,31 +9,6 @@ const t =
  */
 
 
-/*
- * Custom fields to include in the
- * printed INFO CARD.
- *
- * These names should match the
- * Trello Custom Field names.
- *
- * The comparison is case-insensitive.
- *
- * Example:
- *
- * [
- *     'Customer',
- *     'Salesperson',
- *     'Quantity',
- *     'Material',
- *     'Size'
- * ]
- *
- *
- * IMPORTANT:
- *
- * The order here is the order
- * they will appear in the print.
- */
 const PRINT_CUSTOM_FIELDS = [
     'Vendedor *',
     'Fecha Creacíon *',
@@ -45,8 +20,6 @@ const PRINT_CUSTOM_FIELDS = [
 
 
 /*
- * Keep this synchronized with table.js.
- *
  * 11.5% = 0.115
  */
 const IVU_RATE = 0.115;
@@ -117,10 +90,6 @@ async function loadCardInfo() {
 
     try {
 
-        /*
-         * customFieldItems gives us the
-         * values stored on this card.
-         */
         const card =
             await t.card(
                 'id',
@@ -157,10 +126,6 @@ async function loadCustomFieldDefinitions() {
 
     try {
 
-        /*
-         * Custom Field definitions live
-         * at the board level.
-         */
         const board =
             await t.board(
                 'customFields'
@@ -232,10 +197,73 @@ function formatOptionValue(value) {
     }
 
 
+    /*
+     * selectWithCustom value.
+     *
+     * Example:
+     *
+     * {
+     *     value: "Custom",
+     *     custom: "3 x 5"
+     * }
+     */
     if (
+        value &&
+        typeof value === 'object'
+    ) {
+
+        const selected =
+            value.value ?? '';
+
+
+        const custom =
+            value.custom ?? '';
+
+
+        if (
+            selected === 'Custom'
+        ) {
+
+            if (custom) {
+
+                return (
+                    'Custom — ' +
+                    custom
+                );
+
+            }
+
+
+            return 'Custom';
+
+        }
+
+
+        /*
+         * Generic object fallback.
+         */
+        if (
+            value.text !== undefined
+        ) {
+
+            return String(
+                value.text
+            );
+
+        }
+
+
+        return String(
+            selected || '—'
+        );
+
+    }
+
+
+    if (
+        value === '' ||
         value === null ||
-        value === undefined ||
-        value === ''
+        value === undefined
     ) {
 
         return '—';
@@ -255,11 +283,6 @@ function formatOptionValue(value) {
  */
 
 
-/*
- * Trello customFieldItems can store
- * different value types depending on
- * the custom field definition.
- */
 function getCustomFieldValue(
     field,
     customFieldItem
@@ -276,15 +299,8 @@ function getCustomFieldValue(
      * ========================================
      * DROPDOWN / LIST
      * ========================================
-     *
-     * Trello stores the selected dropdown
-     * option as customFieldItem.idValue.
-     *
-     * The actual displayed text is stored
-     * inside the matching field option:
-     *
-     * option.value.text
      */
+
     if (
         field.type ===
         'list'
@@ -316,13 +332,6 @@ function getCustomFieldValue(
 
             if (option) {
 
-                /*
-                 * Normal Trello format:
-                 *
-                 * value: {
-                 *     text: "Bryan"
-                 * }
-                 */
                 if (
                     option.value &&
                     typeof option.value ===
@@ -338,20 +347,12 @@ function getCustomFieldValue(
                 }
 
 
-                /*
-                 * Fallback in case Trello
-                 * gives us the value directly.
-                 */
                 if (
-                    option.value !==
-                    undefined &&
-                    option.value !==
-                    null
+                    typeof option.value ===
+                    'string'
                 ) {
 
-                    return String(
-                        option.value
-                    );
+                    return option.value;
 
                 }
 
@@ -501,11 +502,6 @@ function getCustomFieldValue(
  */
 
 
-/*
- * Finds a custom field by name.
- *
- * Case-insensitive.
- */
 function findCustomField(
     fieldName,
     definitions
@@ -664,10 +660,6 @@ function renderCustomFields(
             : [];
 
 
-    /*
-     * Every name in PRINT_CUSTOM_FIELDS
-     * gets its own printed field.
-     */
     PRINT_CUSTOM_FIELDS.forEach(
         function (fieldName) {
 
@@ -678,10 +670,6 @@ function renderCustomFields(
                 );
 
 
-            /*
-             * The requested field doesn't
-             * exist on this board.
-             */
             if (!field) {
 
                 console.warn(
@@ -1141,13 +1129,6 @@ function createProductCard(row) {
             'option-list';
 
 
-        /*
-         * We intentionally use the
-         * SAVED option data.
-         *
-         * This means old options survive
-         * catalog changes.
-         */
         Object.keys(
             row.options
         ).forEach(
@@ -1257,10 +1238,6 @@ function render(
 
     /*
      * JOB NAME
-     *
-     * Instead of using the Trello
-     * internal card ID, use the
-     * actual card name.
      */
     const jobId =
         document.getElementById(
@@ -1485,9 +1462,6 @@ function printDocument() {
 t.render(async function () {
 
 
-    /*
-     * Load everything at once.
-     */
     const [
         table,
         cardInfo,
