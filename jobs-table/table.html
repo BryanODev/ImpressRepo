@@ -9,7 +9,6 @@
 
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -336,8 +335,6 @@
 
             display: flex;
 
-            align-items: center;
-
             justify-content: flex-end;
 
             padding-top: 12px;
@@ -347,14 +344,66 @@
         }
 
 
-        .total {
+        .totals {
 
-            font-size: 18px;
+            width: 280px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 6px;
+
+        }
+
+
+        .total-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 4px 0;
+
+        }
+
+
+        .total-row span {
+
+            color: #5e6c84;
+
+        }
+
+
+        .total-row strong {
 
             font-weight: 600;
 
         }
 
+
+        .total-final {
+
+            margin-top: 4px;
+
+            padding-top: 10px;
+
+            border-top: 2px solid #dfe1e6;
+
+            font-size: 18px;
+
+        }
+
+
+        .total-final span {
+
+            color: #172b4d;
+
+            font-weight: 600;
+
+        }
     </style>
 
 </head>
@@ -374,16 +423,12 @@
 
             <div class="toolbar-right">
 
-                <div
-                    id="status"
-                    class="status">
+                <div id="status" class="status">
                     Saved
                 </div>
 
 
-                <button
-                    id="addRow"
-                    class="add-row">
+                <button id="addRow" class="add-row">
 
                     + Add Row
 
@@ -439,11 +484,27 @@
 
         <div class="bottom-bar">
 
-            <div
-                id="total"
-                class="total">
+            <div class="totals">
 
-                Total: $0.00
+                <div class="total-row">
+                    <span>Price</span>
+                    <strong id="price">$0.00</strong>
+                </div>
+
+                <div class="total-row">
+                    <span>SubTotal</span>
+                    <strong id="subtotal">$0.00</strong>
+                </div>
+
+                <div class="total-row">
+                    <span>IVU (11.5%)</span>
+                    <strong id="ivu">$0.00</strong>
+                </div>
+
+                <div class="total-row total-final">
+                    <span>Total</span>
+                    <strong id="total">$0.00</strong>
+                </div>
 
             </div>
 

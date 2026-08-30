@@ -2,12 +2,25 @@ const t = window.TrelloPowerUp.iframe();
 
 const STORAGE_KEY = 'itemsTable';
 
+// ========================================
+// SETTINGS
+// ========================================
+
+// 11.5% IVU
+const IVU_RATE = 0.115;
+
+
+// ========================================
+// DATA
+// ========================================
+
 let table = [];
 
 
-/*
- * Generate a unique ID.
- */
+// ========================================
+// ID GENERATOR
+// ========================================
+
 function generateId() {
 
     return 'row-' +
@@ -20,9 +33,10 @@ function generateId() {
 }
 
 
-/*
- * Load table from Trello.
- */
+// ========================================
+// LOAD TABLE
+// ========================================
+
 async function loadTable() {
 
     try {
@@ -71,9 +85,10 @@ async function loadTable() {
 }
 
 
-/*
- * Save table to Trello.
- */
+// ========================================
+// SAVE TABLE
+// ========================================
+
 async function saveTable() {
 
     const status =
@@ -125,9 +140,64 @@ async function saveTable() {
 }
 
 
-/*
- * Render table.
- */
+// ========================================
+// CALCULATE PRICES
+// ========================================
+
+function calculateTotals() {
+
+    let price = 0;
+
+
+    table.forEach(function (row) {
+
+        const quantity =
+            Number(row.quantity) || 0;
+
+        const cost =
+            Number(row.cost) || 0;
+
+
+        price +=
+            quantity * cost;
+
+    });
+
+
+    const subtotal = price;
+
+    const ivu = subtotal * IVU_RATE;
+
+    const total = subtotal + ivu;
+
+
+    return {
+
+        price,
+        subtotal,
+        ivu,
+        total
+
+    };
+
+}
+
+
+// ========================================
+// FORMAT CURRENCY
+// ========================================
+
+function formatCurrency(value) {
+
+    return '$' + value.toFixed(2);
+
+}
+
+
+// ========================================
+// RENDER TABLE
+// ========================================
+
 function render() {
 
     const body =
@@ -148,9 +218,10 @@ function render() {
     body.innerHTML = '';
 
 
-    /*
-     * Empty state.
-     */
+    // ====================================
+    // EMPTY STATE
+    // ====================================
+
     if (table.length === 0) {
 
         body.innerHTML = `
@@ -171,16 +242,17 @@ function render() {
         `;
 
 
-        updateTotal();
+        updateTotals();
 
         return;
 
     }
 
 
-    /*
-     * Create rows.
-     */
+    // ====================================
+    // CREATE ROWS
+    // ====================================
+
     table.forEach(function (row) {
 
 
@@ -188,19 +260,22 @@ function render() {
             document.createElement('tr');
 
 
-        /*
-         * CHECKBOX
-         */
+        // =================================
+        // CHECKBOX
+        // =================================
+
         const checkTd =
             document.createElement('td');
 
-        checkTd.className = 'check';
+        checkTd.className =
+            'check';
 
 
         const checkbox =
             document.createElement('input');
 
-        checkbox.type = 'checkbox';
+        checkbox.type =
+            'checkbox';
 
         checkbox.checked =
             Boolean(row.finished);
@@ -219,14 +294,19 @@ function render() {
         );
 
 
-        checkTd.appendChild(checkbox);
+        checkTd.appendChild(
+            checkbox
+        );
 
-        tr.appendChild(checkTd);
+        tr.appendChild(
+            checkTd
+        );
 
 
-        /*
-         * QUANTITY
-         */
+        // =================================
+        // QUANTITY
+        // =================================
+
         const quantityTd =
             document.createElement('td');
 
@@ -237,11 +317,14 @@ function render() {
         const quantityInput =
             document.createElement('input');
 
-        quantityInput.type = 'number';
+        quantityInput.type =
+            'number';
 
-        quantityInput.min = '0';
+        quantityInput.min =
+            '0';
 
-        quantityInput.step = '1';
+        quantityInput.step =
+            '1';
 
         quantityInput.value =
             row.quantity ?? '';
@@ -257,7 +340,7 @@ function render() {
                     ) || 0;
 
 
-                updateTotal();
+                updateTotals();
 
                 await saveTable();
 
@@ -269,12 +352,15 @@ function render() {
             quantityInput
         );
 
-        tr.appendChild(quantityTd);
+        tr.appendChild(
+            quantityTd
+        );
 
 
-        /*
-         * DESCRIPTION
-         */
+        // =================================
+        // DESCRIPTION
+        // =================================
+
         const descriptionTd =
             document.createElement('td');
 
@@ -285,7 +371,8 @@ function render() {
         const descriptionInput =
             document.createElement('input');
 
-        descriptionInput.type = 'text';
+        descriptionInput.type =
+            'text';
 
         descriptionInput.placeholder =
             'Description';
@@ -311,12 +398,15 @@ function render() {
             descriptionInput
         );
 
-        tr.appendChild(descriptionTd);
+        tr.appendChild(
+            descriptionTd
+        );
 
 
-        /*
-         * COST
-         */
+        // =================================
+        // COST
+        // =================================
+
         const costTd =
             document.createElement('td');
 
@@ -327,11 +417,14 @@ function render() {
         const costInput =
             document.createElement('input');
 
-        costInput.type = 'number';
+        costInput.type =
+            'number';
 
-        costInput.min = '0';
+        costInput.min =
+            '0';
 
-        costInput.step = '0.01';
+        costInput.step =
+            '0.01';
 
         costInput.value =
             row.cost ?? '';
@@ -347,7 +440,7 @@ function render() {
                     ) || 0;
 
 
-                updateTotal();
+                updateTotals();
 
                 await saveTable();
 
@@ -359,12 +452,15 @@ function render() {
             costInput
         );
 
-        tr.appendChild(costTd);
+        tr.appendChild(
+            costTd
+        );
 
 
-        /*
-         * FILE NAME
-         */
+        // =================================
+        // FILE NAME
+        // =================================
+
         const fileTd =
             document.createElement('td');
 
@@ -375,7 +471,8 @@ function render() {
         const fileInput =
             document.createElement('input');
 
-        fileInput.type = 'text';
+        fileInput.type =
+            'text';
 
         fileInput.placeholder =
             'File name';
@@ -401,12 +498,15 @@ function render() {
             fileInput
         );
 
-        tr.appendChild(fileTd);
+        tr.appendChild(
+            fileTd
+        );
 
 
-        /*
-         * DELETE
-         */
+        // =================================
+        // DELETE
+        // =================================
+
         const deleteTd =
             document.createElement('td');
 
@@ -452,22 +552,95 @@ function render() {
             deleteButton
         );
 
-        tr.appendChild(deleteTd);
+        tr.appendChild(
+            deleteTd
+        );
 
 
-        body.appendChild(tr);
+        body.appendChild(
+            tr
+        );
 
     });
 
 
-    updateTotal();
+    updateTotals();
 
 }
 
 
-/*
- * Add a row.
- */
+// ========================================
+// UPDATE TOTALS
+// ========================================
+
+function updateTotals() {
+
+    const totals =
+        calculateTotals();
+
+
+    const priceElement =
+        document.getElementById('price');
+
+
+    const subtotalElement =
+        document.getElementById('subtotal');
+
+
+    const ivuElement =
+        document.getElementById('ivu');
+
+
+    const totalElement =
+        document.getElementById('total');
+
+
+    if (priceElement) {
+
+        priceElement.textContent =
+            formatCurrency(
+                totals.price
+            );
+
+    }
+
+
+    if (subtotalElement) {
+
+        subtotalElement.textContent =
+            formatCurrency(
+                totals.subtotal
+            );
+
+    }
+
+
+    if (ivuElement) {
+
+        ivuElement.textContent =
+            formatCurrency(
+                totals.ivu
+            );
+
+    }
+
+
+    if (totalElement) {
+
+        totalElement.textContent =
+            formatCurrency(
+                totals.total
+            );
+
+    }
+
+}
+
+
+// ========================================
+// ADD ROW
+// ========================================
+
 async function addRow() {
 
     table.push({
@@ -494,56 +667,17 @@ async function addRow() {
 }
 
 
-/*
- * Calculate total.
- *
- * Cost = unit cost.
- *
- * Total = Quantity × Cost.
- */
-function updateTotal() {
+// ========================================
+// INITIALIZE
+// ========================================
 
-    let total = 0;
-
-
-    table.forEach(function (row) {
-
-        const quantity =
-            Number(row.quantity) || 0;
-
-        const cost =
-            Number(row.cost) || 0;
-
-
-        total +=
-            quantity * cost;
-
-    });
-
-
-    const totalElement =
-        document.getElementById('total');
-
-
-    if (totalElement) {
-
-        totalElement.textContent =
-            'Total: $' +
-            total.toFixed(2);
-
-    }
-
-}
-
-
-/*
- * Initialize.
- */
 t.render(async function () {
 
 
     const addRowButton =
-        document.getElementById('addRow');
+        document.getElementById(
+            'addRow'
+        );
 
 
     if (!addRowButton) {

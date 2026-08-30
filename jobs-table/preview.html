@@ -8,7 +8,6 @@
     <title>Items Preview</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -115,6 +114,30 @@
 
         }
 
+        .preview-price {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-top: 10px;
+
+            padding-top: 8px;
+
+            border-top: 1px solid #dfe1e6;
+
+            font-size: 14px;
+
+        }
+
+
+        .preview-price strong {
+
+            font-size: 15px;
+
+        }
 
         .finished {
 
@@ -166,7 +189,6 @@
             background: #0055cc;
 
         }
-
     </style>
 
 </head>
@@ -178,24 +200,31 @@
 
         <strong>Items</strong>
 
-        <span
-            id="progress"
-            class="progress">
+        <span id="progress" class="progress">
+
             0 / 0 finished
+
         </span>
 
     </div>
 
 
-    <div
-        id="items"
-        class="items">
+    <div id="items" class="items">
     </div>
 
 
-    <button
-        id="openTable"
-        class="open-button">
+    <div class="preview-price">
+
+        <span>Price</span>
+
+        <strong id="price">
+            $0.00
+        </strong>
+
+    </div>
+
+
+    <button id="openTable" class="open-button">
 
         Open Task Table
 

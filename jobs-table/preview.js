@@ -3,9 +3,6 @@ const t = window.TrelloPowerUp.iframe();
 const STORAGE_KEY = 'itemsTable';
 
 
-/*
- * Load table data.
- */
 async function loadTable() {
 
     try {
@@ -41,6 +38,46 @@ async function loadTable() {
 
 
 /*
+ * Calculate Price.
+ *
+ * Price = Quantity × Cost
+ */
+function calculatePrice(table) {
+
+    let price = 0;
+
+
+    table.forEach(function (row) {
+
+        const quantity =
+            Number(row.quantity) || 0;
+
+        const cost =
+            Number(row.cost) || 0;
+
+
+        price +=
+            quantity * cost;
+
+    });
+
+
+    return price;
+
+}
+
+
+/*
+ * Format currency.
+ */
+function formatCurrency(value) {
+
+    return '$' + value.toFixed(2);
+
+}
+
+
+/*
  * Render preview.
  */
 function render(table) {
@@ -48,8 +85,13 @@ function render(table) {
     const itemsElement =
         document.getElementById('items');
 
+
     const progressElement =
         document.getElementById('progress');
+
+
+    const priceElement =
+        document.getElementById('price');
 
 
     itemsElement.innerHTML = '';
@@ -61,13 +103,21 @@ function render(table) {
     if (table.length === 0) {
 
         itemsElement.innerHTML = `
+
             <div class="empty">
                 No items yet.
             </div>
+
         `;
+
 
         progressElement.textContent =
             '0 / 0 finished';
+
+
+        priceElement.textContent =
+            '$0.00';
+
 
         return;
 
@@ -100,7 +150,9 @@ function render(table) {
         const item =
             document.createElement('div');
 
-        item.className = 'item';
+
+        item.className =
+            'item';
 
 
         /*
@@ -109,14 +161,21 @@ function render(table) {
         const checkbox =
             document.createElement('input');
 
-        checkbox.type = 'checkbox';
 
-        checkbox.className = 'checkbox';
+        checkbox.type =
+            'checkbox';
+
+
+        checkbox.className =
+            'checkbox';
+
 
         checkbox.checked =
             Boolean(row.finished);
 
-        checkbox.disabled = true;
+
+        checkbox.disabled =
+            true;
 
 
         /*
@@ -125,11 +184,16 @@ function render(table) {
         const description =
             document.createElement('span');
 
-        description.className = 'description';
+
+        description.className =
+            'description';
+
 
         if (row.finished) {
 
-            description.classList.add('finished');
+            description.classList.add(
+                'finished'
+            );
 
         }
 
@@ -139,19 +203,38 @@ function render(table) {
             'Untitled item';
 
 
-        item.appendChild(checkbox);
+        item.appendChild(
+            checkbox
+        );
 
-        item.appendChild(description);
 
-        itemsElement.appendChild(item);
+        item.appendChild(
+            description
+        );
+
+
+        itemsElement.appendChild(
+            item
+        );
 
     });
+
+
+    /*
+     * Price.
+     */
+    const price =
+        calculatePrice(table);
+
+
+    priceElement.textContent =
+        formatCurrency(price);
 
 }
 
 
 /*
- * Open the full table.
+ * Open full table.
  */
 async function openTable() {
 
@@ -175,6 +258,7 @@ async function openTable() {
  */
 t.render(async function () {
 
+
     const table =
         await loadTable();
 
@@ -183,7 +267,9 @@ t.render(async function () {
 
 
     const openButton =
-        document.getElementById('openTable');
+        document.getElementById(
+            'openTable'
+        );
 
 
     if (!openButton) {
