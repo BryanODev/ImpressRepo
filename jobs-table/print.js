@@ -8,8 +8,41 @@ const t =
  * ========================================
  */
 
-<<<<<<< HEAD
-=======
+
+/*
+ * Custom fields to include in the
+ * printed INFO CARD.
+ *
+ * These names should match the
+ * Trello Custom Field names.
+ *
+ * The comparison is case-insensitive.
+ *
+ * Example:
+ *
+ * [
+ *     'Customer',
+ *     'Salesperson',
+ *     'Quantity',
+ *     'Material',
+ *     'Size'
+ * ]
+ *
+ *
+ * IMPORTANT:
+ *
+ * The order here is the order
+ * they will appear in the print.
+ */
+const PRINT_CUSTOM_FIELDS = [
+    'Vendedor *',
+    'Fecha Creacíon *',
+    'Cliente *',
+    'Nombre Cliente *',
+    'Fecha Solicitada *',
+    'Metodo De Entrega'
+];
+
 
 /*
  * Keep this synchronized with table.js.
@@ -26,24 +59,8 @@ const IVU_RATE = 0.115;
  */
 
 
->>>>>>> parent of 7199f0c (Info in print)
 const STORAGE_KEY =
     'itemsTable';
-
-
-const IVU_RATE =
-    0.115;
-
-
-/*
- * ========================================
- * DATA
- * ========================================
- */
-
-let table = [];
-
-let catalog = null;
 
 
 /*
@@ -52,15 +69,12 @@ let catalog = null;
  * ========================================
  */
 
-async function loadData() {
+
+async function loadTable() {
 
     try {
 
-        /*
-         * Load saved table.
-         */
-
-        const savedTable =
+        const table =
             await t.get(
                 'card',
                 'shared',
@@ -68,78 +82,24 @@ async function loadData() {
             );
 
 
-        if (Array.isArray(savedTable)) {
+        if (Array.isArray(table)) {
 
-            table =
-                savedTable;
-
-        } else {
-
-            table = [];
+            return table;
 
         }
 
 
-        /*
-         * Load product catalog.
-         */
-
-        const catalogResponse =
-            await fetch(
-                './products.json',
-                {
-                    cache: 'no-cache'
-                }
-            );
-
-
-        if (!catalogResponse.ok) {
-
-            throw new Error(
-                'Could not load products.json'
-            );
-
-        }
-
-
-        catalog =
-            await catalogResponse.json();
-
-
-        if (
-            !catalog ||
-            !Array.isArray(
-                catalog.products
-            )
-        ) {
-
-            throw new Error(
-                'Invalid products.json format'
-            );
-
-        }
-
-
-        /*
-         * Load card information.
-         */
-
-        await loadCardInfo();
-
-
-        /*
-         * Render everything.
-         */
-
-        render();
-
+        return [];
 
     } catch (error) {
 
         console.error(
-            'Could not load print data:',
+            'Could not load table:',
             error
         );
+
+
+        return [];
 
     }
 
@@ -148,101 +108,28 @@ async function loadData() {
 
 /*
  * ========================================
- * LOAD CARD INFO
+ * CARD INFORMATION
  * ========================================
  */
+
 
 async function loadCardInfo() {
 
     try {
 
-<<<<<<< HEAD
         /*
-         * Card name.
+         * customFieldItems gives us the
+         * values stored on this card.
          */
-
-        const cardName =
-            await t.get(
-                'card',
-                'name'
-=======
         const card =
             await t.card(
+                'id',
                 'name',
-                'id'
->>>>>>> parent of 7199f0c (Info in print)
+                'customFieldItems'
             );
 
 
-        const cardNameElement =
-            document.getElementById(
-                'cardName'
-            );
-
-
-        if (cardNameElement) {
-
-            cardNameElement.textContent =
-                cardName ||
-                '—';
-
-        }
-
-
-        /*
-         * Card ID.
-         */
-
-        const cardId =
-            await t.get(
-                'card',
-                'id'
-            );
-
-
-        const jobIdElement =
-            document.getElementById(
-                'jobId'
-            );
-
-
-        if (jobIdElement) {
-
-            jobIdElement.textContent =
-                cardId ||
-                '—';
-
-        }
-
-
-        /*
-         * Date.
-         */
-
-        const dateElement =
-            document.getElementById(
-                'date'
-            );
-
-
-        if (dateElement) {
-
-            const now =
-                new Date();
-
-
-            dateElement.textContent =
-                now.toLocaleDateString(
-                    'en-US',
-                    {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit'
-                    }
-                );
-
-        }
-
+        return card || {};
 
     } catch (error) {
 
@@ -251,6 +138,9 @@ async function loadCardInfo() {
             error
         );
 
+
+        return {};
+
     }
 
 }
@@ -258,26 +148,330 @@ async function loadCardInfo() {
 
 /*
  * ========================================
-<<<<<<< HEAD
- * GET PRODUCT
+ * BOARD CUSTOM FIELDS
  * ========================================
  */
 
-function getProduct(productId) {
 
-    if (!catalog) {
+async function loadCustomFieldDefinitions() {
 
-        return null;
+    try {
+
+        /*
+         * Custom Field definitions live
+         * at the board level.
+         */
+        const board =
+            await t.board(
+                'customFields'
+            );
+
+
+        if (
+            board &&
+            Array.isArray(
+                board.customFields
+            )
+        ) {
+
+            return board.customFields;
+
+        }
+
+
+        return [];
+
+    } catch (error) {
+
+        console.error(
+            'Could not load custom field definitions:',
+            error
+        );
+
+
+        return [];
+
+    }
+
+}
+
+
+/*
+ * ========================================
+ * FORMAT CURRENCY
+ * ========================================
+ */
+
+
+function formatCurrency(value) {
+
+    return '$' +
+        Number(value || 0)
+            .toFixed(2);
+
+}
+
+
+/*
+ * ========================================
+ * FORMAT OPTION
+ * ========================================
+ */
+
+
+function formatOptionValue(value) {
+
+    if (
+        typeof value === 'boolean'
+    ) {
+
+        return value
+            ? 'Yes'
+            : 'No';
 
     }
 
 
-    return catalog.products.find(
-        function (product) {
+    if (
+        value === null ||
+        value === undefined ||
+        value === ''
+    ) {
+
+        return '—';
+
+    }
+
+
+    return String(value);
+
+}
+
+
+/*
+ * ========================================
+ * FORMAT CUSTOM FIELD VALUE
+ * ========================================
+ */
+
+
+/*
+ * Trello customFieldItems can store
+ * different value types depending on
+ * the custom field definition.
+ */
+function getCustomFieldValue(
+    field,
+    customFieldItem
+) {
+
+    if (!customFieldItem) {
+
+        return '—';
+
+    }
+
+
+    /*
+     * CHECKBOX
+     */
+    if (
+        field.type ===
+        'checkbox'
+    ) {
+
+        if (
+            customFieldItem.value &&
+            customFieldItem.value.checked !==
+            undefined
+        ) {
+
+            return customFieldItem.value.checked
+                ? 'Yes'
+                : 'No';
+
+        }
+
+
+        return '—';
+
+    }
+
+
+    /*
+     * DATE
+     */
+    if (
+        field.type ===
+        'date'
+    ) {
+
+        const dateValue =
+            customFieldItem.value &&
+            customFieldItem.value.date;
+
+
+        if (!dateValue) {
+
+            return '—';
+
+        }
+
+
+        const date =
+            new Date(
+                dateValue
+            );
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return dateValue;
+
+        }
+
+
+        return date.toLocaleDateString(
+            undefined,
+            {
+                year:
+                    'numeric',
+
+                month:
+                    'long',
+
+                day:
+                    'numeric'
+            }
+        );
+
+    }
+
+
+    /*
+     * LIST
+     */
+    if (
+        field.type ===
+        'list'
+    ) {
+
+        const optionId =
+            customFieldItem.idValue;
+
+
+        if (
+            optionId &&
+            Array.isArray(
+                field.options
+            )
+        ) {
+
+            const option =
+                field.options.find(
+                    function (item) {
+
+                        return (
+                            item.id ===
+                            optionId
+                        );
+
+                    }
+                );
+
+
+            if (option) {
+
+                return option.value ||
+                    '—';
+
+            }
+
+        }
+
+
+        return '—';
+
+    }
+
+
+    /*
+     * NUMBER / TEXT
+     */
+    if (
+        customFieldItem.value
+    ) {
+
+        if (
+            customFieldItem.value.text !==
+            undefined
+        ) {
+
+            return formatOptionValue(
+                customFieldItem.value.text
+            );
+
+        }
+
+
+        if (
+            customFieldItem.value.number !==
+            undefined
+        ) {
+
+            return formatOptionValue(
+                customFieldItem.value.number
+            );
+
+        }
+
+    }
+
+
+    return '—';
+
+}
+
+
+/*
+ * ========================================
+ * FIND CUSTOM FIELD
+ * ========================================
+ */
+
+
+/*
+ * Finds a custom field by name.
+ *
+ * Case-insensitive.
+ */
+function findCustomField(
+    fieldName,
+    definitions
+) {
+
+    const wanted =
+        String(
+            fieldName
+        )
+            .trim()
+            .toLowerCase();
+
+
+    return definitions.find(
+        function (field) {
 
             return (
-                product.id ===
-                productId
+                String(
+                    field.name || ''
+                )
+                    .trim()
+                    .toLowerCase() ===
+                wanted
             );
 
         }
@@ -288,404 +482,40 @@ function getProduct(productId) {
 
 /*
  * ========================================
-=======
->>>>>>> parent of 7199f0c (Info in print)
- * FORMAT CURRENCY
+ * FIND CUSTOM FIELD ITEM
  * ========================================
  */
 
-function formatCurrency(value) {
 
-    return '$' +
-        Number(
-            value || 0
-        ).toFixed(2);
-
-}
-
-
-/*
- * ========================================
- * IS CUSTOM OPTION
- * ========================================
- */
-
-function isCustomOption(value) {
-
-    return String(
-        value
-    )
-        .trim()
-        .toLowerCase() ===
-        'custom';
-
-}
-
-
-/*
- * ========================================
- * GET CUSTOM VALUE
- * ========================================
- */
-
-function getCustomValue(
-    row,
-    optionDefinition
+function findCustomFieldItem(
+    fieldId,
+    items
 ) {
 
-    if (
-        !row.options ||
-        typeof row.options !== 'object'
-    ) {
+    return items.find(
+        function (item) {
 
-        return '';
-
-    }
-
-
-    return (
-        row.options[
-            optionDefinition.id +
-            '__custom'
-        ] ||
-        ''
-    );
-
-}
-
-
-/*
- * ========================================
- * FORMAT OPTION VALUE
- * ========================================
- */
-
-function formatOptionValue(
-    row,
-    optionDefinition
-) {
-
-    if (
-        !row.options ||
-        typeof row.options !== 'object'
-    ) {
-
-        return '—';
-
-    }
-
-
-    const value =
-        row.options[
-            optionDefinition.id
-        ];
-
-
-    /*
-     * ========================================
-     * CHECKBOX — YES / NO
-     * ========================================
-     */
-
-    if (
-        optionDefinition.type ===
-        'checkbox'
-    ) {
-
-        return value
-            ? 'Yes'
-            : 'No';
-
-    }
-
-
-    /*
-     * ========================================
-     * CHECKBOX GROUP
-     * ========================================
-     *
-     * Multiple values can be selected.
-     *
-     * Custom can contain its own text.
-     */
-
-    if (
-        optionDefinition.type ===
-        'checkboxGroup'
-    ) {
-
-        if (
-            !Array.isArray(value) ||
-            value.length === 0
-        ) {
-
-            return '—';
-
-        }
-
-
-        const customValue =
-            getCustomValue(
-                row,
-                optionDefinition
+            return (
+                item.idCustomField ===
+                fieldId
             );
 
-
-        return value.map(
-            function (selectedValue) {
-
-                if (
-                    isCustomOption(
-                        selectedValue
-                    )
-                ) {
-
-                    if (customValue) {
-
-                        return (
-                            'Custom — ' +
-                            customValue
-                        );
-
-                    }
-
-
-                    return 'Custom';
-
-                }
-
-
-                return selectedValue;
-
-            }
-        ).join(', ');
-
-    }
-
-
-    /*
-     * ========================================
-     * RADIO
-     * ========================================
-     *
-     * Radio now supports Custom directly.
-     */
-
-    if (
-        optionDefinition.type ===
-        'radio'
-    ) {
-
-        if (
-            isCustomOption(value)
-        ) {
-
-            const customValue =
-                getCustomValue(
-                    row,
-                    optionDefinition
-                );
-
-
-            if (customValue) {
-
-                return (
-                    'Custom — ' +
-                    customValue
-                );
-
-            }
-
-
-            return 'Custom';
-
         }
-
-
-        return value || '—';
-
-    }
-
-
-    /*
-     * ========================================
-     * SELECT / DROPDOWN
-     * ========================================
-     *
-     * Dropdown can also contain Custom.
-     */
-
-    if (
-        optionDefinition.type ===
-        'select'
-    ) {
-
-        if (
-            isCustomOption(value)
-        ) {
-
-            const customValue =
-                getCustomValue(
-                    row,
-                    optionDefinition
-                );
-
-
-            if (customValue) {
-
-                return (
-                    'Custom — ' +
-                    customValue
-                );
-
-            }
-
-
-            return 'Custom';
-
-        }
-
-
-        return value || '—';
-
-    }
-
-
-    /*
-     * ========================================
-     * OLD RADIO WITH CUSTOM
-     * ========================================
-     *
-     * Compatibility for old saved products.
-     */
-
-    if (
-        optionDefinition.type ===
-        'radioWithCustom'
-    ) {
-
-        if (
-            isCustomOption(value)
-        ) {
-
-            const customValue =
-                getCustomValue(
-                    row,
-                    optionDefinition
-                );
-
-
-            if (customValue) {
-
-                return (
-                    'Custom — ' +
-                    customValue
-                );
-
-            }
-
-
-            return 'Custom';
-
-        }
-
-
-        return value || '—';
-
-    }
-
-
-    /*
-     * ========================================
-     * OLD SELECT WITH CUSTOM
-     * ========================================
-     *
-     * Compatibility for old saved data.
-     */
-
-    if (
-        optionDefinition.type ===
-        'selectWithCustom'
-    ) {
-
-        if (
-            value &&
-            typeof value === 'object'
-        ) {
-
-            const selected =
-                value.value ||
-                '';
-
-
-            const custom =
-                value.custom ||
-                '';
-
-
-            if (
-                isCustomOption(
-                    selected
-                )
-            ) {
-
-                return custom
-                    ? 'Custom — ' + custom
-                    : 'Custom';
-
-            }
-
-
-            return selected ||
-                '—';
-
-        }
-
-
-        return value ||
-            '—';
-
-    }
-
-
-    /*
-     * ========================================
-     * EMPTY VALUE
-     * ========================================
-     */
-
-    if (
-        value === undefined ||
-        value === null ||
-        value === ''
-    ) {
-
-        return '—';
-
-    }
-
-
-    /*
-     * ========================================
-     * DEFAULT
-     * ========================================
-     */
-
-    return String(value);
+    ) || null;
 
 }
 
 
 /*
  * ========================================
-<<<<<<< HEAD
- * CREATE PRINT OPTION
+ * CREATE CUSTOM FIELD ITEM
  * ========================================
  */
 
-function createPrintOption(
-    row,
-    optionDefinition
+
+function createCustomFieldItem(
+    label,
+    value
 ) {
 
     const wrapper =
@@ -695,48 +525,44 @@ function createPrintOption(
 
 
     wrapper.className =
-        'print-option';
+        'custom-field-item';
 
 
-    const label =
+    const labelElement =
         document.createElement(
             'span'
         );
 
 
-    label.className =
-        'print-option-label';
+    labelElement.className =
+        'label';
 
 
-    label.textContent =
-        optionDefinition.label +
-        ':';
+    labelElement.textContent =
+        label;
 
 
-    const value =
+    const valueElement =
         document.createElement(
-            'span'
+            'strong'
         );
 
 
-    value.className =
-        'print-option-value';
+    valueElement.className =
+        'custom-field-value';
 
 
-    value.textContent =
-        formatOptionValue(
-            row,
-            optionDefinition
-        );
+    valueElement.textContent =
+        value;
 
 
     wrapper.appendChild(
-        label
+        labelElement
     );
 
 
     wrapper.appendChild(
-        value
+        valueElement
     );
 
 
@@ -747,418 +573,151 @@ function createPrintOption(
 
 /*
  * ========================================
- * CREATE PRODUCT OPTIONS
+ * RENDER CUSTOM FIELDS
  * ========================================
  */
 
-function createPrintOptions(
-    row,
-    product
+
+function renderCustomFields(
+    cardInfo,
+    customFieldDefinitions
 ) {
 
     const container =
-        document.createElement(
-            'div'
+        document.getElementById(
+            'customFields'
         );
 
 
-    container.className =
-        'print-options';
+    if (!container) {
 
-
-    if (
-        !product ||
-        !Array.isArray(
-            product.options
-        )
-    ) {
-
-        return container;
+        return;
 
     }
 
 
-    product.options.forEach(
-        function (optionDefinition) {
+    container.innerHTML = '';
+
+
+    const items =
+        Array.isArray(
+            cardInfo.customFieldItems
+        )
+            ? cardInfo.customFieldItems
+            : [];
+
+
+    /*
+     * Every name in PRINT_CUSTOM_FIELDS
+     * gets its own printed field.
+     */
+    PRINT_CUSTOM_FIELDS.forEach(
+        function (fieldName) {
+
+            const field =
+                findCustomField(
+                    fieldName,
+                    customFieldDefinitions
+                );
+
+
+            /*
+             * The requested field doesn't
+             * exist on this board.
+             */
+            if (!field) {
+
+                console.warn(
+                    'Custom field not found:',
+                    fieldName
+                );
+
+
+                container.appendChild(
+                    createCustomFieldItem(
+                        fieldName,
+                        '—'
+                    )
+                );
+
+
+                return;
+
+            }
+
+
+            const item =
+                findCustomFieldItem(
+                    field.id,
+                    items
+                );
+
+
+            const value =
+                getCustomFieldValue(
+                    field,
+                    item
+                );
+
 
             container.appendChild(
-                createPrintOption(
-                    row,
-                    optionDefinition
+                createCustomFieldItem(
+                    field.name,
+                    value
                 )
             );
 
         }
     );
 
-
-    return container;
-
 }
 
 
 /*
  * ========================================
- * RENDER TABLE
- * ========================================
- */
-
-function render() {
-
-    /*
-     * IMPORTANT:
-     *
-     * print.html uses:
-     *
-     * <main id="items">
-     *
-     * NOT #tableBody.
-     */
-
-    const body =
-        document.getElementById(
-            'items'
-        );
-
-
-    if (!body) {
-
-        console.error(
-            'Print page: #items element not found.'
-        );
-
-
-        return;
-
-    }
-
-
-    body.innerHTML = '';
-
-
-    /*
-     * ========================================
-     * EMPTY TABLE
-     * ========================================
-     */
-
-    if (table.length === 0) {
-
-        const empty =
-            document.createElement(
-                'div'
-            );
-
-
-        empty.className =
-            'empty';
-
-
-        empty.textContent =
-            'No items.';
-
-
-        body.appendChild(
-            empty
-        );
-
-
-        updateTotals();
-
-
-        updateItemCounts();
-
-
-        return;
-
-    }
-
-
-    /*
-     * ========================================
-     * RENDER EACH ROW
-     * ========================================
-     */
-
-    table.forEach(
-        function (row) {
-
-            const item =
-                document.createElement(
-                    'section'
-                );
-
-
-            item.className =
-                'print-item';
-
-
-            /*
-             * ========================================
-             * ITEM HEADER
-             * ========================================
-             */
-
-            const itemHeader =
-                document.createElement(
-                    'div'
-                );
-
-
-            itemHeader.className =
-                'print-item-header';
-
-
-            /*
-             * Finished.
-             */
-
-            const finished =
-                document.createElement(
-                    'span'
-                );
-
-
-            finished.className =
-                'print-item-finished';
-
-
-            finished.textContent =
-                row.finished
-                    ? '✓'
-                    : '';
-
-
-            /*
-             * Quantity.
-             */
-
-            const quantity =
-                document.createElement(
-                    'span'
-                );
-
-
-            quantity.className =
-                'print-item-quantity';
-
-
-            quantity.textContent =
-                'Qty: ' +
-                (
-                    row.quantity ??
-                    0
-                );
-
-
-            /*
-             * Product name.
-             */
-
-            const productName =
-                document.createElement(
-                    'strong'
-                );
-
-
-            const product =
-                getProduct(
-                    row.productId
-                );
-
-
-            productName.textContent =
-                product
-                    ? product.name
-                    : (
-                        row.productName ||
-                        row.productId ||
-                        '—'
-                    );
-
-
-            itemHeader.appendChild(
-                finished
-            );
-
-
-            itemHeader.appendChild(
-                quantity
-            );
-
-
-            itemHeader.appendChild(
-                productName
-            );
-
-
-            item.appendChild(
-                itemHeader
-            );
-
-
-            /*
-             * ========================================
-             * OPTIONS
-             * ========================================
-             */
-
-            const options =
-                createPrintOptions(
-                    row,
-                    product
-                );
-
-
-            item.appendChild(
-                options
-            );
-
-
-            /*
-             * ========================================
-             * ITEM FOOTER
-             * ========================================
-             */
-
-            const itemFooter =
-                document.createElement(
-                    'div'
-                );
-
-
-            itemFooter.className =
-                'print-item-footer';
-
-
-            /*
-             * Cost.
-             */
-
-            const cost =
-                Number(
-                    row.cost
-                ) || 0;
-
-
-            const costElement =
-                document.createElement(
-                    'span'
-                );
-
-
-            costElement.textContent =
-                'Cost: ' +
-                formatCurrency(
-                    cost
-                );
-
-
-            /*
-             * File.
-             */
-
-            const fileElement =
-                document.createElement(
-                    'span'
-                );
-
-
-            fileElement.textContent =
-                'File: ' +
-                (
-                    row.fileName ||
-                    '—'
-                );
-
-
-            itemFooter.appendChild(
-                costElement
-            );
-
-
-            itemFooter.appendChild(
-                fileElement
-            );
-
-
-            item.appendChild(
-                itemFooter
-            );
-
-
-            body.appendChild(
-                item
-            );
-
-        }
-    );
-
-
-    /*
-     * Update totals.
-     */
-
-    updateTotals();
-
-
-    /*
-     * Update item counters.
-     */
-
-    updateItemCounts();
-
-}
-
-
-/*
- * ========================================
-=======
->>>>>>> parent of 7199f0c (Info in print)
  * CALCULATE TOTALS
  * ========================================
  */
 
-function calculateTotals() {
 
-    let subtotal = 0;
+function calculateTotals(table) {
+
+    let price = 0;
 
 
     table.forEach(
         function (row) {
 
             const quantity =
-                Number(
-                    row.quantity
-                ) || 0;
+                Number(row.quantity) || 0;
 
 
             const cost =
-                Number(
-                    row.cost
-                ) || 0;
+                Number(row.cost) || 0;
 
 
-            subtotal +=
-                quantity *
-                cost;
+            price +=
+                quantity * cost;
 
         }
     );
 
 
+    const subtotal =
+        price;
+
+
     const ivu =
-        subtotal *
-        IVU_RATE;
+        subtotal * IVU_RATE;
 
 
     const total =
-        subtotal +
-        ivu;
+        subtotal + ivu;
 
 
     return {
 
+        price,
         subtotal,
         ivu,
         total
@@ -1170,23 +729,174 @@ function calculateTotals() {
 
 /*
  * ========================================
- * UPDATE TOTALS
+ * CREATE DETAIL
  * ========================================
  */
 
-function updateTotals() {
 
-    const totals =
-        calculateTotals();
+function createDetail(
+    label,
+    value
+) {
+
+    const wrapper =
+        document.createElement(
+            'div'
+        );
+
+
+    wrapper.className =
+        'detail';
+
+
+    const labelElement =
+        document.createElement(
+            'span'
+        );
+
+
+    labelElement.className =
+        'detail-label';
+
+
+    labelElement.textContent =
+        label;
+
+
+    const valueElement =
+        document.createElement(
+            'span'
+        );
+
+
+    valueElement.className =
+        'detail-value';
+
+
+    valueElement.textContent =
+        value;
+
+
+    wrapper.appendChild(
+        labelElement
+    );
+
+
+    wrapper.appendChild(
+        valueElement
+    );
+
+
+    return wrapper;
+
+}
+
+
+/*
+ * ========================================
+ * CREATE OPTION
+ * ========================================
+ */
+
+
+function createOption(
+    label,
+    value,
+    deprecated
+) {
+
+    const wrapper =
+        document.createElement(
+            'div'
+        );
+
+
+    wrapper.className =
+        'option';
+
+
+    const labelElement =
+        document.createElement(
+            'span'
+        );
+
+
+    labelElement.className =
+        'option-label';
+
+
+    labelElement.textContent =
+        label + ':';
+
+
+    const valueElement =
+        document.createElement(
+            'span'
+        );
+
+
+    valueElement.className =
+        'option-value';
+
+
+    if (deprecated) {
+
+        valueElement.classList.add(
+            'deprecated'
+        );
+
+    }
+
+
+    valueElement.textContent =
+        formatOptionValue(
+            value
+        );
+
+
+    if (deprecated) {
+
+        valueElement.textContent +=
+            ' (DEPRECATED)';
+
+    }
+
+
+    wrapper.appendChild(
+        labelElement
+    );
+
+
+    wrapper.appendChild(
+        valueElement
+    );
+
+
+    return wrapper;
+
+}
+
+
+/*
+ * ========================================
+ * CREATE PRODUCT CARD
+ * ========================================
+ */
+
+
+function createProductCard(row) {
+
+    const card =
+        document.createElement(
+            'section'
+        );
+
+
+    card.className =
+        'product-card';
 
 
     /*
-<<<<<<< HEAD
-     * Price.
-     *
-     * Your print HTML contains
-     * #price, so populate it too.
-=======
      * HEADER
      */
     const header =
@@ -1466,7 +1176,8 @@ function formatOptionLabel(id) {
 
 function render(
     table,
-    cardInfo
+    cardInfo,
+    customFieldDefinitions
 ) {
 
     /*
@@ -1488,172 +1199,74 @@ function render(
 
 
     /*
-     * Job ID.
+     * JOB NAME
      *
-     * Using the Trello card ID.
->>>>>>> parent of 7199f0c (Info in print)
+     * Instead of using the Trello
+     * internal card ID, use the
+     * actual card name.
      */
-
-    const priceElement =
+    const jobId =
         document.getElementById(
-            'price'
+            'jobId'
         );
 
 
-    if (priceElement) {
+    if (jobId) {
 
-<<<<<<< HEAD
-        priceElement.textContent =
-            formatCurrency(
-                totals.subtotal
-            );
-=======
         jobId.textContent =
-            cardInfo.id
-                ? cardInfo.id
-                    .substring(0, 8)
-                    .toUpperCase()
-                : '—';
->>>>>>> parent of 7199f0c (Info in print)
+            cardInfo.name ||
+            'Untitled Card';
 
     }
 
 
     /*
-<<<<<<< HEAD
-     * SubTotal.
+     * Custom fields.
      */
+    renderCustomFields(
+        cardInfo,
+        customFieldDefinitions
+    );
 
-    const subtotalElement =
-=======
+
+    /*
      * Date.
      */
     const date =
->>>>>>> parent of 7199f0c (Info in print)
         document.getElementById(
-            'subtotal'
+            'date'
         );
 
 
-    if (subtotalElement) {
+    if (date) {
 
-        subtotalElement.textContent =
-            formatCurrency(
-                totals.subtotal
-            );
+        date.textContent =
+            new Date()
+                .toLocaleDateString(
+                    undefined,
+                    {
+                        year:
+                            'numeric',
 
-    }
+                        month:
+                            'long',
 
-
-    /*
-     * IVU.
-     */
-
-    const ivuElement =
-        document.getElementById(
-            'ivu'
-        );
-
-
-    if (ivuElement) {
-
-        ivuElement.textContent =
-            formatCurrency(
-                totals.ivu
-            );
-
-    }
-
-
-    /*
-     * Total.
-     */
-
-    const totalElement =
-        document.getElementById(
-            'total'
-        );
-
-
-    if (totalElement) {
-
-        totalElement.textContent =
-            formatCurrency(
-                totals.total
-            );
-
-    }
-
-
-    /*
-     * IVU label.
-     */
-
-    const ivuLabel =
-        document.getElementById(
-            'ivuLabel'
-        );
-
-
-    if (ivuLabel) {
-
-        ivuLabel.textContent =
-            'IVU (' +
-            (
-                IVU_RATE * 100
-            ).toFixed(2) +
-            '%)';
-
-    }
-
-}
-
-
-/*
- * ========================================
- * UPDATE ITEM COUNTS
- * ========================================
- */
-
-function updateItemCounts() {
-
-    const itemCount =
-        table.length;
-
-
-    const finishedCount =
-        table.filter(
-            function (row) {
-
-                return Boolean(
-                    row.finished
+                        day:
+                            'numeric'
+                    }
                 );
 
-            }
-        ).length;
+    }
 
 
     /*
-     * Info-card item count.
+     * Item count.
      */
-
-    const itemCountElement =
+    const itemCount =
         document.getElementById(
             'itemCount'
         );
 
-
-    if (itemCountElement) {
-
-        itemCountElement.textContent =
-            itemCount;
-
-    }
-
-
-    /*
-     * Footer total count.
-     */
 
     const footerItemCount =
         document.getElementById(
@@ -1661,30 +1274,132 @@ function updateItemCounts() {
         );
 
 
+    if (itemCount) {
+
+        itemCount.textContent =
+            table.length;
+
+    }
+
+
     if (footerItemCount) {
 
         footerItemCount.textContent =
-            itemCount;
+            table.length;
 
     }
 
 
     /*
-     * Footer finished count.
+     * Products.
      */
-
-    const finishedCountElement =
+    const items =
         document.getElementById(
-            'finishedCount'
+            'items'
         );
 
 
-    if (finishedCountElement) {
+    items.innerHTML = '';
 
-        finishedCountElement.textContent =
-            finishedCount;
+
+    if (table.length === 0) {
+
+        items.innerHTML = `
+
+            <div class="empty">
+
+                No items have been added
+                to this job.
+
+            </div>
+
+        `;
+
+    } else {
+
+        table.forEach(
+            function (row) {
+
+                items.appendChild(
+                    createProductCard(
+                        row
+                    )
+                );
+
+            }
+        );
 
     }
+
+
+    /*
+     * Totals.
+     */
+    const totals =
+        calculateTotals(
+            table
+        );
+
+
+    document.getElementById(
+        'price'
+    ).textContent =
+        formatCurrency(
+            totals.price
+        );
+
+
+    document.getElementById(
+        'subtotal'
+    ).textContent =
+        formatCurrency(
+            totals.subtotal
+        );
+
+
+    document.getElementById(
+        'ivu'
+    ).textContent =
+        formatCurrency(
+            totals.ivu
+        );
+
+
+    document.getElementById(
+        'total'
+    ).textContent =
+        formatCurrency(
+            totals.total
+        );
+
+
+    document.getElementById(
+        'ivuLabel'
+    ).textContent =
+        'IVU (' +
+        (
+            IVU_RATE * 100
+        ).toFixed(2) +
+        '%)';
+
+
+    /*
+     * Finished count.
+     */
+    const finished =
+        table.filter(
+            function (row) {
+
+                return row.finished === true;
+
+            }
+        ).length;
+
+
+    document.getElementById(
+        'finishedCount'
+    ).textContent =
+        finished;
 
 }
 
@@ -1695,7 +1410,8 @@ function updateItemCounts() {
  * ========================================
  */
 
-function printPage() {
+
+function printDocument() {
 
     window.print();
 
@@ -1708,45 +1424,33 @@ function printPage() {
  * ========================================
  */
 
-document.addEventListener(
-    'DOMContentLoaded',
-    async function () {
 
-        const printButton =
-            document.getElementById(
-                'printButton'
-            );
+t.render(async function () {
 
 
-<<<<<<< HEAD
-        if (printButton) {
-=======
+    /*
+     * Load everything at once.
+     */
     const [
         table,
-        cardInfo
+        cardInfo,
+        customFieldDefinitions
     ] =
         await Promise.all([
->>>>>>> parent of 7199f0c (Info in print)
 
-            printButton.addEventListener(
-                'click',
-                printPage
-            );
+            loadTable(),
 
-<<<<<<< HEAD
-        }
+            loadCardInfo(),
 
-
-        await loadData();
-=======
-            loadCardInfo()
+            loadCustomFieldDefinitions()
 
         ]);
 
 
     render(
         table,
-        cardInfo
+        cardInfo,
+        customFieldDefinitions
     );
 
 
@@ -1762,7 +1466,8 @@ document.addEventListener(
             'click',
             printDocument
         );
->>>>>>> parent of 7199f0c (Info in print)
 
     }
-);
+
+
+});
