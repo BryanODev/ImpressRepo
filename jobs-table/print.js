@@ -2,6 +2,10 @@ const t =
     window.TrelloPowerUp.iframe();
 
 
+const STORAGE_KEY =
+    'itemsTable';
+
+
 /*
  * ========================================
  * SETTINGS
@@ -9,25 +13,8 @@ const t =
  */
 
 
-const PRINT_CUSTOM_FIELDS = [
-
-    'Vendedor *',
-
-    'Fecha Creacíon *',
-
-    'Cliente *',
-
-    'Nombre Cliente *',
-
-    'Fecha Solicitada *',
-
-    'Metodo De Entrega'
-
-];
-
-
 /*
- * Keep this synchronized with table.js.
+ * Change this if the IVU rate changes.
  *
  * 11.5% = 0.115
  */
@@ -36,18 +23,174 @@ const IVU_RATE = 0.115;
 
 /*
  * ========================================
- * STORAGE
+ * DATA
  * ========================================
  */
 
 
-const STORAGE_KEY =
-    'itemsTable';
+let table = [];
+
+let catalog = null;
 
 
 /*
  * ========================================
- * LOAD DATA
+ * GENERATE ID
+ * ========================================
+ */
+
+
+function generateId() {
+
+    return 'row-' +
+        Date.now().toString(36) +
+        '-' +
+        Math.random()
+            .toString(36)
+            .substring(2, 8);
+
+}
+
+
+/*
+ * ========================================
+ * LOAD PRODUCT CATALOG
+ * ========================================
+ */
+
+
+async function loadCatalog() {
+
+    try {
+
+        const response =
+            await fetch(
+                './products.json',
+                {
+                    cache: 'no-cache'
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                'Could not load products.json'
+            );
+
+        }
+
+
+        catalog =
+            await response.json();
+
+
+        if (
+            !catalog ||
+            !Array.isArray(
+                catalog.products
+            )
+        ) {
+
+            throw new Error(
+                'Invalid products.json format'
+            );
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            'Could not load product catalog:',
+            error
+        );
+
+
+        catalog = {
+
+            version: 0,
+
+            products: []
+
+        };
+
+
+        const status =
+            document.getElementById(
+                'status'
+            );
+
+
+        if (status) {
+
+            status.textContent =
+                'Error loading catalog';
+
+        }
+
+    }
+
+}
+
+
+/*
+ * ========================================
+ * GET PRODUCT
+ * ========================================
+ */
+
+
+function getProduct(productId) {
+
+    if (!catalog) {
+
+        return null;
+
+    }
+
+
+    return catalog.products.find(
+        function (product) {
+
+            return product.id === productId;
+
+        }
+    ) || null;
+
+}
+
+
+/*
+ * ========================================
+ * GET ACTIVE PRODUCTS
+ * ========================================
+ */
+
+
+function getActiveProducts() {
+
+    if (!catalog) {
+
+        return [];
+
+    }
+
+
+    return catalog.products.filter(
+        function (product) {
+
+            return product.active !== false;
+
+        }
+    );
+
+}
+
+
+/*
+ * ========================================
+ * LOAD TABLE
  * ========================================
  */
 
@@ -56,7 +199,7 @@ async function loadTable() {
 
     try {
 
-        const table =
+        const savedTable =
             await t.get(
                 'card',
                 'shared',
@@ -64,14 +207,19 @@ async function loadTable() {
             );
 
 
-        if (Array.isArray(table)) {
+        if (Array.isArray(savedTable)) {
 
-            return table;
+            table = savedTable;
+
+        } else {
+
+            table = [];
 
         }
 
 
-        return [];
+        render();
+
 
     } catch (error) {
 
@@ -81,43 +229,21 @@ async function loadTable() {
         );
 
 
-        return [];
-
-    }
-
-}
+        table = [];
 
 
-/*
- * ========================================
- * CARD INFORMATION
- * ========================================
- */
-
-
-async function loadCardInfo() {
-
-    try {
-
-        const card =
-            await t.card(
-                'id',
-                'name',
-                'customFieldItems'
+        const status =
+            document.getElementById(
+                'status'
             );
 
 
-        return card || {};
+        if (status) {
 
-    } catch (error) {
+            status.textContent =
+                'Error loading data';
 
-        console.error(
-            'Could not load card information:',
-            error
-        );
-
-
-        return {};
+        }
 
     }
 
@@ -126,544 +252,60 @@ async function loadCardInfo() {
 
 /*
  * ========================================
- * BOARD CUSTOM FIELDS
+ * SAVE TABLE
  * ========================================
  */
 
 
-async function loadCustomFieldDefinitions() {
+async function saveTable() {
 
-    try {
-
-        const board =
-            await t.board(
-                'customFields'
-            );
-
-
-        if (
-            board &&
-            Array.isArray(
-                board.customFields
-            )
-        ) {
-
-            return board.customFields;
-
-        }
-
-
-        return [];
-
-    } catch (error) {
-
-        console.error(
-            'Could not load custom field definitions:',
-            error
-        );
-
-
-        return [];
-
-    }
-
-}
-
-
-/*
- * ========================================
- * FORMAT CURRENCY
- * ========================================
- */
-
-
-function formatCurrency(value) {
-
-    return '$' +
-        Number(value || 0)
-            .toFixed(2);
-
-}
-
-
-/*
- * ========================================
- * FORMAT OPTION
- * ========================================
- */
-
-
-function formatOptionValue(value) {
-
-    if (
-        typeof value === 'boolean'
-    ) {
-
-        return value
-            ? 'Yes'
-            : 'No';
-
-    }
-
-
-    if (
-        value === null ||
-        value === undefined ||
-        value === ''
-    ) {
-
-        return '—';
-
-    }
-
-
-    return String(value);
-
-}
-
-
-/*
- * ========================================
- * FORMAT CUSTOM FIELD VALUE
- * ========================================
- */
-
-
-function getCustomFieldValue(
-    field,
-    customFieldItem
-) {
-
-    if (!customFieldItem) {
-
-        return '—';
-
-    }
-
-
-    /*
-     * ========================================
-     * DROPDOWN / LIST
-     * ========================================
-     */
-
-    if (
-        field.type ===
-        'list'
-    ) {
-
-        const optionId =
-            customFieldItem.idValue;
-
-
-        if (
-            optionId &&
-            Array.isArray(
-                field.options
-            )
-        ) {
-
-            const option =
-                field.options.find(
-                    function (item) {
-
-                        return (
-                            item.id ===
-                            optionId
-                        );
-
-                    }
-                );
-
-
-            if (option) {
-
-                if (
-                    option.value &&
-                    typeof option.value ===
-                    'object' &&
-                    option.value.text !==
-                    undefined
-                ) {
-
-                    return String(
-                        option.value.text
-                    );
-
-                }
-
-
-                if (
-                    option.value !==
-                    undefined &&
-                    option.value !==
-                    null
-                ) {
-
-                    return String(
-                        option.value
-                    );
-
-                }
-
-            }
-
-        }
-
-
-        return '—';
-
-    }
-
-
-    /*
-     * ========================================
-     * CHECKBOX
-     * ========================================
-     */
-
-    if (
-        field.type ===
-        'checkbox'
-    ) {
-
-        if (
-            customFieldItem.value &&
-            customFieldItem.value.checked !==
-            undefined
-        ) {
-
-            return customFieldItem.value.checked
-                ? 'Yes'
-                : 'No';
-
-        }
-
-
-        return '—';
-
-    }
-
-
-    /*
-     * ========================================
-     * DATE
-     * ========================================
-     */
-
-    if (
-        field.type ===
-        'date'
-    ) {
-
-        const dateValue =
-            customFieldItem.value &&
-            customFieldItem.value.date;
-
-
-        if (!dateValue) {
-
-            return '—';
-
-        }
-
-
-        const date =
-            new Date(
-                dateValue
-            );
-
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-
-            return String(
-                dateValue
-            );
-
-        }
-
-
-        return date.toLocaleDateString(
-            undefined,
-            {
-                year:
-                    'numeric',
-
-                month:
-                    'long',
-
-                day:
-                    'numeric'
-            }
-        );
-
-    }
-
-
-    /*
-     * ========================================
-     * NUMBER / TEXT
-     * ========================================
-     */
-
-    if (
-        customFieldItem.value
-    ) {
-
-        if (
-            customFieldItem.value.text !==
-            undefined
-        ) {
-
-            return formatOptionValue(
-                customFieldItem.value.text
-            );
-
-        }
-
-
-        if (
-            customFieldItem.value.number !==
-            undefined
-        ) {
-
-            return formatOptionValue(
-                customFieldItem.value.number
-            );
-
-        }
-
-    }
-
-
-    return '—';
-
-}
-
-
-/*
- * ========================================
- * FIND CUSTOM FIELD
- * ========================================
- */
-
-
-function findCustomField(
-    fieldName,
-    definitions
-) {
-
-    const wanted =
-        String(
-            fieldName
-        )
-            .trim()
-            .toLowerCase();
-
-
-    return definitions.find(
-        function (field) {
-
-            return (
-                String(
-                    field.name || ''
-                )
-                    .trim()
-                    .toLowerCase() ===
-                wanted
-            );
-
-        }
-    ) || null;
-
-}
-
-
-/*
- * ========================================
- * FIND CUSTOM FIELD ITEM
- * ========================================
- */
-
-
-function findCustomFieldItem(
-    fieldId,
-    items
-) {
-
-    return items.find(
-        function (item) {
-
-            return (
-                item.idCustomField ===
-                fieldId
-            );
-
-        }
-    ) || null;
-
-}
-
-
-/*
- * ========================================
- * CREATE CUSTOM FIELD ITEM
- * ========================================
- */
-
-
-function createCustomFieldItem(
-    label,
-    value
-) {
-
-    const wrapper =
-        document.createElement(
-            'div'
-        );
-
-
-    wrapper.className =
-        'custom-field-item';
-
-
-    const labelElement =
-        document.createElement(
-            'span'
-        );
-
-
-    labelElement.className =
-        'label';
-
-
-    labelElement.textContent =
-        label;
-
-
-    const valueElement =
-        document.createElement(
-            'strong'
-        );
-
-
-    valueElement.className =
-        'custom-field-value';
-
-
-    valueElement.textContent =
-        value;
-
-
-    wrapper.appendChild(
-        labelElement
-    );
-
-
-    wrapper.appendChild(
-        valueElement
-    );
-
-
-    return wrapper;
-
-}
-
-
-/*
- * ========================================
- * RENDER CUSTOM FIELDS
- * ========================================
- */
-
-
-function renderCustomFields(
-    cardInfo,
-    customFieldDefinitions
-) {
-
-    const container =
+    const status =
         document.getElementById(
-            'customFields'
+            'status'
         );
 
 
-    if (!container) {
+    if (status) {
 
-        return;
+        status.textContent =
+            'Saving...';
 
     }
 
 
-    container.innerHTML = '';
+    try {
+
+        await t.set(
+            'card',
+            'shared',
+            STORAGE_KEY,
+            table
+        );
 
 
-    const items =
-        Array.isArray(
-            cardInfo.customFieldItems
-        )
-            ? cardInfo.customFieldItems
-            : [];
+        if (status) {
 
-
-    PRINT_CUSTOM_FIELDS.forEach(
-        function (fieldName) {
-
-            const field =
-                findCustomField(
-                    fieldName,
-                    customFieldDefinitions
-                );
-
-
-            if (!field) {
-
-                console.warn(
-                    'Custom field not found:',
-                    fieldName
-                );
-
-
-                container.appendChild(
-                    createCustomFieldItem(
-                        fieldName,
-                        '—'
-                    )
-                );
-
-
-                return;
-
-            }
-
-
-            const item =
-                findCustomFieldItem(
-                    field.id,
-                    items
-                );
-
-
-            const value =
-                getCustomFieldValue(
-                    field,
-                    item
-                );
-
-
-            container.appendChild(
-                createCustomFieldItem(
-                    field.name,
-                    value
-                )
-            );
+            status.textContent =
+                'Saved';
 
         }
-    );
+
+    } catch (error) {
+
+        console.error(
+            'Could not save table:',
+            error
+        );
+
+
+        if (status) {
+
+            status.textContent =
+                'Error saving';
+
+        }
+
+    }
 
 }
 
@@ -675,7 +317,7 @@ function renderCustomFields(
  */
 
 
-function calculateTotals(table) {
+function calculateTotals() {
 
     let price = 0;
 
@@ -724,400 +366,1446 @@ function calculateTotals(table) {
 
 /*
  * ========================================
- * CREATE DETAIL
+ * FORMAT CURRENCY
  * ========================================
  */
 
 
-function createDetail(
-    label,
+function formatCurrency(value) {
+
+    return '$' +
+        value.toFixed(2);
+
+}
+
+
+/*
+ * ========================================
+ * DEFAULT OPTION VALUE
+ * ========================================
+ */
+
+
+function getDefaultValue(option) {
+
+    /*
+     * Explicit default always wins.
+     */
+    if (
+        option.default !== undefined
+    ) {
+
+        return option.default;
+
+    }
+
+
+    /*
+     * Checkbox.
+     */
+    if (
+        option.type === 'checkbox'
+    ) {
+
+        return false;
+
+    }
+
+
+    /*
+     * Radio.
+     *
+     * Automatically select the first
+     * available radio option.
+     */
+    if (
+        option.type === 'radio'
+    ) {
+
+        if (
+            Array.isArray(option.options) &&
+            option.options.length > 0
+        ) {
+
+            return option.options[0];
+
+        }
+
+
+        return '';
+
+    }
+
+
+    /*
+     * Select with custom value.
+     */
+    if (
+        option.type === 'selectWithCustom'
+    ) {
+
+        const firstOption =
+            Array.isArray(option.options) &&
+            option.options.length > 0
+                ? option.options[0]
+                : '';
+
+
+        return {
+
+            value:
+                firstOption,
+
+            custom:
+                ''
+
+        };
+
+    }
+
+
+    /*
+     * Normal select.
+     */
+    if (
+        option.type === 'select' &&
+        Array.isArray(
+            option.options
+        ) &&
+        option.options.length > 0
+    ) {
+
+        return option.options[0];
+
+    }
+
+
+    return '';
+
+}
+
+
+/*
+ * ========================================
+ * CREATE PRODUCT SELECT
+ * ========================================
+ */
+
+
+function createProductSelect(row) {
+
+    const select =
+        document.createElement(
+            'select'
+        );
+
+
+    const placeholder =
+        document.createElement(
+            'option'
+        );
+
+
+    placeholder.value =
+        '';
+
+
+    placeholder.textContent =
+        'Select product...';
+
+
+    placeholder.disabled =
+        true;
+
+
+    if (!row.productId) {
+
+        placeholder.selected =
+            true;
+
+    }
+
+
+    select.appendChild(
+        placeholder
+    );
+
+
+    const products =
+        getActiveProducts();
+
+
+    products.forEach(
+        function (product) {
+
+            const option =
+                document.createElement(
+                    'option'
+                );
+
+
+            option.value =
+                product.id;
+
+
+            option.textContent =
+                product.name;
+
+
+            if (
+                row.productId ===
+                product.id
+            ) {
+
+                option.selected =
+                    true;
+
+            }
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    /*
+     * Completely removed product.
+     */
+    if (
+        row.productId &&
+        !getProduct(row.productId)
+    ) {
+
+        const oldOption =
+            document.createElement(
+                'option'
+            );
+
+
+        oldOption.value =
+            row.productId;
+
+
+        oldOption.textContent =
+            (
+                row.productName ||
+                row.productId
+            ) +
+            ' (DEPRECATED)';
+
+
+        oldOption.selected =
+            true;
+
+
+        oldOption.className =
+            'deprecated';
+
+
+        select.appendChild(
+            oldOption
+        );
+
+    }
+
+
+    /*
+     * Existing inactive product.
+     */
+    const currentProduct =
+        getProduct(
+            row.productId
+        );
+
+
+    if (
+        currentProduct &&
+        currentProduct.active === false
+    ) {
+
+        const existingOption =
+            Array.from(
+                select.options
+            ).find(
+                function (option) {
+
+                    return (
+                        option.value ===
+                        row.productId
+                    );
+
+                }
+            );
+
+
+        if (existingOption) {
+
+            existingOption.textContent =
+                currentProduct.name +
+                ' (DEPRECATED)';
+
+        }
+
+    }
+
+
+    /*
+     * Product changed.
+     */
+    select.addEventListener(
+        'change',
+        async function () {
+
+            const product =
+                getProduct(
+                    select.value
+                );
+
+
+            if (!product) {
+
+                return;
+
+            }
+
+
+            row.productId =
+                product.id;
+
+
+            row.productName =
+                product.name;
+
+
+            row.description =
+                product.name;
+
+
+            row.options =
+                {};
+
+
+            if (
+                Array.isArray(
+                    product.options
+                )
+            ) {
+
+                product.options.forEach(
+                    function (option) {
+
+                        row.options[
+                            option.id
+                        ] =
+                            getDefaultValue(
+                                option
+                            );
+
+                    }
+                );
+
+            }
+
+
+            render();
+
+
+            await saveTable();
+
+        }
+    );
+
+
+    return select;
+
+}
+
+
+/*
+ * ========================================
+ * NORMALIZE CUSTOM SELECT VALUE
+ * ========================================
+ */
+
+
+function normalizeCustomSelectValue(
     value
 ) {
 
-    const wrapper =
-        document.createElement(
-            'div'
-        );
+    /*
+     * New format.
+     */
+    if (
+        value &&
+        typeof value === 'object'
+    ) {
+
+        return {
+
+            value:
+                value.value ??
+                '',
+
+            custom:
+                value.custom ??
+                ''
+
+        };
+
+    }
 
 
-    wrapper.className =
-        'detail';
+    /*
+     * Old saved format.
+     */
+    return {
 
+        value:
+            value ?? '',
 
-    const labelElement =
-        document.createElement(
-            'span'
-        );
+        custom:
+            ''
 
-
-    labelElement.className =
-        'detail-label';
-
-
-    labelElement.textContent =
-        label;
-
-
-    const valueElement =
-        document.createElement(
-            'span'
-        );
-
-
-    valueElement.className =
-        'detail-value';
-
-
-    valueElement.textContent =
-        value;
-
-
-    wrapper.appendChild(
-        labelElement
-    );
-
-
-    wrapper.appendChild(
-        valueElement
-    );
-
-
-    return wrapper;
+    };
 
 }
 
 
 /*
  * ========================================
- * CREATE OPTION
+ * CREATE OPTION CONTROL
  * ========================================
  */
 
 
-function createOption(
-    label,
-    value,
-    deprecated
+function createOptionControl(
+    row,
+    optionDefinition
 ) {
 
-    const wrapper =
-        document.createElement(
-            'div'
-        );
+    const optionId =
+        optionDefinition.id;
 
 
-    wrapper.className =
-        'option';
+    if (
+        !row.options ||
+        typeof row.options !== 'object'
+    ) {
 
-
-    const labelElement =
-        document.createElement(
-            'span'
-        );
-
-
-    labelElement.className =
-        'option-label';
-
-
-    labelElement.textContent =
-        label + ':';
-
-
-    const valueElement =
-        document.createElement(
-            'span'
-        );
-
-
-    valueElement.className =
-        'option-value';
-
-
-    if (deprecated) {
-
-        valueElement.classList.add(
-            'deprecated'
-        );
+        row.options = {};
 
     }
 
 
-    valueElement.textContent =
-        formatOptionValue(
-            value
+    let value =
+        row.options[optionId];
+
+
+    /*
+     * ========================================
+     * SELECT / DROPDOWN
+     * ========================================
+     */
+
+    if (
+        optionDefinition.type ===
+        'select'
+    ) {
+
+        const select =
+            document.createElement(
+                'select'
+            );
+
+
+        const options =
+            Array.isArray(
+                optionDefinition.options
+            )
+                ? optionDefinition.options
+                : [];
+
+
+        options.forEach(
+            function (possibleValue) {
+
+                const option =
+                    document.createElement(
+                        'option'
+                    );
+
+
+                option.value =
+                    possibleValue;
+
+
+                option.textContent =
+                    possibleValue;
+
+
+                if (
+                    value ===
+                    possibleValue
+                ) {
+
+                    option.selected =
+                        true;
+
+                }
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
         );
 
 
-    if (deprecated) {
+        /*
+         * Preserve old value.
+         */
+        if (
+            value &&
+            !options.includes(value)
+        ) {
 
-        valueElement.textContent +=
-            ' (DEPRECATED)';
+            const oldOption =
+                document.createElement(
+                    'option'
+                );
+
+
+            oldOption.value =
+                value;
+
+
+            oldOption.textContent =
+                value +
+                ' (DEPRECATED)';
+
+
+            oldOption.selected =
+                true;
+
+
+            oldOption.className =
+                'deprecated';
+
+
+            select.insertBefore(
+                oldOption,
+                select.firstChild
+            );
+
+        }
+
+
+        select.addEventListener(
+            'change',
+            async function () {
+
+                row.options[
+                    optionId
+                ] =
+                    select.value;
+
+
+                await saveTable();
+
+            }
+        );
+
+
+        return select;
 
     }
 
 
-    wrapper.appendChild(
-        labelElement
+    /*
+     * ========================================
+     * SELECT WITH CUSTOM
+     * ========================================
+     */
+
+    if (
+        optionDefinition.type ===
+        'selectWithCustom'
+    ) {
+
+        const wrapper =
+            document.createElement(
+                'div'
+            );
+
+
+        wrapper.className =
+            'option-select-custom';
+
+
+        const normalized =
+            normalizeCustomSelectValue(
+                value
+            );
+
+
+        const select =
+            document.createElement(
+                'select'
+            );
+
+
+        const options =
+            Array.isArray(
+                optionDefinition.options
+            )
+                ? optionDefinition.options
+                : [];
+
+
+        options.forEach(
+            function (possibleValue) {
+
+                const option =
+                    document.createElement(
+                        'option'
+                    );
+
+
+                option.value =
+                    possibleValue;
+
+
+                option.textContent =
+                    possibleValue;
+
+
+                if (
+                    normalized.value ===
+                    possibleValue
+                ) {
+
+                    option.selected =
+                        true;
+
+                }
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        const customInput =
+            document.createElement(
+                'input'
+            );
+
+
+        customInput.type =
+            'text';
+
+
+        customInput.className =
+            'custom-option-input';
+
+
+        customInput.placeholder =
+            optionDefinition.customPlaceholder ||
+            'Specify...';
+
+
+        customInput.value =
+            normalized.custom;
+
+
+        customInput.style.display =
+            normalized.value === 'Custom'
+                ? ''
+                : 'none';
+
+
+        select.addEventListener(
+            'change',
+            async function () {
+
+                row.options[
+                    optionId
+                ] = {
+
+                    value:
+                        select.value,
+
+                    custom:
+                        normalized.custom
+
+                };
+
+
+                customInput.style.display =
+                    select.value === 'Custom'
+                        ? ''
+                        : 'none';
+
+
+                await saveTable();
+
+            }
+        );
+
+
+        customInput.addEventListener(
+            'input',
+            async function () {
+
+                normalized.custom =
+                    customInput.value;
+
+
+                row.options[
+                    optionId
+                ] = {
+
+                    value:
+                        select.value,
+
+                    custom:
+                        normalized.custom
+
+                };
+
+
+                await saveTable();
+
+            }
+        );
+
+
+        wrapper.appendChild(
+            select
+        );
+
+
+        wrapper.appendChild(
+            customInput
+        );
+
+
+        return wrapper;
+
+    }
+
+
+    /*
+     * ========================================
+     * RADIO
+     * ========================================
+     *
+     * Example:
+     *
+     * ○ A    ○ B    ○ C
+     * ○ Custom [________]
+     *
+     * Radios are mutually exclusive.
+     */
+
+    if (
+        optionDefinition.type ===
+        'radio'
+    ) {
+
+        const wrapper =
+            document.createElement(
+                'div'
+            );
+
+
+        wrapper.className =
+            'option-radio-group';
+
+
+        const options =
+            Array.isArray(
+                optionDefinition.options
+            )
+                ? optionDefinition.options
+                : [];
+
+
+        /*
+         * Every option gets the same
+         * radio name so only ONE can
+         * be selected.
+         */
+        const radioName =
+            'radio-' +
+            row.id +
+            '-' +
+            optionId;
+
+
+        options.forEach(
+            function (
+                possibleValue
+            ) {
+
+                const item =
+                    document.createElement(
+                        'label'
+                    );
+
+
+                item.className =
+                    'option-radio-item';
+
+
+                const radio =
+                    document.createElement(
+                        'input'
+                    );
+
+
+                radio.type =
+                    'radio';
+
+
+                radio.name =
+                    radioName;
+
+
+                radio.value =
+                    possibleValue;
+
+
+                /*
+                 * Existing selected value.
+                 */
+                if (
+                    value ===
+                    possibleValue
+                ) {
+
+                    radio.checked =
+                        true;
+
+                }
+
+
+                /*
+                 * Text beside radio.
+                 */
+                const text =
+                    document.createElement(
+                        'span'
+                    );
+
+
+                text.className =
+                    'option-radio-text';
+
+
+                text.textContent =
+                    possibleValue;
+
+
+                item.appendChild(
+                    radio
+                );
+
+
+                item.appendChild(
+                    text
+                );
+
+
+                /*
+                 * ========================================
+                 * CUSTOM INPUT
+                 * ========================================
+                 */
+
+                let customInput =
+                    null;
+
+
+                if (
+                    String(
+                        possibleValue
+                    )
+                        .trim()
+                        .toLowerCase() ===
+                    'custom'
+                ) {
+
+                    customInput =
+                        document.createElement(
+                            'input'
+                        );
+
+
+                    customInput.type =
+                        'text';
+
+
+                    customInput.className =
+                        'radio-custom-input';
+
+
+                    customInput.placeholder =
+                        optionDefinition.customPlaceholder ||
+                        'Specify...';
+
+
+                    customInput.value =
+                        row.options[
+                            optionId +
+                            '__custom'
+                        ] ||
+                        '';
+
+
+                    customInput.style.display =
+                        radio.checked
+                            ? ''
+                            : 'none';
+
+
+                    customInput.addEventListener(
+                        'input',
+                        async function () {
+
+                            row.options[
+                                optionId +
+                                '__custom'
+                            ] =
+                                customInput.value;
+
+
+                            await saveTable();
+
+                        }
+                    );
+
+
+                    item.appendChild(
+                        customInput
+                    );
+
+                }
+
+
+                /*
+                 * ========================================
+                 * RADIO CHANGE
+                 * ========================================
+                 */
+
+                radio.addEventListener(
+                    'change',
+                    async function () {
+
+                        if (
+                            !radio.checked
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        /*
+                         * Store selected value.
+                         */
+                        row.options[
+                            optionId
+                        ] =
+                            radio.value;
+
+
+                        /*
+                         * Show Custom input
+                         * only if this radio
+                         * is Custom.
+                         */
+                        const allCustomInputs =
+                            wrapper.querySelectorAll(
+                                '.radio-custom-input'
+                            );
+
+
+                        allCustomInputs.forEach(
+                            function (
+                                input
+                            ) {
+
+                                input.style.display =
+                                    'none';
+
+                            }
+                        );
+
+
+                        if (customInput) {
+
+                            customInput.style.display =
+                                '';
+
+                        }
+
+
+                        await saveTable();
+
+                    }
+                );
+
+
+                wrapper.appendChild(
+                    item
+                );
+
+            }
+        );
+
+
+        return wrapper;
+
+    }
+
+
+    /*
+     * ========================================
+     * CHECKBOX
+     * ========================================
+     */
+
+    if (
+        optionDefinition.type ===
+        'checkbox'
+    ) {
+
+        const wrapper =
+            document.createElement(
+                'label'
+            );
+
+
+        wrapper.className =
+            'option-checkbox';
+
+
+        const checkbox =
+            document.createElement(
+                'input'
+            );
+
+
+        checkbox.type =
+            'checkbox';
+
+
+        checkbox.checked =
+            Boolean(value);
+
+
+        const text =
+            document.createElement(
+                'span'
+            );
+
+
+        text.textContent =
+            'Yes';
+
+
+        checkbox.addEventListener(
+            'change',
+            async function () {
+
+                row.options[
+                    optionId
+                ] =
+                    checkbox.checked;
+
+
+                await saveTable();
+
+            }
+        );
+
+
+        wrapper.appendChild(
+            checkbox
+        );
+
+
+        wrapper.appendChild(
+            text
+        );
+
+
+        return wrapper;
+
+    }
+
+
+    /*
+     * ========================================
+     * NUMBER
+     * ========================================
+     */
+
+    if (
+        optionDefinition.type ===
+        'number'
+    ) {
+
+        const input =
+            document.createElement(
+                'input'
+            );
+
+
+        input.type =
+            'number';
+
+
+        input.value =
+            value ?? '';
+
+
+        if (
+            optionDefinition.min !==
+            undefined
+        ) {
+
+            input.min =
+                optionDefinition.min;
+
+        }
+
+
+        if (
+            optionDefinition.max !==
+            undefined
+        ) {
+
+            input.max =
+                optionDefinition.max;
+
+        }
+
+
+        if (
+            optionDefinition.step !==
+            undefined
+        ) {
+
+            input.step =
+                optionDefinition.step;
+
+        }
+
+
+        input.addEventListener(
+            'change',
+            async function () {
+
+                row.options[
+                    optionId
+                ] =
+                    input.value;
+
+
+                await saveTable();
+
+            }
+        );
+
+
+        return input;
+
+    }
+
+
+    /*
+     * ========================================
+     * TEXT
+     * ========================================
+     */
+
+    const input =
+        document.createElement(
+            'input'
+        );
+
+
+    input.type =
+        'text';
+
+
+    input.value =
+        value ?? '';
+
+
+    if (
+        optionDefinition.placeholder
+    ) {
+
+        input.placeholder =
+            optionDefinition.placeholder;
+
+    }
+
+
+    input.addEventListener(
+        'change',
+        async function () {
+
+            row.options[
+                optionId
+            ] =
+                input.value;
+
+
+            await saveTable();
+
+        }
     );
 
 
-    wrapper.appendChild(
-        valueElement
-    );
-
-
-    return wrapper;
+    return input;
 
 }
 
 
 /*
  * ========================================
- * CREATE PRODUCT CARD
+ * CREATE OPTIONS AREA
  * ========================================
  */
 
 
-function createProductCard(row) {
+function createOptionsArea(row) {
 
-    const card =
+    const container =
         document.createElement(
-            'section'
+            'div'
         );
 
 
-    card.className =
-        'product-card';
+    container.className =
+        'options-container';
+
+
+    const product =
+        getProduct(
+            row.productId
+        );
 
 
     /*
-     * ========================================
-     * HEADER
-     * ========================================
+     * Completely removed product.
      */
+    if (!product) {
+
+        if (
+            row.options &&
+            typeof row.options === 'object'
+        ) {
+
+            Object.keys(
+                row.options
+            ).forEach(
+                function (
+                    optionId
+                ) {
+
+                    const wrapper =
+                        document.createElement(
+                            'div'
+                        );
 
 
-    const header =
-        document.createElement(
-            'div'
-        );
+                    wrapper.className =
+                        'option-row';
 
 
-    header.className =
-        'product-header';
+                    const label =
+                        document.createElement(
+                            'span'
+                        );
 
 
-    const productName =
-        document.createElement(
-            'div'
-        );
+                    label.className =
+                        'option-label deprecated';
 
 
-    productName.className =
-        'product-name';
+                    label.textContent =
+                        optionId +
+                        ' (DEPRECATED)';
 
 
-    productName.textContent =
-        row.productName ||
-        row.description ||
-        'Untitled Item';
+                    const value =
+                        document.createElement(
+                            'span'
+                        );
 
 
-    const status =
-        document.createElement(
-            'div'
-        );
+                    value.textContent =
+                        formatOptionValue(
+                            row.options[
+                                optionId
+                            ]
+                        );
 
 
-    status.className =
-        'product-status';
+                    wrapper.appendChild(
+                        label
+                    );
 
 
-    if (row.finished) {
-
-        status.classList.add(
-            'status-finished'
-        );
+                    wrapper.appendChild(
+                        value
+                    );
 
 
-        status.textContent =
-            '✓ FINISHED';
+                    container.appendChild(
+                        wrapper
+                    );
 
-    } else {
+                }
+            );
 
-        status.classList.add(
-            'status-pending'
-        );
+        }
 
 
-        status.textContent =
-            'PENDING';
+        return container;
 
     }
 
 
-    header.appendChild(
-        productName
-    );
-
-
-    header.appendChild(
-        status
-    );
-
-
-    card.appendChild(
-        header
-    );
-
-
     /*
-     * ========================================
-     * BODY
-     * ========================================
+     * Current product options.
      */
-
-
-    const body =
-        document.createElement(
-            'div'
-        );
-
-
-    body.className =
-        'product-body';
-
-
-    /*
-     * ========================================
-     * BASIC INFORMATION
-     * ========================================
-     */
-
-
-    const grid =
-        document.createElement(
-            'div'
-        );
-
-
-    grid.className =
-        'product-grid';
-
-
-    grid.appendChild(
-        createDetail(
-            'Quantity',
-            String(
-                Number(row.quantity) || 0
-            )
+    if (
+        Array.isArray(
+            product.options
         )
-    );
+    ) {
+
+        product.options.forEach(
+            function (
+                optionDefinition
+            ) {
+
+                const wrapper =
+                    document.createElement(
+                        'div'
+                    );
 
 
-    grid.appendChild(
-        createDetail(
-            'Cost',
-            formatCurrency(
-                Number(row.cost) || 0
-            )
-        )
-    );
+                wrapper.className =
+                    'option-row';
 
 
-    if (row.fileName) {
+                const label =
+                    document.createElement(
+                        'span'
+                    );
 
-        grid.appendChild(
-            createDetail(
-                'File Name',
-                row.fileName
-            )
+
+                label.className =
+                    'option-label';
+
+
+                label.textContent =
+                    optionDefinition.label;
+
+
+                const control =
+                    document.createElement(
+                        'div'
+                    );
+
+
+                control.className =
+                    'option-control';
+
+
+                control.appendChild(
+                    createOptionControl(
+                        row,
+                        optionDefinition
+                    )
+                );
+
+
+                wrapper.appendChild(
+                    label
+                );
+
+
+                wrapper.appendChild(
+                    control
+                );
+
+
+                container.appendChild(
+                    wrapper
+                );
+
+            }
         );
 
     }
 
 
-    body.appendChild(
-        grid
-    );
-
-
     /*
      * ========================================
-     * OPTIONS
+     * HISTORICAL OPTIONS
      * ========================================
      */
+
+    const currentOptionIds =
+        Array.isArray(product.options)
+            ? product.options.map(
+                function (
+                    option
+                ) {
+
+                    return option.id;
+
+                }
+            )
+            : [];
 
 
     if (
         row.options &&
-        typeof row.options === 'object' &&
-        Object.keys(row.options).length > 0
+        typeof row.options === 'object'
     ) {
 
-        const optionSection =
-            document.createElement(
-                'div'
-            );
-
-
-        optionSection.className =
-            'option-section';
-
-
-        const optionTitle =
-            document.createElement(
-                'div'
-            );
-
-
-        optionTitle.className =
-            'option-title';
-
-
-        optionTitle.textContent =
-            'Product Options';
-
-
-        optionSection.appendChild(
-            optionTitle
-        );
-
-
-        const optionList =
-            document.createElement(
-                'div'
-            );
-
-
-        optionList.className =
-            'option-list';
-
-
-        /*
-         * We intentionally use the
-         * SAVED option data.
-         *
-         * This means old options survive
-         * catalog changes.
-         */
         Object.keys(
             row.options
         ).forEach(
-            function (optionId) {
+            function (
+                savedOptionId
+            ) {
 
                 /*
-                 * Custom radio text is stored
-                 * separately as:
+                 * Ignore custom helper
+                 * fields such as:
                  *
-                 * optionId__custom
-                 *
-                 * It should NOT appear as
-                 * its own option.
+                 * size__custom
                  */
                 if (
-                    optionId.endsWith(
+                    savedOptionId.endsWith(
                         '__custom'
                     )
                 ) {
@@ -1127,104 +1815,155 @@ function createProductCard(row) {
                 }
 
 
-                let value =
-                    row.options[
-                        optionId
-                    ];
-
-
-                /*
-                 * If this is a Custom
-                 * selection and custom text
-                 * exists, show both.
-                 */
-                const customValue =
-                    row.options[
-                        optionId +
-                        '__custom'
-                    ];
-
-
                 if (
-                    String(value)
-                        .trim()
-                        .toLowerCase() ===
-                        'custom' &&
-                    customValue
+                    currentOptionIds.includes(
+                        savedOptionId
+                    )
                 ) {
 
-                    value =
-                        'Custom — ' +
-                        customValue;
+                    return;
 
                 }
 
 
-                optionList.appendChild(
-                    createOption(
-                        formatOptionLabel(
-                            optionId
-                        ),
-                        value,
-                        false
-                    )
+                const wrapper =
+                    document.createElement(
+                        'div'
+                    );
+
+
+                wrapper.className =
+                    'option-row';
+
+
+                const label =
+                    document.createElement(
+                        'span'
+                    );
+
+
+                label.className =
+                    'option-label deprecated';
+
+
+                label.textContent =
+                    savedOptionId +
+                    ' (DEPRECATED)';
+
+
+                const value =
+                    document.createElement(
+                        'span'
+                    );
+
+
+                value.textContent =
+                    formatOptionValue(
+                        row.options[
+                            savedOptionId
+                        ]
+                    );
+
+
+                wrapper.appendChild(
+                    label
+                );
+
+
+                wrapper.appendChild(
+                    value
+                );
+
+
+                container.appendChild(
+                    wrapper
                 );
 
             }
         );
 
-
-        optionSection.appendChild(
-            optionList
-        );
-
-
-        body.appendChild(
-            optionSection
-        );
-
     }
 
 
-    card.appendChild(
-        body
-    );
-
-
-    return card;
+    return container;
 
 }
 
 
 /*
  * ========================================
- * FORMAT OPTION LABEL
+ * FORMAT OPTION VALUE
  * ========================================
  */
 
 
-function formatOptionLabel(id) {
+function formatOptionValue(value) {
 
-    if (!id) {
+    if (
+        typeof value === 'boolean'
+    ) {
 
-        return '';
+        return value
+            ? 'Yes'
+            : 'No';
 
     }
 
 
-    return id
-        .replace(
-            /_/g,
-            ' '
-        )
-        .replace(
-            /\b\w/g,
-            function (letter) {
+    /*
+     * selectWithCustom value.
+     */
+    if (
+        value &&
+        typeof value === 'object'
+    ) {
 
-                return letter.toUpperCase();
+        const selected =
+            value.value ?? '';
+
+
+        const custom =
+            value.custom ?? '';
+
+
+        if (
+            selected === 'Custom'
+        ) {
+
+            if (custom) {
+
+                return (
+                    'Custom — ' +
+                    custom
+                );
 
             }
+
+
+            return 'Custom';
+
+        }
+
+
+        return String(
+            selected || '—'
         );
+
+    }
+
+
+    if (
+        value === '' ||
+        value === null ||
+        value === undefined
+    ) {
+
+        return '—';
+
+    }
+
+
+    return String(value);
 
 }
 
@@ -1236,250 +1975,727 @@ function formatOptionLabel(id) {
  */
 
 
-function render(
-    table,
-    cardInfo,
-    customFieldDefinitions
-) {
+function render() {
 
-    /*
-     * Card name.
-     */
-
-    const cardName =
+    const body =
         document.getElementById(
-            'cardName'
+            'tableBody'
         );
 
 
-    if (cardName) {
+    if (!body) {
 
-        cardName.textContent =
-            cardInfo.name ||
-            'Untitled Card';
+        return;
 
     }
 
 
-    /*
-     * JOB NAME
-     */
-
-    const jobId =
-        document.getElementById(
-            'jobId'
-        );
-
-
-    if (jobId) {
-
-        jobId.textContent =
-            cardInfo.name ||
-            'Untitled Card';
-
-    }
-
-
-    /*
-     * Custom fields.
-     */
-
-    renderCustomFields(
-        cardInfo,
-        customFieldDefinitions
-    );
-
-
-    /*
-     * Date.
-     */
-
-    const date =
-        document.getElementById(
-            'date'
-        );
-
-
-    if (date) {
-
-        date.textContent =
-            new Date()
-                .toLocaleDateString(
-                    undefined,
-                    {
-                        year:
-                            'numeric',
-
-                        month:
-                            'long',
-
-                        day:
-                            'numeric'
-                    }
-                );
-
-    }
-
-
-    /*
-     * Item count.
-     */
-
-    const itemCount =
-        document.getElementById(
-            'itemCount'
-        );
-
-
-    const footerItemCount =
-        document.getElementById(
-            'footerItemCount'
-        );
-
-
-    if (itemCount) {
-
-        itemCount.textContent =
-            table.length;
-
-    }
-
-
-    if (footerItemCount) {
-
-        footerItemCount.textContent =
-            table.length;
-
-    }
-
-
-    /*
-     * Products.
-     */
-
-    const items =
-        document.getElementById(
-            'items'
-        );
-
-
-    items.innerHTML = '';
+    body.innerHTML = '';
 
 
     if (table.length === 0) {
 
-        items.innerHTML = `
+        body.innerHTML = `
 
-            <div class="empty">
+            <tr>
 
-                No items have been added
-                to this job.
+                <td
+                    colspan="7"
+                    class="empty">
 
-            </div>
+                    No items yet.
+                    Click "+ Add Row".
+
+                </td>
+
+            </tr>
 
         `;
 
-    } else {
 
-        table.forEach(
-            function (row) {
+        updateTotals();
 
-                items.appendChild(
-                    createProductCard(
-                        row
-                    )
-                );
-
-            }
-        );
+        return;
 
     }
 
 
-    /*
-     * Totals.
-     */
+    table.forEach(
+        function (row) {
 
-    const totals =
-        calculateTotals(
-            table
-        );
-
-
-    document.getElementById(
-        'price'
-    ).textContent =
-        formatCurrency(
-            totals.price
-        );
+            const tr =
+                document.createElement(
+                    'tr'
+                );
 
 
-    document.getElementById(
-        'subtotal'
-    ).textContent =
-        formatCurrency(
-            totals.subtotal
-        );
+            /*
+             * ========================================
+             * CHECK
+             * ========================================
+             */
+
+            const checkTd =
+                document.createElement(
+                    'td'
+                );
 
 
-    document.getElementById(
-        'ivu'
-    ).textContent =
-        formatCurrency(
-            totals.ivu
-        );
+            checkTd.className =
+                'check';
 
 
-    document.getElementById(
-        'total'
-    ).textContent =
-        formatCurrency(
-            totals.total
-        );
+            const checkbox =
+                document.createElement(
+                    'input'
+                );
 
 
-    document.getElementById(
-        'ivuLabel'
-    ).textContent =
-        'IVU (' +
-        (
-            IVU_RATE * 100
-        ).toFixed(2) +
-        '%)';
+            checkbox.type =
+                'checkbox';
 
 
-    /*
-     * Finished count.
-     */
-
-    const finished =
-        table.filter(
-            function (row) {
-
-                return row.finished === true;
-
-            }
-        ).length;
+            checkbox.checked =
+                Boolean(
+                    row.finished
+                );
 
 
-    document.getElementById(
-        'finishedCount'
-    ).textContent =
-        finished;
+            checkbox.addEventListener(
+                'change',
+                async function () {
+
+                    row.finished =
+                        checkbox.checked;
+
+
+                    await saveTable();
+
+                }
+            );
+
+
+            checkTd.appendChild(
+                checkbox
+            );
+
+
+            tr.appendChild(
+                checkTd
+            );
+
+
+            /*
+             * ========================================
+             * QUANTITY
+             * ========================================
+             */
+
+            const quantityTd =
+                document.createElement(
+                    'td'
+                );
+
+
+            quantityTd.className =
+                'quantity';
+
+
+            const quantityInput =
+                document.createElement(
+                    'input'
+                );
+
+
+            quantityInput.type =
+                'number';
+
+
+            quantityInput.min =
+                '0';
+
+
+            quantityInput.step =
+                '1';
+
+
+            quantityInput.value =
+                row.quantity ?? '';
+
+
+            quantityInput.addEventListener(
+                'change',
+                async function () {
+
+                    row.quantity =
+                        Number(
+                            quantityInput.value
+                        ) || 0;
+
+
+                    updateTotals();
+
+
+                    await saveTable();
+
+                }
+            );
+
+
+            quantityTd.appendChild(
+                quantityInput
+            );
+
+
+            tr.appendChild(
+                quantityTd
+            );
+
+
+            /*
+             * ========================================
+             * PRODUCT
+             * ========================================
+             */
+
+            const productTd =
+                document.createElement(
+                    'td'
+                );
+
+
+            productTd.className =
+                'product';
+
+
+            const productSelect =
+                createProductSelect(
+                    row
+                );
+
+
+            productTd.appendChild(
+                productSelect
+            );
+
+
+            tr.appendChild(
+                productTd
+            );
+
+
+            /*
+             * ========================================
+             * OPTIONS
+             * ========================================
+             */
+
+            const optionsTd =
+                document.createElement(
+                    'td'
+                );
+
+
+            optionsTd.className =
+                'options';
+
+
+            optionsTd.appendChild(
+                createOptionsArea(
+                    row
+                )
+            );
+
+
+            tr.appendChild(
+                optionsTd
+            );
+
+
+            /*
+             * ========================================
+             * COST
+             * ========================================
+             */
+
+            const costTd =
+                document.createElement(
+                    'td'
+                );
+
+
+            costTd.className =
+                'cost';
+
+
+            const costInput =
+                document.createElement(
+                    'input'
+                );
+
+
+            costInput.type =
+                'number';
+
+
+            costInput.min =
+                '0';
+
+
+            costInput.step =
+                '0.01';
+
+
+            costInput.value =
+                row.cost ?? '';
+
+
+            costInput.addEventListener(
+                'change',
+                async function () {
+
+                    row.cost =
+                        Number(
+                            costInput.value
+                        ) || 0;
+
+
+                    updateTotals();
+
+
+                    await saveTable();
+
+                }
+            );
+
+
+            costTd.appendChild(
+                costInput
+            );
+
+
+            tr.appendChild(
+                costTd
+            );
+
+
+            /*
+             * ========================================
+             * FILE
+             * ========================================
+             */
+
+            const fileTd =
+                document.createElement(
+                    'td'
+                );
+
+
+            fileTd.className =
+                'file';
+
+
+            const fileInput =
+                document.createElement(
+                    'input'
+                );
+
+
+            fileInput.type =
+                'text';
+
+
+            fileInput.placeholder =
+                'File name';
+
+
+            fileInput.value =
+                row.fileName || '';
+
+
+            fileInput.addEventListener(
+                'change',
+                async function () {
+
+                    row.fileName =
+                        fileInput.value;
+
+
+                    await saveTable();
+
+                }
+            );
+
+
+            fileTd.appendChild(
+                fileInput
+            );
+
+
+            tr.appendChild(
+                fileTd
+            );
+
+
+            /*
+             * ========================================
+             * DELETE
+             * ========================================
+             */
+
+            const deleteTd =
+                document.createElement(
+                    'td'
+                );
+
+
+            deleteTd.className =
+                'delete';
+
+
+            const deleteButton =
+                document.createElement(
+                    'button'
+                );
+
+
+            deleteButton.className =
+                'delete-button';
+
+
+            deleteButton.textContent =
+                '×';
+
+
+            deleteButton.title =
+                'Delete row';
+
+
+            deleteButton.addEventListener(
+                'click',
+                async function () {
+
+                    table =
+                        table.filter(
+                            function (
+                                item
+                            ) {
+
+                                return (
+                                    item.id !==
+                                    row.id
+                                );
+
+                            }
+                        );
+
+
+                    render();
+
+
+                    await saveTable();
+
+                }
+            );
+
+
+            deleteTd.appendChild(
+                deleteButton
+            );
+
+
+            tr.appendChild(
+                deleteTd
+            );
+
+
+            body.appendChild(
+                tr
+            );
+
+        }
+    );
+
+
+    updateTotals();
 
 }
 
 
 /*
  * ========================================
- * PRINT
+ * UPDATE TOTALS
  * ========================================
  */
 
 
-function printDocument() {
+function updateTotals() {
 
-    window.print();
+    const totals =
+        calculateTotals();
+
+
+    const priceElement =
+        document.getElementById(
+            'price'
+        );
+
+
+    const subtotalElement =
+        document.getElementById(
+            'subtotal'
+        );
+
+
+    const ivuElement =
+        document.getElementById(
+            'ivu'
+        );
+
+
+    const totalElement =
+        document.getElementById(
+            'total'
+        );
+
+
+    const ivuLabel =
+        document.getElementById(
+            'ivuLabel'
+        );
+
+
+    if (priceElement) {
+
+        priceElement.textContent =
+            formatCurrency(
+                totals.price
+            );
+
+    }
+
+
+    if (subtotalElement) {
+
+        subtotalElement.textContent =
+            formatCurrency(
+                totals.subtotal
+            );
+
+    }
+
+
+    if (ivuElement) {
+
+        ivuElement.textContent =
+            formatCurrency(
+                totals.ivu
+            );
+
+    }
+
+
+    if (totalElement) {
+
+        totalElement.textContent =
+            formatCurrency(
+                totals.total
+            );
+
+    }
+
+
+    if (ivuLabel) {
+
+        ivuLabel.textContent =
+            'IVU (' +
+            (
+                IVU_RATE * 100
+            ).toFixed(2) +
+            '%)';
+
+    }
+
+
+    const footerStatus =
+        document.getElementById(
+            'footerStatus'
+        );
+
+
+    if (footerStatus) {
+
+        footerStatus.textContent =
+            'IVU: ' +
+            (
+                IVU_RATE * 100
+            ).toFixed(2) +
+            '%';
+
+    }
+
+}
+
+
+/*
+ * ========================================
+ * ADD ROW
+ * ========================================
+ */
+
+
+async function addRow() {
+
+    const activeProducts =
+        getActiveProducts();
+
+
+    const firstProduct =
+        activeProducts.length > 0
+            ? activeProducts[0]
+            : null;
+
+
+    const row = {
+
+        id:
+            generateId(),
+
+        quantity:
+            1,
+
+        productId:
+            firstProduct
+                ? firstProduct.id
+                : '',
+
+        productName:
+            firstProduct
+                ? firstProduct.name
+                : '',
+
+        description:
+            firstProduct
+                ? firstProduct.name
+                : '',
+
+        options:
+            {},
+
+        cost:
+            0,
+
+        fileName:
+            '',
+
+        finished:
+            false
+
+    };
+
+
+    if (
+        firstProduct &&
+        Array.isArray(
+            firstProduct.options
+        )
+    ) {
+
+        firstProduct.options.forEach(
+            function (
+                option
+            ) {
+
+                row.options[
+                    option.id
+                ] =
+                    getDefaultValue(
+                        option
+                    );
+
+            }
+        );
+
+    }
+
+
+    table.push(
+        row
+    );
+
+
+    render();
+
+
+    await saveTable();
+
+}
+
+
+/*
+ * ========================================
+ * OPEN PRINT WINDOW
+ * ========================================
+ */
+
+
+async function openPrintWindow() {
+
+    const button =
+        document.getElementById(
+            'printJob'
+        );
+
+
+    if (button) {
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            'Opening...';
+
+    }
+
+
+    try {
+
+        await t.modal({
+
+            title:
+                'Print Job',
+
+            url:
+                './print.html',
+
+            fullscreen:
+                true,
+
+            resizable:
+                true
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            'Could not open print window:',
+            error
+        );
+
+    } finally {
+
+        if (button) {
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                '🖨️ Print Job';
+
+        }
+
+    }
 
 }
 
@@ -1491,46 +2707,45 @@ function printDocument() {
  */
 
 
-t.render(async function () {
+t.render(
+    async function () {
+
+        const addRowButton =
+            document.getElementById(
+                'addRow'
+            );
 
 
-    const [
-        table,
-        cardInfo,
-        customFieldDefinitions
-    ] =
-        await Promise.all([
+        if (addRowButton) {
 
-            loadTable(),
+            addRowButton.addEventListener(
+                'click',
+                addRow
+            );
 
-            loadCardInfo(),
-
-            loadCustomFieldDefinitions()
-
-        ]);
+        }
 
 
-    render(
-        table,
-        cardInfo,
-        customFieldDefinitions
-    );
+        const printButton =
+            document.getElementById(
+                'printJob'
+            );
 
 
-    const printButton =
-        document.getElementById(
-            'printButton'
-        );
+        if (printButton) {
+
+            printButton.addEventListener(
+                'click',
+                openPrintWindow
+            );
+
+        }
 
 
-    if (printButton) {
+        await loadCatalog();
 
-        printButton.addEventListener(
-            'click',
-            printDocument
-        );
+
+        await loadTable();
 
     }
-
-
-});
+);
