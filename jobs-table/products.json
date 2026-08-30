@@ -1,20 +1,10 @@
 {
-    "version": 1,
+    "version": 2,
     "products": [
         {
-            "id": "tarjetas_presentacion",
-            "name": "Tarjetas de Presentación",
+            "id": "tarjeta_presentacion",
+            "name": "Tarjeta de Presentación",
             "options": [
-                {
-                    "id": "tamano",
-                    "label": "Tamaño",
-                    "type": "radioWithCustom",
-                    "options": [
-                        "2\" x 3.5\"",
-                        "Custom"
-                    ],
-                    "customPlaceholder": "Especifique tamaño..."
-                },
                 {
                     "id": "lados",
                     "label": "Lados",
@@ -23,6 +13,63 @@
                         "1 Lado",
                         "2 Lado"
                     ]
+                },
+                {
+                    "id": "cantidad",
+                    "label": "Cantidad",
+                    "type": "radio",
+                    "options": [
+                        "250",
+                        "500",
+                        "Custom"
+                    ],
+                    "customPlaceholder": "Especifique cantidad..."
+                },
+                {
+                    "id": "tamano",
+                    "label": "Tamaño",
+                    "type": "radio",
+                    "options": [
+                        "3.5\" x 2\"",
+                        "Custom"
+                    ],
+                    "customPlaceholder": "Especifique tamaño..."
+                },
+                {
+                    "id": "orientacion",
+                    "label": "Orientación",
+                    "type": "radio",
+                    "options": [
+                        "Vertical",
+                        "Horizontal"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "hojas_sueltas",
+            "name": "Hojas Sueltas",
+            "options": [
+                {
+                    "id": "tamano",
+                    "label": "Tamaño",
+                    "type": "radio",
+                    "options": [
+                        "Página Completa (8.5\" x 11\")",
+                        "Media Página (8.5\" x 5.5\")",
+                        "Un Cuarto Página (4.25\" x 5.5\")"
+                    ]
+                },
+                {
+                    "id": "cantidad",
+                    "label": "Cantidad",
+                    "type": "radio",
+                    "options": [
+                        "250",
+                        "500",
+                        "Custom"
+                    ],
+                    "customPlaceholder": "Especifique cantidad..."
                 },
                 {
                     "id": "orientacion",
@@ -34,200 +81,304 @@
                     ]
                 },
                 {
-                    "id": "cantidad",
-                    "label": "Cantidad",
-                    "type": "radioWithCustom",
+                    "id": "acabado",
+                    "label": "Acabado",
+                    "type": "radio",
                     "options": [
-                        "250",
-                        "500",
-                        "Custom"
-                    ],
-                    "customPlaceholder": "Especifique cantidad..."
+                        "Regular",
+                        "Gloss"
+                    ]
                 }
             ]
         },
         {
-            "id": "business_cards",
-            "name": "Business Cards",
+            "id": "postcard",
+            "name": "Postcard",
             "options": [
                 {
-                    "id": "paper",
-                    "label": "Paper",
+                    "id": "tamano",
+                    "label": "Tamaño",
                     "type": "radio",
                     "options": [
-                        "14pt Glossy",
-                        "14pt Matte",
-                        "16pt Glossy",
-                        "16pt Matte"
-                    ]
+                        "4\" x 6\"",
+                        "Custom"
+                    ],
+                    "customPlaceholder": "Especifique tamaño..."
                 },
                 {
-                    "id": "printing",
-                    "label": "Printing",
+                    "id": "orientacion",
+                    "label": "Orientación",
                     "type": "radio",
                     "options": [
-                        "Full Color",
-                        "Black & White"
+                        "Vertical",
+                        "Horizontal"
                     ]
-                },
-                {
-                    "id": "sides",
-                    "label": "Sides",
-                    "type": "radio",
-                    "options": [
-                        "Single-sided",
-                        "Double-sided"
-                    ]
-                },
-                {
-                    "id": "rounded_corners",
-                    "label": "Rounded Corners",
-                    "type": "checkbox"
-                },
-                {
-                    "id": "lamination",
-                    "label": "Lamination",
-                    "type": "checkbox"
                 }
             ]
         },
         {
-            "id": "flyers",
-            "name": "Flyers",
+            "id": "dboard",
+            "name": "DBoard",
             "options": [
                 {
-                    "id": "size",
-                    "label": "Size",
-                    "type": "radio",
-                    "options": [
-                        "Letter",
-                        "Legal",
-                        "11 × 17"
-                    ]
-                },
-                {
-                    "id": "paper",
-                    "label": "Paper",
-                    "type": "radio",
-                    "options": [
-                        "80lb Glossy",
-                        "80lb Matte",
-                        "100lb Glossy",
-                        "100lb Matte"
-                    ]
-                },
-                {
-                    "id": "printing",
-                    "label": "Printing",
-                    "type": "radio",
-                    "options": [
-                        "Full Color",
-                        "Black & White"
-                    ]
-                },
-                {
-                    "id": "sides",
-                    "label": "Sides",
-                    "type": "radio",
-                    "options": [
-                        "Single-sided",
-                        "Double-sided"
-                    ]
-                },
-                {
-                    "id": "folding",
-                    "label": "Folding",
-                    "type": "checkbox"
-                }
-            ]
-        },
-        {
-            "id": "banner",
-            "name": "Banner",
-            "options": [
-                {
-                    "id": "width",
-                    "label": "Width",
-                    "type": "number"
-                },
-                {
-                    "id": "height",
-                    "label": "Height",
-                    "type": "number"
-                },
-                {
-                    "id": "material",
-                    "label": "Material",
-                    "type": "radioWithCustom",
-                    "options": [
-                        "Vinyl",
-                        "Mesh",
-                        "Custom"
-                    ],
-                    "customPlaceholder": "Specify material..."
-                },
-                {
-                    "id": "grommets",
-                    "label": "Grommets",
-                    "type": "checkbox"
-                }
-            ]
-        },
-        {
-            "id": "dummy",
-            "name": "Dummy",
-            "options": [
-                {
-                    "id": "dummy_dropdown",
-                    "label": "Dropdown",
-                    "type": "select",
-                    "options": [
-                        "Option A",
-                        "Option B",
-                        "Option C",
-                        "Custom"
-                    ],
-                    "customPlaceholder": "Type your custom option..."
-                },
-                {
-                    "id": "dummy_radio",
-                    "label": "Radio",
-                    "type": "radio",
-                    "options": [
-                        "Option A",
-                        "Option B",
-                        "Option C",
-                        "Custom"
-                    ],
-                    "customPlaceholder": "Type your custom option..."
-                },
-                {
-                    "id": "dummy_checkbox",
-                    "label": "Checkbox",
-                    "type": "checkbox"
-                },
-                {
-                    "id": "dummy_checkbox_multiple",
-                    "label": "Check Boxes",
-                    "type": "checkboxGroup",
-                    "options": [
-                        "Option A",
-                        "Option B",
-                        "Option C",
-                        "Custom"
-                    ],
-                    "customPlaceholder": "Type your custom option..."
-                },
-                {
-                    "id": "dummy_text",
-                    "label": "Text",
+                    "id": "tamano",
+                    "label": "Tamaño",
                     "type": "text",
-                    "placeholder": "Type something..."
+                    "placeholder": "Especifique tamaño..."
                 },
                 {
-                    "id": "dummy_number",
-                    "label": "Number",
+                    "id": "tipo_vinyl",
+                    "label": "Tipo Vinyl",
+                    "type": "radio",
+                    "options": [
+                        "Regular",
+                        "3M"
+                    ]
+                },
+                {
+                    "id": "troquelado",
+                    "label": "Troquelado",
+                    "type": "checkbox"
+                },
+                {
+                    "id": "orientacion",
+                    "label": "Orientación",
+                    "type": "radio",
+                    "options": [
+                        "Vertical",
+                        "Horizontal",
+                        "N/A"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "pvc",
+            "name": "PVC",
+            "options": [
+                {
+                    "id": "tamano",
+                    "label": "Tamaño",
+                    "type": "text",
+                    "placeholder": "Especifique tamaño..."
+                },
+                {
+                    "id": "grosor",
+                    "label": "Grosor",
+                    "type": "radio",
+                    "options": [
+                        "1/4\"",
+                        "1/2\"",
+                        "3/4\""
+                    ]
+                },
+                {
+                    "id": "orientacion",
+                    "label": "Orientación",
+                    "type": "radio",
+                    "options": [
+                        "Vertical",
+                        "Horizontal",
+                        "N/A"
+                    ]
+                },
+                {
+                    "id": "tipo_vinyl",
+                    "label": "Tipo Vinyl",
+                    "type": "radio",
+                    "options": [
+                        "Regular",
+                        "3M"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "acm",
+            "name": "ACM",
+            "options": [
+                {
+                    "id": "tamano",
+                    "label": "Tamaño",
+                    "type": "text",
+                    "placeholder": "Especifique tamaño..."
+                },
+                {
+                    "id": "orientacion",
+                    "label": "Orientación",
+                    "type": "radio",
+                    "options": [
+                        "Vertical",
+                        "Horizontal",
+                        "N/A"
+                    ]
+                },
+                {
+                    "id": "tipo_vinyl",
+                    "label": "Tipo Vinyl",
+                    "type": "radio",
+                    "options": [
+                        "Regular",
+                        "3M"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "banner_lona",
+            "name": "Banner/Lona",
+            "options": [
+                {
+                    "id": "tamano",
+                    "label": "Tamaño",
+                    "type": "text",
+                    "placeholder": "Especifique tamaño..."
+                },
+                {
+                    "id": "terminacion",
+                    "label": "Terminación",
+                    "type": "radio",
+                    "options": [
+                        "Palos",
+                        "Argollas",
+                        "Reforzado"
+                    ]
+                },
+                {
+                    "id": "cantidad_argollas",
+                    "label": "Cantidad de Argollas (si aplica)",
                     "type": "number"
+                }
+            ]
+        },
+        {
+            "id": "microperforado",
+            "name": "Microperforado",
+            "options": [
+                {
+                    "id": "tamano",
+                    "label": "Tamaño",
+                    "type": "text",
+                    "placeholder": "Especifique tamaño..."
+                }
+            ]
+        },
+        {
+            "id": "frost",
+            "name": "Frost",
+            "options": [
+                {
+                    "id": "tamano",
+                    "label": "Tamaño",
+                    "type": "text",
+                    "placeholder": "Especifique tamaño..."
+                }
+            ]
+        },
+        {
+            "id": "vinyles",
+            "name": "Vinyles",
+            "options": [
+                {
+                    "id": "tamano",
+                    "label": "Tamaño",
+                    "type": "text",
+                    "placeholder": "Especifique tamaño..."
+                },
+                {
+                    "id": "laminado",
+                    "label": "Laminado",
+                    "type": "checkbox"
+                },
+                {
+                    "id": "tipo_laminado",
+                    "label": "Tipo de Laminado (si aplica)",
+                    "type": "radio",
+                    "options": [
+                        "Gloss Eco",
+                        "Matte Eco",
+                        "8509",
+                        "8510",
+                        "8519",
+                        "8520"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "libretas_recibo",
+            "name": "Libretas de Recibo",
+            "options": [
+                {
+                    "id": "tamano",
+                    "label": "Tamaño",
+                    "type": "radio",
+                    "options": [
+                        "Página Completa (8.5\" x 11\")",
+                        "Media Página (8.5\" x 5.5\")",
+                        "Un Cuarto Página (4.25\" x 5.5\")"
+                    ]
+                },
+                {
+                    "id": "partes",
+                    "label": "Partes",
+                    "type": "radio",
+                    "options": [
+                        "1 Parte",
+                        "2 Partes",
+                        "3 Partes",
+                        "4 Partes"
+                    ]
+                },
+                {
+                    "id": "color",
+                    "label": "Color",
+                    "type": "radio",
+                    "options": [
+                        "Blanco y Negro",
+                        "Full Color"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "sets",
+            "name": "Sets",
+            "options": [
+                {
+                    "id": "terminacion",
+                    "label": "Terminación",
+                    "type": "radio",
+                    "options": [
+                        "Ranuradas",
+                        "Pegadas"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "rotulacion",
+            "name": "Rotulación",
+            "options": [
+                {
+                    "id": "tamano",
+                    "label": "Tamaño",
+                    "type": "text",
+                    "placeholder": "Especifique tamaño..."
+                },
+                {
+                    "id": "tipo",
+                    "label": "Tipo",
+                    "type": "radio",
+                    "options": [
+                        "Cajuela",
+                        "PVC"
+                    ]
+                },
+                {
+                    "id": "iluminacion",
+                    "label": "Iluminación (solo si es PVC)",
+                    "type": "checkbox"
                 }
             ]
         }
