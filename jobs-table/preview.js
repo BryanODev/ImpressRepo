@@ -3,6 +3,9 @@ const t = window.TrelloPowerUp.iframe();
 const STORAGE_KEY = 'itemsTable';
 
 
+/*
+ * Load table data.
+ */
 async function loadTable() {
 
     try {
@@ -240,15 +243,15 @@ async function openTable() {
 
     await t.modal({
 
-    title: 'Task Table',
+        title: 'Task Table',
 
-    url: './table.html',
+        url: './table.html',
 
-    fullscreen: true,
+        fullscreen: true,
 
-    resizable: true
+        resizable: true
 
-});
+    });
 
 }
 
@@ -258,12 +261,17 @@ async function openTable() {
  */
 t.render(async function () {
 
-    const table = await loadTable();
+    const table =
+        await loadTable();
+
 
     render(table);
 
+
     const openButton =
-        document.getElementById('openTable');
+        document.getElementById(
+            'openTable'
+        );
 
 
     if (!openButton) {
@@ -281,10 +289,5 @@ t.render(async function () {
         'click',
         openTable
     );
-
-
-    // Automatically size the Trello iframe
-    // to match the preview content.
-    t.sizeTo('body');
 
 });

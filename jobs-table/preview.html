@@ -8,14 +8,27 @@
     <title>Items Preview</title>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
 
 
+        html,
         body {
 
             margin: 0;
+
+            padding: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+        }
+
+
+        body {
 
             padding: 10px;
 
@@ -31,6 +44,10 @@
 
             color: #172b4d;
 
+            display: flex;
+
+            flex-direction: column;
+
         }
 
 
@@ -43,6 +60,8 @@
             align-items: center;
 
             margin-bottom: 8px;
+
+            flex-shrink: 0;
 
         }
 
@@ -64,7 +83,9 @@
 
             gap: 4px;
 
-            max-height: 250px;
+            flex: 1;
+
+            min-height: 0;
 
             overflow-y: auto;
 
@@ -82,6 +103,8 @@
             padding: 5px 6px;
 
             border-radius: 3px;
+
+            flex-shrink: 0;
 
         }
 
@@ -114,30 +137,6 @@
 
         }
 
-        .preview-price {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            margin-top: 10px;
-
-            padding-top: 8px;
-
-            border-top: 1px solid #dfe1e6;
-
-            font-size: 14px;
-
-        }
-
-
-        .preview-price strong {
-
-            font-size: 15px;
-
-        }
 
         .finished {
 
@@ -155,6 +154,32 @@
             text-align: center;
 
             color: #6b778c;
+
+        }
+
+
+        .preview-price {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-top: 10px;
+
+            padding-top: 8px;
+
+            border-top: 1px solid #dfe1e6;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .preview-price strong {
+
+            font-size: 15px;
 
         }
 
@@ -181,6 +206,8 @@
 
             cursor: pointer;
 
+            flex-shrink: 0;
+
         }
 
 
@@ -189,6 +216,7 @@
             background: #0055cc;
 
         }
+
     </style>
 
 </head>
@@ -200,7 +228,9 @@
 
         <strong>Items</strong>
 
-        <span id="progress" class="progress">
+        <span
+            id="progress"
+            class="progress">
 
             0 / 0 finished
 
@@ -209,7 +239,9 @@
     </div>
 
 
-    <div id="items" class="items">
+    <div
+        id="items"
+        class="items">
     </div>
 
 
@@ -224,7 +256,9 @@
     </div>
 
 
-    <button id="openTable" class="open-button">
+    <button
+        id="openTable"
+        class="open-button">
 
         Open Task Table
 
