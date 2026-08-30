@@ -8,6 +8,25 @@ const t =
  * ========================================
  */
 
+<<<<<<< HEAD
+=======
+
+/*
+ * Keep this synchronized with table.js.
+ *
+ * 11.5% = 0.115
+ */
+const IVU_RATE = 0.115;
+
+
+/*
+ * ========================================
+ * STORAGE
+ * ========================================
+ */
+
+
+>>>>>>> parent of 7199f0c (Info in print)
 const STORAGE_KEY =
     'itemsTable';
 
@@ -137,6 +156,7 @@ async function loadCardInfo() {
 
     try {
 
+<<<<<<< HEAD
         /*
          * Card name.
          */
@@ -145,6 +165,12 @@ async function loadCardInfo() {
             await t.get(
                 'card',
                 'name'
+=======
+        const card =
+            await t.card(
+                'name',
+                'id'
+>>>>>>> parent of 7199f0c (Info in print)
             );
 
 
@@ -232,6 +258,7 @@ async function loadCardInfo() {
 
 /*
  * ========================================
+<<<<<<< HEAD
  * GET PRODUCT
  * ========================================
  */
@@ -261,6 +288,8 @@ function getProduct(productId) {
 
 /*
  * ========================================
+=======
+>>>>>>> parent of 7199f0c (Info in print)
  * FORMAT CURRENCY
  * ========================================
  */
@@ -649,6 +678,7 @@ function formatOptionValue(
 
 /*
  * ========================================
+<<<<<<< HEAD
  * CREATE PRINT OPTION
  * ========================================
  */
@@ -1083,6 +1113,8 @@ function render() {
 
 /*
  * ========================================
+=======
+>>>>>>> parent of 7199f0c (Info in print)
  * CALCULATE TOTALS
  * ========================================
  */
@@ -1149,10 +1181,317 @@ function updateTotals() {
 
 
     /*
+<<<<<<< HEAD
      * Price.
      *
      * Your print HTML contains
      * #price, so populate it too.
+=======
+     * HEADER
+     */
+    const header =
+        document.createElement(
+            'div'
+        );
+
+
+    header.className =
+        'product-header';
+
+
+    const productName =
+        document.createElement(
+            'div'
+        );
+
+
+    productName.className =
+        'product-name';
+
+
+    productName.textContent =
+        row.productName ||
+        row.description ||
+        'Untitled Item';
+
+
+    const status =
+        document.createElement(
+            'div'
+        );
+
+
+    status.className =
+        'product-status';
+
+
+    if (row.finished) {
+
+        status.classList.add(
+            'status-finished'
+        );
+
+
+        status.textContent =
+            '✓ FINISHED';
+
+    } else {
+
+        status.classList.add(
+            'status-pending'
+        );
+
+
+        status.textContent =
+            'PENDING';
+
+    }
+
+
+    header.appendChild(
+        productName
+    );
+
+
+    header.appendChild(
+        status
+    );
+
+
+    card.appendChild(
+        header
+    );
+
+
+    /*
+     * BODY
+     */
+    const body =
+        document.createElement(
+            'div'
+        );
+
+
+    body.className =
+        'product-body';
+
+
+    /*
+     * Basic information.
+     */
+    const grid =
+        document.createElement(
+            'div'
+        );
+
+
+    grid.className =
+        'product-grid';
+
+
+    grid.appendChild(
+        createDetail(
+            'Quantity',
+            String(
+                Number(row.quantity) || 0
+            )
+        )
+    );
+
+
+    grid.appendChild(
+        createDetail(
+            'Cost',
+            formatCurrency(
+                Number(row.cost) || 0
+            )
+        )
+    );
+
+
+    if (row.fileName) {
+
+        grid.appendChild(
+            createDetail(
+                'File Name',
+                row.fileName
+            )
+        );
+
+    }
+
+
+    body.appendChild(
+        grid
+    );
+
+
+    /*
+     * OPTIONS
+     */
+    if (
+        row.options &&
+        typeof row.options === 'object' &&
+        Object.keys(row.options).length > 0
+    ) {
+
+        const optionSection =
+            document.createElement(
+                'div'
+            );
+
+
+        optionSection.className =
+            'option-section';
+
+
+        const optionTitle =
+            document.createElement(
+                'div'
+            );
+
+
+        optionTitle.className =
+            'option-title';
+
+
+        optionTitle.textContent =
+            'Product Options';
+
+
+        optionSection.appendChild(
+            optionTitle
+        );
+
+
+        const optionList =
+            document.createElement(
+                'div'
+            );
+
+
+        optionList.className =
+            'option-list';
+
+
+        /*
+         * We intentionally use the
+         * SAVED option data.
+         *
+         * This means old options survive
+         * catalog changes.
+         */
+        Object.keys(
+            row.options
+        ).forEach(
+            function (optionId) {
+
+                optionList.appendChild(
+                    createOption(
+                        formatOptionLabel(
+                            optionId
+                        ),
+                        row.options[
+                            optionId
+                        ],
+                        false
+                    )
+                );
+
+            }
+        );
+
+
+        optionSection.appendChild(
+            optionList
+        );
+
+
+        body.appendChild(
+            optionSection
+        );
+
+    }
+
+
+    card.appendChild(
+        body
+    );
+
+
+    return card;
+
+}
+
+
+/*
+ * ========================================
+ * FORMAT OPTION LABEL
+ * ========================================
+ */
+
+
+function formatOptionLabel(id) {
+
+    if (!id) {
+
+        return '';
+
+    }
+
+
+    return id
+        .replace(
+            /_/g,
+            ' '
+        )
+        .replace(
+            /\b\w/g,
+            function (letter) {
+
+                return letter.toUpperCase();
+
+            }
+        );
+
+}
+
+
+/*
+ * ========================================
+ * RENDER
+ * ========================================
+ */
+
+
+function render(
+    table,
+    cardInfo
+) {
+
+    /*
+     * Card name.
+     */
+    const cardName =
+        document.getElementById(
+            'cardName'
+        );
+
+
+    if (cardName) {
+
+        cardName.textContent =
+            cardInfo.name ||
+            'Untitled Card';
+
+    }
+
+
+    /*
+     * Job ID.
+     *
+     * Using the Trello card ID.
+>>>>>>> parent of 7199f0c (Info in print)
      */
 
     const priceElement =
@@ -1163,19 +1502,34 @@ function updateTotals() {
 
     if (priceElement) {
 
+<<<<<<< HEAD
         priceElement.textContent =
             formatCurrency(
                 totals.subtotal
             );
+=======
+        jobId.textContent =
+            cardInfo.id
+                ? cardInfo.id
+                    .substring(0, 8)
+                    .toUpperCase()
+                : '—';
+>>>>>>> parent of 7199f0c (Info in print)
 
     }
 
 
     /*
+<<<<<<< HEAD
      * SubTotal.
      */
 
     const subtotalElement =
+=======
+     * Date.
+     */
+    const date =
+>>>>>>> parent of 7199f0c (Info in print)
         document.getElementById(
             'subtotal'
         );
@@ -1364,17 +1718,51 @@ document.addEventListener(
             );
 
 
+<<<<<<< HEAD
         if (printButton) {
+=======
+    const [
+        table,
+        cardInfo
+    ] =
+        await Promise.all([
+>>>>>>> parent of 7199f0c (Info in print)
 
             printButton.addEventListener(
                 'click',
                 printPage
             );
 
+<<<<<<< HEAD
         }
 
 
         await loadData();
+=======
+            loadCardInfo()
+
+        ]);
+
+
+    render(
+        table,
+        cardInfo
+    );
+
+
+    const printButton =
+        document.getElementById(
+            'printButton'
+        );
+
+
+    if (printButton) {
+
+        printButton.addEventListener(
+            'click',
+            printDocument
+        );
+>>>>>>> parent of 7199f0c (Info in print)
 
     }
 );
