@@ -246,8 +246,12 @@
                 },
                 {
                     "id": "cantidad_argollas",
-                    "label": "Cantidad de Argollas (si aplica)",
-                    "type": "number"
+                    "label": "Cantidad de Argollas",
+                    "type": "number",
+                    "dependsOn": {
+                        "id": "terminacion",
+                        "equals": "Argollas"
+                    }
                 }
             ]
         },
@@ -292,7 +296,7 @@
                 },
                 {
                     "id": "tipo_laminado",
-                    "label": "Tipo de Laminado (si aplica)",
+                    "label": "Tipo de Laminado",
                     "type": "radio",
                     "options": [
                         "Gloss Eco",
@@ -301,7 +305,11 @@
                         "8510",
                         "8519",
                         "8520"
-                    ]
+                    ],
+                    "dependsOn": {
+                        "id": "laminado",
+                        "equals": true
+                    }
                 }
             ]
         },
@@ -338,13 +346,7 @@
                         "Blanco y Negro",
                         "Full Color"
                     ]
-                }
-            ]
-        },
-        {
-            "id": "sets",
-            "name": "Sets",
-            "options": [
+                },
                 {
                     "id": "terminacion",
                     "label": "Terminación",
@@ -377,8 +379,12 @@
                 },
                 {
                     "id": "iluminacion",
-                    "label": "Iluminación (solo si es PVC)",
-                    "type": "checkbox"
+                    "label": "Iluminación",
+                    "type": "checkbox",
+                    "dependsOn": {
+                        "id": "tipo",
+                        "equals": "PVC"
+                    }
                 }
             ]
         }

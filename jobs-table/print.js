@@ -301,6 +301,62 @@ function isCustomSelection(value) {
 }
 
 
+/*
+ * ========================================
+ * CONDITIONAL FIELDS (dependsOn)
+ * ========================================
+ *
+ * Mirrors the same check table.js uses to
+ * show/hide a field. A field whose
+ * dependency isn't met (e.g. "Cantidad de
+ * Argollas" when Terminación isn't
+ * "Argollas") is left out of the print
+ * entirely, even if it still has an old
+ * value saved from a previous selection.
+ */
+
+
+function isDependencyMet(dependsOn, row) {
+
+    if (!dependsOn || !dependsOn.id) {
+        return true;
+    }
+
+    const options =
+        (row && row.options) || {};
+
+    const currentValue =
+        options[dependsOn.id];
+
+    if (Array.isArray(currentValue)) {
+
+        if (dependsOn.equals !== undefined) {
+            return currentValue.includes(dependsOn.equals);
+        }
+
+        if (Array.isArray(dependsOn.in)) {
+            return dependsOn.in.some(function (possibleValue) {
+                return currentValue.includes(possibleValue);
+            });
+        }
+
+        return false;
+
+    }
+
+    if (dependsOn.equals !== undefined) {
+        return currentValue === dependsOn.equals;
+    }
+
+    if (Array.isArray(dependsOn.in)) {
+        return dependsOn.in.indexOf(currentValue) !== -1;
+    }
+
+    return true;
+
+}
+
+
 function resolveRawOptionValue(optionId, row) {
 
     const options =
@@ -813,30 +869,49 @@ function buildOptionRows(row, product) {
 
     });
 
-    return orderedKeys.map(function (key) {
+    return orderedKeys
+        .filter(function (key) {
 
-        const def =
-            findOptionDefinition(key, product);
+            const def =
+                findOptionDefinition(key, product);
 
-        const label =
-            def && def.label
-                ? def.label
-                : formatOptionLabel(key);
+            /*
+             * Skip fields whose dependency
+             * isn't currently met (e.g. Argollas
+             * amount when Terminación is
+             * something else).
+             */
+            if (def && def.dependsOn) {
+                return isDependencyMet(def.dependsOn, row);
+            }
 
-        /*
-         * Only mark as deprecated when we
-         * actually have a catalog to compare
-         * against and the option isn't in it.
-         */
-        const deprecated =
-            product ? !def : false;
+            return true;
 
-        const value =
-            resolveRawOptionValue(key, row);
+        })
+        .map(function (key) {
 
-        return { label, value, deprecated };
+            const def =
+                findOptionDefinition(key, product);
 
-    });
+            const label =
+                def && def.label
+                    ? def.label
+                    : formatOptionLabel(key);
+
+            /*
+             * Only mark as deprecated when we
+             * actually have a catalog to compare
+             * against and the option isn't in it.
+             */
+            const deprecated =
+                product ? !def : false;
+
+            const value =
+                resolveRawOptionValue(key, row);
+
+            return { label, value, deprecated };
+
+        });
 
 }
 

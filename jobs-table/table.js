@@ -618,6 +618,129 @@ function isCustomOption(value) {
 
 /*
  * ========================================
+ * CONDITIONAL FIELDS (dependsOn)
+ * ========================================
+ *
+ * An option definition can declare:
+ *
+ * "dependsOn": { "id": "terminacion", "equals": "Argollas" }
+ *
+ * ...meaning this field only shows once the
+ * option with id "terminacion" is currently
+ * set to "Argollas". Works against any
+ * controlling field type (radio/select value,
+ * checkbox boolean, or a checkboxGroup array —
+ * in that last case "equals" is checked
+ * against the array's contents).
+ *
+ * Use "in": ["A", "B"] instead of "equals" to
+ * match against multiple possible values.
+ */
+
+
+function isDependencyMet(
+    dependsOn,
+    row
+) {
+
+    if (
+        !dependsOn ||
+        !dependsOn.id
+    ) {
+
+        return true;
+
+    }
+
+
+    const options =
+        (row && row.options) ||
+        {};
+
+
+    const currentValue =
+        options[
+            dependsOn.id
+        ];
+
+
+    if (
+        Array.isArray(
+            currentValue
+        )
+    ) {
+
+        if (
+            dependsOn.equals !==
+            undefined
+        ) {
+
+            return currentValue.includes(
+                dependsOn.equals
+            );
+
+        }
+
+
+        if (
+            Array.isArray(
+                dependsOn.in
+            )
+        ) {
+
+            return dependsOn.in.some(
+                function (possibleValue) {
+
+                    return currentValue.includes(
+                        possibleValue
+                    );
+
+                }
+            );
+
+        }
+
+
+        return false;
+
+    }
+
+
+    if (
+        dependsOn.equals !==
+        undefined
+    ) {
+
+        return (
+            currentValue ===
+            dependsOn.equals
+        );
+
+    }
+
+
+    if (
+        Array.isArray(
+            dependsOn.in
+        )
+    ) {
+
+        return (
+            dependsOn.in.indexOf(
+                currentValue
+            ) !== -1
+        );
+
+    }
+
+
+    return true;
+
+}
+
+
+/*
+ * ========================================
  * CREATE CUSTOM INPUT
  * ========================================
  */
@@ -1716,6 +1839,14 @@ function createOptionsArea(row) {
     }
 
 
+    /*
+     * Rows that need to be shown/hidden
+     * based on another field's value.
+     */
+    const dependentRows =
+        [];
+
+
     if (
         Array.isArray(
             product.options
@@ -1781,10 +1912,82 @@ function createOptionsArea(row) {
                     wrapper
                 );
 
+
+                if (
+                    optionDefinition.dependsOn
+                ) {
+
+                    dependentRows.push(
+                        {
+                            wrapper:
+                                wrapper,
+
+                            dependsOn:
+                                optionDefinition.dependsOn
+                        }
+                    );
+
+                }
+
             }
         );
 
     }
+
+
+    /*
+     * Show/hide every conditional row
+     * based on the row's CURRENT option
+     * values.
+     */
+    function refreshDependentRows() {
+
+        dependentRows.forEach(
+            function (entry) {
+
+                const visible =
+                    isDependencyMet(
+                        entry.dependsOn,
+                        row
+                    );
+
+
+                entry.wrapper.style.display =
+                    visible
+                        ? ''
+                        : 'none';
+
+            }
+        );
+
+    }
+
+
+    refreshDependentRows();
+
+
+    /*
+     * Any control inside this options area
+     * can change a field that another field
+     * depends on (a radio pick, a checkbox
+     * toggle, typing a number, etc). Rather
+     * than hook every individual control,
+     * listen once on the container — this
+     * fires after the control's own change
+     * handler has already updated
+     * row.options, so it always re-checks
+     * against fresh values.
+     */
+    container.addEventListener(
+        'change',
+        refreshDependentRows
+    );
+
+
+    container.addEventListener(
+        'input',
+        refreshDependentRows
+    );
 
 
     return container;
