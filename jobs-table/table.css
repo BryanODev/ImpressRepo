@@ -268,6 +268,13 @@ select {
 }
 
 
+/*
+ * ========================================
+ * OPTIONS
+ * ========================================
+ */
+
+
 .options-container {
 
     display: flex;
@@ -285,7 +292,7 @@ select {
 
     display: flex;
 
-    align-items: center;
+    align-items: flex-start;
 
     gap: 8px;
 
@@ -302,6 +309,8 @@ select {
 
     font-size: 12px;
 
+    padding-top: 6px;
+
 }
 
 
@@ -309,7 +318,9 @@ select {
 
     flex: 1;
 
-    min-width: 140px;
+    min-width: 0;
+
+    width: 100%;
 
 }
 
@@ -319,20 +330,18 @@ select {
  * RADIO GROUP
  * ========================================
  *
- * Radio choices stay on the same line
- * and wrap only when there isn't enough
- * room.
+ * Radios stay on the same line whenever
+ * there is enough room.
  *
  * Example:
  *
- * ○ A    ○ B    ○ C
- * ○ D
+ * ○ Option 1    ○ Option 2    ○ Option 3
+ * ○ Option 4
  *
  */
 
-.option-radio-group {
 
-    width: 100%;
+.option-radio-group {
 
     display: flex;
 
@@ -342,129 +351,57 @@ select {
 
     align-items: center;
 
-    gap: 6px 16px;
+    gap: 6px 14px;
 
-    padding: 2px 0;
+    width: 100%;
+
+    min-width: 0;
+
+    padding: 3px 0;
 
 }
 
+
+/*
+ * Each radio + label is kept together.
+ */
 
 .option-radio-item {
 
     display: inline-flex;
 
+    flex-direction: row;
+
     align-items: center;
-
-    flex: 0 0 auto;
-
-    width: auto;
 
     gap: 5px;
 
-    cursor: pointer;
+    width: auto;
+
+    flex: 0 0 auto;
 
     white-space: nowrap;
 
     color: #172b4d;
 
-    font-size: 13px;
-
-}
-
-
-.option-radio-item input[type="radio"] {
-
-    width: 16px;
-
-    height: 16px;
-
-    margin: 0;
-
-    padding: 0;
-
-    flex: 0 0 16px;
-
     cursor: pointer;
 
 }
 
 
-.option-radio-text {
-
-    display: inline-block;
-
-    line-height: 20px;
-
-}
-
-
 /*
- * Custom text field attached to
- * the Custom radio option.
+ * Custom text field next to "Custom".
  */
 
-.radio-custom-input {
+.option-radio-item .radio-custom-input {
 
-    width: 120px !important;
-
-    min-width: 120px;
-
-    padding: 4px 6px !important;
-
-    border: 1px solid #dfe1e6 !important;
-
-    border-radius: 3px;
-
-    background: #ffffff;
-
-}
-
-
-.radio-custom-input:focus {
-
-    border-color: #0c66e4 !important;
-
-    box-shadow:
-        0 0 0 1px #0c66e4 !important;
-
-}
-
-
-/*
- * ========================================
- * SELECT WITH CUSTOM
- * ========================================
- */
-
-.option-select-custom {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 6px;
-
-    width: 100%;
-
-}
-
-
-.option-select-custom select {
-
-    flex: 1;
-
-    min-width: 0;
-
-}
-
-
-.custom-option-input {
-
-    flex: 1;
+    width: 140px;
 
     min-width: 100px;
 
-    padding: 6px;
+    padding: 4px 6px;
+
+    margin-left: 2px;
 
     border: 1px solid #dfe1e6;
 
@@ -475,7 +412,7 @@ select {
 }
 
 
-.custom-option-input:focus {
+.option-radio-item .radio-custom-input:focus {
 
     border-color: #0c66e4;
 
@@ -487,9 +424,10 @@ select {
 
 /*
  * ========================================
- * CHECKBOX OPTION
+ * CHECKBOX
  * ========================================
  */
+
 
 .option-checkbox {
 
@@ -499,7 +437,11 @@ select {
 
     gap: 7px;
 
+    width: auto;
+
     cursor: pointer;
+
+    padding: 3px 0;
 
 }
 
@@ -512,7 +454,16 @@ select {
 
     flex-shrink: 0;
 
+    margin: 0;
+
 }
+
+
+/*
+ * ========================================
+ * DEPRECATED
+ * ========================================
+ */
 
 
 .deprecated {
@@ -524,6 +475,13 @@ select {
 }
 
 
+/*
+ * ========================================
+ * EMPTY
+ * ========================================
+ */
+
+
 .empty {
 
     text-align: center;
@@ -533,6 +491,13 @@ select {
     color: #6b778c;
 
 }
+
+
+/*
+ * ========================================
+ * ADD ROW
+ * ========================================
+ */
 
 
 .add-row {
@@ -563,6 +528,13 @@ select {
     background: #0055cc;
 
 }
+
+
+/*
+ * ========================================
+ * BOTTOM BAR
+ * ========================================
+ */
 
 
 .bottom-bar {
@@ -660,6 +632,13 @@ select {
     font-weight: 600;
 
 }
+
+
+/*
+ * ========================================
+ * PRINT BUTTON
+ * ========================================
+ */
 
 
 .print-button {
