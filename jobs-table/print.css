@@ -71,20 +71,126 @@ body {
 }
 
 
-.company-name {
+.header-left {
 
-    font-size: 25px;
-
-    font-weight: 800;
-
-    letter-spacing: 0.5px;
+    min-width: 0;
 
 }
 
 
+.header-brand-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+}
+
+
+.logo-container {
+
+    flex-shrink: 0;
+
+}
+
+
+.company-logo {
+
+    width: 200px;
+
+    height: auto;
+
+    display: block;
+
+}
+
+
+/*
+ * ========================================
+ * SHOP CONTACT
+ * ========================================
+ */
+
+
+.shop-contact {
+
+    padding-left: 18px;
+
+    border-left: 1px solid #dfe1e6;
+
+    font-size: 11px;
+
+    line-height: 1.65;
+
+    color: #4a4a4a;
+
+}
+
+
+.contact-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    white-space: nowrap;
+
+}
+
+
+.contact-label {
+
+    font-weight: 700;
+
+    color: #172b4d;
+
+}
+
+
+.whatsapp-contact {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    margin-left: 8px;
+
+}
+
+
+.whatsapp-icon {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 13px;
+
+    height: 13px;
+
+    font-size: 11px;
+
+}
+
+
+/*
+ * ========================================
+ * DOCUMENT TITLE
+ * ========================================
+ */
+
+
 .document-title {
 
-    margin-top: 3px;
+    margin-top: 6px;
 
     font-size: 13px;
 
@@ -97,9 +203,18 @@ body {
 }
 
 
+/*
+ * ========================================
+ * JOB INFO
+ * ========================================
+ */
+
+
 .job-info {
 
     text-align: right;
+
+    flex-shrink: 0;
 
 }
 
