@@ -1,14 +1,10 @@
 {
     "version": 1,
-
     "products": [
-
         {
             "id": "tarjetas_presentacion",
             "name": "Tarjetas de Presentación",
-
             "options": [
-
                 {
                     "id": "tamano",
                     "label": "Tamaño",
@@ -19,7 +15,6 @@
                     ],
                     "customPlaceholder": "Especifique tamaño..."
                 },
-
                 {
                     "id": "lados",
                     "label": "Lados",
@@ -29,7 +24,6 @@
                         "2 Lado"
                     ]
                 },
-
                 {
                     "id": "orientacion",
                     "label": "Orientación",
@@ -39,7 +33,6 @@
                         "Horizontal"
                     ]
                 },
-
                 {
                     "id": "cantidad",
                     "label": "Cantidad",
@@ -51,17 +44,12 @@
                     ],
                     "customPlaceholder": "Especifique cantidad..."
                 }
-
             ]
         },
-
-
         {
             "id": "business_cards",
             "name": "Business Cards",
-
             "options": [
-
                 {
                     "id": "paper",
                     "label": "Paper",
@@ -73,7 +61,6 @@
                         "16pt Matte"
                     ]
                 },
-
                 {
                     "id": "printing",
                     "label": "Printing",
@@ -83,7 +70,6 @@
                         "Black & White"
                     ]
                 },
-
                 {
                     "id": "sides",
                     "label": "Sides",
@@ -93,29 +79,22 @@
                         "Double-sided"
                     ]
                 },
-
                 {
                     "id": "rounded_corners",
                     "label": "Rounded Corners",
                     "type": "checkbox"
                 },
-
                 {
                     "id": "lamination",
                     "label": "Lamination",
                     "type": "checkbox"
                 }
-
             ]
         },
-
-
         {
             "id": "flyers",
             "name": "Flyers",
-
             "options": [
-
                 {
                     "id": "size",
                     "label": "Size",
@@ -126,7 +105,6 @@
                         "11 × 17"
                     ]
                 },
-
                 {
                     "id": "paper",
                     "label": "Paper",
@@ -138,7 +116,6 @@
                         "100lb Matte"
                     ]
                 },
-
                 {
                     "id": "printing",
                     "label": "Printing",
@@ -148,7 +125,6 @@
                         "Black & White"
                     ]
                 },
-
                 {
                     "id": "sides",
                     "label": "Sides",
@@ -158,35 +134,27 @@
                         "Double-sided"
                     ]
                 },
-
                 {
                     "id": "folding",
                     "label": "Folding",
                     "type": "checkbox"
                 }
-
             ]
         },
-
-
         {
             "id": "banner",
             "name": "Banner",
-
             "options": [
-
                 {
                     "id": "width",
                     "label": "Width",
                     "type": "number"
                 },
-
                 {
                     "id": "height",
                     "label": "Height",
                     "type": "number"
                 },
-
                 {
                     "id": "material",
                     "label": "Material",
@@ -198,36 +166,29 @@
                     ],
                     "customPlaceholder": "Specify material..."
                 },
-
                 {
                     "id": "grommets",
                     "label": "Grommets",
                     "type": "checkbox"
                 }
-
             ]
         },
-
-
         {
             "id": "dummy",
             "name": "Dummy",
-
             "options": [
-
                 {
-                    "id": "dummy_dropdown_custom",
-                    "label": "Dropdown + Custom",
-                    "type": "selectWithCustom",
+                    "id": "dummy_dropdown",
+                    "label": "Dropdown",
+                    "type": "select",
                     "options": [
                         "Option A",
                         "Option B",
                         "Option C",
                         "Custom"
                     ],
-                    "customPlaceholder": "Type custom option..."
+                    "customPlaceholder": "Type your custom option..."
                 },
-
                 {
                     "id": "dummy_radio",
                     "label": "Radio",
@@ -236,19 +197,18 @@
                         "Option A",
                         "Option B",
                         "Option C",
-                        "Option D"
-                    ]
+                        "Custom"
+                    ],
+                    "customPlaceholder": "Type your custom option..."
                 },
-
                 {
                     "id": "dummy_checkbox",
-                    "label": "Checkbox — Yes/No",
+                    "label": "Checkbox",
                     "type": "checkbox"
                 },
-
                 {
                     "id": "dummy_checkbox_multiple",
-                    "label": "Checkboxes — Multiple + Custom",
+                    "label": "Check Boxes",
                     "type": "checkboxGroup",
                     "options": [
                         "Option A",
@@ -256,24 +216,20 @@
                         "Option C",
                         "Custom"
                     ],
-                    "customPlaceholder": "Type custom option..."
+                    "customPlaceholder": "Type your custom option..."
                 },
-
-                {
-                    "id": "dummy_number",
-                    "label": "Number",
-                    "type": "number"
-                },
-
                 {
                     "id": "dummy_text",
                     "label": "Text",
                     "type": "text",
                     "placeholder": "Type something..."
+                },
+                {
+                    "id": "dummy_number",
+                    "label": "Number",
+                    "type": "number"
                 }
-
             ]
         }
-
     ]
 }

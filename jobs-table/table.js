@@ -868,24 +868,161 @@ function createOptionControl(
 
     /*
      * ========================================
-     * SELECT
+     * SELECT / DROPDOWN
      * ========================================
+     *
+     * Example:
+     *
+     * [ Option A ▼ ]
+     *
+     * If Custom is selected:
+     *
+     * [ Custom ▼ ] [___________]
+     *
      */
 
 
     if (
         optionDefinition.type ===
-        'select' ||
-        optionDefinition.type ===
-        'selectWithCustom'
+        'select'
     ) {
 
-        return createSelectControl(
-            row,
-            optionDefinition,
-            optionId,
-            value
+        const wrapper =
+            document.createElement(
+                'div'
+            );
+
+
+        wrapper.className =
+            'option-select-wrapper';
+
+
+        const select =
+            document.createElement(
+                'select'
+            );
+
+
+        const options =
+            Array.isArray(
+                optionDefinition.options
+            )
+                ? optionDefinition.options
+                : [];
+
+
+        options.forEach(
+            function (possibleValue) {
+
+                const option =
+                    document.createElement(
+                        'option'
+                    );
+
+
+                option.value =
+                    possibleValue;
+
+
+                option.textContent =
+                    possibleValue;
+
+
+                if (
+                    value ===
+                    possibleValue
+                ) {
+
+                    option.selected =
+                        true;
+
+                }
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
         );
+
+
+        /*
+         * Custom input.
+         *
+         * It is ONLY visible when
+         * Custom is selected.
+         */
+        let customInput =
+            null;
+
+
+        if (
+            options.some(
+                function (possibleValue) {
+
+                    return isCustomOption(
+                        possibleValue
+                    );
+
+                }
+            )
+        ) {
+
+            customInput =
+                createCustomInput(
+                    row,
+                    optionDefinition,
+                    optionId,
+                    isCustomOption(value)
+                );
+
+        }
+
+
+        select.addEventListener(
+            'change',
+            async function () {
+
+                row.options[
+                    optionId
+                ] =
+                    select.value;
+
+
+                if (customInput) {
+
+                    customInput.style.display =
+                        isCustomOption(
+                            select.value
+                        )
+                            ? ''
+                            : 'none';
+
+                }
+
+
+                await saveTable();
+
+            }
+        );
+
+
+        wrapper.appendChild(
+            select
+        );
+
+
+        if (customInput) {
+
+            wrapper.appendChild(
+                customInput
+            );
+
+        }
+
+
+        return wrapper;
 
     }
 
@@ -894,6 +1031,18 @@ function createOptionControl(
      * ========================================
      * RADIO
      * ========================================
+     *
+     * Exactly ONE option can be selected.
+     *
+     * Custom remains part of the radio group.
+     *
+     * Example:
+     *
+     * ○ Option A
+     * ○ Option B
+     * ○ Option C
+     * ○ Custom [________]
+     *
      */
 
 
@@ -985,139 +1134,10 @@ function createOptionControl(
                 );
 
 
-                radio.addEventListener(
-                    'change',
-                    async function () {
-
-                        if (
-                            !radio.checked
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        row.options[
-                            optionId
-                        ] =
-                            radio.value;
-
-
-                        await saveTable();
-
-                    }
-                );
-
-
-                wrapper.appendChild(
-                    item
-                );
-
-            }
-        );
-
-
-        return wrapper;
-
-    }
-
-
-    /*
-     * ========================================
-     * RADIO + CUSTOM
-     * ========================================
-     */
-
-
-    if (
-        optionDefinition.type ===
-        'radioWithCustom'
-    ) {
-
-        const wrapper =
-            document.createElement(
-                'div'
-            );
-
-
-        wrapper.className =
-            'option-radio-group';
-
-
-        const options =
-            Array.isArray(
-                optionDefinition.options
-            )
-                ? optionDefinition.options
-                : [];
-
-
-        const radioName =
-            'radio-' +
-            row.id +
-            '-' +
-            optionId;
-
-
-        options.forEach(
-            function (
-                possibleValue
-            ) {
-
-                const item =
-                    document.createElement(
-                        'label'
-                    );
-
-
-                item.className =
-                    'option-radio-item';
-
-
-                const radio =
-                    document.createElement(
-                        'input'
-                    );
-
-
-                radio.type =
-                    'radio';
-
-
-                radio.name =
-                    radioName;
-
-
-                radio.value =
-                    possibleValue;
-
-
-                radio.checked =
-                    value ===
-                    possibleValue;
-
-
-                const text =
-                    document.createElement(
-                        'span'
-                    );
-
-
-                text.textContent =
-                    possibleValue;
-
-
-                item.appendChild(
-                    radio
-                );
-
-
-                item.appendChild(
-                    text
-                );
-
-
+                /*
+                 * Custom input ONLY belongs
+                 * to the Custom radio option.
+                 */
                 let customInput =
                     null;
 
@@ -1163,14 +1183,10 @@ function createOptionControl(
                             radio.value;
 
 
-                        if (customInput) {
-
-                            customInput.style.display =
-                                '';
-
-                        }
-
-
+                        /*
+                         * Show Custom only when
+                         * Custom is selected.
+                         */
                         const allCustomInputs =
                             wrapper.querySelectorAll(
                                 '.option-custom-input'
@@ -1180,18 +1196,30 @@ function createOptionControl(
                         allCustomInputs.forEach(
                             function (input) {
 
-                                if (
-                                    input !==
-                                    customInput
-                                ) {
+                                input.style.display =
+                                    '';
+
+                            }
+                        );
+
+
+                        if (customInput) {
+
+                            customInput.style.display =
+                                '';
+
+                        } else {
+
+                            allCustomInputs.forEach(
+                                function (input) {
 
                                     input.style.display =
                                         'none';
 
                                 }
+                            );
 
-                            }
-                        );
+                        }
 
 
                         await saveTable();
@@ -1217,6 +1245,16 @@ function createOptionControl(
      * ========================================
      * CHECKBOX GROUP
      * ========================================
+     *
+     * Multiple options can be selected.
+     *
+     * Example:
+     *
+     * [ ] Option A
+     * [ ] Option B
+     * [x] Option C
+     * [x] Custom [________]
+     *
      */
 
 
@@ -1243,6 +1281,10 @@ function createOptionControl(
                 : [];
 
 
+        /*
+         * Always store checkbox groups
+         * as an array.
+         */
         if (
             !Array.isArray(value)
         ) {
@@ -1313,6 +1355,10 @@ function createOptionControl(
                 );
 
 
+                /*
+                 * Custom input belongs directly
+                 * beside the Custom checkbox.
+                 */
                 let customInput =
                     null;
 
@@ -1396,6 +1442,10 @@ function createOptionControl(
                             selected;
 
 
+                        /*
+                         * Custom input only appears
+                         * while Custom is checked.
+                         */
                         if (customInput) {
 
                             customInput.style.display =
