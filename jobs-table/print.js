@@ -10,6 +10,41 @@ const t =
 
 
 /*
+ * Custom fields to include in the
+ * printed INFO CARD.
+ *
+ * These names should match the
+ * Trello Custom Field names.
+ *
+ * The comparison is case-insensitive.
+ *
+ * Example:
+ *
+ * [
+ *     'Customer',
+ *     'Salesperson',
+ *     'Quantity',
+ *     'Material',
+ *     'Size'
+ * ]
+ *
+ *
+ * IMPORTANT:
+ *
+ * The order here is the order
+ * they will appear in the print.
+ */
+const PRINT_CUSTOM_FIELDS = [
+    'Vendedor *',
+    'Fecha Creacíon *',
+    'Cliente *',
+    'Nombre Cliente *',
+    'Fecha Solicitada *',
+    'Metodo De Entrega'
+];
+
+
+/*
  * Keep this synchronized with table.js.
  *
  * 11.5% = 0.115
@@ -82,10 +117,15 @@ async function loadCardInfo() {
 
     try {
 
+        /*
+         * customFieldItems gives us the
+         * values stored on this card.
+         */
         const card =
             await t.card(
+                'id',
                 'name',
-                'id'
+                'customFieldItems'
             );
 
 
@@ -100,6 +140,56 @@ async function loadCardInfo() {
 
 
         return {};
+
+    }
+
+}
+
+
+/*
+ * ========================================
+ * BOARD CUSTOM FIELDS
+ * ========================================
+ */
+
+
+async function loadCustomFieldDefinitions() {
+
+    try {
+
+        /*
+         * Custom Field definitions live
+         * at the board level.
+         */
+        const board =
+            await t.board(
+                'customFields'
+            );
+
+
+        if (
+            board &&
+            Array.isArray(
+                board.customFields
+            )
+        ) {
+
+            return board.customFields;
+
+        }
+
+
+        return [];
+
+    } catch (error) {
+
+        console.error(
+            'Could not load custom field definitions:',
+            error
+        );
+
+
+        return [];
 
     }
 
@@ -154,6 +244,431 @@ function formatOptionValue(value) {
 
 
     return String(value);
+
+}
+
+
+/*
+ * ========================================
+ * FORMAT CUSTOM FIELD VALUE
+ * ========================================
+ */
+
+
+/*
+ * Trello customFieldItems can store
+ * different value types depending on
+ * the custom field definition.
+ */
+function getCustomFieldValue(
+    field,
+    customFieldItem
+) {
+
+    if (!customFieldItem) {
+
+        return '—';
+
+    }
+
+
+    /*
+     * CHECKBOX
+     */
+    if (
+        field.type ===
+        'checkbox'
+    ) {
+
+        if (
+            customFieldItem.value &&
+            customFieldItem.value.checked !==
+            undefined
+        ) {
+
+            return customFieldItem.value.checked
+                ? 'Yes'
+                : 'No';
+
+        }
+
+
+        return '—';
+
+    }
+
+
+    /*
+     * DATE
+     */
+    if (
+        field.type ===
+        'date'
+    ) {
+
+        const dateValue =
+            customFieldItem.value &&
+            customFieldItem.value.date;
+
+
+        if (!dateValue) {
+
+            return '—';
+
+        }
+
+
+        const date =
+            new Date(
+                dateValue
+            );
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return dateValue;
+
+        }
+
+
+        return date.toLocaleDateString(
+            undefined,
+            {
+                year:
+                    'numeric',
+
+                month:
+                    'long',
+
+                day:
+                    'numeric'
+            }
+        );
+
+    }
+
+
+    /*
+     * LIST
+     */
+    if (
+        field.type ===
+        'list'
+    ) {
+
+        const optionId =
+            customFieldItem.idValue;
+
+
+        if (
+            optionId &&
+            Array.isArray(
+                field.options
+            )
+        ) {
+
+            const option =
+                field.options.find(
+                    function (item) {
+
+                        return (
+                            item.id ===
+                            optionId
+                        );
+
+                    }
+                );
+
+
+            if (option) {
+
+                return option.value ||
+                    '—';
+
+            }
+
+        }
+
+
+        return '—';
+
+    }
+
+
+    /*
+     * NUMBER / TEXT
+     */
+    if (
+        customFieldItem.value
+    ) {
+
+        if (
+            customFieldItem.value.text !==
+            undefined
+        ) {
+
+            return formatOptionValue(
+                customFieldItem.value.text
+            );
+
+        }
+
+
+        if (
+            customFieldItem.value.number !==
+            undefined
+        ) {
+
+            return formatOptionValue(
+                customFieldItem.value.number
+            );
+
+        }
+
+    }
+
+
+    return '—';
+
+}
+
+
+/*
+ * ========================================
+ * FIND CUSTOM FIELD
+ * ========================================
+ */
+
+
+/*
+ * Finds a custom field by name.
+ *
+ * Case-insensitive.
+ */
+function findCustomField(
+    fieldName,
+    definitions
+) {
+
+    const wanted =
+        String(
+            fieldName
+        )
+            .trim()
+            .toLowerCase();
+
+
+    return definitions.find(
+        function (field) {
+
+            return (
+                String(
+                    field.name || ''
+                )
+                    .trim()
+                    .toLowerCase() ===
+                wanted
+            );
+
+        }
+    ) || null;
+
+}
+
+
+/*
+ * ========================================
+ * FIND CUSTOM FIELD ITEM
+ * ========================================
+ */
+
+
+function findCustomFieldItem(
+    fieldId,
+    items
+) {
+
+    return items.find(
+        function (item) {
+
+            return (
+                item.idCustomField ===
+                fieldId
+            );
+
+        }
+    ) || null;
+
+}
+
+
+/*
+ * ========================================
+ * CREATE CUSTOM FIELD ITEM
+ * ========================================
+ */
+
+
+function createCustomFieldItem(
+    label,
+    value
+) {
+
+    const wrapper =
+        document.createElement(
+            'div'
+        );
+
+
+    wrapper.className =
+        'custom-field-item';
+
+
+    const labelElement =
+        document.createElement(
+            'span'
+        );
+
+
+    labelElement.className =
+        'label';
+
+
+    labelElement.textContent =
+        label;
+
+
+    const valueElement =
+        document.createElement(
+            'strong'
+        );
+
+
+    valueElement.className =
+        'custom-field-value';
+
+
+    valueElement.textContent =
+        value;
+
+
+    wrapper.appendChild(
+        labelElement
+    );
+
+
+    wrapper.appendChild(
+        valueElement
+    );
+
+
+    return wrapper;
+
+}
+
+
+/*
+ * ========================================
+ * RENDER CUSTOM FIELDS
+ * ========================================
+ */
+
+
+function renderCustomFields(
+    cardInfo,
+    customFieldDefinitions
+) {
+
+    const container =
+        document.getElementById(
+            'customFields'
+        );
+
+
+    if (!container) {
+
+        return;
+
+    }
+
+
+    container.innerHTML = '';
+
+
+    const items =
+        Array.isArray(
+            cardInfo.customFieldItems
+        )
+            ? cardInfo.customFieldItems
+            : [];
+
+
+    /*
+     * Every name in PRINT_CUSTOM_FIELDS
+     * gets its own printed field.
+     */
+    PRINT_CUSTOM_FIELDS.forEach(
+        function (fieldName) {
+
+            const field =
+                findCustomField(
+                    fieldName,
+                    customFieldDefinitions
+                );
+
+
+            /*
+             * The requested field doesn't
+             * exist on this board.
+             */
+            if (!field) {
+
+                console.warn(
+                    'Custom field not found:',
+                    fieldName
+                );
+
+
+                container.appendChild(
+                    createCustomFieldItem(
+                        fieldName,
+                        '—'
+                    )
+                );
+
+
+                return;
+
+            }
+
+
+            const item =
+                findCustomFieldItem(
+                    field.id,
+                    items
+                );
+
+
+            const value =
+                getCustomFieldValue(
+                    field,
+                    item
+                );
+
+
+            container.appendChild(
+                createCustomFieldItem(
+                    field.name,
+                    value
+                )
+            );
+
+        }
+    );
 
 }
 
@@ -661,7 +1176,8 @@ function formatOptionLabel(id) {
 
 function render(
     table,
-    cardInfo
+    cardInfo,
+    customFieldDefinitions
 ) {
 
     /*
@@ -683,9 +1199,11 @@ function render(
 
 
     /*
-     * Job ID.
+     * JOB NAME
      *
-     * Using the Trello card ID.
+     * Instead of using the Trello
+     * internal card ID, use the
+     * actual card name.
      */
     const jobId =
         document.getElementById(
@@ -696,13 +1214,19 @@ function render(
     if (jobId) {
 
         jobId.textContent =
-            cardInfo.id
-                ? cardInfo.id
-                    .substring(0, 8)
-                    .toUpperCase()
-                : '—';
+            cardInfo.name ||
+            'Untitled Card';
 
     }
+
+
+    /*
+     * Custom fields.
+     */
+    renderCustomFields(
+        cardInfo,
+        customFieldDefinitions
+    );
 
 
     /*
@@ -904,22 +1428,29 @@ function printDocument() {
 t.render(async function () {
 
 
+    /*
+     * Load everything at once.
+     */
     const [
         table,
-        cardInfo
+        cardInfo,
+        customFieldDefinitions
     ] =
         await Promise.all([
 
             loadTable(),
 
-            loadCardInfo()
+            loadCardInfo(),
+
+            loadCustomFieldDefinitions()
 
         ]);
 
 
     render(
         table,
-        cardInfo
+        cardInfo,
+        customFieldDefinitions
     );
 
 

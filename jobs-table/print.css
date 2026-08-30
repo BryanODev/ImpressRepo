@@ -216,6 +216,8 @@ body {
 
     flex-shrink: 0;
 
+    max-width: 250px;
+
 }
 
 
@@ -230,7 +232,13 @@ body {
 
 .job-number strong {
 
+    display: inline-block;
+
+    max-width: 200px;
+
     margin-left: 5px;
+
+    word-break: break-word;
 
 }
 
@@ -248,16 +256,19 @@ body {
 
 /*
  * ========================================
- * INFO
+ * INFO CARD
  * ========================================
  */
 
 
 .info-card {
 
-    display: flex;
+    display: grid;
 
-    gap: 60px;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 15px 30px;
 
     margin-top: 20px;
 
@@ -270,6 +281,11 @@ body {
 }
 
 
+/*
+ * Standard information item.
+ */
+
+
 .info-item {
 
     display: flex;
@@ -278,7 +294,45 @@ body {
 
     gap: 4px;
 
+    min-width: 0;
+
 }
+
+
+/*
+ * Custom fields container.
+ */
+
+
+.custom-fields {
+
+    display: contents;
+
+}
+
+
+/*
+ * Individual custom field.
+ */
+
+
+.custom-field-item {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    min-width: 0;
+
+}
+
+
+/*
+ * Labels used by both normal
+ * information and custom fields.
+ */
 
 
 .label {
@@ -292,6 +346,22 @@ body {
     letter-spacing: 0.8px;
 
     font-weight: 600;
+
+}
+
+
+/*
+ * Custom field value.
+ */
+
+
+.custom-field-value {
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    word-break: break-word;
 
 }
 
