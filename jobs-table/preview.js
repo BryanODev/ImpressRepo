@@ -1,6 +1,9 @@
-const t = window.TrelloPowerUp.iframe();
+const t =
+    window.TrelloPowerUp.iframe();
 
-const STORAGE_KEY = 'itemsTable';
+
+const STORAGE_KEY =
+    'itemsTable';
 
 
 /*
@@ -10,11 +13,12 @@ async function loadTable() {
 
     try {
 
-        const savedTable = await t.get(
-            'card',
-            'shared',
-            STORAGE_KEY
-        );
+        const savedTable =
+            await t.get(
+                'card',
+                'shared',
+                STORAGE_KEY
+            );
 
 
         if (Array.isArray(savedTable)) {
@@ -55,6 +59,7 @@ function calculatePrice(table) {
         const quantity =
             Number(row.quantity) || 0;
 
+
         const cost =
             Number(row.cost) || 0;
 
@@ -86,15 +91,21 @@ function formatCurrency(value) {
 function render(table) {
 
     const itemsElement =
-        document.getElementById('items');
+        document.getElementById(
+            'items'
+        );
 
 
     const progressElement =
-        document.getElementById('progress');
+        document.getElementById(
+            'progress'
+        );
 
 
     const priceElement =
-        document.getElementById('price');
+        document.getElementById(
+            'price'
+        );
 
 
     itemsElement.innerHTML = '';
@@ -128,7 +139,7 @@ function render(table) {
 
 
     /*
-     * Count finished items.
+     * Finished count.
      */
     const finishedCount =
         table.filter(function (row) {
@@ -146,7 +157,7 @@ function render(table) {
 
 
     /*
-     * Render descriptions.
+     * Render items.
      */
     table.forEach(function (row) {
 
@@ -183,6 +194,9 @@ function render(table) {
 
         /*
          * Description.
+         *
+         * Use product name if available.
+         * Fall back to old description data.
          */
         const description =
             document.createElement('span');
@@ -202,6 +216,7 @@ function render(table) {
 
 
         description.textContent =
+            row.productName ||
             row.description ||
             'Untitled item';
 

@@ -1,14 +1,16 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
 
     <meta charset="utf-8">
 
-    <title>Task Table</title>
+    <title>Items</title>
 
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -19,11 +21,16 @@
 
             margin: 0;
 
-            padding: 0;
-
             width: 100%;
 
             height: 100%;
+
+        }
+
+
+        body {
+
+            padding: 20px;
 
             font-family:
                 -apple-system,
@@ -36,13 +43,6 @@
             background: #ffffff;
 
             color: #172b4d;
-
-        }
-
-
-        body {
-
-            padding: 20px;
 
             overflow: hidden;
 
@@ -62,13 +62,13 @@
         }
 
 
-        .toolbar {
+        .top-bar {
 
             display: flex;
 
-            align-items: center;
-
             justify-content: space-between;
+
+            align-items: center;
 
             margin-bottom: 12px;
 
@@ -79,20 +79,9 @@
 
         .title {
 
-            font-size: 20px;
+            font-size: 18px;
 
             font-weight: 600;
-
-        }
-
-
-        .toolbar-right {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
 
         }
 
@@ -106,35 +95,11 @@
         }
 
 
-        .add-row {
-
-            padding: 8px 14px;
-
-            border: none;
-
-            border-radius: 3px;
-
-            background: #0c66e4;
-
-            color: white;
-
-            cursor: pointer;
-
-            font-weight: 500;
-
-        }
-
-
-        .add-row:hover {
-
-            background: #0055cc;
-
-        }
-
-
-        .table-container {
+        .table-wrapper {
 
             flex: 1;
+
+            min-height: 0;
 
             width: 100%;
 
@@ -160,21 +125,17 @@
 
         th {
 
-            position: sticky;
-
-            top: 0;
-
-            z-index: 2;
-
             background: #f4f5f7;
 
             font-weight: 600;
 
             text-align: left;
 
-            padding: 10px;
+            padding: 8px;
 
             border: 1px solid #dfe1e6;
+
+            white-space: nowrap;
 
         }
 
@@ -185,9 +146,7 @@
 
             border: 1px solid #dfe1e6;
 
-            vertical-align: middle;
-
-            background: white;
+            vertical-align: top;
 
         }
 
@@ -195,11 +154,11 @@
         th.check,
         td.check {
 
-            width: 55px;
-
-            min-width: 55px;
+            width: 42px;
 
             text-align: center;
+
+            vertical-align: middle;
 
         }
 
@@ -207,19 +166,15 @@
         th.quantity,
         td.quantity {
 
-            width: 110px;
-
-            min-width: 110px;
+            width: 90px;
 
         }
 
 
-        th.description,
-        td.description {
+        th.product,
+        td.product {
 
-            width: 350px;
-
-            min-width: 350px;
+            width: 180px;
 
         }
 
@@ -227,9 +182,7 @@
         th.cost,
         td.cost {
 
-            width: 130px;
-
-            min-width: 130px;
+            width: 100px;
 
         }
 
@@ -237,9 +190,15 @@
         th.file,
         td.file {
 
-            width: 300px;
+            width: 160px;
 
-            min-width: 300px;
+        }
+
+
+        th.options,
+        td.options {
+
+            width: 420px;
 
         }
 
@@ -247,16 +206,15 @@
         th.delete,
         td.delete {
 
-            width: 55px;
-
-            min-width: 55px;
+            width: 40px;
 
             text-align: center;
 
         }
 
 
-        input {
+        input,
+        select {
 
             width: 100%;
 
@@ -264,7 +222,7 @@
 
             outline: none;
 
-            padding: 8px;
+            padding: 6px;
 
             background: transparent;
 
@@ -275,7 +233,8 @@
         }
 
 
-        input:focus {
+        input:focus,
+        select:focus {
 
             background: #ffffff;
 
@@ -289,33 +248,104 @@
 
         input[type="checkbox"] {
 
-            width: 17px;
+            width: 16px;
 
-            height: 17px;
+            height: 16px;
 
             cursor: pointer;
 
         }
 
 
-        .delete-button {
-
-            border: none;
-
-            background: transparent;
-
-            color: #6b778c;
+        select {
 
             cursor: pointer;
-
-            font-size: 20px;
 
         }
 
 
-        .delete-button:hover {
+        .options-container {
 
-            color: #de350b;
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+
+            padding: 3px;
+
+        }
+
+
+        .option-row {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+        }
+
+
+        .option-label {
+
+            width: 125px;
+
+            flex-shrink: 0;
+
+            color: #5e6c84;
+
+            font-size: 12px;
+
+        }
+
+
+        .option-control {
+
+            flex: 1;
+
+            min-width: 140px;
+
+        }
+
+
+        .option-checkbox {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+        }
+
+
+        .option-checkbox input {
+
+            width: 16px;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .deprecated {
+
+            color: #b76e00;
+
+            font-style: italic;
+
+        }
+
+
+        .deprecated-label {
+
+            color: #b76e00;
+
+            font-size: 11px;
+
+            margin-left: 4px;
 
         }
 
@@ -324,9 +354,39 @@
 
             text-align: center;
 
-            padding: 30px;
+            padding: 20px;
 
             color: #6b778c;
+
+        }
+
+
+        .add-row {
+
+            margin-top: 10px;
+
+            padding: 8px 14px;
+
+            border: none;
+
+            border-radius: 3px;
+
+            background: #0c66e4;
+
+            color: white;
+
+            cursor: pointer;
+
+            font-weight: 500;
+
+            align-self: flex-start;
+
+        }
+
+
+        .add-row:hover {
+
+            background: #0055cc;
 
         }
 
@@ -335,11 +395,22 @@
 
             display: flex;
 
-            justify-content: flex-end;
+            justify-content: space-between;
+
+            align-items: flex-end;
 
             padding-top: 12px;
 
             flex-shrink: 0;
+
+        }
+
+
+        .footer-status {
+
+            color: #5e6c84;
+
+            font-size: 12px;
 
         }
 
@@ -404,6 +475,18 @@
             font-weight: 600;
 
         }
+
+
+        .product-warning {
+
+            padding: 8px;
+
+            color: #b76e00;
+
+            font-size: 12px;
+
+        }
+
     </style>
 
 </head>
@@ -411,37 +494,32 @@
 
 <body>
 
+
     <div class="page">
 
 
-        <div class="toolbar">
+        <div class="top-bar">
 
             <div class="title">
                 Task Table
             </div>
 
+            <div
+                id="status"
+                class="status">
 
-            <div class="toolbar-right">
-
-                <div id="status" class="status">
-                    Saved
-                </div>
-
-
-                <button id="addRow" class="add-row">
-
-                    + Add Row
-
-                </button>
+                Loading...
 
             </div>
 
         </div>
 
 
-        <div class="table-container">
+        <div class="table-wrapper">
+
 
             <table>
+
 
                 <thead>
 
@@ -455,8 +533,12 @@
                             Quantity
                         </th>
 
-                        <th class="description">
-                            Description
+                        <th class="product">
+                            Product
+                        </th>
+
+                        <th class="options">
+                            Options
                         </th>
 
                         <th class="cost">
@@ -475,40 +557,95 @@
                 </thead>
 
 
-                <tbody id="tableBody"></tbody>
+                <tbody id="tableBody">
+                </tbody>
+
 
             </table>
 
+
         </div>
+
+
+        <button
+            class="add-row"
+            id="addRow">
+
+            + Add Row
+
+        </button>
 
 
         <div class="bottom-bar">
 
-            <div class="totals">
 
-                <div class="total-row">
-                    <span>Price</span>
-                    <strong id="price">$0.00</strong>
-                </div>
-
-                <div class="total-row">
-                    <span>SubTotal</span>
-                    <strong id="subtotal">$0.00</strong>
-                </div>
-
-                <div class="total-row">
-                    <span>IVU (11.5%)</span>
-                    <strong id="ivu">$0.00</strong>
-                </div>
-
-                <div class="total-row total-final">
-                    <span>Total</span>
-                    <strong id="total">$0.00</strong>
-                </div>
+            <div
+                id="footerStatus"
+                class="footer-status">
 
             </div>
 
+
+            <div class="totals">
+
+
+                <div class="total-row">
+
+                    <span>
+                        Price
+                    </span>
+
+                    <strong id="price">
+                        $0.00
+                    </strong>
+
+                </div>
+
+
+                <div class="total-row">
+
+                    <span>
+                        SubTotal
+                    </span>
+
+                    <strong id="subtotal">
+                        $0.00
+                    </strong>
+
+                </div>
+
+
+                <div class="total-row">
+
+                    <span>
+                        IVU (11.5%)
+                    </span>
+
+                    <strong id="ivu">
+                        $0.00
+                    </strong>
+
+                </div>
+
+
+                <div class="total-row total-final">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="total">
+                        $0.00
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
         </div>
+
 
     </div>
 
@@ -516,6 +653,7 @@
     <script src="https://p.trellocdn.com/power-up.min.js"></script>
 
     <script src="table.js"></script>
+
 
 </body>
 

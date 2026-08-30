@@ -1,0 +1,157 @@
+{
+    "version": 1,
+
+    "products": [
+
+        {
+            "id": "business_cards",
+            "name": "Business Cards",
+
+            "options": [
+
+                {
+                    "id": "paper",
+                    "label": "Paper",
+                    "type": "select",
+                    "options": [
+                        "14pt Glossy",
+                        "14pt Matte",
+                        "16pt Glossy",
+                        "16pt Matte"
+                    ]
+                },
+
+                {
+                    "id": "printing",
+                    "label": "Printing",
+                    "type": "select",
+                    "options": [
+                        "Full Color",
+                        "Black & White"
+                    ]
+                },
+
+                {
+                    "id": "sides",
+                    "label": "Sides",
+                    "type": "select",
+                    "options": [
+                        "Single-sided",
+                        "Double-sided"
+                    ]
+                },
+
+                {
+                    "id": "rounded_corners",
+                    "label": "Rounded Corners",
+                    "type": "checkbox"
+                },
+
+                {
+                    "id": "lamination",
+                    "label": "Lamination",
+                    "type": "checkbox"
+                }
+
+            ]
+        },
+
+
+        {
+            "id": "flyers",
+            "name": "Flyers",
+
+            "options": [
+
+                {
+                    "id": "size",
+                    "label": "Size",
+                    "type": "select",
+                    "options": [
+                        "Letter",
+                        "Legal",
+                        "11 × 17"
+                    ]
+                },
+
+                {
+                    "id": "paper",
+                    "label": "Paper",
+                    "type": "select",
+                    "options": [
+                        "80lb Glossy",
+                        "80lb Matte",
+                        "100lb Glossy",
+                        "100lb Matte"
+                    ]
+                },
+
+                {
+                    "id": "printing",
+                    "label": "Printing",
+                    "type": "select",
+                    "options": [
+                        "Full Color",
+                        "Black & White"
+                    ]
+                },
+
+                {
+                    "id": "sides",
+                    "label": "Sides",
+                    "type": "select",
+                    "options": [
+                        "Single-sided",
+                        "Double-sided"
+                    ]
+                },
+
+                {
+                    "id": "folding",
+                    "label": "Folding",
+                    "type": "checkbox"
+                }
+
+            ]
+        },
+
+
+        {
+            "id": "banner",
+            "name": "Banner",
+
+            "options": [
+
+                {
+                    "id": "width",
+                    "label": "Width",
+                    "type": "number"
+                },
+
+                {
+                    "id": "height",
+                    "label": "Height",
+                    "type": "number"
+                },
+
+                {
+                    "id": "material",
+                    "label": "Material",
+                    "type": "select",
+                    "options": [
+                        "Vinyl",
+                        "Mesh"
+                    ]
+                },
+
+                {
+                    "id": "grommets",
+                    "label": "Grommets",
+                    "type": "checkbox"
+                }
+
+            ]
+        }
+
+    ]
+}
