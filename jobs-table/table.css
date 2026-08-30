@@ -233,17 +233,7 @@ select:focus {
 }
 
 
-input[type="checkbox"] {
-
-    width: 16px;
-
-    height: 16px;
-
-    cursor: pointer;
-
-}
-
-
+input[type="checkbox"],
 input[type="radio"] {
 
     width: 16px;
@@ -329,15 +319,6 @@ select {
  * ========================================
  * RADIO GROUP
  * ========================================
- *
- * Radios stay on the same line whenever
- * there is enough room.
- *
- * Example:
- *
- * ○ Option 1    ○ Option 2    ○ Option 3
- * ○ Option 4
- *
  */
 
 
@@ -361,10 +342,6 @@ select {
 
 }
 
-
-/*
- * Each radio + label is kept together.
- */
 
 .option-radio-item {
 
@@ -390,10 +367,64 @@ select {
 
 
 /*
- * Custom text field next to "Custom".
+ * ========================================
+ * CHECKBOX GROUP
+ * ========================================
  */
 
-.option-radio-item .radio-custom-input {
+
+.option-checkbox-group {
+
+    display: flex;
+
+    flex-direction: row;
+
+    flex-wrap: wrap;
+
+    align-items: center;
+
+    gap: 6px 14px;
+
+    width: 100%;
+
+    min-width: 0;
+
+    padding: 3px 0;
+
+}
+
+
+.option-checkbox-item {
+
+    display: inline-flex;
+
+    flex-direction: row;
+
+    align-items: center;
+
+    gap: 5px;
+
+    width: auto;
+
+    flex: 0 0 auto;
+
+    white-space: nowrap;
+
+    color: #172b4d;
+
+    cursor: pointer;
+
+}
+
+
+/*
+ * ========================================
+ * CUSTOM INPUT
+ * ========================================
+ */
+
+
+.option-custom-input {
 
     width: 140px;
 
@@ -401,7 +432,7 @@ select {
 
     padding: 4px 6px;
 
-    margin-left: 2px;
+    margin-left: 3px;
 
     border: 1px solid #dfe1e6;
 
@@ -409,10 +440,12 @@ select {
 
     background: #ffffff;
 
+    color: #172b4d;
+
 }
 
 
-.option-radio-item .radio-custom-input:focus {
+.option-custom-input:focus {
 
     border-color: #0c66e4;
 
@@ -424,7 +457,7 @@ select {
 
 /*
  * ========================================
- * CHECKBOX
+ * SINGLE CHECKBOX
  * ========================================
  */
 

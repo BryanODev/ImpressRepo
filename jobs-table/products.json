@@ -12,7 +12,7 @@
                 {
                     "id": "tamano",
                     "label": "Tamaño",
-                    "type": "radioWithCustom",
+                    "type": "radio",
                     "options": [
                         "2\" x 3.5\"",
                         "Custom"
@@ -43,7 +43,7 @@
                 {
                     "id": "cantidad",
                     "label": "Cantidad",
-                    "type": "radioWithCustom",
+                    "type": "radio",
                     "options": [
                         "250",
                         "500",
@@ -190,7 +190,7 @@
                 {
                     "id": "material",
                     "label": "Material",
-                    "type": "radioWithCustom",
+                    "type": "radio",
                     "options": [
                         "Vinyl",
                         "Mesh",
@@ -210,104 +210,97 @@
 
 
         {
-    "id": "dummy",
-    "name": "Dummy — All Field Types",
+            "id": "dummy",
+            "name": "Dummy — All Field Types",
 
-    "options": [
-
-        {
-            "id": "dummy_dropdown",
-            "label": "Dropdown",
-            "type": "select",
             "options": [
-                "Option A",
-                "Option B",
-                "Option C",
-                "Option D"
+
+                {
+                    "id": "dummy_dropdown",
+                    "label": "Dropdown",
+                    "type": "select",
+                    "options": [
+                        "Option A",
+                        "Option B",
+                        "Option C",
+                        "Option D"
+                    ]
+                },
+
+                {
+                    "id": "dummy_radio",
+                    "label": "Radio — One",
+                    "type": "radio",
+                    "options": [
+                        "Option A",
+                        "Option B",
+                        "Option C",
+                        "Option D"
+                    ]
+                },
+
+                {
+                    "id": "dummy_radio_custom",
+                    "label": "Radio + Custom",
+                    "type": "radio",
+                    "options": [
+                        "Option A",
+                        "Option B",
+                        "Option C",
+                        "Custom"
+                    ],
+                    "customPlaceholder": "Type your custom option..."
+                },
+
+                {
+                    "id": "dummy_checkbox",
+                    "label": "Checkbox — Yes/No",
+                    "type": "checkbox"
+                },
+
+                {
+                    "id": "dummy_checkbox_group",
+                    "label": "Checkbox — Multiple",
+                    "type": "checkboxGroup",
+                    "options": [
+                        "Option A",
+                        "Option B",
+                        "Option C",
+                        "Option D"
+                    ]
+                },
+
+                {
+                    "id": "dummy_checkbox_group_custom",
+                    "label": "Checkbox + Custom",
+                    "type": "checkboxGroup",
+                    "options": [
+                        "Option A",
+                        "Option B",
+                        "Option C",
+                        "Custom"
+                    ],
+                    "customPlaceholder": "Type your custom option..."
+                },
+
+                {
+                    "id": "dummy_number",
+                    "label": "Number",
+                    "type": "number",
+                    "min": 0,
+                    "max": 100,
+                    "step": 1
+                },
+
+                {
+                    "id": "dummy_text",
+                    "label": "Text",
+                    "type": "text",
+                    "placeholder": "Type something..."
+                }
+
             ]
-        },
-
-        {
-            "id": "dummy_dropdown_custom",
-            "label": "Dropdown + Custom",
-            "type": "selectWithCustom",
-            "options": [
-                "Option A",
-                "Option B",
-                "Option C",
-                "Custom"
-            ],
-            "customPlaceholder": "Type your custom option..."
-        },
-
-        {
-            "id": "dummy_radio",
-            "label": "Radio — One",
-            "type": "radio",
-            "options": [
-                "Option A",
-                "Option B",
-                "Option C",
-                "Option D"
-            ]
-        },
-
-        {
-            "id": "dummy_radio_custom",
-            "label": "Radio + Custom",
-            "type": "radioWithCustom",
-            "options": [
-                "Option A",
-                "Option B",
-                "Option C",
-                "Custom"
-            ],
-            "customPlaceholder": "Type your custom option..."
-        },
-
-        {
-            "id": "dummy_checkbox",
-            "label": "Checkbox — Yes/No",
-            "type": "checkbox"
-        },
-
-        {
-            "id": "dummy_checkbox_group",
-            "label": "Checkbox — Multiple",
-            "type": "checkboxGroup",
-            "options": [
-                "Option A",
-                "Option B",
-                "Option C",
-                "Option D"
-            ]
-        },
-
-        {
-            "id": "dummy_number",
-            "label": "Number",
-            "type": "number",
-            "min": 0,
-            "max": 100,
-            "step": 1
-        },
-
-        {
-            "id": "dummy_text",
-            "label": "Text",
-            "type": "text",
-            "placeholder": "Type something..."
-        },
-
-        {
-            "id": "dummy_text_required",
-            "label": "Text Example",
-            "type": "text",
-            "placeholder": "Specify something..."
         }
-
-    ]
-}
 
     ]
 }
