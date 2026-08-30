@@ -1,195 +1,75 @@
 <!DOCTYPE html>
-
 <html>
 
 <head>
-
     <meta charset="utf-8">
-
     <title>Items</title>
-
-
     <link rel="stylesheet" href="table.css">
-
 </head>
-
 
 <body>
 
-
     <div class="page">
 
-
         <div class="top-bar">
-
-            <div class="title">
-                Task Table
+            <div class="top-bar-left">
+                <button id="backToCard" class="back-card-button">← Back to Card</button>
+                <div class="title">Task Table</div>
             </div>
-
-            <div
-                id="status"
-                class="status">
-
-                Loading...
-
-            </div>
-
+            <div id="status" class="status">Loading...</div>
         </div>
-
 
         <div class="table-wrapper">
-
-
             <table>
-
-
                 <thead>
-
                     <tr>
-
-                        <th class="check">
-                            ✓
-                        </th>
-
-                        <th class="quantity">
-                            Quantity
-                        </th>
-
-                        <th class="product">
-                            Product
-                        </th>
-
-                        <th class="options">
-                            Options
-                        </th>
-
-                        <th class="cost">
-                            Cost
-                        </th>
-
-                        <th class="file">
-                            File Name
-                        </th>
-
-                        <th class="delete">
-                        </th>
-
+                        <th class="check">✓</th>
+                        <th class="quantity">Quantity</th>
+                        <th class="product">Product</th>
+                        <th class="options">Options</th>
+                        <th class="cost">Cost</th>
+                        <th class="file">File Name</th>
+                        <th class="actions">Actions</th>
                     </tr>
-
                 </thead>
-
-
                 <tbody id="tableBody">
                 </tbody>
-
-
             </table>
-
-
         </div>
 
-
-        <button
-            class="add-row"
-            id="addRow">
-
-            + Add Row
-
-        </button>
-
+        <button class="add-row" id="addRow">+ Add Row</button>
 
         <div class="bottom-bar">
-
-
-            <div
-                id="footerStatus"
-                class="footer-status">
-            </div>
-
+            <div id="footerStatus" class="footer-status"></div>
 
             <div class="bottom-actions">
-
-
                 <div class="totals">
-
-
                     <div class="total-row">
-
-                        <span>
-                            Price
-                        </span>
-
-                        <strong id="price">
-                            $0.00
-                        </strong>
-
+                        <span>Price</span>
+                        <strong id="price">$0.00</strong>
                     </div>
-
-
                     <div class="total-row">
-
-                        <span>
-                            SubTotal
-                        </span>
-
-                        <strong id="subtotal">
-                            $0.00
-                        </strong>
-
+                        <span>SubTotal</span>
+                        <strong id="subtotal">$0.00</strong>
                     </div>
-
-
                     <div class="total-row">
-
-                        <span id="ivuLabel">
-                            IVU (11.50%)
-                        </span>
-
-                        <strong id="ivu">
-                            $0.00
-                        </strong>
-
+                        <span id="ivuLabel">IVU (11.50%)</span>
+                        <strong id="ivu">$0.00</strong>
                     </div>
-
-
                     <div class="total-row total-final">
-
-                        <span>
-                            Total
-                        </span>
-
-                        <strong id="total">
-                            $0.00
-                        </strong>
-
+                        <span>Total</span>
+                        <strong id="total">$0.00</strong>
                     </div>
-
-
                 </div>
 
-
-                <button
-                    id="printJob"
-                    class="print-button">
-
-                    🖨️ Print Job
-
-                </button>
-
-
+                <button id="printJob" class="print-button">🖨️ Print Job</button>
             </div>
-
-
         </div>
-
 
     </div>
 
-
     <script src="https://p.trellocdn.com/power-up.min.js"></script>
-
     <script src="table.js"></script>
-
 
 </body>
 

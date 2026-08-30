@@ -2,787 +2,378 @@
     box-sizing: border-box;
 }
 
-
 html,
 body {
-
     margin: 0;
-
     padding: 0;
-
     background: #f4f5f7;
-
     color: #172b4d;
-
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
-
-
-/*
- * ========================================
- * PAGE
- * ========================================
- */
-
 
 .print-page {
-
     width: 8.5in;
-
     min-height: 11in;
-
     margin: 30px auto;
-
     padding: 0.55in;
-
     background: white;
-
-    box-shadow:
-        0 4px 20px
-        rgba(0, 0, 0, 0.12);
-
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
 }
-
-
-/*
- * ========================================
- * HEADER
- * ========================================
- */
-
 
 .header {
-
     display: flex;
-
     justify-content: space-between;
-
     align-items: flex-start;
-
     padding-bottom: 20px;
-
     border-bottom: 3px solid #172b4d;
-
 }
-
 
 .header-left {
-
     min-width: 0;
-
 }
-
 
 .header-brand-row {
-
     display: flex;
-
     align-items: center;
-
     gap: 18px;
-
 }
-
 
 .logo-container {
-
     flex-shrink: 0;
-
 }
-
 
 .company-logo {
-
     width: 200px;
-
     height: auto;
-
     display: block;
-
 }
-
-
-/*
- * ========================================
- * SHOP CONTACT
- * ========================================
- */
-
 
 .shop-contact {
-
     padding-left: 18px;
-
     border-left: 1px solid #dfe1e6;
-
     font-size: 11px;
-
     line-height: 1.65;
-
     color: #4a4a4a;
-
 }
-
 
 .contact-row {
-
     display: flex;
-
     align-items: center;
-
     gap: 5px;
-
     white-space: nowrap;
-
 }
-
 
 .contact-label {
-
     font-weight: 700;
-
     color: #172b4d;
-
 }
-
 
 .whatsapp-contact {
-
     display: inline-flex;
-
     align-items: center;
-
     gap: 4px;
-
     margin-left: 8px;
-
 }
-
 
 .whatsapp-icon {
-
     display: inline-flex;
-
     align-items: center;
-
     justify-content: center;
-
     width: 13px;
-
     height: 13px;
-
     font-size: 11px;
-
 }
-
-
-/*
- * ========================================
- * DOCUMENT TITLE
- * ========================================
- */
-
 
 .document-title {
-
     margin-top: 6px;
-
     font-size: 13px;
-
     color: #6b778c;
-
     font-weight: 600;
-
     letter-spacing: 2px;
-
 }
-
-
-/*
- * ========================================
- * JOB INFO
- * ========================================
- */
-
 
 .job-info {
-
     text-align: right;
-
     flex-shrink: 0;
-
     max-width: 250px;
-
 }
-
 
 .job-number {
-
     font-size: 18px;
-
     font-weight: 600;
-
 }
-
 
 .job-number strong {
-
     display: inline-block;
-
     max-width: 200px;
-
     margin-left: 5px;
-
     word-break: break-word;
-
 }
-
 
 .date {
-
     margin-top: 5px;
-
     font-size: 12px;
-
     color: #6b778c;
-
 }
-
-
-/*
- * ========================================
- * INFO CARD
- * ========================================
- */
-
 
 .info-card {
-
     display: grid;
-
-    grid-template-columns:
-        repeat(3, minmax(0, 1fr));
-
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 15px 30px;
-
     margin-top: 20px;
-
     padding: 15px;
-
     background: #f4f5f7;
-
     border-radius: 6px;
-
 }
-
-
-/*
- * Standard information item.
- */
-
 
 .info-item {
-
     display: flex;
-
     flex-direction: column;
-
     gap: 4px;
-
     min-width: 0;
-
 }
-
-
-/*
- * Custom fields container.
- */
-
 
 .custom-fields {
-
     display: contents;
-
 }
-
-
-/*
- * Individual custom field.
- */
-
 
 .custom-field-item {
-
     display: flex;
-
     flex-direction: column;
-
     gap: 4px;
-
     min-width: 0;
-
 }
-
-
-/*
- * Labels used by both normal
- * information and custom fields.
- */
-
 
 .label {
-
     font-size: 10px;
-
     color: #6b778c;
-
     text-transform: uppercase;
-
     letter-spacing: 0.8px;
-
     font-weight: 600;
-
 }
-
-
-/*
- * Custom field value.
- */
-
 
 .custom-field-value {
-
     font-size: 13px;
-
     font-weight: 500;
-
     word-break: break-word;
-
 }
-
-
-/*
- * ========================================
- * PRODUCT
- * ========================================
- */
-
 
 #items {
-
     margin-top: 22px;
-
 }
-
 
 .product-card {
-
     margin-bottom: 16px;
-
     border: 1px solid #dfe1e6;
-
     border-radius: 7px;
-
     overflow: hidden;
-
     break-inside: avoid;
-
 }
-
 
 .product-header {
-
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
     padding: 11px 14px;
-
     background: #f4f5f7;
-
     border-bottom: 1px solid #dfe1e6;
-
 }
-
 
 .product-name {
-
     font-size: 15px;
-
     font-weight: 700;
-
 }
-
 
 .product-status {
-
     font-size: 11px;
-
     font-weight: 600;
-
 }
-
 
 .status-finished {
-
     color: #00875a;
-
 }
-
 
 .status-pending {
-
     color: #6b778c;
-
 }
-
 
 .product-body {
-
     padding: 13px 14px;
-
 }
-
 
 .product-grid {
-
     display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
+    grid-template-columns: 1fr 1fr;
     gap: 10px 25px;
-
 }
-
 
 .detail {
-
     display: flex;
-
     flex-direction: column;
-
     gap: 3px;
-
 }
-
 
 .detail-label {
-
     font-size: 10px;
-
     color: #6b778c;
-
     text-transform: uppercase;
-
     letter-spacing: 0.5px;
-
 }
-
 
 .detail-value {
-
     font-size: 13px;
-
     font-weight: 500;
-
     word-break: break-word;
-
 }
-
 
 .option-section {
-
     margin-top: 15px;
-
     padding-top: 12px;
-
     border-top: 1px solid #ebecf0;
-
 }
-
 
 .option-title {
-
     margin-bottom: 9px;
-
     font-size: 10px;
-
     color: #6b778c;
-
     text-transform: uppercase;
-
     letter-spacing: 0.8px;
-
     font-weight: 600;
-
 }
-
 
 .option-list {
-
     display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
+    grid-template-columns: 1fr 1fr;
     gap: 8px 25px;
-
 }
-
 
 .option {
-
     display: flex;
-
     gap: 8px;
-
 }
-
 
 .option-label {
-
     color: #6b778c;
-
 }
-
 
 .option-value {
-
     font-weight: 500;
-
 }
-
 
 .deprecated {
-
     color: #b76e00;
-
 }
-
-
-/*
- * ========================================
- * SUMMARY
- * ========================================
- */
-
 
 .summary {
-
     width: 300px;
-
     margin-left: auto;
-
     margin-top: 25px;
-
     padding-top: 15px;
-
     border-top: 2px solid #172b4d;
-
 }
-
 
 .summary-title {
-
     margin-bottom: 10px;
-
     font-size: 11px;
-
     font-weight: 700;
-
     letter-spacing: 1px;
-
 }
-
 
 .summary-row {
-
     display: flex;
-
     justify-content: space-between;
-
     padding: 4px 0;
-
     font-size: 13px;
-
 }
-
 
 .summary-row span {
-
     color: #6b778c;
-
 }
-
 
 .summary-total {
-
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
     margin-top: 8px;
-
     padding-top: 10px;
-
     border-top: 1px solid #dfe1e6;
-
     font-size: 18px;
-
     font-weight: 800;
-
 }
-
-
-/*
- * ========================================
- * FOOTER
- * ========================================
- */
-
 
 .footer {
-
     display: flex;
-
     justify-content: space-between;
-
     margin-top: 40px;
-
     padding-top: 12px;
-
     border-top: 1px solid #dfe1e6;
-
     color: #6b778c;
-
     font-size: 10px;
-
 }
-
-
-/*
- * ========================================
- * PRINT BUTTON
- * ========================================
- */
-
 
 .print-controls {
-
     position: fixed;
-
     right: 20px;
-
     bottom: 20px;
-
+    display: flex;
+    gap: 10px;
 }
-
 
 .print-controls button {
-
     padding: 11px 18px;
-
     border: none;
-
     border-radius: 5px;
-
-    background: #0c66e4;
-
-    color: white;
-
     font-size: 14px;
-
     font-weight: 600;
-
     cursor: pointer;
-
-    box-shadow:
-        0 3px 10px
-        rgba(0, 0, 0, 0.2);
-
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
+#printButton {
+    background: #0c66e4;
+    color: white;
+}
 
-.print-controls button:hover {
-
+#printButton:hover {
     background: #0055cc;
-
 }
 
+.back-table-button {
+    background: #ffffff;
+    color: #172b4d;
+    border: 1px solid #dfe1e6;
+}
 
-/*
- * ========================================
- * EMPTY
- * ========================================
- */
-
+.back-table-button:hover {
+    background: #f4f5f7;
+}
 
 .empty {
-
     padding: 30px;
-
     text-align: center;
-
     color: #6b778c;
-
 }
 
-
-/*
- * ========================================
- * PRINT MODE
- * ========================================
- */
-
-
 @media print {
-
     @page {
-
         size: letter;
-
         margin: 0;
-
     }
-
 
     html,
     body {
-
         background: white;
-
     }
-
 
     .print-page {
-
         width: 100%;
-
         min-height: auto;
-
         margin: 0;
-
         padding: 0.5in;
-
         box-shadow: none;
-
     }
-
 
     .print-controls {
-
         display: none;
-
     }
-
 }

@@ -1,10 +1,6 @@
-const t =
-    window.TrelloPowerUp.iframe();
+const t = window.TrelloPowerUp.iframe();
 
-
-const STORAGE_KEY =
-    'itemsTable';
-
+const STORAGE_KEY = 'itemsTable';
 
 /*
  * ========================================
@@ -12,9 +8,7 @@ const STORAGE_KEY =
  * ========================================
  */
 
-
 const IVU_RATE = 0.115;
-
 
 /*
  * ========================================
@@ -22,11 +16,10 @@ const IVU_RATE = 0.115;
  * ========================================
  */
 
-
 let table = [];
-
 let catalog = null;
-
+let editingRowId = null;
+let editingRowCopy = null;
 
 /*
  * ========================================
@@ -34,18 +27,9 @@ let catalog = null;
  * ========================================
  */
 
-
 function generateId() {
-
-    return 'row-' +
-        Date.now().toString(36) +
-        '-' +
-        Math.random()
-            .toString(36)
-            .substring(2, 8);
-
+    return 'row-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 8);
 }
-
 
 /*
  * ========================================
@@ -53,81 +37,33 @@ function generateId() {
  * ========================================
  */
 
-
 async function loadCatalog() {
-
     try {
-
-        const response =
-            await fetch(
-                './products.json',
-                {
-                    cache: 'no-cache'
-                }
-            );
-
+        const response = await fetch('./products.json', { cache: 'no-cache' });
 
         if (!response.ok) {
-
-            throw new Error(
-                'Could not load products.json'
-            );
-
+            throw new Error('Could not load products.json');
         }
 
+        catalog = await response.json();
 
-        catalog =
-            await response.json();
-
-
-        if (
-            !catalog ||
-            !Array.isArray(
-                catalog.products
-            )
-        ) {
-
-            throw new Error(
-                'Invalid products.json format'
-            );
-
+        if (!catalog || !Array.isArray(catalog.products)) {
+            throw new Error('Invalid products.json format');
         }
-
-
     } catch (error) {
-
-        console.error(
-            'Could not load product catalog:',
-            error
-        );
-
+        console.error('Could not load product catalog:', error);
 
         catalog = {
-
             version: 0,
-
             products: []
-
         };
 
-
-        const status =
-            document.getElementById(
-                'status'
-            );
-
-
+        const status = document.getElementById('status');
         if (status) {
-
-            status.textContent =
-                'Error loading catalog';
-
+            status.textContent = 'Error loading catalog';
         }
-
     }
-
 }
-
 
 /*
  * ========================================
@@ -135,26 +71,15 @@ async function loadCatalog() {
  * ========================================
  */
 
-
 function getProduct(productId) {
-
     if (!catalog) {
-
         return null;
-
     }
 
-
-    return catalog.products.find(
-        function (product) {
-
-            return product.id === productId;
-
-        }
-    ) || null;
-
+    return catalog.products.find(function (product) {
+        return product.id === productId;
+    }) || null;
 }
-
 
 /*
  * ========================================
@@ -162,26 +87,15 @@ function getProduct(productId) {
  * ========================================
  */
 
-
 function getActiveProducts() {
-
     if (!catalog) {
-
         return [];
-
     }
 
-
-    return catalog.products.filter(
-        function (product) {
-
-            return product.active !== false;
-
-        }
-    );
-
+    return catalog.products.filter(function (product) {
+        return product.active !== false;
+    });
 }
-
 
 /*
  * ========================================
@@ -189,61 +103,27 @@ function getActiveProducts() {
  * ========================================
  */
 
-
 async function loadTable() {
-
     try {
-
-        const savedTable =
-            await t.get(
-                'card',
-                'shared',
-                STORAGE_KEY
-            );
-
+        const savedTable = await t.get('card', 'shared', STORAGE_KEY);
 
         if (Array.isArray(savedTable)) {
-
             table = savedTable;
-
         } else {
-
             table = [];
-
         }
-
 
         render();
-
-
     } catch (error) {
-
-        console.error(
-            'Could not load table:',
-            error
-        );
-
-
+        console.error('Could not load table:', error);
         table = [];
 
-
-        const status =
-            document.getElementById(
-                'status'
-            );
-
-
+        const status = document.getElementById('status');
         if (status) {
-
-            status.textContent =
-                'Error loading data';
-
+            status.textContent = 'Error loading data';
         }
-
     }
-
 }
-
 
 /*
  * ========================================
@@ -251,59 +131,27 @@ async function loadTable() {
  * ========================================
  */
 
-
 async function saveTable() {
-
-    const status =
-        document.getElementById(
-            'status'
-        );
-
+    const status = document.getElementById('status');
 
     if (status) {
-
-        status.textContent =
-            'Saving...';
-
+        status.textContent = 'Saving...';
     }
-
 
     try {
-
-        await t.set(
-            'card',
-            'shared',
-            STORAGE_KEY,
-            table
-        );
-
+        await t.set('card', 'shared', STORAGE_KEY, table);
 
         if (status) {
-
-            status.textContent =
-                'Saved';
-
+            status.textContent = 'Saved';
         }
-
     } catch (error) {
-
-        console.error(
-            'Could not save table:',
-            error
-        );
-
+        console.error('Could not save table:', error);
 
         if (status) {
-
-            status.textContent =
-                'Error saving';
-
+            status.textContent = 'Error saving';
         }
-
     }
-
 }
-
 
 /*
  * ========================================
@@ -311,53 +159,26 @@ async function saveTable() {
  * ========================================
  */
 
-
 function calculateTotals() {
-
     let price = 0;
 
+    table.forEach(function (row) {
+        const quantity = Number(row.quantity) || 0;
+        const cost = Number(row.cost) || 0;
+        price += quantity * cost;
+    });
 
-    table.forEach(
-        function (row) {
-
-            const quantity =
-                Number(row.quantity) || 0;
-
-
-            const cost =
-                Number(row.cost) || 0;
-
-
-            price +=
-                quantity * cost;
-
-        }
-    );
-
-
-    const subtotal =
-        price;
-
-
-    const ivu =
-        subtotal * IVU_RATE;
-
-
-    const total =
-        subtotal + ivu;
-
+    const subtotal = price;
+    const ivu = subtotal * IVU_RATE;
+    const total = subtotal + ivu;
 
     return {
-
         price,
         subtotal,
         ivu,
         total
-
     };
-
 }
-
 
 /*
  * ========================================
@@ -365,14 +186,9 @@ function calculateTotals() {
  * ========================================
  */
 
-
 function formatCurrency(value) {
-
-    return '$' +
-        value.toFixed(2);
-
+    return '$' + Number(value || 0).toFixed(2);
 }
-
 
 /*
  * ========================================
@@ -380,67 +196,30 @@ function formatCurrency(value) {
  * ========================================
  */
 
-
 function getDefaultValue(option) {
-
-    if (
-        option.default !== undefined
-    ) {
-
+    if (option.default !== undefined) {
         return option.default;
-
     }
 
-
-    if (
-        option.type === 'checkbox'
-    ) {
-
+    if (option.type === 'checkbox') {
         return false;
-
     }
 
-
-    if (
-        option.type === 'checkboxGroup'
-    ) {
-
+    if (option.type === 'checkboxGroup') {
         return [];
-
     }
 
-
-    if (
-        option.type === 'radio' ||
-        option.type === 'radioWithCustom'
-    ) {
-
+    if (option.type === 'radio' || option.type === 'radioWithCustom') {
         return '';
-
     }
 
-
-    if (
-        option.type === 'select' ||
-        option.type === 'selectWithCustom'
-    ) {
-
-        const firstOption =
-            Array.isArray(option.options) &&
-            option.options.length > 0
-                ? option.options[0]
-                : '';
-
-
+    if (option.type === 'select' || option.type === 'selectWithCustom') {
+        const firstOption = Array.isArray(option.options) && option.options.length > 0 ? option.options[0] : '';
         return firstOption;
-
     }
-
 
     return '';
-
 }
-
 
 /*
  * ========================================
@@ -448,154 +227,57 @@ function getDefaultValue(option) {
  * ========================================
  */
 
-
 function createProductSelect(row) {
+    const select = document.createElement('select');
 
-    const select =
-        document.createElement(
-            'select'
-        );
-
-
-    const placeholder =
-        document.createElement(
-            'option'
-        );
-
-
-    placeholder.value =
-        '';
-
-
-    placeholder.textContent =
-        'Select product...';
-
-
-    placeholder.disabled =
-        true;
-
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = 'Select product...';
+    placeholder.disabled = true;
 
     if (!row.productId) {
-
-        placeholder.selected =
-            true;
-
+        placeholder.selected = true;
     }
 
+    select.appendChild(placeholder);
 
-    select.appendChild(
-        placeholder
-    );
+    const products = getActiveProducts();
 
+    products.forEach(function (product) {
+        const option = document.createElement('option');
+        option.value = product.id;
+        option.textContent = product.name;
 
-    const products =
-        getActiveProducts();
-
-
-    products.forEach(
-        function (product) {
-
-            const option =
-                document.createElement(
-                    'option'
-                );
-
-
-            option.value =
-                product.id;
-
-
-            option.textContent =
-                product.name;
-
-
-            if (
-                row.productId ===
-                product.id
-            ) {
-
-                option.selected =
-                    true;
-
-            }
-
-
-            select.appendChild(
-                option
-            );
-
+        if (row.productId === product.id) {
+            option.selected = true;
         }
-    );
 
+        select.appendChild(option);
+    });
 
-    select.addEventListener(
-        'change',
-        async function () {
+    select.addEventListener('change', function () {
+        const product = getProduct(select.value);
 
-            const product =
-                getProduct(
-                    select.value
-                );
-
-
-            if (!product) {
-
-                return;
-
-            }
-
-
-            row.productId =
-                product.id;
-
-
-            row.productName =
-                product.name;
-
-
-            row.description =
-                product.name;
-
-
-            row.options =
-                {};
-
-
-            if (
-                Array.isArray(
-                    product.options
-                )
-            ) {
-
-                product.options.forEach(
-                    function (option) {
-
-                        row.options[
-                            option.id
-                        ] =
-                            getDefaultValue(
-                                option
-                            );
-
-                    }
-                );
-
-            }
-
-
-            render();
-
-
-            await saveTable();
-
+        if (!product) {
+            return;
         }
-    );
 
+        row.productId = product.id;
+        row.productName = product.name;
+        row.description = product.name;
+        row.options = {};
+
+        if (Array.isArray(product.options)) {
+            product.options.forEach(function (option) {
+                row.options[option.id] = getDefaultValue(option);
+            });
+        }
+
+        render();
+    });
 
     return select;
-
 }
-
 
 /*
  * ========================================
@@ -603,141 +285,48 @@ function createProductSelect(row) {
  * ========================================
  */
 
-
 function isCustomOption(value) {
-
-    return String(
-        value
-    )
-        .trim()
-        .toLowerCase() ===
-        'custom';
-
+    return String(value).trim().toLowerCase() === 'custom';
 }
-
 
 /*
  * ========================================
  * CONDITIONAL FIELDS (dependsOn)
  * ========================================
- *
- * An option definition can declare:
- *
- * "dependsOn": { "id": "terminacion", "equals": "Argollas" }
- *
- * ...meaning this field only shows once the
- * option with id "terminacion" is currently
- * set to "Argollas". Works against any
- * controlling field type (radio/select value,
- * checkbox boolean, or a checkboxGroup array —
- * in that last case "equals" is checked
- * against the array's contents).
- *
- * Use "in": ["A", "B"] instead of "equals" to
- * match against multiple possible values.
  */
 
-
-function isDependencyMet(
-    dependsOn,
-    row
-) {
-
-    if (
-        !dependsOn ||
-        !dependsOn.id
-    ) {
-
+function isDependencyMet(dependsOn, row) {
+    if (!dependsOn || !dependsOn.id) {
         return true;
-
     }
 
+    const options = (row && row.options) || {};
+    const currentValue = options[dependsOn.id];
 
-    const options =
-        (row && row.options) ||
-        {};
-
-
-    const currentValue =
-        options[
-            dependsOn.id
-        ];
-
-
-    if (
-        Array.isArray(
-            currentValue
-        )
-    ) {
-
-        if (
-            dependsOn.equals !==
-            undefined
-        ) {
-
-            return currentValue.includes(
-                dependsOn.equals
-            );
-
+    if (Array.isArray(currentValue)) {
+        if (dependsOn.equals !== undefined) {
+            return currentValue.includes(dependsOn.equals);
         }
 
-
-        if (
-            Array.isArray(
-                dependsOn.in
-            )
-        ) {
-
-            return dependsOn.in.some(
-                function (possibleValue) {
-
-                    return currentValue.includes(
-                        possibleValue
-                    );
-
-                }
-            );
-
+        if (Array.isArray(dependsOn.in)) {
+            return dependsOn.in.some(function (possibleValue) {
+                return currentValue.includes(possibleValue);
+            });
         }
-
 
         return false;
-
     }
 
-
-    if (
-        dependsOn.equals !==
-        undefined
-    ) {
-
-        return (
-            currentValue ===
-            dependsOn.equals
-        );
-
+    if (dependsOn.equals !== undefined) {
+        return currentValue === dependsOn.equals;
     }
 
-
-    if (
-        Array.isArray(
-            dependsOn.in
-        )
-    ) {
-
-        return (
-            dependsOn.in.indexOf(
-                currentValue
-            ) !== -1
-        );
-
+    if (Array.isArray(dependsOn.in)) {
+        return dependsOn.in.indexOf(currentValue) !== -1;
     }
-
 
     return true;
-
 }
-
 
 /*
  * ========================================
@@ -745,219 +334,21 @@ function isDependencyMet(
  * ========================================
  */
 
+function createCustomInput(row, optionDefinition, optionId, isVisible) {
+    const input = document.createElement('input');
 
-function createCustomInput(
-    row,
-    optionDefinition,
-    optionId,
-    isVisible,
-    onSave
-) {
+    input.type = 'text';
+    input.className = 'option-custom-input';
+    input.placeholder = optionDefinition.customPlaceholder || 'Specify...';
+    input.value = row.options[optionId + '__custom'] || '';
+    input.style.display = isVisible ? '' : 'none';
 
-    const input =
-        document.createElement(
-            'input'
-        );
-
-
-    input.type =
-        'text';
-
-
-    input.className =
-        'option-custom-input';
-
-
-    input.placeholder =
-        optionDefinition.customPlaceholder ||
-        'Specify...';
-
-
-    input.value =
-        row.options[
-            optionId +
-            '__custom'
-        ] || '';
-
-
-    input.style.display =
-        isVisible
-            ? ''
-            : 'none';
-
-
-    input.addEventListener(
-        'input',
-        async function () {
-
-            row.options[
-                optionId +
-                '__custom'
-            ] =
-                input.value;
-
-
-            if (onSave) {
-
-                await onSave();
-
-            } else {
-
-                await saveTable();
-
-            }
-
-        }
-    );
-
+    input.addEventListener('input', function () {
+        row.options[optionId + '__custom'] = input.value;
+    });
 
     return input;
-
 }
-
-
-/*
- * ========================================
- * SELECT / DROPDOWN
- * ========================================
- */
-
-
-function createSelectControl(
-    row,
-    optionDefinition,
-    optionId,
-    value
-) {
-
-    const wrapper =
-        document.createElement(
-            'div'
-        );
-
-
-    wrapper.className =
-        'option-radio-group';
-
-
-    const select =
-        document.createElement(
-            'select'
-        );
-
-
-    const options =
-        Array.isArray(
-            optionDefinition.options
-        )
-            ? optionDefinition.options
-            : [];
-
-
-    options.forEach(
-        function (possibleValue) {
-
-            const option =
-                document.createElement(
-                    'option'
-                );
-
-
-            option.value =
-                possibleValue;
-
-
-            option.textContent =
-                possibleValue;
-
-
-            if (
-                value ===
-                possibleValue
-            ) {
-
-                option.selected =
-                    true;
-
-            }
-
-
-            select.appendChild(
-                option
-            );
-
-        }
-    );
-
-
-    wrapper.appendChild(
-        select
-    );
-
-
-    let customInput =
-        null;
-
-
-    /*
-     * Custom input is only created
-     * for selectWithCustom.
-     */
-    if (
-        optionDefinition.type ===
-        'selectWithCustom'
-    ) {
-
-        customInput =
-            createCustomInput(
-                row,
-                optionDefinition,
-                optionId,
-                isCustomOption(
-                    value
-                )
-            );
-
-
-        wrapper.appendChild(
-            customInput
-        );
-
-    }
-
-
-    select.addEventListener(
-        'change',
-        async function () {
-
-            row.options[
-                optionId
-            ] =
-                select.value;
-
-
-            if (customInput) {
-
-                customInput.style.display =
-                    isCustomOption(
-                        select.value
-                    )
-                        ? ''
-                        : 'none';
-
-            }
-
-
-            await saveTable();
-
-        }
-    );
-
-
-    return wrapper;
-
-}
-
 
 /*
  * ========================================
@@ -965,847 +356,228 @@ function createSelectControl(
  * ========================================
  */
 
+function createOptionControl(row, optionDefinition) {
+    const optionId = optionDefinition.id;
 
-function createOptionControl(
-    row,
-    optionDefinition
-) {
-
-    const optionId =
-        optionDefinition.id;
-
-
-    if (
-        !row.options ||
-        typeof row.options !== 'object'
-    ) {
-
+    if (!row.options || typeof row.options !== 'object') {
         row.options = {};
-
     }
 
+    let value = row.options[optionId];
 
-    let value =
-        row.options[optionId];
+    if (optionDefinition.type === 'select') {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'option-select-wrapper';
 
+        const select = document.createElement('select');
+        const options = Array.isArray(optionDefinition.options) ? optionDefinition.options : [];
 
-    /*
-     * ========================================
-     * SELECT / DROPDOWN
-     * ========================================
-     *
-     * Example:
-     *
-     * [ Option A ▼ ]
-     *
-     * If Custom is selected:
-     *
-     * [ Custom ▼ ] [___________]
-     *
-     */
+        options.forEach(function (possibleValue) {
+            const option = document.createElement('option');
+            option.value = possibleValue;
+            option.textContent = possibleValue;
 
-
-    if (
-        optionDefinition.type ===
-        'select'
-    ) {
-
-        const wrapper =
-            document.createElement(
-                'div'
-            );
-
-
-        wrapper.className =
-            'option-select-wrapper';
-
-
-        const select =
-            document.createElement(
-                'select'
-            );
-
-
-        const options =
-            Array.isArray(
-                optionDefinition.options
-            )
-                ? optionDefinition.options
-                : [];
-
-
-        options.forEach(
-            function (possibleValue) {
-
-                const option =
-                    document.createElement(
-                        'option'
-                    );
-
-
-                option.value =
-                    possibleValue;
-
-
-                option.textContent =
-                    possibleValue;
-
-
-                if (
-                    value ===
-                    possibleValue
-                ) {
-
-                    option.selected =
-                        true;
-
-                }
-
-
-                select.appendChild(
-                    option
-                );
-
+            if (value === possibleValue) {
+                option.selected = true;
             }
-        );
 
+            select.appendChild(option);
+        });
 
-        /*
-         * Custom input.
-         *
-         * It is ONLY visible when
-         * Custom is selected.
-         */
-        let customInput =
-            null;
+        let customInput = null;
 
-
-        if (
-            options.some(
-                function (possibleValue) {
-
-                    return isCustomOption(
-                        possibleValue
-                    );
-
-                }
-            )
-        ) {
-
-            customInput =
-                createCustomInput(
-                    row,
-                    optionDefinition,
-                    optionId,
-                    isCustomOption(value)
-                );
-
+        if (options.some(function (possibleValue) { return isCustomOption(possibleValue); })) {
+            customInput = createCustomInput(row, optionDefinition, optionId, isCustomOption(value));
         }
 
+        select.addEventListener('change', function () {
+            row.options[optionId] = select.value;
 
-        select.addEventListener(
-            'change',
-            async function () {
-
-                row.options[
-                    optionId
-                ] =
-                    select.value;
-
-
-                if (customInput) {
-
-                    customInput.style.display =
-                        isCustomOption(
-                            select.value
-                        )
-                            ? ''
-                            : 'none';
-
-                }
-
-
-                await saveTable();
-
+            if (customInput) {
+                customInput.style.display = isCustomOption(select.value) ? '' : 'none';
             }
-        );
+        });
 
-
-        wrapper.appendChild(
-            select
-        );
-
+        wrapper.appendChild(select);
 
         if (customInput) {
-
-            wrapper.appendChild(
-                customInput
-            );
-
+            wrapper.appendChild(customInput);
         }
 
-
         return wrapper;
-
     }
 
+    if (optionDefinition.type === 'radio') {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'option-radio-group';
 
-    /*
-     * ========================================
-     * RADIO
-     * ========================================
-     *
-     * Exactly ONE option can be selected.
-     *
-     * Custom remains part of the radio group.
-     *
-     * Example:
-     *
-     * ○ Option A
-     * ○ Option B
-     * ○ Option C
-     * ○ Custom [________]
-     *
-     */
+        const options = Array.isArray(optionDefinition.options) ? optionDefinition.options : [];
+        const radioName = 'radio-' + row.id + '-' + optionId;
 
+        options.forEach(function (possibleValue) {
+            const item = document.createElement('label');
+            item.className = 'option-radio-item';
 
-    if (
-        optionDefinition.type ===
-        'radio'
-    ) {
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = radioName;
+            radio.value = possibleValue;
+            radio.checked = value === possibleValue;
 
-        const wrapper =
-            document.createElement(
-                'div'
-            );
+            const text = document.createElement('span');
+            text.textContent = possibleValue;
 
+            item.appendChild(radio);
+            item.appendChild(text);
 
-        wrapper.className =
-            'option-radio-group';
+            let customInput = null;
 
+            if (isCustomOption(possibleValue)) {
+                customInput = createCustomInput(row, optionDefinition, optionId, radio.checked);
+                item.appendChild(customInput);
+            }
 
-        const options =
-            Array.isArray(
-                optionDefinition.options
-            )
-                ? optionDefinition.options
-                : [];
-
-
-        const radioName =
-            'radio-' +
-            row.id +
-            '-' +
-            optionId;
-
-
-        options.forEach(
-            function (
-                possibleValue
-            ) {
-
-                const item =
-                    document.createElement(
-                        'label'
-                    );
-
-
-                item.className =
-                    'option-radio-item';
-
-
-                const radio =
-                    document.createElement(
-                        'input'
-                    );
-
-
-                radio.type =
-                    'radio';
-
-
-                radio.name =
-                    radioName;
-
-
-                radio.value =
-                    possibleValue;
-
-
-                radio.checked =
-                    value ===
-                    possibleValue;
-
-
-                const text =
-                    document.createElement(
-                        'span'
-                    );
-
-
-                text.textContent =
-                    possibleValue;
-
-
-                item.appendChild(
-                    radio
-                );
-
-
-                item.appendChild(
-                    text
-                );
-
-
-                /*
-                 * Custom input ONLY belongs
-                 * to the Custom radio option.
-                 */
-                let customInput =
-                    null;
-
-
-                if (
-                    isCustomOption(
-                        possibleValue
-                    )
-                ) {
-
-                    customInput =
-                        createCustomInput(
-                            row,
-                            optionDefinition,
-                            optionId,
-                            radio.checked
-                        );
-
-
-                    item.appendChild(
-                        customInput
-                    );
-
+            radio.addEventListener('change', function () {
+                if (!radio.checked) {
+                    return;
                 }
 
+                row.options[optionId] = radio.value;
 
-                radio.addEventListener(
-                    'change',
-                    async function () {
+                const allCustomInputs = wrapper.querySelectorAll('.option-custom-input');
+                allCustomInputs.forEach(function (input) {
+                    input.style.display = 'none';
+                });
 
-                        if (
-                            !radio.checked
-                        ) {
+                if (customInput) {
+                    customInput.style.display = '';
+                }
+            });
 
-                            return;
-
-                        }
-
-
-                        row.options[
-                            optionId
-                        ] =
-                            radio.value;
-
-
-                        /*
-                         * Show Custom only when
-                         * Custom is selected.
-                         */
-                        const allCustomInputs =
-                            wrapper.querySelectorAll(
-                                '.option-custom-input'
-                            );
-
-
-                        allCustomInputs.forEach(
-                            function (input) {
-
-                                input.style.display =
-                                    '';
-
-                            }
-                        );
-
-
-                        if (customInput) {
-
-                            customInput.style.display =
-                                '';
-
-                        } else {
-
-                            allCustomInputs.forEach(
-                                function (input) {
-
-                                    input.style.display =
-                                        'none';
-
-                                }
-                            );
-
-                        }
-
-
-                        await saveTable();
-
-                    }
-                );
-
-
-                wrapper.appendChild(
-                    item
-                );
-
-            }
-        );
-
+            wrapper.appendChild(item);
+        });
 
         return wrapper;
-
     }
 
+    if (optionDefinition.type === 'checkboxGroup') {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'option-checkbox-group';
 
-    /*
-     * ========================================
-     * CHECKBOX GROUP
-     * ========================================
-     *
-     * Multiple options can be selected.
-     *
-     * Example:
-     *
-     * [ ] Option A
-     * [ ] Option B
-     * [x] Option C
-     * [x] Custom [________]
-     *
-     */
+        const options = Array.isArray(optionDefinition.options) ? optionDefinition.options : [];
 
-
-    if (
-        optionDefinition.type ===
-        'checkboxGroup'
-    ) {
-
-        const wrapper =
-            document.createElement(
-                'div'
-            );
-
-
-        wrapper.className =
-            'option-checkbox-group';
-
-
-        const options =
-            Array.isArray(
-                optionDefinition.options
-            )
-                ? optionDefinition.options
-                : [];
-
-
-        /*
-         * Always store checkbox groups
-         * as an array.
-         */
-        if (
-            !Array.isArray(value)
-        ) {
-
+        if (!Array.isArray(value)) {
             value = [];
-
-
-            row.options[
-                optionId
-            ] =
-                value;
-
+            row.options[optionId] = value;
         }
 
+        options.forEach(function (possibleValue) {
+            const item = document.createElement('label');
+            item.className = 'option-checkbox-item';
 
-        options.forEach(
-            function (
-                possibleValue
-            ) {
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = possibleValue;
+            checkbox.checked = value.includes(possibleValue);
 
-                const item =
-                    document.createElement(
-                        'label'
-                    );
+            const text = document.createElement('span');
+            text.textContent = possibleValue;
 
+            item.appendChild(checkbox);
+            item.appendChild(text);
 
-                item.className =
-                    'option-checkbox-item';
+            let customInput = null;
 
+            if (isCustomOption(possibleValue)) {
+                customInput = createCustomInput(row, optionDefinition, optionId, checkbox.checked);
+                item.appendChild(customInput);
+            }
 
-                const checkbox =
-                    document.createElement(
-                        'input'
-                    );
+            checkbox.addEventListener('change', function () {
+                let selected = Array.isArray(row.options[optionId]) ? row.options[optionId] : [];
 
-
-                checkbox.type =
-                    'checkbox';
-
-
-                checkbox.value =
-                    possibleValue;
-
-
-                checkbox.checked =
-                    value.includes(
-                        possibleValue
-                    );
-
-
-                const text =
-                    document.createElement(
-                        'span'
-                    );
-
-
-                text.textContent =
-                    possibleValue;
-
-
-                item.appendChild(
-                    checkbox
-                );
-
-
-                item.appendChild(
-                    text
-                );
-
-
-                /*
-                 * Custom input belongs directly
-                 * beside the Custom checkbox.
-                 */
-                let customInput =
-                    null;
-
-
-                if (
-                    isCustomOption(
-                        possibleValue
-                    )
-                ) {
-
-                    customInput =
-                        createCustomInput(
-                            row,
-                            optionDefinition,
-                            optionId,
-                            checkbox.checked
-                        );
-
-
-                    item.appendChild(
-                        customInput
-                    );
-
+                if (checkbox.checked) {
+                    if (!selected.includes(possibleValue)) {
+                        selected.push(possibleValue);
+                    }
+                } else {
+                    selected = selected.filter(function (selectedValue) {
+                        return selectedValue !== possibleValue;
+                    });
                 }
 
+                row.options[optionId] = selected;
 
-                checkbox.addEventListener(
-                    'change',
-                    async function () {
+                if (customInput) {
+                    customInput.style.display = checkbox.checked ? '' : 'none';
+                }
+            });
 
-                        let selected =
-                            Array.isArray(
-                                row.options[
-                                    optionId
-                                ]
-                            )
-                                ? row.options[
-                                    optionId
-                                ]
-                                : [];
-
-
-                        if (
-                            checkbox.checked
-                        ) {
-
-                            if (
-                                !selected.includes(
-                                    possibleValue
-                                )
-                            ) {
-
-                                selected.push(
-                                    possibleValue
-                                );
-
-                            }
-
-                        } else {
-
-                            selected =
-                                selected.filter(
-                                    function (
-                                        selectedValue
-                                    ) {
-
-                                        return (
-                                            selectedValue !==
-                                            possibleValue
-                                        );
-
-                                    }
-                                );
-
-                        }
-
-
-                        row.options[
-                            optionId
-                        ] =
-                            selected;
-
-
-                        /*
-                         * Custom input only appears
-                         * while Custom is checked.
-                         */
-                        if (customInput) {
-
-                            customInput.style.display =
-                                checkbox.checked
-                                    ? ''
-                                    : 'none';
-
-                        }
-
-
-                        await saveTable();
-
-                    }
-                );
-
-
-                wrapper.appendChild(
-                    item
-                );
-
-            }
-        );
-
+            wrapper.appendChild(item);
+        });
 
         return wrapper;
-
     }
 
+    if (optionDefinition.type === 'checkbox') {
+        const wrapper = document.createElement('label');
+        wrapper.className = 'option-checkbox';
 
-    /*
-     * ========================================
-     * SINGLE CHECKBOX
-     * ========================================
-     */
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = Boolean(value);
 
+        const text = document.createElement('span');
+        text.textContent = 'Yes';
 
-    if (
-        optionDefinition.type ===
-        'checkbox'
-    ) {
+        checkbox.addEventListener('change', function () {
+            row.options[optionId] = checkbox.checked;
+        });
 
-        const wrapper =
-            document.createElement(
-                'label'
-            );
-
-
-        wrapper.className =
-            'option-checkbox';
-
-
-        const checkbox =
-            document.createElement(
-                'input'
-            );
-
-
-        checkbox.type =
-            'checkbox';
-
-
-        checkbox.checked =
-            Boolean(value);
-
-
-        const text =
-            document.createElement(
-                'span'
-            );
-
-
-        text.textContent =
-            'Yes';
-
-
-        checkbox.addEventListener(
-            'change',
-            async function () {
-
-                row.options[
-                    optionId
-                ] =
-                    checkbox.checked;
-
-
-                await saveTable();
-
-            }
-        );
-
-
-        wrapper.appendChild(
-            checkbox
-        );
-
-
-        wrapper.appendChild(
-            text
-        );
-
+        wrapper.appendChild(checkbox);
+        wrapper.appendChild(text);
 
         return wrapper;
-
     }
 
+    if (optionDefinition.type === 'number') {
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.value = value ?? '';
 
-    /*
-     * ========================================
-     * NUMBER
-     * ========================================
-     */
-
-
-    if (
-        optionDefinition.type ===
-        'number'
-    ) {
-
-        const input =
-            document.createElement(
-                'input'
-            );
-
-
-        input.type =
-            'number';
-
-
-        input.value =
-            value ?? '';
-
-
-        if (
-            optionDefinition.min !==
-            undefined
-        ) {
-
-            input.min =
-                optionDefinition.min;
-
+        if (optionDefinition.min !== undefined) {
+            input.min = optionDefinition.min;
         }
 
-
-        if (
-            optionDefinition.max !==
-            undefined
-        ) {
-
-            input.max =
-                optionDefinition.max;
-
+        if (optionDefinition.max !== undefined) {
+            input.max = optionDefinition.max;
         }
 
-
-        if (
-            optionDefinition.step !==
-            undefined
-        ) {
-
-            input.step =
-                optionDefinition.step;
-
+        if (optionDefinition.step !== undefined) {
+            input.step = optionDefinition.step;
         }
 
-
-        input.addEventListener(
-            'change',
-            async function () {
-
-                row.options[
-                    optionId
-                ] =
-                    input.value;
-
-
-                await saveTable();
-
-            }
-        );
-
+        input.addEventListener('change', function () {
+            row.options[optionId] = input.value;
+        });
 
         return input;
-
     }
 
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = value ?? '';
 
-    /*
-     * ========================================
-     * TEXT
-     * ========================================
-     */
-
-
-    const input =
-        document.createElement(
-            'input'
-        );
-
-
-    input.type =
-        'text';
-
-
-    input.value =
-        value ?? '';
-
-
-    if (
-        optionDefinition.placeholder
-    ) {
-
-        input.placeholder =
-            optionDefinition.placeholder;
-
+    if (optionDefinition.placeholder) {
+        input.placeholder = optionDefinition.placeholder;
     }
 
-
-    input.addEventListener(
-        'change',
-        async function () {
-
-            row.options[
-                optionId
-            ] =
-                input.value;
-
-
-            await saveTable();
-
-        }
-    );
-
+    input.addEventListener('change', function () {
+        row.options[optionId] = input.value;
+    });
 
     return input;
-
 }
-
 
 /*
  * ========================================
@@ -1813,187 +585,60 @@ function createOptionControl(
  * ========================================
  */
 
-
 function createOptionsArea(row) {
+    const container = document.createElement('div');
+    container.className = 'options-container';
 
-    const container =
-        document.createElement(
-            'div'
-        );
-
-
-    container.className =
-        'options-container';
-
-
-    const product =
-        getProduct(
-            row.productId
-        );
-
+    const product = getProduct(row.productId);
 
     if (!product) {
-
         return container;
-
     }
 
+    const dependentRows = [];
 
-    /*
-     * Rows that need to be shown/hidden
-     * based on another field's value.
-     */
-    const dependentRows =
-        [];
+    if (Array.isArray(product.options)) {
+        product.options.forEach(function (optionDefinition) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'option-row';
 
+            const label = document.createElement('span');
+            label.className = 'option-label';
+            label.textContent = optionDefinition.label;
 
-    if (
-        Array.isArray(
-            product.options
-        )
-    ) {
+            const control = document.createElement('div');
+            control.className = 'option-control';
 
-        product.options.forEach(
-            function (optionDefinition) {
+            control.appendChild(createOptionControl(row, optionDefinition));
 
-                const wrapper =
-                    document.createElement(
-                        'div'
-                    );
+            wrapper.appendChild(label);
+            wrapper.appendChild(control);
 
+            container.appendChild(wrapper);
 
-                wrapper.className =
-                    'option-row';
-
-
-                const label =
-                    document.createElement(
-                        'span'
-                    );
-
-
-                label.className =
-                    'option-label';
-
-
-                label.textContent =
-                    optionDefinition.label;
-
-
-                const control =
-                    document.createElement(
-                        'div'
-                    );
-
-
-                control.className =
-                    'option-control';
-
-
-                control.appendChild(
-                    createOptionControl(
-                        row,
-                        optionDefinition
-                    )
-                );
-
-
-                wrapper.appendChild(
-                    label
-                );
-
-
-                wrapper.appendChild(
-                    control
-                );
-
-
-                container.appendChild(
-                    wrapper
-                );
-
-
-                if (
-                    optionDefinition.dependsOn
-                ) {
-
-                    dependentRows.push(
-                        {
-                            wrapper:
-                                wrapper,
-
-                            dependsOn:
-                                optionDefinition.dependsOn
-                        }
-                    );
-
-                }
-
+            if (optionDefinition.dependsOn) {
+                dependentRows.push({
+                    wrapper: wrapper,
+                    dependsOn: optionDefinition.dependsOn
+                });
             }
-        );
-
+        });
     }
 
-
-    /*
-     * Show/hide every conditional row
-     * based on the row's CURRENT option
-     * values.
-     */
     function refreshDependentRows() {
-
-        dependentRows.forEach(
-            function (entry) {
-
-                const visible =
-                    isDependencyMet(
-                        entry.dependsOn,
-                        row
-                    );
-
-
-                entry.wrapper.style.display =
-                    visible
-                        ? ''
-                        : 'none';
-
-            }
-        );
-
+        dependentRows.forEach(function (entry) {
+            const visible = isDependencyMet(entry.dependsOn, row);
+            entry.wrapper.style.display = visible ? '' : 'none';
+        });
     }
-
 
     refreshDependentRows();
 
-
-    /*
-     * Any control inside this options area
-     * can change a field that another field
-     * depends on (a radio pick, a checkbox
-     * toggle, typing a number, etc). Rather
-     * than hook every individual control,
-     * listen once on the container — this
-     * fires after the control's own change
-     * handler has already updated
-     * row.options, so it always re-checks
-     * against fresh values.
-     */
-    container.addEventListener(
-        'change',
-        refreshDependentRows
-    );
-
-
-    container.addEventListener(
-        'input',
-        refreshDependentRows
-    );
-
+    container.addEventListener('change', refreshDependentRows);
+    container.addEventListener('input', refreshDependentRows);
 
     return container;
-
 }
-
 
 /*
  * ========================================
@@ -2001,90 +646,84 @@ function createOptionsArea(row) {
  * ========================================
  */
 
-
-function formatOptionValue(
-    value,
-    customValue
-) {
-
-    if (
-        typeof value === 'boolean'
-    ) {
-
-        return value
-            ? 'Yes'
-            : 'No';
-
+function formatOptionValue(value, customValue) {
+    if (typeof value === 'boolean') {
+        return value ? 'Yes' : 'No';
     }
 
-
-    if (
-        Array.isArray(value)
-    ) {
-
-        if (
-            value.length === 0
-        ) {
-
+    if (Array.isArray(value)) {
+        if (value.length === 0) {
             return '—';
-
         }
 
-
-        return value.map(
-            function (selectedValue) {
-
-                if (
-                    isCustomOption(
-                        selectedValue
-                    ) &&
-                    customValue
-                ) {
-
-                    return (
-                        'Custom — ' +
-                        customValue
-                    );
-
-                }
-
-
-                return selectedValue;
-
+        return value.map(function (selectedValue) {
+            if (isCustomOption(selectedValue) && customValue) {
+                return 'Custom — ' + customValue;
             }
-        ).join(', ');
-
+            return selectedValue;
+        }).join(', ');
     }
 
-
-    if (
-        isCustomOption(value) &&
-        customValue
-    ) {
-
-        return (
-            'Custom — ' +
-            customValue
-        );
-
+    if (isCustomOption(value) && customValue) {
+        return 'Custom — ' + customValue;
     }
 
-
-    if (
-        value === '' ||
-        value === null ||
-        value === undefined
-    ) {
-
+    if (value === '' || value === null || value === undefined) {
         return '—';
-
     }
-
 
     return String(value);
-
 }
 
+/*
+ * ========================================
+ * READ-ONLY OPTIONS SUMMARY
+ * ========================================
+ */
+
+function renderOptionsSummary(row) {
+    const container = document.createElement('div');
+    container.className = 'option-display-list';
+
+    const product = getProduct(row.productId);
+
+    if (!product || !Array.isArray(product.options)) {
+        container.textContent = '—';
+        return container;
+    }
+
+    product.options.forEach(function (opt) {
+        if (opt.dependsOn && !isDependencyMet(opt.dependsOn, row)) {
+            return;
+        }
+
+        const val = row.options ? row.options[opt.id] : undefined;
+        const customVal = row.options ? row.options[opt.id + '__custom'] : undefined;
+        const formatted = formatOptionValue(val, customVal);
+
+        if (formatted !== '—') {
+            const item = document.createElement('div');
+            item.className = 'option-display-item';
+
+            const label = document.createElement('span');
+            label.className = 'option-display-label';
+            label.textContent = opt.label + ': ';
+
+            const value = document.createElement('span');
+            value.textContent = formatted;
+
+            item.appendChild(label);
+            item.appendChild(value);
+            container.appendChild(item);
+        }
+    });
+
+    if (!container.hasChildNodes()) {
+        container.textContent = '—';
+    }
+
+    return container;
+}
 
 /*
  * ========================================
@@ -2092,442 +731,229 @@ function formatOptionValue(
  * ========================================
  */
 
-
 function render() {
-
-    const body =
-        document.getElementById(
-            'tableBody'
-        );
-
+    const body = document.getElementById('tableBody');
 
     if (!body) {
-
         return;
-
     }
-
 
     body.innerHTML = '';
 
-
     if (table.length === 0) {
-
         body.innerHTML = `
-
             <tr>
-
-                <td
-                    colspan="7"
-                    class="empty">
-
-                    No items yet.
-                    Click "+ Add Row".
-
+                <td colspan="7" class="empty">
+                    No items yet. Click "+ Add Row".
                 </td>
-
             </tr>
-
         `;
-
-
         updateTotals();
-
         return;
-
     }
 
-
-    table.forEach(
-        function (row) {
-
-            const tr =
-                document.createElement(
-                    'tr'
-                );
-
-
-            /*
-             * CHECK
-             */
-
-
-            const checkTd =
-                document.createElement(
-                    'td'
-                );
-
-
-            checkTd.className =
-                'check';
-
-
-            const checkbox =
-                document.createElement(
-                    'input'
-                );
-
-
-            checkbox.type =
-                'checkbox';
-
-
-            checkbox.checked =
-                Boolean(row.finished);
-
-
-            checkbox.addEventListener(
-                'change',
-                async function () {
-
-                    row.finished =
-                        checkbox.checked;
-
-
-                    await saveTable();
-
-                }
-            );
-
-
-            checkTd.appendChild(
-                checkbox
-            );
-
-
-            tr.appendChild(
-                checkTd
-            );
-
-
-            /*
-             * QUANTITY
-             */
-
-
-            const quantityTd =
-                document.createElement(
-                    'td'
-                );
-
-
-            quantityTd.className =
-                'quantity';
-
-
-            const quantityInput =
-                document.createElement(
-                    'input'
-                );
-
-
-            quantityInput.type =
-                'number';
-
-
-            quantityInput.min =
-                '0';
-
-
-            quantityInput.step =
-                '1';
-
-
-            quantityInput.value =
-                row.quantity ?? '';
-
-
-            quantityInput.addEventListener(
-                'change',
-                async function () {
-
-                    row.quantity =
-                        Number(
-                            quantityInput.value
-                        ) || 0;
-
-
-                    updateTotals();
-
-
-                    await saveTable();
-
-                }
-            );
-
-
-            quantityTd.appendChild(
-                quantityInput
-            );
-
-
-            tr.appendChild(
-                quantityTd
-            );
-
-
-            /*
-             * PRODUCT
-             */
-
-
-            const productTd =
-                document.createElement(
-                    'td'
-                );
-
-
-            productTd.className =
-                'product';
-
-
-            const productSelect =
-                createProductSelect(
-                    row
-                );
-
-
-            productTd.appendChild(
-                productSelect
-            );
-
-
-            tr.appendChild(
-                productTd
-            );
-
-
-            /*
-             * OPTIONS
-             */
-
-
-            const optionsTd =
-                document.createElement(
-                    'td'
-                );
-
-
-            optionsTd.className =
-                'options';
-
-
-            optionsTd.appendChild(
-                createOptionsArea(
-                    row
-                )
-            );
-
-
-            tr.appendChild(
-                optionsTd
-            );
-
-
-            /*
-             * COST
-             */
-
-
-            const costTd =
-                document.createElement(
-                    'td'
-                );
-
-
-            costTd.className =
-                'cost';
-
-
-            const costInput =
-                document.createElement(
-                    'input'
-                );
-
-
-            costInput.type =
-                'number';
-
-
-            costInput.min =
-                '0';
-
-
-            costInput.step =
-                '0.01';
-
-
-            costInput.value =
-                row.cost ?? '';
-
-
-            costInput.addEventListener(
-                'change',
-                async function () {
-
-                    row.cost =
-                        Number(
-                            costInput.value
-                        ) || 0;
-
-
-                    updateTotals();
-
-
-                    await saveTable();
-
-                }
-            );
-
-
-            costTd.appendChild(
-                costInput
-            );
-
-
-            tr.appendChild(
-                costTd
-            );
-
-
-            /*
-             * FILE
-             */
-
-
-            const fileTd =
-                document.createElement(
-                    'td'
-                );
-
-
-            fileTd.className =
-                'file';
-
-
-            const fileInput =
-                document.createElement(
-                    'input'
-                );
-
-
-            fileInput.type =
-                'text';
-
-
-            fileInput.placeholder =
-                'File name';
-
-
-            fileInput.value =
-                row.fileName || '';
-
-
-            fileInput.addEventListener(
-                'change',
-                async function () {
-
-                    row.fileName =
-                        fileInput.value;
-
-
-                    await saveTable();
-
-                }
-            );
-
-
-            fileTd.appendChild(
-                fileInput
-            );
-
-
-            tr.appendChild(
-                fileTd
-            );
-
-
-            /*
-             * DELETE
-             */
-
-
-            const deleteTd =
-                document.createElement(
-                    'td'
-                );
-
-
-            deleteTd.className =
-                'delete';
-
-
-            const deleteButton =
-                document.createElement(
-                    'button'
-                );
-
-
-            deleteButton.className =
-                'delete-button';
-
-
-            deleteButton.textContent =
-                '×';
-
-
-            deleteButton.title =
-                'Delete row';
-
-
-            deleteButton.addEventListener(
-                'click',
-                async function () {
-
-                    table =
-                        table.filter(
-                            function (item) {
-
-                                return (
-                                    item.id !==
-                                    row.id
-                                );
-
-                            }
-                        );
-
-
-                    render();
-
-
-                    await saveTable();
-
-                }
-            );
-
-
-            deleteTd.appendChild(
-                deleteButton
-            );
-
-
-            tr.appendChild(
-                deleteTd
-            );
-
-
-            body.appendChild(
-                tr
-            );
-
+    table.forEach(function (row) {
+        const isEditing = editingRowId === row.id;
+        const tr = document.createElement('tr');
+
+        /* CHECK */
+        const checkTd = document.createElement('td');
+        checkTd.className = 'check';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = Boolean(row.finished);
+
+        checkbox.addEventListener('change', async function () {
+            row.finished = checkbox.checked;
+            await saveTable();
+        });
+
+        checkTd.appendChild(checkbox);
+        tr.appendChild(checkTd);
+
+        /* QUANTITY */
+        const quantityTd = document.createElement('td');
+        quantityTd.className = 'quantity';
+
+        if (isEditing) {
+            const quantityInput = document.createElement('input');
+            quantityInput.type = 'number';
+            quantityInput.min = '0';
+            quantityInput.step = '1';
+            quantityInput.value = row.quantity ?? '';
+
+            quantityInput.addEventListener('input', function () {
+                row.quantity = Number(quantityInput.value) || 0;
+                updateTotals();
+            });
+
+            quantityTd.appendChild(quantityInput);
+        } else {
+            const div = document.createElement('div');
+            div.className = 'display-cell';
+            div.textContent = row.quantity ?? 0;
+            quantityTd.appendChild(div);
         }
-    );
 
+        tr.appendChild(quantityTd);
+
+        /* PRODUCT */
+        const productTd = document.createElement('td');
+        productTd.className = 'product';
+
+        if (isEditing) {
+            const productSelect = createProductSelect(row);
+            productTd.appendChild(productSelect);
+        } else {
+            const div = document.createElement('div');
+            div.className = 'display-cell';
+            div.textContent = row.productName || '—';
+            productTd.appendChild(div);
+        }
+
+        tr.appendChild(productTd);
+
+        /* OPTIONS */
+        const optionsTd = document.createElement('td');
+        optionsTd.className = 'options';
+
+        if (isEditing) {
+            optionsTd.appendChild(createOptionsArea(row));
+        } else {
+            optionsTd.appendChild(renderOptionsSummary(row));
+        }
+
+        tr.appendChild(optionsTd);
+
+        /* COST */
+        const costTd = document.createElement('td');
+        costTd.className = 'cost';
+
+        if (isEditing) {
+            const costInput = document.createElement('input');
+            costInput.type = 'number';
+            costInput.min = '0';
+            costInput.step = '0.01';
+            costInput.value = row.cost ?? '';
+
+            costInput.addEventListener('input', function () {
+                row.cost = Number(costInput.value) || 0;
+                updateTotals();
+            });
+
+            costTd.appendChild(costInput);
+        } else {
+            const div = document.createElement('div');
+            div.className = 'display-cell';
+            div.textContent = formatCurrency(row.cost);
+            costTd.appendChild(div);
+        }
+
+        tr.appendChild(costTd);
+
+        /* FILE */
+        const fileTd = document.createElement('td');
+        fileTd.className = 'file';
+
+        if (isEditing) {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'text';
+            fileInput.placeholder = 'File name';
+            fileInput.value = row.fileName || '';
+
+            fileInput.addEventListener('input', function () {
+                row.fileName = fileInput.value;
+            });
+
+            fileTd.appendChild(fileInput);
+        } else {
+            const div = document.createElement('div');
+            div.className = 'display-cell';
+            div.textContent = row.fileName || '—';
+            fileTd.appendChild(div);
+        }
+
+        tr.appendChild(fileTd);
+
+        /* ACTIONS */
+        const actionsTd = document.createElement('td');
+        actionsTd.className = 'actions';
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'action-buttons';
+
+        if (isEditing) {
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'btn-action btn-save';
+            saveBtn.textContent = 'Save';
+
+            saveBtn.addEventListener('click', async function () {
+                editingRowId = null;
+                editingRowCopy = null;
+                render();
+                await saveTable();
+            });
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'btn-action btn-cancel';
+            cancelBtn.textContent = 'Cancel';
+
+            cancelBtn.addEventListener('click', function () {
+                const idx = table.findIndex(function (r) { return r.id === row.id; });
+                if (idx !== -1 && editingRowCopy) {
+                    table[idx] = JSON.parse(editingRowCopy);
+                }
+
+                editingRowId = null;
+                editingRowCopy = null;
+                render();
+            });
+
+            wrapper.appendChild(saveBtn);
+            wrapper.appendChild(cancelBtn);
+        } else {
+            const editBtn = document.createElement('button');
+            editBtn.className = 'btn-action btn-edit';
+            editBtn.textContent = 'Edit';
+
+            editBtn.addEventListener('click', function () {
+                editingRowId = row.id;
+                editingRowCopy = JSON.stringify(row);
+                render();
+            });
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn-action btn-delete';
+            deleteBtn.textContent = '×';
+            deleteBtn.title = 'Delete row';
+
+            deleteBtn.addEventListener('click', async function () {
+                table = table.filter(function (item) {
+                    return item.id !== row.id;
+                });
+
+                if (editingRowId === row.id) {
+                    editingRowId = null;
+                    editingRowCopy = null;
+                }
+
+                render();
+                await saveTable();
+            });
+
+            wrapper.appendChild(editBtn);
+            wrapper.appendChild(deleteBtn);
+        }
+
+        actionsTd.appendChild(wrapper);
+        tr.appendChild(actionsTd);
+
+        body.appendChild(tr);
+    });
 
     updateTotals();
-
 }
-
 
 /*
  * ========================================
@@ -2535,114 +961,41 @@ function render() {
  * ========================================
  */
 
-
 function updateTotals() {
+    const totals = calculateTotals();
 
-    const totals =
-        calculateTotals();
-
-
-    const priceElement =
-        document.getElementById(
-            'price'
-        );
-
-
-    const subtotalElement =
-        document.getElementById(
-            'subtotal'
-        );
-
-
-    const ivuElement =
-        document.getElementById(
-            'ivu'
-        );
-
-
-    const totalElement =
-        document.getElementById(
-            'total'
-        );
-
-
-    const ivuLabel =
-        document.getElementById(
-            'ivuLabel'
-        );
-
+    const priceElement = document.getElementById('price');
+    const subtotalElement = document.getElementById('subtotal');
+    const ivuElement = document.getElementById('ivu');
+    const totalElement = document.getElementById('total');
+    const ivuLabel = document.getElementById('ivuLabel');
 
     if (priceElement) {
-
-        priceElement.textContent =
-            formatCurrency(
-                totals.price
-            );
-
+        priceElement.textContent = formatCurrency(totals.price);
     }
-
 
     if (subtotalElement) {
-
-        subtotalElement.textContent =
-            formatCurrency(
-                totals.subtotal
-            );
-
+        subtotalElement.textContent = formatCurrency(totals.subtotal);
     }
-
 
     if (ivuElement) {
-
-        ivuElement.textContent =
-            formatCurrency(
-                totals.ivu
-            );
-
+        ivuElement.textContent = formatCurrency(totals.ivu);
     }
-
 
     if (totalElement) {
-
-        totalElement.textContent =
-            formatCurrency(
-                totals.total
-            );
-
+        totalElement.textContent = formatCurrency(totals.total);
     }
-
 
     if (ivuLabel) {
-
-        ivuLabel.textContent =
-            'IVU (' +
-            (
-                IVU_RATE * 100
-            ).toFixed(2) +
-            '%)';
-
+        ivuLabel.textContent = 'IVU (' + (IVU_RATE * 100).toFixed(2) + '%)';
     }
 
-
-    const footerStatus =
-        document.getElementById(
-            'footerStatus'
-        );
-
+    const footerStatus = document.getElementById('footerStatus');
 
     if (footerStatus) {
-
-        footerStatus.textContent =
-            'IVU: ' +
-            (
-                IVU_RATE * 100
-            ).toFixed(2) +
-            '%';
-
+        footerStatus.textContent = 'IVU: ' + (IVU_RATE * 100).toFixed(2) + '%';
     }
-
 }
-
 
 /*
  * ========================================
@@ -2650,90 +1003,37 @@ function updateTotals() {
  * ========================================
  */
 
-
 async function addRow() {
+    const activeProducts = getActiveProducts();
+    const firstProduct = activeProducts.length > 0 ? activeProducts[0] : null;
 
-    const activeProducts =
-        getActiveProducts();
-
-
-    const firstProduct =
-        activeProducts.length > 0
-            ? activeProducts[0]
-            : null;
-
+    const newId = generateId();
 
     const row = {
-
-        id:
-            generateId(),
-
-        quantity:
-            1,
-
-        productId:
-            firstProduct
-                ? firstProduct.id
-                : '',
-
-        productName:
-            firstProduct
-                ? firstProduct.name
-                : '',
-
-        description:
-            firstProduct
-                ? firstProduct.name
-                : '',
-
-        options:
-            {},
-
-        cost:
-            0,
-
-        fileName:
-            '',
-
-        finished:
-            false
-
+        id: newId,
+        quantity: 1,
+        productId: firstProduct ? firstProduct.id : '',
+        productName: firstProduct ? firstProduct.name : '',
+        description: firstProduct ? firstProduct.name : '',
+        options: {},
+        cost: 0,
+        fileName: '',
+        finished: false
     };
 
-
-    if (
-        firstProduct &&
-        Array.isArray(
-            firstProduct.options
-        )
-    ) {
-
-        firstProduct.options.forEach(
-            function (option) {
-
-                row.options[
-                    option.id
-                ] =
-                    getDefaultValue(
-                        option
-                    );
-
-            }
-        );
-
+    if (firstProduct && Array.isArray(firstProduct.options)) {
+        firstProduct.options.forEach(function (option) {
+            row.options[option.id] = getDefaultValue(option);
+        });
     }
-
 
     table.push(row);
 
+    editingRowId = newId;
+    editingRowCopy = JSON.stringify(row);
 
     render();
-
-
-    await saveTable();
-
 }
-
 
 /*
  * ========================================
@@ -2741,67 +1041,30 @@ async function addRow() {
  * ========================================
  */
 
-
 async function openPrintWindow() {
-
-    const button =
-        document.getElementById(
-            'printJob'
-        );
-
+    const button = document.getElementById('printJob');
 
     if (button) {
-
-        button.disabled =
-            true;
-
-        button.textContent =
-            'Opening...';
-
+        button.disabled = true;
+        button.textContent = 'Opening...';
     }
-
 
     try {
-
         await t.modal({
-
-            title:
-                'Print Job',
-
-            url:
-                './print.html',
-
-            fullscreen:
-                true,
-
-            resizable:
-                true
-
+            title: 'Print Job',
+            url: './print.html',
+            fullscreen: true,
+            resizable: true
         });
-
     } catch (error) {
-
-        console.error(
-            'Could not open print window:',
-            error
-        );
-
+        console.error('Could not open print window:', error);
     } finally {
-
         if (button) {
-
-            button.disabled =
-                false;
-
-            button.textContent =
-                '🖨️ Print Job';
-
+            button.disabled = false;
+            button.textContent = '🖨️ Print Job';
         }
-
     }
-
 }
-
 
 /*
  * ========================================
@@ -2809,44 +1072,24 @@ async function openPrintWindow() {
  * ========================================
  */
 
-
 t.render(async function () {
-
-    const addRowButton =
-        document.getElementById(
-            'addRow'
-        );
-
-
+    const addRowButton = document.getElementById('addRow');
     if (addRowButton) {
-
-        addRowButton.addEventListener(
-            'click',
-            addRow
-        );
-
+        addRowButton.addEventListener('click', addRow);
     }
 
-
-    const printButton =
-        document.getElementById(
-            'printJob'
-        );
-
-
+    const printButton = document.getElementById('printJob');
     if (printButton) {
-
-        printButton.addEventListener(
-            'click',
-            openPrintWindow
-        );
-
+        printButton.addEventListener('click', openPrintWindow);
     }
 
+    const backButton = document.getElementById('backToCard');
+    if (backButton) {
+        backButton.addEventListener('click', function () {
+            t.closeModal();
+        });
+    }
 
     await loadCatalog();
-
-
     await loadTable();
-
 });
