@@ -12,7 +12,7 @@
                 {
                     "id": "tamano",
                     "label": "Tamaño",
-                    "type": "selectWithCustom",
+                    "type": "radioWithCustom",
                     "options": [
                         "2\" x 3.5\"",
                         "Custom"
@@ -23,7 +23,7 @@
                 {
                     "id": "lados",
                     "label": "Lados",
-                    "type": "select",
+                    "type": "radio",
                     "options": [
                         "1 Lado",
                         "2 Lado"
@@ -33,7 +33,7 @@
                 {
                     "id": "orientacion",
                     "label": "Orientación",
-                    "type": "select",
+                    "type": "radio",
                     "options": [
                         "Vertical",
                         "Horizontal"
@@ -43,7 +43,7 @@
                 {
                     "id": "cantidad",
                     "label": "Cantidad",
-                    "type": "selectWithCustom",
+                    "type": "radioWithCustom",
                     "options": [
                         "250",
                         "500",
@@ -65,7 +65,7 @@
                 {
                     "id": "paper",
                     "label": "Paper",
-                    "type": "select",
+                    "type": "radio",
                     "options": [
                         "14pt Glossy",
                         "14pt Matte",
@@ -77,7 +77,7 @@
                 {
                     "id": "printing",
                     "label": "Printing",
-                    "type": "select",
+                    "type": "radio",
                     "options": [
                         "Full Color",
                         "Black & White"
@@ -87,7 +87,7 @@
                 {
                     "id": "sides",
                     "label": "Sides",
-                    "type": "select",
+                    "type": "radio",
                     "options": [
                         "Single-sided",
                         "Double-sided"
@@ -119,7 +119,7 @@
                 {
                     "id": "size",
                     "label": "Size",
-                    "type": "select",
+                    "type": "radio",
                     "options": [
                         "Letter",
                         "Legal",
@@ -130,7 +130,7 @@
                 {
                     "id": "paper",
                     "label": "Paper",
-                    "type": "select",
+                    "type": "radio",
                     "options": [
                         "80lb Glossy",
                         "80lb Matte",
@@ -142,7 +142,7 @@
                 {
                     "id": "printing",
                     "label": "Printing",
-                    "type": "select",
+                    "type": "radio",
                     "options": [
                         "Full Color",
                         "Black & White"
@@ -152,7 +152,7 @@
                 {
                     "id": "sides",
                     "label": "Sides",
-                    "type": "select",
+                    "type": "radio",
                     "options": [
                         "Single-sided",
                         "Double-sided"
@@ -190,7 +190,7 @@
                 {
                     "id": "material",
                     "label": "Material",
-                    "type": "selectWithCustom",
+                    "type": "radioWithCustom",
                     "options": [
                         "Vinyl",
                         "Mesh",

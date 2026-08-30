@@ -10,16 +10,25 @@ const t =
 
 
 const PRINT_CUSTOM_FIELDS = [
+
     'Vendedor *',
+
     'Fecha Creacíon *',
+
     'Cliente *',
+
     'Nombre Cliente *',
+
     'Fecha Solicitada *',
+
     'Metodo De Entrega'
+
 ];
 
 
 /*
+ * Keep this synchronized with table.js.
+ *
  * 11.5% = 0.115
  */
 const IVU_RATE = 0.115;
@@ -197,73 +206,10 @@ function formatOptionValue(value) {
     }
 
 
-    /*
-     * selectWithCustom value.
-     *
-     * Example:
-     *
-     * {
-     *     value: "Custom",
-     *     custom: "3 x 5"
-     * }
-     */
     if (
-        value &&
-        typeof value === 'object'
-    ) {
-
-        const selected =
-            value.value ?? '';
-
-
-        const custom =
-            value.custom ?? '';
-
-
-        if (
-            selected === 'Custom'
-        ) {
-
-            if (custom) {
-
-                return (
-                    'Custom — ' +
-                    custom
-                );
-
-            }
-
-
-            return 'Custom';
-
-        }
-
-
-        /*
-         * Generic object fallback.
-         */
-        if (
-            value.text !== undefined
-        ) {
-
-            return String(
-                value.text
-            );
-
-        }
-
-
-        return String(
-            selected || '—'
-        );
-
-    }
-
-
-    if (
-        value === '' ||
         value === null ||
-        value === undefined
+        value === undefined ||
+        value === ''
     ) {
 
         return '—';
@@ -348,11 +294,15 @@ function getCustomFieldValue(
 
 
                 if (
-                    typeof option.value ===
-                    'string'
+                    option.value !==
+                    undefined &&
+                    option.value !==
+                    null
                 ) {
 
-                    return option.value;
+                    return String(
+                        option.value
+                    );
 
                 }
 
@@ -942,8 +892,12 @@ function createProductCard(row) {
 
 
     /*
+     * ========================================
      * HEADER
+     * ========================================
      */
+
+
     const header =
         document.createElement(
             'div'
@@ -1019,8 +973,12 @@ function createProductCard(row) {
 
 
     /*
+     * ========================================
      * BODY
+     * ========================================
      */
+
+
     const body =
         document.createElement(
             'div'
@@ -1032,8 +990,12 @@ function createProductCard(row) {
 
 
     /*
-     * Basic information.
+     * ========================================
+     * BASIC INFORMATION
+     * ========================================
      */
+
+
     const grid =
         document.createElement(
             'div'
@@ -1082,8 +1044,12 @@ function createProductCard(row) {
 
 
     /*
+     * ========================================
      * OPTIONS
+     * ========================================
      */
+
+
     if (
         row.options &&
         typeof row.options === 'object' &&
@@ -1129,19 +1095,77 @@ function createProductCard(row) {
             'option-list';
 
 
+        /*
+         * We intentionally use the
+         * SAVED option data.
+         *
+         * This means old options survive
+         * catalog changes.
+         */
         Object.keys(
             row.options
         ).forEach(
             function (optionId) {
+
+                /*
+                 * Custom radio text is stored
+                 * separately as:
+                 *
+                 * optionId__custom
+                 *
+                 * It should NOT appear as
+                 * its own option.
+                 */
+                if (
+                    optionId.endsWith(
+                        '__custom'
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                let value =
+                    row.options[
+                        optionId
+                    ];
+
+
+                /*
+                 * If this is a Custom
+                 * selection and custom text
+                 * exists, show both.
+                 */
+                const customValue =
+                    row.options[
+                        optionId +
+                        '__custom'
+                    ];
+
+
+                if (
+                    String(value)
+                        .trim()
+                        .toLowerCase() ===
+                        'custom' &&
+                    customValue
+                ) {
+
+                    value =
+                        'Custom — ' +
+                        customValue;
+
+                }
+
 
                 optionList.appendChild(
                     createOption(
                         formatOptionLabel(
                             optionId
                         ),
-                        row.options[
-                            optionId
-                        ],
+                        value,
                         false
                     )
                 );
@@ -1221,6 +1245,7 @@ function render(
     /*
      * Card name.
      */
+
     const cardName =
         document.getElementById(
             'cardName'
@@ -1239,6 +1264,7 @@ function render(
     /*
      * JOB NAME
      */
+
     const jobId =
         document.getElementById(
             'jobId'
@@ -1257,6 +1283,7 @@ function render(
     /*
      * Custom fields.
      */
+
     renderCustomFields(
         cardInfo,
         customFieldDefinitions
@@ -1266,6 +1293,7 @@ function render(
     /*
      * Date.
      */
+
     const date =
         document.getElementById(
             'date'
@@ -1296,6 +1324,7 @@ function render(
     /*
      * Item count.
      */
+
     const itemCount =
         document.getElementById(
             'itemCount'
@@ -1327,6 +1356,7 @@ function render(
     /*
      * Products.
      */
+
     const items =
         document.getElementById(
             'items'
@@ -1369,6 +1399,7 @@ function render(
     /*
      * Totals.
      */
+
     const totals =
         calculateTotals(
             table
@@ -1420,6 +1451,7 @@ function render(
     /*
      * Finished count.
      */
+
     const finished =
         table.filter(
             function (row) {

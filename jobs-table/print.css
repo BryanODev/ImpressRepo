@@ -1,5 +1,7 @@
 * {
+
     box-sizing: border-box;
+
 }
 
 
@@ -444,6 +446,13 @@ body {
 }
 
 
+/*
+ * ========================================
+ * PRODUCT BODY
+ * ========================================
+ */
+
+
 .product-body {
 
     padding: 13px 14px;
@@ -498,6 +507,13 @@ body {
 }
 
 
+/*
+ * ========================================
+ * OPTIONS
+ * ========================================
+ */
+
+
 .option-section {
 
     margin-top: 15px;
@@ -544,6 +560,8 @@ body {
 
     gap: 8px;
 
+    min-width: 0;
+
 }
 
 
@@ -557,6 +575,8 @@ body {
 .option-value {
 
     font-weight: 500;
+
+    word-break: break-word;
 
 }
 
