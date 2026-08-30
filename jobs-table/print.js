@@ -37,6 +37,10 @@ async function loadData() {
 
     try {
 
+        /*
+         * Load saved table.
+         */
+
         const savedTable =
             await t.get(
                 'card',
@@ -47,7 +51,8 @@ async function loadData() {
 
         if (Array.isArray(savedTable)) {
 
-            table = savedTable;
+            table =
+                savedTable;
 
         } else {
 
@@ -55,6 +60,10 @@ async function loadData() {
 
         }
 
+
+        /*
+         * Load product catalog.
+         */
 
         const catalogResponse =
             await fetch(
@@ -92,6 +101,17 @@ async function loadData() {
         }
 
 
+        /*
+         * Load card information.
+         */
+
+        await loadCardInfo();
+
+
+        /*
+         * Render everything.
+         */
+
         render();
 
 
@@ -99,6 +119,109 @@ async function loadData() {
 
         console.error(
             'Could not load print data:',
+            error
+        );
+
+    }
+
+}
+
+
+/*
+ * ========================================
+ * LOAD CARD INFO
+ * ========================================
+ */
+
+async function loadCardInfo() {
+
+    try {
+
+        /*
+         * Card name.
+         */
+
+        const cardName =
+            await t.get(
+                'card',
+                'name'
+            );
+
+
+        const cardNameElement =
+            document.getElementById(
+                'cardName'
+            );
+
+
+        if (cardNameElement) {
+
+            cardNameElement.textContent =
+                cardName ||
+                '—';
+
+        }
+
+
+        /*
+         * Card ID.
+         */
+
+        const cardId =
+            await t.get(
+                'card',
+                'id'
+            );
+
+
+        const jobIdElement =
+            document.getElementById(
+                'jobId'
+            );
+
+
+        if (jobIdElement) {
+
+            jobIdElement.textContent =
+                cardId ||
+                '—';
+
+        }
+
+
+        /*
+         * Date.
+         */
+
+        const dateElement =
+            document.getElementById(
+                'date'
+            );
+
+
+        if (dateElement) {
+
+            const now =
+                new Date();
+
+
+            dateElement.textContent =
+                now.toLocaleDateString(
+                    'en-US',
+                    {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    }
+                );
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            'Could not load card information:',
             error
         );
 
@@ -125,7 +248,10 @@ function getProduct(productId) {
     return catalog.products.find(
         function (product) {
 
-            return product.id === productId;
+            return (
+                product.id ===
+                productId
+            );
 
         }
     ) || null;
@@ -142,7 +268,59 @@ function getProduct(productId) {
 function formatCurrency(value) {
 
     return '$' +
-        Number(value || 0).toFixed(2);
+        Number(
+            value || 0
+        ).toFixed(2);
+
+}
+
+
+/*
+ * ========================================
+ * IS CUSTOM OPTION
+ * ========================================
+ */
+
+function isCustomOption(value) {
+
+    return String(
+        value
+    )
+        .trim()
+        .toLowerCase() ===
+        'custom';
+
+}
+
+
+/*
+ * ========================================
+ * GET CUSTOM VALUE
+ * ========================================
+ */
+
+function getCustomValue(
+    row,
+    optionDefinition
+) {
+
+    if (
+        !row.options ||
+        typeof row.options !== 'object'
+    ) {
+
+        return '';
+
+    }
+
+
+    return (
+        row.options[
+            optionDefinition.id +
+            '__custom'
+        ] ||
+        ''
+    );
 
 }
 
@@ -176,7 +354,7 @@ function formatOptionValue(
 
     /*
      * ========================================
-     * CHECKBOX
+     * CHECKBOX — YES / NO
      * ========================================
      */
 
@@ -194,25 +372,90 @@ function formatOptionValue(
 
     /*
      * ========================================
-     * RADIO WITH CUSTOM
+     * CHECKBOX GROUP
      * ========================================
+     *
+     * Multiple values can be selected.
+     *
+     * Custom can contain its own text.
      */
 
     if (
         optionDefinition.type ===
-        'radioWithCustom'
+        'checkboxGroup'
     ) {
 
         if (
-            value ===
-            'Custom'
+            !Array.isArray(value) ||
+            value.length === 0
+        ) {
+
+            return '—';
+
+        }
+
+
+        const customValue =
+            getCustomValue(
+                row,
+                optionDefinition
+            );
+
+
+        return value.map(
+            function (selectedValue) {
+
+                if (
+                    isCustomOption(
+                        selectedValue
+                    )
+                ) {
+
+                    if (customValue) {
+
+                        return (
+                            'Custom — ' +
+                            customValue
+                        );
+
+                    }
+
+
+                    return 'Custom';
+
+                }
+
+
+                return selectedValue;
+
+            }
+        ).join(', ');
+
+    }
+
+
+    /*
+     * ========================================
+     * RADIO
+     * ========================================
+     *
+     * Radio now supports Custom directly.
+     */
+
+    if (
+        optionDefinition.type ===
+        'radio'
+    ) {
+
+        if (
+            isCustomOption(value)
         ) {
 
             const customValue =
-                row.options[
-                    optionDefinition.id +
-                    '__custom'
-                ] || '';
+                getCustomValue(
+                    row,
+                    optionDefinition
+                );
 
 
             if (customValue) {
@@ -237,14 +480,42 @@ function formatOptionValue(
 
     /*
      * ========================================
-     * RADIO
+     * SELECT / DROPDOWN
      * ========================================
+     *
+     * Dropdown can also contain Custom.
      */
 
     if (
         optionDefinition.type ===
-        'radio'
+        'select'
     ) {
+
+        if (
+            isCustomOption(value)
+        ) {
+
+            const customValue =
+                getCustomValue(
+                    row,
+                    optionDefinition
+                );
+
+
+            if (customValue) {
+
+                return (
+                    'Custom — ' +
+                    customValue
+                );
+
+            }
+
+
+            return 'Custom';
+
+        }
+
 
         return value || '—';
 
@@ -253,11 +524,54 @@ function formatOptionValue(
 
     /*
      * ========================================
-     * SELECT WITH CUSTOM
-     *
-     * Kept for compatibility with
-     * older saved data.
+     * OLD RADIO WITH CUSTOM
      * ========================================
+     *
+     * Compatibility for old saved products.
+     */
+
+    if (
+        optionDefinition.type ===
+        'radioWithCustom'
+    ) {
+
+        if (
+            isCustomOption(value)
+        ) {
+
+            const customValue =
+                getCustomValue(
+                    row,
+                    optionDefinition
+                );
+
+
+            if (customValue) {
+
+                return (
+                    'Custom — ' +
+                    customValue
+                );
+
+            }
+
+
+            return 'Custom';
+
+        }
+
+
+        return value || '—';
+
+    }
+
+
+    /*
+     * ========================================
+     * OLD SELECT WITH CUSTOM
+     * ========================================
+     *
+     * Compatibility for old saved data.
      */
 
     if (
@@ -271,16 +585,19 @@ function formatOptionValue(
         ) {
 
             const selected =
-                value.value || '';
+                value.value ||
+                '';
 
 
             const custom =
-                value.custom || '';
+                value.custom ||
+                '';
 
 
             if (
-                selected ===
-                'Custom'
+                isCustomOption(
+                    selected
+                )
             ) {
 
                 return custom
@@ -290,35 +607,40 @@ function formatOptionValue(
             }
 
 
-            return selected || '—';
+            return selected ||
+                '—';
 
         }
 
 
-        return value || '—';
+        return value ||
+            '—';
 
     }
 
 
     /*
      * ========================================
-     * EVERYTHING ELSE
+     * EMPTY VALUE
      * ========================================
      */
 
     if (
-        value ===
-        undefined ||
-        value ===
-        null ||
-        value ===
-        ''
+        value === undefined ||
+        value === null ||
+        value === ''
     ) {
 
         return '—';
 
     }
 
+
+    /*
+     * ========================================
+     * DEFAULT
+     * ========================================
+     */
 
     return String(value);
 
@@ -453,13 +775,28 @@ function createPrintOptions(
 
 function render() {
 
+    /*
+     * IMPORTANT:
+     *
+     * print.html uses:
+     *
+     * <main id="items">
+     *
+     * NOT #tableBody.
+     */
+
     const body =
         document.getElementById(
-            'tableBody'
+            'items'
         );
 
 
     if (!body) {
+
+        console.error(
+            'Print page: #items element not found.'
+        );
+
 
         return;
 
@@ -469,101 +806,129 @@ function render() {
     body.innerHTML = '';
 
 
+    /*
+     * ========================================
+     * EMPTY TABLE
+     * ========================================
+     */
+
+    if (table.length === 0) {
+
+        const empty =
+            document.createElement(
+                'div'
+            );
+
+
+        empty.className =
+            'empty';
+
+
+        empty.textContent =
+            'No items.';
+
+
+        body.appendChild(
+            empty
+        );
+
+
+        updateTotals();
+
+
+        updateItemCounts();
+
+
+        return;
+
+    }
+
+
+    /*
+     * ========================================
+     * RENDER EACH ROW
+     * ========================================
+     */
+
     table.forEach(
         function (row) {
 
-            const tr =
+            const item =
                 document.createElement(
-                    'tr'
+                    'section'
                 );
+
+
+            item.className =
+                'print-item';
 
 
             /*
              * ========================================
-             * FINISHED
+             * ITEM HEADER
              * ========================================
              */
 
-            const checkTd =
+            const itemHeader =
                 document.createElement(
-                    'td'
+                    'div'
                 );
 
 
-            checkTd.className =
-                'check';
-
-
-            const checkbox =
-                document.createElement(
-                    'input'
-                );
-
-
-            checkbox.type =
-                'checkbox';
-
-
-            checkbox.checked =
-                Boolean(
-                    row.finished
-                );
-
-
-            checkbox.disabled =
-                true;
-
-
-            checkTd.appendChild(
-                checkbox
-            );
-
-
-            tr.appendChild(
-                checkTd
-            );
+            itemHeader.className =
+                'print-item-header';
 
 
             /*
-             * ========================================
-             * QUANTITY
-             * ========================================
+             * Finished.
              */
 
-            const quantityTd =
+            const finished =
                 document.createElement(
-                    'td'
+                    'span'
                 );
 
 
-            quantityTd.className =
-                'quantity';
+            finished.className =
+                'print-item-finished';
 
 
-            quantityTd.textContent =
-                row.quantity ??
-                '';
-
-
-            tr.appendChild(
-                quantityTd
-            );
+            finished.textContent =
+                row.finished
+                    ? '✓'
+                    : '';
 
 
             /*
-             * ========================================
-             * PRODUCT
-             * ========================================
+             * Quantity.
              */
 
-            const productTd =
+            const quantity =
                 document.createElement(
-                    'td'
+                    'span'
                 );
 
 
-            productTd.className =
-                'product';
+            quantity.className =
+                'print-item-quantity';
+
+
+            quantity.textContent =
+                'Qty: ' +
+                (
+                    row.quantity ??
+                    0
+                );
+
+
+            /*
+             * Product name.
+             */
+
+            const productName =
+                document.createElement(
+                    'strong'
+                );
 
 
             const product =
@@ -572,7 +937,7 @@ function render() {
                 );
 
 
-            productTd.textContent =
+            productName.textContent =
                 product
                     ? product.name
                     : (
@@ -582,8 +947,23 @@ function render() {
                     );
 
 
-            tr.appendChild(
-                productTd
+            itemHeader.appendChild(
+                finished
+            );
+
+
+            itemHeader.appendChild(
+                quantity
+            );
+
+
+            itemHeader.appendChild(
+                productName
+            );
+
+
+            item.appendChild(
+                itemHeader
             );
 
 
@@ -593,44 +973,37 @@ function render() {
              * ========================================
              */
 
-            const optionsTd =
-                document.createElement(
-                    'td'
-                );
-
-
-            optionsTd.className =
-                'options';
-
-
-            optionsTd.appendChild(
+            const options =
                 createPrintOptions(
                     row,
                     product
-                )
-            );
+                );
 
 
-            tr.appendChild(
-                optionsTd
+            item.appendChild(
+                options
             );
 
 
             /*
              * ========================================
-             * COST
+             * ITEM FOOTER
              * ========================================
              */
 
-            const costTd =
+            const itemFooter =
                 document.createElement(
-                    'td'
+                    'div'
                 );
 
 
-            costTd.className =
-                'cost';
+            itemFooter.className =
+                'print-item-footer';
 
+
+            /*
+             * Cost.
+             */
 
             const cost =
                 Number(
@@ -638,52 +1011,72 @@ function render() {
                 ) || 0;
 
 
-            costTd.textContent =
+            const costElement =
+                document.createElement(
+                    'span'
+                );
+
+
+            costElement.textContent =
+                'Cost: ' +
                 formatCurrency(
                     cost
                 );
 
 
-            tr.appendChild(
-                costTd
-            );
-
-
             /*
-             * ========================================
-             * FILE
-             * ========================================
+             * File.
              */
 
-            const fileTd =
+            const fileElement =
                 document.createElement(
-                    'td'
+                    'span'
                 );
 
 
-            fileTd.className =
-                'file';
+            fileElement.textContent =
+                'File: ' +
+                (
+                    row.fileName ||
+                    '—'
+                );
 
 
-            fileTd.textContent =
-                row.fileName ||
-                '—';
+            itemFooter.appendChild(
+                costElement
+            );
 
 
-            tr.appendChild(
-                fileTd
+            itemFooter.appendChild(
+                fileElement
+            );
+
+
+            item.appendChild(
+                itemFooter
             );
 
 
             body.appendChild(
-                tr
+                item
             );
 
         }
     );
 
 
+    /*
+     * Update totals.
+     */
+
     updateTotals();
+
+
+    /*
+     * Update item counters.
+     */
+
+    updateItemCounts();
 
 }
 
@@ -715,7 +1108,8 @@ function calculateTotals() {
 
 
             subtotal +=
-                quantity * cost;
+                quantity *
+                cost;
 
         }
     );
@@ -754,27 +1148,36 @@ function updateTotals() {
         calculateTotals();
 
 
+    /*
+     * Price.
+     *
+     * Your print HTML contains
+     * #price, so populate it too.
+     */
+
+    const priceElement =
+        document.getElementById(
+            'price'
+        );
+
+
+    if (priceElement) {
+
+        priceElement.textContent =
+            formatCurrency(
+                totals.subtotal
+            );
+
+    }
+
+
+    /*
+     * SubTotal.
+     */
+
     const subtotalElement =
         document.getElementById(
             'subtotal'
-        );
-
-
-    const ivuElement =
-        document.getElementById(
-            'ivu'
-        );
-
-
-    const totalElement =
-        document.getElementById(
-            'total'
-        );
-
-
-    const ivuLabel =
-        document.getElementById(
-            'ivuLabel'
         );
 
 
@@ -788,6 +1191,16 @@ function updateTotals() {
     }
 
 
+    /*
+     * IVU.
+     */
+
+    const ivuElement =
+        document.getElementById(
+            'ivu'
+        );
+
+
     if (ivuElement) {
 
         ivuElement.textContent =
@@ -796,6 +1209,16 @@ function updateTotals() {
             );
 
     }
+
+
+    /*
+     * Total.
+     */
+
+    const totalElement =
+        document.getElementById(
+            'total'
+        );
 
 
     if (totalElement) {
@@ -808,6 +1231,16 @@ function updateTotals() {
     }
 
 
+    /*
+     * IVU label.
+     */
+
+    const ivuLabel =
+        document.getElementById(
+            'ivuLabel'
+        );
+
+
     if (ivuLabel) {
 
         ivuLabel.textContent =
@@ -816,6 +1249,86 @@ function updateTotals() {
                 IVU_RATE * 100
             ).toFixed(2) +
             '%)';
+
+    }
+
+}
+
+
+/*
+ * ========================================
+ * UPDATE ITEM COUNTS
+ * ========================================
+ */
+
+function updateItemCounts() {
+
+    const itemCount =
+        table.length;
+
+
+    const finishedCount =
+        table.filter(
+            function (row) {
+
+                return Boolean(
+                    row.finished
+                );
+
+            }
+        ).length;
+
+
+    /*
+     * Info-card item count.
+     */
+
+    const itemCountElement =
+        document.getElementById(
+            'itemCount'
+        );
+
+
+    if (itemCountElement) {
+
+        itemCountElement.textContent =
+            itemCount;
+
+    }
+
+
+    /*
+     * Footer total count.
+     */
+
+    const footerItemCount =
+        document.getElementById(
+            'footerItemCount'
+        );
+
+
+    if (footerItemCount) {
+
+        footerItemCount.textContent =
+            itemCount;
+
+    }
+
+
+    /*
+     * Footer finished count.
+     */
+
+    const finishedCountElement =
+        document.getElementById(
+            'finishedCount'
+        );
+
+
+    if (finishedCountElement) {
+
+        finishedCountElement.textContent =
+            finishedCount;
 
     }
 
