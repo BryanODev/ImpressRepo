@@ -14,9 +14,9 @@ const STORAGE_KEY =
 
 
 /*
- * 11.5% IVU
+ * Change this if the IVU rate changes.
  *
- * Change this number if the tax rate changes.
+ * 11.5% = 0.115
  */
 const IVU_RATE = 0.115;
 
@@ -108,8 +108,11 @@ async function loadCatalog() {
 
 
         catalog = {
+
             version: 0,
+
             products: []
+
         };
 
 
@@ -378,280 +381,6 @@ function formatCurrency(value) {
 
 /*
  * ========================================
- * CREATE PRODUCT SELECT
- * ========================================
- */
-
-
-function createProductSelect(row) {
-
-    const select =
-        document.createElement(
-            'select'
-        );
-
-
-    /*
-     * Placeholder.
-     */
-    const placeholder =
-        document.createElement(
-            'option'
-        );
-
-
-    placeholder.value =
-        '';
-
-
-    placeholder.textContent =
-        'Select product...';
-
-
-    placeholder.disabled =
-        true;
-
-
-    if (!row.productId) {
-
-        placeholder.selected =
-            true;
-
-    }
-
-
-    select.appendChild(
-        placeholder
-    );
-
-
-    /*
-     * Active products only.
-     */
-    const products =
-        getActiveProducts();
-
-
-    products.forEach(
-        function (product) {
-
-            const option =
-                document.createElement(
-                    'option'
-                );
-
-
-            option.value =
-                product.id;
-
-
-            option.textContent =
-                product.name;
-
-
-            if (
-                row.productId ===
-                product.id
-            ) {
-
-                option.selected =
-                    true;
-
-            }
-
-
-            select.appendChild(
-                option
-            );
-
-        }
-    );
-
-
-    /*
-     * Existing product that has
-     * been removed/deprecated.
-     *
-     * Keep it visible for old cards.
-     */
-    if (
-        row.productId &&
-        !getProduct(row.productId)
-    ) {
-
-        const oldOption =
-            document.createElement(
-                'option'
-            );
-
-
-        oldOption.value =
-            row.productId;
-
-
-        oldOption.textContent =
-            (
-                row.productName ||
-                row.productId
-            ) +
-            ' (DEPRECATED)';
-
-
-        oldOption.selected =
-            true;
-
-
-        select.appendChild(
-            oldOption
-        );
-
-    }
-
-
-    /*
-     * Existing product that is now
-     * explicitly inactive.
-     */
-    const currentProduct =
-        getProduct(row.productId);
-
-
-    if (
-        currentProduct &&
-        currentProduct.active === false
-    ) {
-
-        /*
-         * Find existing active option.
-         */
-        const existingOption =
-            Array.from(
-                select.options
-            ).find(
-                function (option) {
-
-                    return (
-                        option.value ===
-                        row.productId
-                    );
-
-                }
-            );
-
-
-        if (existingOption) {
-
-            existingOption.textContent =
-                currentProduct.name +
-                ' (DEPRECATED)';
-
-        } else {
-
-            const oldOption =
-                document.createElement(
-                    'option'
-                );
-
-
-            oldOption.value =
-                row.productId;
-
-
-            oldOption.textContent =
-                currentProduct.name +
-                ' (DEPRECATED)';
-
-
-            oldOption.selected =
-                true;
-
-
-            select.appendChild(
-                oldOption
-            );
-
-        }
-
-    }
-
-
-    /*
-     * Product changed.
-     */
-    select.addEventListener(
-        'change',
-        async function () {
-
-            const product =
-                getProduct(
-                    select.value
-                );
-
-
-            if (!product) {
-
-                return;
-
-            }
-
-
-            row.productId =
-                product.id;
-
-
-            row.productName =
-                product.name;
-
-
-            /*
-             * New product selection:
-             *
-             * Create fresh option values.
-             *
-             * We intentionally don't
-             * inherit options from another
-             * product.
-             */
-            row.options = {};
-
-
-            if (
-                Array.isArray(
-                    product.options
-                )
-            ) {
-
-                product.options.forEach(
-                    function (option) {
-
-                        row.options[
-                            option.id
-                        ] =
-                            getDefaultValue(
-                                option
-                            );
-
-                    }
-                );
-
-            }
-
-
-            render();
-
-            await saveTable();
-
-        }
-    );
-
-
-    return select;
-
-}
-
-
-/*
- * ========================================
  * DEFAULT OPTION VALUE
  * ========================================
  */
@@ -697,6 +426,245 @@ function getDefaultValue(option) {
 
 /*
  * ========================================
+ * CREATE PRODUCT SELECT
+ * ========================================
+ */
+
+
+function createProductSelect(row) {
+
+    const select =
+        document.createElement(
+            'select'
+        );
+
+
+    const placeholder =
+        document.createElement(
+            'option'
+        );
+
+
+    placeholder.value =
+        '';
+
+
+    placeholder.textContent =
+        'Select product...';
+
+
+    placeholder.disabled =
+        true;
+
+
+    if (!row.productId) {
+
+        placeholder.selected =
+            true;
+
+    }
+
+
+    select.appendChild(
+        placeholder
+    );
+
+
+    const products =
+        getActiveProducts();
+
+
+    products.forEach(
+        function (product) {
+
+            const option =
+                document.createElement(
+                    'option'
+                );
+
+
+            option.value =
+                product.id;
+
+
+            option.textContent =
+                product.name;
+
+
+            if (
+                row.productId ===
+                product.id
+            ) {
+
+                option.selected =
+                    true;
+
+            }
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    /*
+     * Completely removed product.
+     */
+    if (
+        row.productId &&
+        !getProduct(row.productId)
+    ) {
+
+        const oldOption =
+            document.createElement(
+                'option'
+            );
+
+
+        oldOption.value =
+            row.productId;
+
+
+        oldOption.textContent =
+            (
+                row.productName ||
+                row.productId
+            ) +
+            ' (DEPRECATED)';
+
+
+        oldOption.selected =
+            true;
+
+
+        oldOption.className =
+            'deprecated';
+
+
+        select.appendChild(
+            oldOption
+        );
+
+    }
+
+
+    /*
+     * Existing inactive product.
+     */
+    const currentProduct =
+        getProduct(
+            row.productId
+        );
+
+
+    if (
+        currentProduct &&
+        currentProduct.active === false
+    ) {
+
+        const existingOption =
+            Array.from(
+                select.options
+            ).find(
+                function (option) {
+
+                    return (
+                        option.value ===
+                        row.productId
+                    );
+
+                }
+            );
+
+
+        if (existingOption) {
+
+            existingOption.textContent =
+                currentProduct.name +
+                ' (DEPRECATED)';
+
+        }
+
+    }
+
+
+    /*
+     * Product changed.
+     */
+    select.addEventListener(
+        'change',
+        async function () {
+
+            const product =
+                getProduct(
+                    select.value
+                );
+
+
+            if (!product) {
+
+                return;
+
+            }
+
+
+            row.productId =
+                product.id;
+
+
+            row.productName =
+                product.name;
+
+
+            row.description =
+                product.name;
+
+
+            row.options =
+                {};
+
+
+            if (
+                Array.isArray(
+                    product.options
+                )
+            ) {
+
+                product.options.forEach(
+                    function (option) {
+
+                        row.options[
+                            option.id
+                        ] =
+                            getDefaultValue(
+                                option
+                            );
+
+                    }
+                );
+
+            }
+
+
+            render();
+
+
+            await saveTable();
+
+        }
+    );
+
+
+    return select;
+
+}
+
+
+/*
+ * ========================================
  * CREATE OPTION CONTROL
  * ========================================
  */
@@ -711,9 +679,6 @@ function createOptionControl(
         optionDefinition.id;
 
 
-    /*
-     * Make sure options object exists.
-     */
     if (
         !row.options ||
         typeof row.options !== 'object'
@@ -724,19 +689,13 @@ function createOptionControl(
     }
 
 
-    /*
-     * Existing saved value.
-     */
     let value =
         row.options[optionId];
 
 
     /*
-     * ====================================
      * SELECT
-     * ====================================
      */
-
     if (
         optionDefinition.type ===
         'select'
@@ -793,10 +752,7 @@ function createOptionControl(
 
 
         /*
-         * Old saved value no longer
-         * exists in the current catalog.
-         *
-         * Preserve it.
+         * Preserve old value.
          */
         if (
             value &&
@@ -856,11 +812,8 @@ function createOptionControl(
 
 
     /*
-     * ====================================
      * CHECKBOX
-     * ====================================
      */
-
     if (
         optionDefinition.type ===
         'checkbox'
@@ -932,11 +885,8 @@ function createOptionControl(
 
 
     /*
-     * ====================================
      * NUMBER
-     * ====================================
      */
-
     if (
         optionDefinition.type ===
         'number'
@@ -1011,11 +961,8 @@ function createOptionControl(
 
 
     /*
-     * ====================================
      * TEXT
-     * ====================================
      */
-
     const input =
         document.createElement(
             'input'
@@ -1080,21 +1027,17 @@ function createOptionsArea(row) {
         'options-container';
 
 
-    /*
-     * Product was completely removed
-     * from catalog.
-     */
     const product =
         getProduct(
             row.productId
         );
 
 
+    /*
+     * Completely removed product.
+     */
     if (!product) {
 
-        /*
-         * Display saved historical options.
-         */
         if (
             row.options &&
             typeof row.options === 'object'
@@ -1215,15 +1158,11 @@ function createOptionsArea(row) {
                     'option-control';
 
 
-                const input =
+                control.appendChild(
                     createOptionControl(
                         row,
                         optionDefinition
-                    );
-
-
-                control.appendChild(
-                    input
+                    )
                 );
 
 
@@ -1248,9 +1187,7 @@ function createOptionsArea(row) {
 
 
     /*
-     * Historical options that existed
-     * on the card but no longer exist
-     * in the current product definition.
+     * Historical options.
      */
     const currentOptionIds =
         Array.isArray(product.options)
@@ -1387,7 +1324,7 @@ function formatOptionValue(value) {
 
 /*
  * ========================================
- * RENDER TABLE
+ * RENDER
  * ========================================
  */
 
@@ -1410,9 +1347,6 @@ function render() {
     body.innerHTML = '';
 
 
-    /*
-     * Empty state.
-     */
     if (table.length === 0) {
 
         body.innerHTML = `
@@ -1440,12 +1374,8 @@ function render() {
     }
 
 
-    /*
-     * Rows.
-     */
     table.forEach(
         function (row) {
-
 
             const tr =
                 document.createElement(
@@ -1454,7 +1384,7 @@ function render() {
 
 
             /*
-             * CHECKBOX
+             * CHECK
              */
             const checkTd =
                 document.createElement(
@@ -1581,23 +1511,6 @@ function render() {
                 'product';
 
 
-            /*
-             * Backwards compatibility:
-             *
-             * Old rows had description
-             * instead of productId.
-             */
-            if (
-                !row.productId &&
-                row.description
-            ) {
-
-                row.productName =
-                    row.description;
-
-            }
-
-
             const productSelect =
                 createProductSelect(
                     row
@@ -1627,14 +1540,10 @@ function render() {
                 'options';
 
 
-            const optionsArea =
+            optionsTd.appendChild(
                 createOptionsArea(
                     row
-                );
-
-
-            optionsTd.appendChild(
-                optionsArea
+                )
             );
 
 
@@ -1708,7 +1617,7 @@ function render() {
 
 
             /*
-             * FILE NAME
+             * FILE
              */
             const fileTd =
                 document.createElement(
@@ -1879,6 +1788,12 @@ function updateTotals() {
         );
 
 
+    const ivuLabel =
+        document.getElementById(
+            'ivuLabel'
+        );
+
+
     if (priceElement) {
 
         priceElement.textContent =
@@ -1915,6 +1830,18 @@ function updateTotals() {
             formatCurrency(
                 totals.total
             );
+
+    }
+
+
+    if (ivuLabel) {
+
+        ivuLabel.textContent =
+            'IVU (' +
+            (
+                IVU_RATE * 100
+            ).toFixed(2) +
+            '%)';
 
     }
 
@@ -1996,9 +1923,6 @@ async function addRow() {
     };
 
 
-    /*
-     * Initialize defaults.
-     */
     if (
         firstProduct &&
         Array.isArray(
@@ -2035,6 +1959,74 @@ async function addRow() {
 
 /*
  * ========================================
+ * OPEN PRINT WINDOW
+ * ========================================
+ */
+
+
+async function openPrintWindow() {
+
+    const button =
+        document.getElementById(
+            'printJob'
+        );
+
+
+    if (button) {
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            'Opening...';
+
+    }
+
+
+    try {
+
+        await t.modal({
+
+            title:
+                'Print Job',
+
+            url:
+                './print.html',
+
+            fullscreen:
+                true,
+
+            resizable:
+                true
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            'Could not open print window:',
+            error
+        );
+
+    } finally {
+
+        if (button) {
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                '🖨️ Print Job';
+
+        }
+
+    }
+
+}
+
+
+/*
+ * ========================================
  * INITIALIZE
  * ========================================
  */
@@ -2049,21 +2041,30 @@ t.render(async function () {
         );
 
 
-    if (!addRowButton) {
+    if (addRowButton) {
 
-        console.error(
-            'ERROR: #addRow was not found.'
+        addRowButton.addEventListener(
+            'click',
+            addRow
         );
-
-        return;
 
     }
 
 
-    addRowButton.addEventListener(
-        'click',
-        addRow
-    );
+    const printButton =
+        document.getElementById(
+            'printJob'
+        );
+
+
+    if (printButton) {
+
+        printButton.addEventListener(
+            'click',
+            openPrintWindow
+        );
+
+    }
 
 
     await loadCatalog();
