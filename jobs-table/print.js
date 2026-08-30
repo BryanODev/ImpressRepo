@@ -273,87 +273,17 @@ function getCustomFieldValue(
 
 
     /*
-     * CHECKBOX
-     */
-    if (
-        field.type ===
-        'checkbox'
-    ) {
-
-        if (
-            customFieldItem.value &&
-            customFieldItem.value.checked !==
-            undefined
-        ) {
-
-            return customFieldItem.value.checked
-                ? 'Yes'
-                : 'No';
-
-        }
-
-
-        return '—';
-
-    }
-
-
-    /*
-     * DATE
-     */
-    if (
-        field.type ===
-        'date'
-    ) {
-
-        const dateValue =
-            customFieldItem.value &&
-            customFieldItem.value.date;
-
-
-        if (!dateValue) {
-
-            return '—';
-
-        }
-
-
-        const date =
-            new Date(
-                dateValue
-            );
-
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-
-            return dateValue;
-
-        }
-
-
-        return date.toLocaleDateString(
-            undefined,
-            {
-                year:
-                    'numeric',
-
-                month:
-                    'long',
-
-                day:
-                    'numeric'
-            }
-        );
-
-    }
-
-
-    /*
-     * LIST
+     * ========================================
+     * DROPDOWN / LIST
+     * ========================================
+     *
+     * Trello stores the selected dropdown
+     * option as customFieldItem.idValue.
+     *
+     * The actual displayed text is stored
+     * inside the matching field option:
+     *
+     * option.value.text
      */
     if (
         field.type ===
@@ -386,8 +316,44 @@ function getCustomFieldValue(
 
             if (option) {
 
-                return option.value ||
-                    '—';
+                /*
+                 * Normal Trello format:
+                 *
+                 * value: {
+                 *     text: "Bryan"
+                 * }
+                 */
+                if (
+                    option.value &&
+                    typeof option.value ===
+                    'object' &&
+                    option.value.text !==
+                    undefined
+                ) {
+
+                    return String(
+                        option.value.text
+                    );
+
+                }
+
+
+                /*
+                 * Fallback in case Trello
+                 * gives us the value directly.
+                 */
+                if (
+                    option.value !==
+                    undefined &&
+                    option.value !==
+                    null
+                ) {
+
+                    return String(
+                        option.value
+                    );
+
+                }
 
             }
 
@@ -400,8 +366,99 @@ function getCustomFieldValue(
 
 
     /*
-     * NUMBER / TEXT
+     * ========================================
+     * CHECKBOX
+     * ========================================
      */
+
+    if (
+        field.type ===
+        'checkbox'
+    ) {
+
+        if (
+            customFieldItem.value &&
+            customFieldItem.value.checked !==
+            undefined
+        ) {
+
+            return customFieldItem.value.checked
+                ? 'Yes'
+                : 'No';
+
+        }
+
+
+        return '—';
+
+    }
+
+
+    /*
+     * ========================================
+     * DATE
+     * ========================================
+     */
+
+    if (
+        field.type ===
+        'date'
+    ) {
+
+        const dateValue =
+            customFieldItem.value &&
+            customFieldItem.value.date;
+
+
+        if (!dateValue) {
+
+            return '—';
+
+        }
+
+
+        const date =
+            new Date(
+                dateValue
+            );
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return String(
+                dateValue
+            );
+
+        }
+
+
+        return date.toLocaleDateString(
+            undefined,
+            {
+                year:
+                    'numeric',
+
+                month:
+                    'long',
+
+                day:
+                    'numeric'
+            }
+        );
+
+    }
+
+
+    /*
+     * ========================================
+     * NUMBER / TEXT
+     * ========================================
+     */
+
     if (
         customFieldItem.value
     ) {
