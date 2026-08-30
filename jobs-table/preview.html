@@ -1,278 +1,187 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
-
     <meta charset="utf-8">
-
     <title>Items Preview</title>
-
-
     <style>
-
         * {
             box-sizing: border-box;
         }
 
-
         html,
         body {
-
             margin: 0;
-
             padding: 0;
-
             width: 100%;
-
             height: 100%;
-
         }
 
-
         body {
-
             padding: 10px;
-
             font-family:
                 -apple-system,
                 BlinkMacSystemFont,
                 "Segoe UI",
                 sans-serif;
-
             font-size: 14px;
-
             background: #ffffff;
-
             color: #172b4d;
-
             display: flex;
-
             flex-direction: column;
-
         }
-
 
         .header {
-
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
             margin-bottom: 8px;
-
             flex-shrink: 0;
-
         }
 
+        .folder-field {
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .folder-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: #172b4d;
+        }
+
+        .folder-subtext {
+            font-size: 11px;
+            font-weight: normal;
+            color: #6b778c;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .folder-input {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #dfe1e6;
+            border-radius: 3px;
+            font-size: 13px;
+            color: #172b4d;
+            outline: none;
+        }
+
+        .folder-input:focus {
+            border-color: #0c66e4;
+        }
 
         .progress {
-
             color: #5e6c84;
-
             font-size: 12px;
-
         }
-
 
         .items {
-
             display: flex;
-
             flex-direction: column;
-
             gap: 4px;
-
             flex: 1;
-
             min-height: 0;
-
             overflow-y: auto;
-
         }
-
 
         .item {
-
             display: flex;
-
             align-items: center;
-
             gap: 8px;
-
             padding: 5px 6px;
-
             border-radius: 3px;
-
             flex-shrink: 0;
-
         }
-
 
         .item:hover {
-
             background: #f4f5f7;
-
         }
-
 
         .checkbox {
-
             width: 16px;
-
             height: 16px;
-
             flex-shrink: 0;
-
         }
-
 
         .description {
-
             overflow: hidden;
-
             text-overflow: ellipsis;
-
             white-space: nowrap;
-
         }
-
 
         .finished {
-
             text-decoration: line-through;
-
             color: #6b778c;
-
         }
-
 
         .empty {
-
             padding: 12px;
-
             text-align: center;
-
             color: #6b778c;
-
         }
-
 
         .preview-price {
-
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
             margin-top: 10px;
-
             padding-top: 8px;
-
             border-top: 1px solid #dfe1e6;
-
             flex-shrink: 0;
-
         }
-
 
         .preview-price strong {
-
             font-size: 15px;
-
         }
-
 
         .open-button {
-
             width: 100%;
-
             margin-top: 10px;
-
             padding: 8px 12px;
-
             border: none;
-
             border-radius: 3px;
-
             background: #0c66e4;
-
             color: white;
-
             font-size: 14px;
-
             font-weight: 500;
-
             cursor: pointer;
-
             flex-shrink: 0;
-
         }
-
 
         .open-button:hover {
-
             background: #0055cc;
-
         }
-
     </style>
-
 </head>
-
 
 <body>
 
+    <div class="folder-field">
+        <label class="folder-label" for="folderName">
+            Nombre de la Carpeta:
+            <span class="folder-subtext">Nombre en donde se encuentra el archivo de diseño.</span>
+        </label>
+        <input type="text" id="folderName" class="folder-input" placeholder="Escribe el nombre aquí..." />
+    </div>
 
     <div class="header">
-
         <strong>Items</strong>
-
-        <span
-            id="progress"
-            class="progress">
-
-            0 / 0 finished
-
-        </span>
-
+        <span id="progress" class="progress">0 / 0 finished</span>
     </div>
 
-
-    <div
-        id="items"
-        class="items">
-    </div>
-
+    <div id="items" class="items"></div>
 
     <div class="preview-price">
-
         <span>Price</span>
-
-        <strong id="price">
-            $0.00
-        </strong>
-
+        <strong id="price">$0.00</strong>
     </div>
 
-
-    <button
-        id="openTable"
-        class="open-button">
-
-        Open Task Table
-
-    </button>
-
+    <button id="openTable" class="open-button">Open Task Table</button>
 
     <script src="https://p.trellocdn.com/power-up.min.js"></script>
-
     <script src="preview.js"></script>
 
-
 </body>
-
 </html>
