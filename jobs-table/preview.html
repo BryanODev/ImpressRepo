@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Items Preview</title>
@@ -30,16 +31,11 @@
             flex-direction: column;
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            flex-shrink: 0;
-        }
-
+        /* --- Folder Field (Outside / Top Section) --- */
         .folder-field {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dfe1e6;
             flex-shrink: 0;
         }
 
@@ -51,11 +47,11 @@
         }
 
         .folder-subtext {
+            display: block;
             font-size: 11px;
             font-weight: normal;
             color: #6b778c;
-            display: block;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .folder-input {
@@ -66,10 +62,22 @@
             font-size: 13px;
             color: #172b4d;
             outline: none;
+            background: #fafbfc;
+            transition: background 0.1s ease-in-out, border-color 0.1s ease-in-out;
         }
 
         .folder-input:focus {
+            background: #ffffff;
             border-color: #0c66e4;
+        }
+
+        /* --- Items List Section --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-shrink: 0;
         }
 
         .progress {
@@ -122,6 +130,7 @@
             color: #6b778c;
         }
 
+        /* --- Footer Controls --- */
         .preview-price {
             display: flex;
             justify-content: space-between;
@@ -158,6 +167,7 @@
 
 <body>
 
+    <!-- Folder Name Field (Outside the items container) -->
     <div class="folder-field">
         <label class="folder-label" for="folderName">
             Nombre de la Carpeta:
@@ -166,6 +176,7 @@
         <input type="text" id="folderName" class="folder-input" placeholder="Escribe el nombre aquí..." />
     </div>
 
+    <!-- Items Header & List -->
     <div class="header">
         <strong>Items</strong>
         <span id="progress" class="progress">0 / 0 finished</span>
@@ -184,4 +195,5 @@
     <script src="preview.js"></script>
 
 </body>
+
 </html>
