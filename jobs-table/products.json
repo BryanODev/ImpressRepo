@@ -4,6 +4,59 @@
     "products": [
 
         {
+            "id": "tarjetas_presentacion",
+            "name": "Tarjetas de Presentación",
+
+            "options": [
+
+                {
+                    "id": "tamano",
+                    "label": "Tamaño",
+                    "type": "selectWithCustom",
+                    "options": [
+                        "2\" x 3.5\"",
+                        "Custom"
+                    ],
+                    "customPlaceholder": "Especifique tamaño..."
+                },
+
+                {
+                    "id": "lados",
+                    "label": "Lados",
+                    "type": "select",
+                    "options": [
+                        "1 Lado",
+                        "2 Lado"
+                    ]
+                },
+
+                {
+                    "id": "orientacion",
+                    "label": "Orientación",
+                    "type": "select",
+                    "options": [
+                        "Vertical",
+                        "Horizontal"
+                    ]
+                },
+
+                {
+                    "id": "cantidad",
+                    "label": "Cantidad",
+                    "type": "selectWithCustom",
+                    "options": [
+                        "250",
+                        "500",
+                        "Custom"
+                    ],
+                    "customPlaceholder": "Especifique cantidad..."
+                }
+
+            ]
+        },
+
+
+        {
             "id": "business_cards",
             "name": "Business Cards",
 
@@ -137,11 +190,13 @@
                 {
                     "id": "material",
                     "label": "Material",
-                    "type": "select",
+                    "type": "selectWithCustom",
                     "options": [
                         "Vinyl",
-                        "Mesh"
-                    ]
+                        "Mesh",
+                        "Custom"
+                    ],
+                    "customPlaceholder": "Specify material..."
                 },
 
                 {

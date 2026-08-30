@@ -407,6 +407,30 @@ function getDefaultValue(option) {
 
 
     if (
+        option.type === 'selectWithCustom'
+    ) {
+
+        const firstOption =
+            Array.isArray(option.options) &&
+            option.options.length > 0
+                ? option.options[0]
+                : '';
+
+
+        return {
+
+            value:
+                firstOption,
+
+            custom:
+                ''
+
+        };
+
+    }
+
+
+    if (
         option.type === 'select' &&
         Array.isArray(
             option.options
@@ -665,6 +689,62 @@ function createProductSelect(row) {
 
 /*
  * ========================================
+ * NORMALIZE CUSTOM SELECT VALUE
+ * ========================================
+ */
+
+
+function normalizeCustomSelectValue(
+    value
+) {
+
+    /*
+     * New format.
+     */
+    if (
+        value &&
+        typeof value === 'object'
+    ) {
+
+        return {
+
+            value:
+                value.value ??
+                '',
+
+            custom:
+                value.custom ??
+                ''
+
+        };
+
+    }
+
+
+    /*
+     * Old saved format.
+     *
+     * If an older row had simply:
+     *
+     * "Custom"
+     *
+     * preserve it.
+     */
+    return {
+
+        value:
+            value ?? '',
+
+        custom:
+            ''
+
+    };
+
+}
+
+
+/*
+ * ========================================
  * CREATE OPTION CONTROL
  * ========================================
  */
@@ -694,8 +774,268 @@ function createOptionControl(
 
 
     /*
-     * SELECT
+     * ========================================
+     * SELECT WITH CUSTOM
+     * ========================================
      */
+
+    if (
+        optionDefinition.type ===
+        'selectWithCustom'
+    ) {
+
+        const data =
+            normalizeCustomSelectValue(
+                value
+            );
+
+
+        /*
+         * Save normalized structure.
+         */
+        row.options[optionId] =
+            data;
+
+
+        const wrapper =
+            document.createElement(
+                'div'
+            );
+
+
+        wrapper.className =
+            'select-with-custom';
+
+
+        const select =
+            document.createElement(
+                'select'
+            );
+
+
+        const options =
+            Array.isArray(
+                optionDefinition.options
+            )
+                ? optionDefinition.options
+                : [];
+
+
+        options.forEach(
+            function (possibleValue) {
+
+                const option =
+                    document.createElement(
+                        'option'
+                    );
+
+
+                option.value =
+                    possibleValue;
+
+
+                option.textContent =
+                    possibleValue;
+
+
+                if (
+                    data.value ===
+                    possibleValue
+                ) {
+
+                    option.selected =
+                        true;
+
+                }
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        /*
+         * Preserve old value if it
+         * no longer exists.
+         */
+        if (
+            data.value &&
+            !options.includes(
+                data.value
+            )
+        ) {
+
+            const oldOption =
+                document.createElement(
+                    'option'
+                );
+
+
+            oldOption.value =
+                data.value;
+
+
+            oldOption.textContent =
+                data.value +
+                ' (DEPRECATED)';
+
+
+            oldOption.selected =
+                true;
+
+
+            oldOption.className =
+                'deprecated';
+
+
+            select.insertBefore(
+                oldOption,
+                select.firstChild
+            );
+
+        }
+
+
+        wrapper.appendChild(
+            select
+        );
+
+
+        /*
+         * Custom input.
+         */
+        const customInput =
+            document.createElement(
+                'input'
+            );
+
+
+        customInput.type =
+            'text';
+
+
+        customInput.value =
+            data.custom;
+
+
+        customInput.placeholder =
+            optionDefinition.customPlaceholder ||
+            'Specify...';
+
+
+        customInput.style.display =
+            data.value ===
+            'Custom'
+                ? ''
+                : 'none';
+
+
+        /*
+         * Change dropdown.
+         */
+        select.addEventListener(
+            'change',
+            async function () {
+
+                data.value =
+                    select.value;
+
+
+                if (
+                    data.value !==
+                    'Custom'
+                ) {
+
+                    data.custom =
+                        '';
+
+                    customInput.value =
+                        '';
+
+                    customInput.style.display =
+                        'none';
+
+                } else {
+
+                    customInput.style.display =
+                        '';
+
+                    customInput.focus();
+
+                }
+
+
+                row.options[
+                    optionId
+                ] =
+                    data;
+
+
+                await saveTable();
+
+            }
+        );
+
+
+        /*
+         * Change custom text.
+         */
+        customInput.addEventListener(
+            'input',
+            function () {
+
+                data.custom =
+                    customInput.value;
+
+
+                row.options[
+                    optionId
+                ] =
+                    data;
+
+            }
+        );
+
+
+        customInput.addEventListener(
+            'change',
+            async function () {
+
+                data.custom =
+                    customInput.value;
+
+
+                row.options[
+                    optionId
+                ] =
+                    data;
+
+
+                await saveTable();
+
+            }
+        );
+
+
+        wrapper.appendChild(
+            customInput
+        );
+
+
+        return wrapper;
+
+    }
+
+
+    /*
+     * ========================================
+     * NORMAL SELECT
+     * ========================================
+     */
+
     if (
         optionDefinition.type ===
         'select'
@@ -812,8 +1152,11 @@ function createOptionControl(
 
 
     /*
+     * ========================================
      * CHECKBOX
+     * ========================================
      */
+
     if (
         optionDefinition.type ===
         'checkbox'
@@ -885,8 +1228,11 @@ function createOptionControl(
 
 
     /*
+     * ========================================
      * NUMBER
+     * ========================================
      */
+
     if (
         optionDefinition.type ===
         'number'
@@ -961,8 +1307,11 @@ function createOptionControl(
 
 
     /*
+     * ========================================
      * TEXT
+     * ========================================
      */
+
     const input =
         document.createElement(
             'input'
@@ -1302,6 +1651,48 @@ function formatOptionValue(value) {
         return value
             ? 'Yes'
             : 'No';
+
+    }
+
+
+    /*
+     * selectWithCustom value.
+     */
+    if (
+        value &&
+        typeof value === 'object'
+    ) {
+
+        const selected =
+            value.value ?? '';
+
+
+        const custom =
+            value.custom ?? '';
+
+
+        if (
+            selected === 'Custom'
+        ) {
+
+            if (custom) {
+
+                return (
+                    'Custom — ' +
+                    custom
+                );
+
+            }
+
+
+            return 'Custom';
+
+        }
+
+
+        return String(
+            selected || '—'
+        );
 
     }
 
@@ -2071,6 +2462,5 @@ t.render(async function () {
 
 
     await loadTable();
-
 
 });
