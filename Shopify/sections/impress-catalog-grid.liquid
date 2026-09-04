@@ -1,0 +1,414 @@
+<div 
+  class="product-grid-wrapper" 
+  style="
+    --grid-padding-v: {{ section.settings.vertical_padding }}px;
+    --grid-max-width: {{ section.settings.max_width }}px;
+    --card-radius: {{ section.settings.corner_radius }}px;
+    --card-width: {{ section.settings.card_width }}px;
+    --gap-size: {{ section.settings.grid_gap }}px;
+    --text-color: {{ section.settings.text_color }};
+  "
+>
+  <div class="product-grid-container">
+    
+    <div class="section-header-flex">
+      {% if section.settings.section_heading != blank %}
+        <div class="header-text">
+          <h2 class="section-title">{{ section.settings.section_heading }}</h2>
+          {% if section.settings.section_subheading != blank %}
+            <p class="section-subtitle">{{ section.settings.section_subheading }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <div class="scroll-navigation-buttons">
+        <button type="button" class="scroll-btn prev-btn" aria-label="Scroll left">‹</button>
+        <button type="button" class="scroll-btn next-btn" aria-label="Scroll right">›</button>
+      </div>
+    </div>
+
+    <div class="scrollable-grid-track" id="ScrollTrack-{{ section.id }}">
+      {% for block in section.blocks %}
+        <a 
+          href="{{ block.settings.card_link | default: '#' }}" 
+          class="product-card-button" 
+          {{ block.shopify_attributes }}
+        >
+          <div class="square-image-wrapper">
+            {% if block.settings.card_image != blank %}
+              <img 
+                src="{{ block.settings.card_image | image_url: width: 800 }}" 
+                alt="{{ block.settings.title | escape }}" 
+                width="{{ block.settings.card_image.width }}" 
+                height="{{ block.settings.card_image.height }}" 
+                loading="lazy"
+              >
+            {% else %}
+              <div class="placeholder-image">
+                <span>Square Image</span>
+              </div>
+            {% endif %}
+          </div>
+          
+          {% if block.settings.title != blank %}
+            <span class="card-title">{{ block.settings.title }}</span>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const track = document.getElementById('ScrollTrack-{{ section.id }}');
+    const wrapper = track ? track.closest('.product-grid-wrapper') : null;
+    if (!track) return;
+
+    const prevBtn = wrapper ? wrapper.querySelector('.prev-btn') : null;
+    const nextBtn = wrapper ? wrapper.querySelector('.next-btn') : null;
+
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let hasDragged = false;
+
+    // Disable browser native image and link drag ghosting
+    track.querySelectorAll('a, img').forEach((el) => {
+      el.addEventListener('dragstart', (e) => e.preventDefault());
+    });
+
+    track.addEventListener('mousedown', (e) => {
+      isDown = true;
+      hasDragged = false;
+      startX = e.pageX - track.offsetLeft;
+      scrollLeft = track.scrollLeft;
+    });
+
+    track.addEventListener('mouseleave', () => {
+      isDown = false;
+      track.classList.remove('is-dragging');
+    });
+
+    track.addEventListener('mouseup', () => {
+      isDown = false;
+      track.classList.remove('is-dragging');
+    });
+
+    track.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      
+      const x = e.pageX - track.offsetLeft;
+      const walk = (x - startX) * 1.5;
+
+      if (Math.abs(x - startX) > 6) {
+        hasDragged = true;
+        track.classList.add('is-dragging');
+        e.preventDefault();
+        track.scrollLeft = scrollLeft - walk;
+      }
+    });
+
+    // Handle card clicks cleanly without accidental drag redirection
+    const links = track.querySelectorAll('.product-card-button');
+    links.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        if (hasDragged) {
+          e.preventDefault();
+          e.stopPropagation();
+          hasDragged = false;
+        }
+      });
+    });
+
+    // Arrow navigation controls
+    if (prevBtn && nextBtn) {
+      prevBtn.addEventListener('click', () => {
+        track.scrollBy({ left: -320, behavior: 'smooth' });
+      });
+      nextBtn.addEventListener('click', () => {
+        track.scrollBy({ left: 320, behavior: 'smooth' });
+      });
+    }
+  });
+</script>
+
+{% stylesheet %}
+.product-grid-wrapper {
+  width: 100%;
+  padding-top: var(--grid-padding-v);
+  padding-bottom: var(--grid-padding-v);
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+.product-grid-container {
+  max-width: var(--grid-max-width);
+  margin: 0 auto;
+}
+
+.section-header-flex {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: 800;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.5px;
+}
+
+.section-subtitle {
+  font-size: 15px;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.scroll-navigation-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.scroll-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.scroll-btn:hover {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+/* HORIZONTAL DRAGGABLE TRACK */
+.scrollable-grid-track {
+  display: flex;
+  gap: var(--gap-size);
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 16px;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scrollable-grid-track::-webkit-scrollbar {
+  display: none;
+}
+.scrollable-grid-track {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollable-grid-track.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+.product-card-button {
+  flex: 0 0 var(--card-width);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-color);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.product-card-button:hover {
+  transform: translateY(-4px);
+}
+
+.square-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  background-color: #f1f5f9;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  margin-bottom: 12px;
+}
+
+.square-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+  transition: transform 0.3s ease;
+}
+
+.product-card-button:hover .square-image-wrapper img {
+  transform: scale(1.04);
+}
+
+.placeholder-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e2e8f0;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.3;
+}
+
+@media (max-width: 768px) {
+  .product-card-button {
+    flex: 0 0 calc(var(--card-width) * 0.75);
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Horizontal Product Scroll",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header Settings"
+    },
+    {
+      "type": "text",
+      "id": "section_heading",
+      "label": "Section Heading",
+      "default": "Featured Categories"
+    },
+    {
+      "type": "text",
+      "id": "section_subheading",
+      "label": "Section Subheading"
+    },
+    {
+      "type": "header",
+      "content": "Card Dimensions & Style"
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "min": 160,
+      "max": 340,
+      "step": 10,
+      "unit": "px",
+      "label": "Square Card Width",
+      "default": 240
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Card Corner Roundness",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Space Between Cards",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1400,
+      "step": 20,
+      "unit": "px",
+      "label": "Container Max Width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top & Bottom Outer Spacing",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#0f172a"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_card",
+      "name": "Product Card Button",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "card_image",
+          "label": "Square Product Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Title / Heading",
+          "default": "Business Cards"
+        },
+        {
+          "type": "url",
+          "id": "card_link",
+          "label": "Card Target Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Horizontal Product Scroll",
+      "blocks": [
+        { "type": "product_card", "settings": { "title": "Business Cards" } },
+        { "type": "product_card", "settings": { "title": "Flyers & Leaflets" } },
+        { "type": "product_card", "settings": { "title": "Vinyl Banners" } },
+        { "type": "product_card", "settings": { "title": "Posters" } },
+        { "type": "product_card", "settings": { "title": "Custom Stickers" } },
+        { "type": "product_card", "settings": { "title": "Brochures" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

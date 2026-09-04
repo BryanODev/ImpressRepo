@@ -1,0 +1,529 @@
+<div 
+  class="contact-quote-wrapper" 
+  style="
+    --section-bg: {{ section.settings.bg_color }};
+    --card-bg: {{ section.settings.card_bg_color }};
+    --accent-yellow: {{ section.settings.accent_color }};
+    --text-color: {{ section.settings.text_color }};
+    --padding-v: {{ section.settings.vertical_padding }}px;
+  "
+>
+  <div class="contact-quote-container">
+    
+    <div class="contact-info-col">
+      <span class="subheading-accent">{{ section.settings.subheading }}</span>
+      <h2 class="main-heading">
+        {{ section.settings.heading_line_1 }} <span class="highlight-yellow">{{ section.settings.heading_line_2 }}</span>
+      </h2>
+      <p class="description-text">{{ section.settings.description }}</p>
+
+      <div class="info-list">
+        {% if section.settings.location != blank %}
+          <div class="info-item">
+            <div class="icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+            </div>
+            <div class="info-text">
+              <strong>Ubicación</strong>
+              <span>{{ section.settings.location }}</span>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if section.settings.phone != blank %}
+          <div class="info-item">
+            <div class="icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+              </svg>
+            </div>
+            <div class="info-text">
+              <strong>Teléfono</strong>
+              <a href="tel:{{ section.settings.phone }}">{{ section.settings.phone }}</a>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if section.settings.whatsapp != blank %}
+          <div class="info-item">
+            <div class="icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm.01 16.67c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.188 8.188 0 01-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.188 8.188 0 012.42 5.82c0 4.54-3.7 8.24-8.23 8.24z"/>
+              </svg>
+            </div>
+            <div class="info-text">
+              <strong>WhatsApp</strong>
+              <a href="https://wa.me/{{ section.settings.whatsapp | replace: ' ', '' | replace: '(', '' | replace: ')', '' | replace: '-', '' }}" target="_blank">{{ section.settings.whatsapp }}</a>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if section.settings.email != blank %}
+          <div class="info-item">
+            <div class="icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+            </div>
+            <div class="info-text">
+              <strong>Email</strong>
+              <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if section.settings.schedule_lines != blank %}
+          <div class="info-item">
+            <div class="icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+              </svg>
+            </div>
+            <div class="info-text">
+              <strong>Horario</strong>
+              <div class="schedule-text">{{ section.settings.schedule_lines }}</div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="form-card-col">
+      {% form 'contact', class: 'quote-form' %}
+        {% if form.posted_successfully? %}
+          <div class="form-success-msg">
+            ¡Gracias! Tu mensaje ha sido enviado exitosamente.
+          </div>
+        {% endif %}
+
+        {% if form.errors %}
+          <div class="form-error-msg">
+            {{ form.errors | default_errors }}
+          </div>
+        {% endif %}
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="ContactFormName">Nombre</label>
+            <input 
+              type="text" 
+              id="ContactFormName" 
+              name="contact[Nombre]" 
+              placeholder="Tu nombre" 
+              required
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="ContactFormEmail">Email</label>
+            <input 
+              type="email" 
+              id="ContactFormEmail" 
+              name="contact[email]" 
+              placeholder="tu@email.com" 
+              required
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="ContactFormPhone">Teléfono</label>
+            <input 
+              type="tel" 
+              id="ContactFormPhone" 
+              name="contact[Teléfono]" 
+              placeholder="(787) 000-0000"
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="ContactFormService">Servicio</label>
+            <div class="select-wrapper">
+              <select id="ContactFormService" name="contact[Servicio]">
+                <option value="" disabled selected>Selecciona un servicio</option>
+                <option value="Impresión Comercial">Impresión Comercial</option>
+                <option value="Tarjetas de Presentación">Tarjetas de Presentación</option>
+                <option value="Banners y Rotulación">Banners y Rotulación</option>
+                <option value="Stickers / Etiquetas">Stickers / Etiquetas</option>
+                <option value="Otro">Otro</option>
+              </select>
+              <span class="select-arrow">▾</span>
+            </div>
+          </div>
+
+          <div class="form-field full-width">
+            <label for="ContactFormMessage">Mensaje</label>
+            <textarea 
+              id="ContactFormMessage" 
+              name="contact[body]" 
+              rows="6" 
+              placeholder="Cuéntanos sobre tu proyecto..." 
+              required
+            ></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+          Enviar Cotización
+        </button>
+      {% endform %}
+    </div>
+
+  </div>
+</div>
+
+{% stylesheet %}
+.contact-quote-wrapper {
+  width: 100%;
+  background-color: var(--section-bg);
+  padding-top: var(--padding-v);
+  padding-bottom: var(--padding-v);
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: var(--text-color);
+}
+
+.contact-quote-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 60px;
+  align-items: flex-start;
+}
+
+/* LEFT SIDE */
+.contact-info-col {
+  flex: 1;
+}
+
+.subheading-accent {
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent-yellow);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.main-heading {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0 0 16px 0;
+  letter-spacing: -1px;
+}
+
+.highlight-yellow {
+  color: var(--accent-yellow);
+}
+
+.description-text {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #64748b;
+  margin: 0 0 36px 0;
+  max-width: 480px;
+}
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-box {
+  width: 44px;
+  height: 44px;
+  background-color: #fef9c3;
+  color: #ca8a04;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.info-text {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.info-text strong {
+  color: var(--text-color);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.info-text span, 
+.info-text a, 
+.schedule-text {
+  color: #64748b;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.info-text a:hover {
+  color: var(--text-color);
+}
+
+/* RIGHT SIDE FORM CARD */
+.form-card-col {
+  flex: 1.1;
+  background-color: var(--card-bg);
+  padding: 40px;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field.full-width {
+  grid-column: span 2;
+}
+
+.form-field label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 8px;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--text-color);
+  outline: none;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: #94a3b8;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--accent-yellow);
+}
+
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.select-wrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.submit-btn {
+  background-color: var(--accent-yellow);
+  color: #000000;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: opacity 0.15s ease;
+}
+
+.submit-btn:hover {
+  opacity: 0.9;
+}
+
+.form-success-msg {
+  background-color: #dcfce7;
+  color: #166534;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.form-error-msg {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .contact-quote-container {
+    flex-direction: column;
+    gap: 40px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-field.full-width {
+    grid-column: span 1;
+  }
+  .form-card-col {
+    width: 100%;
+    padding: 24px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Cotiza Tu Proyecto",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text & Titles"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading Accent",
+      "default": "CONTACTO"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_1",
+      "label": "Heading Part 1",
+      "default": "Cotiza tu"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_2",
+      "label": "Heading Part 2 (Yellow)",
+      "default": "proyecto"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Cuéntanos sobre tu proyecto y te enviaremos una cotización personalizada. Respuesta en menos de 24 horas."
+    },
+    {
+      "type": "header",
+      "content": "Contact Info Settings"
+    },
+    {
+      "type": "text",
+      "id": "location",
+      "label": "Ubicación",
+      "default": "Isabela, Puerto Rico"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Teléfono",
+      "default": "(787) 291-4054"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp",
+      "label": "WhatsApp",
+      "default": "(939) 489-7806"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "impressisabela@gmail.com"
+    },
+    {
+      "type": "richtext",
+      "id": "schedule_lines",
+      "label": "Horario",
+      "default": "<p>Lun - Vie: 8:00 AM - 5:00 PM<br>Sáb: 9:00 AM - 1:00 PM</p>"
+    },
+    {
+      "type": "header",
+      "content": "Styling Controls"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Yellow Accent Color",
+      "default": "#facc15"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Form Card Background",
+      "default": "#f8fafc"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Primary Text Color",
+      "default": "#0f172a"
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "label": "Top & Bottom Padding",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cotiza Tu Proyecto"
+    }
+  ]
+}
+{% endschema %}

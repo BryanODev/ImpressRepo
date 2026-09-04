@@ -1,0 +1,701 @@
+<header class="stacked-header" style="--top-bg: {{ section.settings.top_bg_color }}; --top-text: {{ section.settings.top_text_color }}; --bottom-bg: {{ section.settings.bottom_bg_color }}; --bottom-text: {{ section.settings.bottom_text_color }};">
+  
+  <!-- TOP TIER -->
+  <div class="top-tier">
+    <div class="header-container top-tier-inner">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="brand-logo">
+        {% if section.settings.logo != blank %}
+          <img 
+            src="{{ section.settings.logo | image_url: width: 400 }}" 
+            alt="{{ shop.name }}"
+            style="max-height: {{ section.settings.logo_max_height }}px;"
+          >
+        {% else %}
+          <span class="logo-text">{{ shop.name }}</span>
+        {% endif %}
+      </a>
+
+      <!-- Interactive Mega Search/Pill Dropdown Trigger -->
+      <div class="search-pill-container" id="mega-pill-wrapper">
+        <button class="search-pill-trigger" type="button" aria-expanded="false">
+          <span class="sparkle">✦</span>
+          <span class="pill-label">{{ section.settings.pill_label }}</span>
+          <span class="chevron">▾</span>
+        </button>
+
+        <!-- Expanded Mega Menu Modal -->
+        <div class="mega-dropdown-modal">
+          
+          {% if section.settings.banner_text != blank %}
+            <!-- Custom Banner Inside Dropdown -->
+            <div class="dropdown-banner">
+              <span>{{ section.settings.banner_text }}</span>
+              {% if section.settings.banner_btn_url != blank %}
+                <a href="{{ section.settings.banner_btn_url }}" class="banner-btn">{{ section.settings.banner_btn_label }}</a>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          <!-- Dynamic Multi-Column Flex Grid -->
+          <div class="dropdown-flex-grid">
+            {% assign is_first_col = true %}
+            {% for block in section.blocks %}
+              
+              {% if block.type == 'column' %}
+                {% unless is_first_col %}
+                    </div> <!-- Close previous column-items -->
+                  </div> <!-- Close previous grid-col -->
+                {% endunless %}
+                
+                <div class="grid-col" {{ block.shopify_attributes }}>
+                  {% if block.settings.title != blank %}
+                    <span class="col-title">{{ block.settings.title }}</span>
+                  {% endif %}
+                  <div class="column-items">
+                {% assign is_first_col = false %}
+
+              {% elsif block.type == 'item_card' %}
+                <a href="{{ block.settings.link_url }}" class="mega-item" {{ block.shopify_attributes }}>
+                  {% if block.settings.icon != blank %}
+                    <span class="item-icon">{{ block.settings.icon }}</span>
+                  {% elsif block.settings.image != blank %}
+                    <img src="{{ block.settings.image | image_url: width: 60 }}" alt="" class="item-img">
+                  {% endif %}
+                  <div class="item-text">
+                    <strong>{{ block.settings.title }} →</strong>
+                    {% if block.settings.description != blank %}
+                      <p>{{ block.settings.description }}</p>
+                    {% endif %}
+                  </div>
+                </a>
+              {% endif %}
+
+              {% if forloop.last and is_first_col == false %}
+                  </div> <!-- Close final column-items -->
+                </div> <!-- Close final grid-col -->
+              {% endif %}
+
+            {% endfor %}
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="header-contact">
+        <div class="headset-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+          </svg>
+        </div>
+        <div class="contact-details">
+          <span class="contact-label">{{ section.settings.phone_number }}</span>
+          <a href="mailto:{{ section.settings.email_address }}" class="contact-sub">{{ section.settings.email_address }}</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOTTOM TIER -->
+  <div class="bottom-tier">
+    <div class="header-container bottom-tier-inner">
+      
+      <!-- Primary Nav Links -->
+      <nav class="main-nav">
+        {% assign nav_menu = linklists[section.settings.menu] %}
+        {% if nav_menu.links.size > 0 %}
+          {% for link in nav_menu.links %}
+            <div class="nav-item">
+              {% if link.title contains '[New]' %}
+                <span class="badge badge-new">New</span>
+              {% elsif link.title contains '[Hot]' %}
+                <span class="badge badge-hot">Hot</span>
+              {% endif %}
+
+              <a href="{{ link.url }}" class="nav-link">
+                {{ link.title | remove: '[New]' | remove: '[Hot]' }}
+                {% if link.links != blank %}
+                  <span class="arrow">▾</span>
+                {% endif %}
+              </a>
+            </div>
+          {% endfor %}
+        {% else %}
+          <span class="nav-fallback">Select a Navigation Menu in Theme Settings</span>
+        {% endif %}
+      </nav>
+
+      <!-- Circle Action Icons -->
+      <div class="icon-actions">
+        <a href="/pages/saved-proofs" class="circle-btn" title="Saved Proofs">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </a>
+
+        <a href="{{ routes.account_login_url }}" class="circle-btn" title="Account">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+
+        <a href="{{ routes.cart_url }}" class="circle-btn cart-btn" title="Cart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="cart-badge">{{ cart.item_count }}</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</header>
+
+{% stylesheet %}
+:root {
+  --badge-new: #52c41a;
+  --badge-hot: #ff4d4f;
+}
+
+.stacked-header {
+  width: 100%;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.header-container {
+  max-width: 1350px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* TOP TIER */
+.top-tier {
+  background-color: var(--top-bg);
+  padding: 12px 0;
+  color: var(--top-text);
+}
+
+.top-tier-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo img {
+  width: auto;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--top-text);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+
+/* MEGA SEARCH PILL TRIGGER & DROPDOWN */
+.search-pill-container {
+  position: relative;
+  flex: 1;
+  max-width: 580px;
+}
+
+.search-pill-trigger {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--top-text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.search-pill-trigger:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.sparkle {
+  color: #facc15;
+  margin-right: 8px;
+}
+
+.pill-label {
+  flex: 1;
+  text-align: left;
+}
+
+/* MODAL DROPDOWN */
+.mega-dropdown-modal {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 820px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 999;
+}
+
+.search-pill-container:hover .mega-dropdown-modal,
+.search-pill-container:focus-within .mega-dropdown-modal {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* TOP BANNER */
+.dropdown-banner {
+  background: #1e293b;
+  border-radius: 8px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #f8fafc;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.banner-btn {
+  background: #2563eb;
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* UNLIMITED FLEX/GRID COLUMN SYSTEM */
+.dropdown-flex-grid {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.grid-col {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+.col-title {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #94a3b8;
+  letter-spacing: 0.8px;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+
+.column-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mega-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.mega-item:hover {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.item-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.item-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.item-text strong {
+  display: block;
+  color: #f8fafc;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.item-text p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+/* CONTACT BLOCK */
+.header-contact {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--top-text);
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+}
+
+.contact-label {
+  font-weight: 700;
+}
+
+.contact-sub {
+  color: var(--top-text);
+  opacity: 0.9;
+  text-decoration: none;
+}
+
+/* BOTTOM TIER */
+.bottom-tier {
+  background-color: var(--bottom-bg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 0;
+  color: var(--bottom-text);
+}
+
+.bottom-tier-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* NAVIGATION LINKS */
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-fallback {
+  font-size: 12px;
+  opacity: 0.8;
+  color: var(--bottom-text);
+}
+
+.nav-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.nav-link {
+  color: var(--bottom-text);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 6px 0;
+}
+
+.badge {
+  position: absolute;
+  top: -12px;
+  left: 0;
+  font-size: 9px;
+  font-weight: 800;
+  color: #ffffff;
+  padding: 1px 5px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.badge-new { background-color: var(--badge-new); }
+.badge-hot { background-color: var(--badge-hot); }
+
+/* CIRCLE BUTTONS */
+.icon-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.circle-btn {
+  width: 36px;
+  height: 36px;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  transition: transform 0.15s ease;
+}
+
+.circle-btn:hover {
+  transform: translateY(-2px);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #000000;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 900px) {
+  .header-contact {
+    display: none;
+  }
+  .top-tier-inner, .bottom-tier-inner {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .search-pill-container {
+    width: 100%;
+  }
+  .mega-dropdown-modal {
+    width: calc(100vw - 40px);
+    left: -10px;
+  }
+  .dropdown-flex-grid {
+    flex-direction: column;
+  }
+  .main-nav {
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 6px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Stacked Custom Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo Image"
+    },
+    {
+      "type": "range",
+      "id": "logo_max_height",
+      "min": 20,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Logo Height",
+      "default": 42
+    },
+    {
+      "type": "header",
+      "content": "Search Pill Settings"
+    },
+    {
+      "type": "text",
+      "id": "pill_label",
+      "label": "Search Bar Text",
+      "default": "Select product or material..."
+    },
+    {
+      "type": "text",
+      "id": "banner_text",
+      "label": "Dropdown Banner Text",
+      "default": "Need custom volume or bulk specs?"
+    },
+    {
+      "type": "text",
+      "id": "banner_btn_label",
+      "label": "Dropdown Banner Button Label",
+      "default": "Get Custom Quote"
+    },
+    {
+      "type": "url",
+      "id": "banner_btn_url",
+      "label": "Dropdown Banner Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Top Tier Styling"
+    },
+    {
+      "type": "color",
+      "id": "top_bg_color",
+      "label": "Top Tier Background Color",
+      "default": "#0e85a0"
+    },
+    {
+      "type": "color",
+      "id": "top_text_color",
+      "label": "Top Tier Text / Icon Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Bottom Tier Styling"
+    },
+    {
+      "type": "color",
+      "id": "bottom_bg_color",
+      "label": "Bottom Tier Background Color",
+      "default": "#086b82"
+    },
+    {
+      "type": "color",
+      "id": "bottom_text_color",
+      "label": "Bottom Tier Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Navigation & Info"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigation Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "phone_number",
+      "label": "Phone Number",
+      "default": "Call Us: 1-800-555-0199"
+    },
+    {
+      "type": "text",
+      "id": "email_address",
+      "label": "Email Address",
+      "default": "quotes@yourprintshop.com"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "📁 New Column / Division",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Column Title",
+          "default": "Marketing & Print"
+        }
+      ]
+    },
+    {
+      "type": "item_card",
+      "name": "🃏 Item Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Title",
+          "default": "Business Cards"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Card Description",
+          "default": "Premium card stocks, matte, gloss, and foil."
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Emoji Icon",
+          "default": "🎴"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom Icon Image (Overrides Emoji)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Stacked Custom Header",
+      "blocks": [
+        {
+          "type": "column",
+          "settings": { "title": "Marketing & Print" }
+        },
+        {
+          "type": "item_card",
+          "settings": { "title": "Business Cards", "description": "Premium stocks and finishes.", "icon": "🎴" }
+        },
+        {
+          "type": "item_card",
+          "settings": { "title": "Flyers & Brochures", "description": "High-volume promotional prints.", "icon": "📄" }
+        },
+        {
+          "type": "column",
+          "settings": { "title": "Signage & Displays" }
+        },
+        {
+          "type": "item_card",
+          "settings": { "title": "Vinyl Banners", "description": "Heavy-duty outdoor 13oz vinyl.", "icon": "🚩" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

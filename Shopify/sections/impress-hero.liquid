@@ -1,0 +1,313 @@
+<div class="hero-wrapper" style="--hero-padding-v: {{ section.settings.vertical_padding }}px;">
+  <div 
+    class="hero-card" 
+    style="
+      --hero-radius: {{ section.settings.corner_radius }}px;
+      --hero-min-height: {{ section.settings.hero_min_height }}px;
+      --hero-bg: {{ section.settings.bg_color }};
+      --hero-text: {{ section.settings.text_color }};
+      --hero-max-width: {{ section.settings.hero_width }}px;
+    "
+  >
+    {% if section.settings.hero_image != blank %}
+      <div class="hero-bg-image">
+        <img 
+          src="{{ section.settings.hero_image | image_url: width: 2000 }}" 
+          alt="{{ section.settings.heading | escape }}" 
+          width="{{ section.settings.hero_image.width }}" 
+          height="{{ section.settings.hero_image.height }}" 
+          loading="lazy"
+        >
+      </div>
+    {% endif %}
+
+    <div class="hero-overlay" style="--overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+
+    <div class="hero-content text-{{ section.settings.alignment }}">
+      {% if section.settings.subheading != blank %}
+        <span class="hero-subheading">{{ section.settings.subheading }}</span>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h1 class="hero-heading">{{ section.settings.heading }}</h1>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <div class="hero-description">{{ section.settings.description }}</div>
+      {% endif %}
+
+      {% if section.settings.btn_label != blank %}
+        <a href="{{ section.settings.btn_url }}" class="hero-btn">
+          {{ section.settings.btn_label }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+.hero-wrapper {
+  width: 100%;
+  padding-top: var(--hero-padding-v);
+  padding-bottom: var(--hero-padding-v);
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-card {
+  position: relative;
+  width: 100%;
+  max-width: var(--hero-max-width);
+  min-height: var(--hero-min-height);
+  border-radius: var(--hero-radius);
+  background-color: var(--hero-bg);
+  color: var(--hero-text);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  box-sizing: border-box;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+}
+
+.hero-bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero-bg-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  opacity: var(--overlay-opacity);
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+}
+
+.text-center {
+  align-items: center;
+  text-align: center;
+}
+
+.text-left {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.text-right {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.hero-subheading {
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+  opacity: 0.9;
+}
+
+.hero-heading {
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0 0 16px 0;
+  color: inherit;
+  letter-spacing: -1px;
+}
+
+.hero-description {
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 28px;
+  opacity: 0.9;
+}
+
+.hero-btn {
+  display: inline-block;
+  background-color: var(--hero-text);
+  color: var(--hero-bg);
+  padding: 14px 32px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.hero-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+@media (max-width: 768px) {
+  .hero-card {
+    min-height: calc(var(--hero-min-height) * 0.75);
+    padding: 40px 20px;
+  }
+  .hero-heading {
+    font-size: 32px;
+  }
+  .hero-description {
+    font-size: 15px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Custom Centered Hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout & Dimensions"
+    },
+    {
+      "type": "range",
+      "id": "hero_min_height",
+      "min": 300,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "label": "Card Height",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Corner Roundness",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "hero_width",
+      "min": 800,
+      "max": 1400,
+      "step": 20,
+      "unit": "px",
+      "label": "Max Width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top & Bottom Outer Spacing",
+      "default": 40
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Text Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Media & Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Image Dark Overlay Opacity",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Card Background Color",
+      "default": "#0f172a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text & Button Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Hero Content"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Custom Print Solutions"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "High-Quality Prints Built for Your Brand"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "From business cards to large-format signage, get crisp, professional materials delivered fast."
+    },
+    {
+      "type": "text",
+      "id": "btn_label",
+      "label": "Button Label",
+      "default": "Explore Products"
+    },
+    {
+      "type": "url",
+      "id": "btn_url",
+      "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Centered Hero"
+    }
+  ]
+}
+{% endschema %}
