@@ -1,6 +1,13 @@
-{% render 'contrast-override', background_color: section.settings.background_color, section_id: section.id %}
-
 {% style %}
+  #shopify-section-{{ section.id }} .marquee-announcement-bar {
+    background-color: {{ section.settings.bg_color }};
+    color: {{ section.settings.text_color }};
+  }
+
+  #shopify-section-{{ section.id }} .marquee-announcement__link {
+    color: {{ section.settings.text_color }};
+  }
+
   {% if section.settings.pause_on_hover %}
     #shopify-section-{{ section.id }} .marquee-announcement-bar:hover .marquee-announcement__track {
       animation-play-state: paused;
@@ -8,22 +15,48 @@
   {% endif %}
 {% endstyle %}
 
-<div class="section-background color-custom-{{ section.id }}"></div>
 <aside
-  class="announcement-bar marquee-announcement-bar spacing-style section section--{{ section.settings.section_width }} color-custom-{{ section.id }}"
-  style="{% render 'spacing-padding', settings: section.settings %}; --border-bottom-width: {{ section.settings.divider_width }}px;{% if section.settings.divider_color != blank %} --color-border: {{ section.settings.divider_color }};{% endif %} --marquee-speed: {{ section.settings.speed }}s; --marquee-gap: {{ section.settings.item_gap }}px;"
+  class="announcement-bar marquee-announcement-bar section--{{ section.settings.section_width }}"
+  style="
+    --marquee-speed: {{ section.settings.speed }}s;
+    --marquee-gap: {{ section.settings.item_gap }}px;
+    --padding-top: {{ section.settings.padding_top }}px;
+    --padding-bottom: {{ section.settings.padding_bottom }}px;
+    --border-bottom-width: {{ section.settings.divider_width }}px;
+    {% if section.settings.divider_color != blank %}--color-border: {{ section.settings.divider_color }};{% endif %}
+  "
 >
   <div class="marquee-announcement__track-wrapper">
-    <div class="marquee-announcement__track">
+    <div class="marquee-announcement__track" id="MarqueeTrack-{{ section.id }}">
       
-      <!-- Track Set 1 -->
+      {% capture marquee_content %}
+        {% for block in section.blocks %}
+          <div class="marquee-announcement__item" {{ block.shopify_attributes }}>
+            {% if block.settings.link != blank %}
+              <a href="{{ block.settings.link }}" class="marquee-announcement__link">
+            {% endif %}
+
+            <span class="marquee-announcement__text">{{ block.settings.text }}</span>
+
+            {% if block.settings.link != blank %}
+              </a>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% endcapture %}
+
       <div class="marquee-announcement__content">
-        {% content_for 'blocks' %}
+        {{ marquee_content }}
+        {{ marquee_content }}
+        {{ marquee_content }}
+        {{ marquee_content }}
       </div>
 
-      <!-- Track Set 2 (Seamless Clone Loop) -->
       <div class="marquee-announcement__content" aria-hidden="true">
-        {% content_for 'blocks' %}
+        {{ marquee_content }}
+        {{ marquee_content }}
+        {{ marquee_content }}
+        {{ marquee_content }}
       </div>
 
     </div>
@@ -31,13 +64,13 @@
 </aside>
 
 {% stylesheet %}
-  .announcement-bar {
-    border-block-end: var(--border-bottom-width) solid var(--color-border);
-  }
-
   .marquee-announcement-bar {
     overflow: hidden;
     width: 100%;
+    position: relative;
+    padding-top: var(--padding-top);
+    padding-bottom: var(--padding-bottom);
+    border-block-end: var(--border-bottom-width) solid var(--color-border, transparent);
   }
 
   .marquee-announcement__track-wrapper {
@@ -59,15 +92,29 @@
   .marquee-announcement__content {
     display: flex;
     align-items: center;
-    gap: var(--marquee-gap);
-    padding-right: var(--marquee-gap);
   }
 
-  /* Reset default block grid wrapper styles for horizontal layout */
-  .marquee-announcement__content > * {
+  .marquee-announcement__item {
     display: inline-flex;
     align-items: center;
+    padding-right: var(--marquee-gap);
     flex-shrink: 0;
+  }
+
+  .marquee-announcement__text {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+
+  .marquee-announcement__link {
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .marquee-announcement__link:hover {
+    opacity: 0.75;
   }
 
   @keyframes announcement-marquee {
@@ -85,7 +132,21 @@
   "name": "Marquee Announcement Bar",
   "blocks": [
     {
-      "type": "_announcement"
+      "type": "announcement",
+      "name": "Announcement Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Special Offer: Free Shipping on Orders Over $50"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (Optional)"
+        }
+      ]
     }
   ],
   "enabled_on": {
@@ -93,24 +154,37 @@
   },
   "settings": [
     {
-      "type": "range",
-      "id": "speed",
-      "label": "Scroll Duration (Lower = Faster)",
-      "min": 5,
-      "max": 60,
-      "step": 5,
-      "default": 20,
-      "unit": "sec"
+      "type": "header",
+      "content": "Colors"
     },
     {
-      "type": "range",
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Marquee Settings"
+    },
+    {
+      "type": "number",
+      "id": "speed",
+      "label": "Scroll Duration / Speed (seconds)",
+      "info": "Lower number = Faster speed",
+      "default": 15
+    },
+    {
+      "type": "number",
       "id": "item_gap",
-      "label": "Spacing Between Items",
-      "min": 20,
-      "max": 120,
-      "step": 5,
-      "default": 50,
-      "unit": "px"
+      "label": "Space Between Announcements (px)",
+      "default": 80
     },
     {
       "type": "checkbox",
@@ -120,84 +194,49 @@
     },
     {
       "type": "header",
-      "content": "t:content.appearance"
+      "content": "Appearance & Padding"
     },
     {
-      "type": "select",
-      "id": "section_width",
-      "label": "t:settings.section_width",
-      "options": [
-        {
-          "value": "page-width",
-          "label": "t:options.page"
-        },
-        {
-          "value": "full-width",
-          "label": "t:options.full"
-        }
-      ],
-      "default": "full-width"
+      "type": "number",
+      "id": "padding_top",
+      "label": "Top Padding (px)",
+      "default": 12
     },
     {
-      "type": "color",
-      "id": "background_color",
-      "label": "t:settings.background_color",
-      "placeholder": "t:settings.default"
+      "type": "number",
+      "id": "padding_bottom",
+      "label": "Bottom Padding (px)",
+      "default": 12
     },
     {
-      "type": "range",
+      "type": "number",
       "id": "divider_width",
-      "label": "t:settings.divider_thickness",
-      "min": 0,
-      "max": 5,
-      "step": 0.5,
-      "unit": "px",
+      "label": "Bottom Border Thickness (px)",
       "default": 0
     },
     {
       "type": "color",
       "id": "divider_color",
-      "label": "t:settings.divider_color",
-      "placeholder": "t:settings.default",
-      "visible_if": "{{ section.settings.divider_width > 0 }}"
-    },
-    {
-      "type": "header",
-      "content": "t:content.padding"
-    },
-    {
-      "type": "range",
-      "id": "padding-block-start",
-      "label": "t:settings.top",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 10
-    },
-    {
-      "type": "range",
-      "id": "padding-block-end",
-      "label": "t:settings.bottom",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 10
+      "label": "Bottom Border Color"
     }
   ],
   "presets": [
     {
       "name": "Marquee Announcement Bar",
-      "blocks": {
-        "announcement_1": {
-          "type": "_announcement"
+      "blocks": [
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "FREE SHIPPING ON ORDERS OVER $50"
+          }
         },
-        "announcement_2": {
-          "type": "_announcement"
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "NEW ARRIVALS JUST DROPPED • SHOP NOW"
+          }
         }
-      },
-      "block_order": ["announcement_1", "announcement_2"]
+      ]
     }
   ]
 }
