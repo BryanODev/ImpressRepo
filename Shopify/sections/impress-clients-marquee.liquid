@@ -1,0 +1,287 @@
+<div class="logo-marquee-wrapper" style="--bg-color: {{ section.settings.bg_color }}; --padding-v: {{ section.settings.vertical_padding }}px; --speed: {{ section.settings.scroll_speed }}s;">
+  <div class="logo-marquee-container">
+    
+    {% if section.settings.title != blank %}
+      <div class="logo-marquee-header">
+        <span class="logo-marquee-title">{{ section.settings.title }}</span>
+      </div>
+    {% endif %}
+
+    <div class="marquee-track-container">
+      <div class="marquee-track">
+        
+        <!-- First Set of Logos -->
+        <div class="marquee-content">
+          {% for block in section.blocks %}
+            <div class="logo-item" {{ block.shopify_attributes }}>
+              {% if block.settings.link != blank %}
+                <a href="{{ block.settings.link }}" class="logo-link">
+              {% endif %}
+              
+              <div class="logo-box" style="--logo-width: {{ block.settings.logo_width }}px;">
+                {% if block.settings.image != blank %}
+                  <img 
+                    src="{{ block.settings.image | image_url: width: 800 }}" 
+                    alt="{{ block.settings.title | default: 'Client Logo' | escape }}"
+                    width="{{ block.settings.image.width }}"
+                    height="{{ block.settings.image.height }}"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <span class="logo-fallback-text">{{ block.settings.title | default: 'Logo' }}</span>
+                {% endif %}
+              </div>
+
+              {% if block.settings.link != blank %}
+                </a>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Duplicated Set for Infinite Seamless Loop -->
+        <div class="marquee-content" aria-hidden="true">
+          {% for block in section.blocks %}
+            <div class="logo-item">
+              {% if block.settings.link != blank %}
+                <a href="{{ block.settings.link }}" class="logo-link">
+              {% endif %}
+              
+              <div class="logo-box" style="--logo-width: {{ block.settings.logo_width }}px;">
+                {% if block.settings.image != blank %}
+                  <img 
+                    src="{{ block.settings.image | image_url: width: 800 }}" 
+                    alt="{{ block.settings.title | default: 'Client Logo' | escape }}"
+                    width="{{ block.settings.image.width }}"
+                    height="{{ block.settings.image.height }}"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <span class="logo-fallback-text">{{ block.settings.title | default: 'Logo' }}</span>
+                {% endif %}
+              </div>
+
+              {% if block.settings.link != blank %}
+                </a>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% stylesheet %}
+.logo-marquee-wrapper {
+  width: 100%;
+  background-color: var(--bg-color);
+  padding-top: var(--padding-v);
+  padding-bottom: var(--padding-v);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.logo-marquee-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.logo-marquee-header {
+  margin-bottom: 28px;
+}
+
+.logo-marquee-title {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #888888;
+}
+
+.marquee-track-container {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  animation: marquee-scroll var(--speed) linear infinite;
+}
+
+.marquee-track-container:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.marquee-content {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  padding-right: 48px;
+}
+
+.logo-item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.logo-link {
+  display: block;
+  text-decoration: none;
+}
+
+/* Width capped per card setting, natural dynamic height */
+.logo-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--logo-width);
+  max-width: 100%;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.logo-box:hover {
+  transform: translateY(-2px);
+  opacity: 0.85;
+}
+
+.logo-box img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.logo-fallback-text {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-box {
+    width: calc(var(--logo-width) * 0.7);
+  }
+  .marquee-content {
+    gap: 32px;
+    padding-right: 32px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Client Logo Marquee",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Heading",
+      "default": "CLIENTES Y ORGANIZACIONES ATENDIDAS"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top & Bottom Padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "s",
+      "label": "Marquee Speed (Lower = Faster)",
+      "default": 25
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Client Logo",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Client Name",
+          "default": "Coast Guard"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Logo Image"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "min": 60,
+          "max": 400,
+          "step": 10,
+          "unit": "px",
+          "label": "Custom Card Width",
+          "default": 180
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Client Link (Optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Client Logo Marquee",
+      "blocks": [
+        {
+          "type": "logo",
+          "settings": { "title": "Coast Guard", "logo_width": 180 }
+        },
+        {
+          "type": "logo",
+          "settings": { "title": "My Ecohome PR", "logo_width": 200 }
+        },
+        {
+          "type": "logo",
+          "settings": { "title": "CADEP", "logo_width": 140 }
+        },
+        {
+          "type": "logo",
+          "settings": { "title": "El Fogón de Napo", "logo_width": 180 }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

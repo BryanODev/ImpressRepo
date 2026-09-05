@@ -1,0 +1,204 @@
+{% render 'contrast-override', background_color: section.settings.background_color, section_id: section.id %}
+
+{% style %}
+  {% if section.settings.pause_on_hover %}
+    #shopify-section-{{ section.id }} .marquee-announcement-bar:hover .marquee-announcement__track {
+      animation-play-state: paused;
+    }
+  {% endif %}
+{% endstyle %}
+
+<div class="section-background color-custom-{{ section.id }}"></div>
+<aside
+  class="announcement-bar marquee-announcement-bar spacing-style section section--{{ section.settings.section_width }} color-custom-{{ section.id }}"
+  style="{% render 'spacing-padding', settings: section.settings %}; --border-bottom-width: {{ section.settings.divider_width }}px;{% if section.settings.divider_color != blank %} --color-border: {{ section.settings.divider_color }};{% endif %} --marquee-speed: {{ section.settings.speed }}s; --marquee-gap: {{ section.settings.item_gap }}px;"
+>
+  <div class="marquee-announcement__track-wrapper">
+    <div class="marquee-announcement__track">
+      
+      <!-- Track Set 1 -->
+      <div class="marquee-announcement__content">
+        {% content_for 'blocks' %}
+      </div>
+
+      <!-- Track Set 2 (Seamless Clone Loop) -->
+      <div class="marquee-announcement__content" aria-hidden="true">
+        {% content_for 'blocks' %}
+      </div>
+
+    </div>
+  </div>
+</aside>
+
+{% stylesheet %}
+  .announcement-bar {
+    border-block-end: var(--border-bottom-width) solid var(--color-border);
+  }
+
+  .marquee-announcement-bar {
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .marquee-announcement__track-wrapper {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    user-select: none;
+    mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+  }
+
+  .marquee-announcement__track {
+    display: flex;
+    width: max-content;
+    white-space: nowrap;
+    animation: announcement-marquee var(--marquee-speed) linear infinite;
+  }
+
+  .marquee-announcement__content {
+    display: flex;
+    align-items: center;
+    gap: var(--marquee-gap);
+    padding-right: var(--marquee-gap);
+  }
+
+  /* Reset default block grid wrapper styles for horizontal layout */
+  .marquee-announcement__content > * {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  @keyframes announcement-marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Marquee Announcement Bar",
+  "blocks": [
+    {
+      "type": "_announcement"
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scroll Duration (Lower = Faster)",
+      "min": 5,
+      "max": 60,
+      "step": 5,
+      "default": 20,
+      "unit": "sec"
+    },
+    {
+      "type": "range",
+      "id": "item_gap",
+      "label": "Spacing Between Items",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause marquee on hover",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.section_width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "full-width"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:settings.background_color",
+      "placeholder": "t:settings.default"
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "label": "t:settings.divider_thickness",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "t:settings.divider_color",
+      "placeholder": "t:settings.default",
+      "visible_if": "{{ section.settings.divider_width > 0 }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee Announcement Bar",
+      "blocks": {
+        "announcement_1": {
+          "type": "_announcement"
+        },
+        "announcement_2": {
+          "type": "_announcement"
+        }
+      },
+      "block_order": ["announcement_1", "announcement_2"]
+    }
+  ]
+}
+{% endschema %}

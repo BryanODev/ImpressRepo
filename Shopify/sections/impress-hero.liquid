@@ -7,23 +7,11 @@
       --hero-bg: {{ section.settings.bg_color }};
       --hero-text: {{ section.settings.text_color }};
       --hero-max-width: {{ section.settings.hero_width }}px;
+      --accent-yellow: {{ section.settings.accent_yellow }};
     "
   >
-    {% if section.settings.hero_image != blank %}
-      <div class="hero-bg-image">
-        <img 
-          src="{{ section.settings.hero_image | image_url: width: 2000 }}" 
-          alt="{{ section.settings.heading | escape }}" 
-          width="{{ section.settings.hero_image.width }}" 
-          height="{{ section.settings.hero_image.height }}" 
-          loading="lazy"
-        >
-      </div>
-    {% endif %}
-
-    <div class="hero-overlay" style="--overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"></div>
-
-    <div class="hero-content text-{{ section.settings.alignment }}">
+    <!-- Left Column: Content & 4 Action Buttons -->
+    <div class="hero-content">
       {% if section.settings.subheading != blank %}
         <span class="hero-subheading">{{ section.settings.subheading }}</span>
       {% endif %}
@@ -36,10 +24,54 @@
         <div class="hero-description">{{ section.settings.description }}</div>
       {% endif %}
 
-      {% if section.settings.btn_label != blank %}
-        <a href="{{ section.settings.btn_url }}" class="hero-btn">
-          {{ section.settings.btn_label }}
-        </a>
+      <!-- 2x2 CTA Button Grid -->
+      <div class="hero-btn-grid">
+        {% if section.settings.btn1_label != blank %}
+          <a href="{{ section.settings.btn1_url }}" class="hero-btn btn-dark">
+            {{ section.settings.btn1_label }}
+          </a>
+        {% endif %}
+
+        {% if section.settings.btn2_label != blank %}
+          <a href="{{ section.settings.btn2_url }}" class="hero-btn btn-outline">
+            {{ section.settings.btn2_label }}
+          </a>
+        {% endif %}
+
+        {% if section.settings.btn3_label != blank %}
+          <a href="{{ section.settings.btn3_url }}" class="hero-btn btn-yellow">
+            {{ section.settings.btn3_label }}
+          </a>
+        {% endif %}
+
+        {% if section.settings.btn4_label != blank %}
+          <a href="{{ section.settings.btn4_url }}" class="hero-btn btn-yellow">
+            {{ section.settings.btn4_label }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right Column: Double Showcase Image Cards -->
+    <div class="hero-media-grid">
+      {% if section.settings.card_image_1 != blank %}
+        <div class="hero-media-card">
+          <img 
+            src="{{ section.settings.card_image_1 | image_url: width: 800 }}" 
+            alt="Showcase 1" 
+            loading="lazy"
+          >
+        </div>
+      {% endif %}
+
+      {% if section.settings.card_image_2 != blank %}
+        <div class="hero-media-card">
+          <img 
+            src="{{ section.settings.card_image_2 | image_url: width: 800 }}" 
+            alt="Showcase 2" 
+            loading="lazy"
+          >
+        </div>
       {% endif %}
     </div>
   </div>
@@ -68,60 +100,18 @@
   overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 60px 40px;
+  justify-content: space-between;
+  padding: 50px;
   box-sizing: border-box;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  gap: 40px;
 }
 
-.hero-bg-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-.hero-bg-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
-
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #000000;
-  opacity: var(--overlay-opacity);
-  z-index: 2;
-}
-
+/* LEFT CONTENT */
 .hero-content {
-  position: relative;
-  z-index: 3;
-  max-width: 680px;
+  flex: 1 1 50%;
+  max-width: 580px;
   display: flex;
   flex-direction: column;
-}
-
-.text-center {
-  align-items: center;
-  text-align: center;
-}
-
-.text-left {
-  align-items: flex-start;
-  text-align: left;
-}
-
-.text-right {
-  align-items: flex-end;
-  text-align: right;
 }
 
 .hero-subheading {
@@ -129,36 +119,47 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  margin-bottom: 12px;
-  opacity: 0.9;
+  color: #1e5631; /* Accent green text */
+  margin-bottom: 16px;
 }
 
 .hero-heading {
-  font-size: 48px;
-  font-weight: 800;
-  line-height: 1.1;
-  margin: 0 0 16px 0;
-  color: inherit;
-  letter-spacing: -1px;
+  font-size: 54px;
+  font-weight: 900;
+  line-height: 1.05;
+  margin: 0 0 20px 0;
+  color: #000000;
+  letter-spacing: -1.5px;
 }
 
 .hero-description {
-  font-size: 18px;
-  line-height: 1.5;
-  margin-bottom: 28px;
-  opacity: 0.9;
+  font-size: 20px;
+  line-height: 1.4;
+  margin-bottom: 32px;
+  color: #222222;
+  font-weight: 500;
+}
+
+/* BUTTON GRID (2x2 Layout) */
+.hero-btn-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 220px));
+  gap: 12px;
 }
 
 .hero-btn {
-  display: inline-block;
-  background-color: var(--hero-text);
-  color: var(--hero-bg);
-  padding: 14px 32px;
-  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  border-radius: 10px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 800;
   text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
   transition: transform 0.15s ease, opacity 0.15s ease;
+  box-sizing: border-box;
 }
 
 .hero-btn:hover {
@@ -166,27 +167,78 @@
   opacity: 0.95;
 }
 
-@media (max-width: 768px) {
+.btn-dark {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.btn-outline {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #e2e8f0;
+}
+
+.btn-yellow {
+  background-color: var(--accent-yellow);
+  color: #000000;
+}
+
+/* RIGHT MEDIA GRID */
+.hero-media-grid {
+  flex: 1 1 50%;
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
+.hero-media-card {
+  flex: 1;
+  max-width: 270px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  aspect-ratio: 3 / 4;
+}
+
+.hero-media-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 1024px) {
   .hero-card {
-    min-height: calc(var(--hero-min-height) * 0.75);
-    padding: 40px 20px;
+    flex-direction: column;
+    padding: 30px;
+  }
+  .hero-content {
+    max-width: 100%;
   }
   .hero-heading {
-    font-size: 32px;
+    font-size: 38px;
   }
-  .hero-description {
-    font-size: 15px;
+  .hero-media-grid {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 550px) {
+  .hero-btn-grid {
+    grid-template-columns: 1fr;
   }
 }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "Custom Centered Hero",
+  "name": "Impress Split Hero",
   "settings": [
     {
       "type": "header",
-      "content": "Layout & Dimensions"
+      "content": "Layout & Styling"
     },
     {
       "type": "range",
@@ -195,8 +247,8 @@
       "max": 800,
       "step": 20,
       "unit": "px",
-      "label": "Card Height",
-      "default": 500
+      "label": "Card Minimum Height",
+      "default": 480
     },
     {
       "type": "range",
@@ -206,7 +258,7 @@
       "step": 2,
       "unit": "px",
       "label": "Corner Roundness",
-      "default": 24
+      "default": 16
     },
     {
       "type": "range",
@@ -216,7 +268,7 @@
       "step": 20,
       "unit": "px",
       "label": "Max Width",
-      "default": 1200
+      "default": 1300
     },
     {
       "type": "range",
@@ -226,87 +278,114 @@
       "step": 5,
       "unit": "px",
       "label": "Top & Bottom Outer Spacing",
-      "default": 40
-    },
-    {
-      "type": "select",
-      "id": "alignment",
-      "label": "Text Alignment",
-      "options": [
-        { "value": "left", "label": "Left" },
-        { "value": "center", "label": "Center" },
-        { "value": "right", "label": "Right" }
-      ],
-      "default": "center"
-    },
-    {
-      "type": "header",
-      "content": "Media & Background"
-    },
-    {
-      "type": "image_picker",
-      "id": "hero_image",
-      "label": "Background Image"
-    },
-    {
-      "type": "range",
-      "id": "overlay_opacity",
-      "min": 0,
-      "max": 90,
-      "step": 5,
-      "unit": "%",
-      "label": "Image Dark Overlay Opacity",
-      "default": 30
+      "default": 20
     },
     {
       "type": "color",
       "id": "bg_color",
       "label": "Card Background Color",
-      "default": "#0f172a"
+      "default": "#f7f6f0"
     },
     {
       "type": "color",
       "id": "text_color",
-      "label": "Text & Button Color",
-      "default": "#ffffff"
+      "label": "Heading Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "accent_yellow",
+      "label": "Yellow Accent Color",
+      "default": "#f8db00"
     },
     {
       "type": "header",
-      "content": "Hero Content"
+      "content": "Hero Text Content"
     },
     {
       "type": "text",
       "id": "subheading",
-      "label": "Subheading",
-      "default": "Custom Print Solutions"
+      "label": "Subheading Top Text",
+      "default": "DISEÑO • FABRICACIÓN • INSTALACIÓN"
     },
     {
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "High-Quality Prints Built for Your Brand"
+      "default": "Hacemos visible tu negocio."
     },
     {
       "type": "textarea",
       "id": "description",
       "label": "Description",
-      "default": "From business cards to large-format signage, get crisp, professional materials delivered fast."
+      "default": "Rotulación comercial e impresión para empresas en Puerto Rico."
+    },
+    {
+      "type": "header",
+      "content": "Action Buttons"
     },
     {
       "type": "text",
-      "id": "btn_label",
-      "label": "Button Label",
-      "default": "Explore Products"
+      "id": "btn1_label",
+      "label": "Button 1 Label (Dark)",
+      "default": "Cotizar rotulación"
     },
     {
       "type": "url",
-      "id": "btn_url",
-      "label": "Button Link"
+      "id": "btn1_url",
+      "label": "Button 1 Link"
+    },
+    {
+      "type": "text",
+      "id": "btn2_label",
+      "label": "Button 2 Label (White)",
+      "default": "Ver proyectos"
+    },
+    {
+      "type": "url",
+      "id": "btn2_url",
+      "label": "Button 2 Link"
+    },
+    {
+      "type": "text",
+      "id": "btn3_label",
+      "label": "Button 3 Label (Yellow)",
+      "default": "Comprar stickers"
+    },
+    {
+      "type": "url",
+      "id": "btn3_url",
+      "label": "Button 3 Link"
+    },
+    {
+      "type": "text",
+      "id": "btn4_label",
+      "label": "Button 4 Label (Yellow)",
+      "default": "Comprar banners"
+    },
+    {
+      "type": "url",
+      "id": "btn4_url",
+      "label": "Button 4 Link"
+    },
+    {
+      "type": "header",
+      "content": "Showcase Images (Right Column)"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_image_1",
+      "label": "Image Card 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_image_2",
+      "label": "Image Card 2"
     }
   ],
   "presets": [
     {
-      "name": "Custom Centered Hero"
+      "name": "Impress Split Hero"
     }
   ]
 }
