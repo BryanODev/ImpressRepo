@@ -120,8 +120,8 @@
       ],
       "name": "Marquee Announcement Bar",
       "settings": {
-        "bg_color": "#FBD500",
-        "text_color": "#0D0F13",
+        "bg_color": "#fbd500",
+        "text_color": "#0d0f13",
         "speed": 150,
         "item_gap": 280,
         "pause_on_hover": true,
@@ -137,14 +137,14 @@
         "column_Vdigad": {
           "type": "column",
           "settings": {
-            "title": "Marketing & Print"
+            "title": "Order Online & Ship to you"
           }
         },
         "item_card_nK7h94": {
           "type": "item_card",
           "settings": {
-            "title": "Business Cards",
-            "description": "Premium stocks and finishes.",
+            "title": "Vinyl Stickers",
+            "description": "Choose from a variety of vinyl sticker materials, shapes, cuts and sizes!",
             "link_url": "",
             "icon": "🎴"
           }
@@ -152,8 +152,8 @@
         "item_card_xKYFaT": {
           "type": "item_card",
           "settings": {
-            "title": "Flyers & Brochures",
-            "description": "High-volume promotional prints.",
+            "title": "Banners",
+            "description": "Perfect for advertising or decorating! Choose from a range of sizes or go for a custom size!",
             "link_url": "",
             "icon": "📄"
           }
@@ -161,7 +161,7 @@
         "column_qMjAYN": {
           "type": "column",
           "settings": {
-            "title": "Signage & Displays"
+            "title": "Order and Pickup at Our Location"
           }
         },
         "item_card_nXHUPr": {

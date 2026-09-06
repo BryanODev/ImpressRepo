@@ -85,8 +85,8 @@
         "grid_gap": 20,
         "max_width": 1200,
         "vertical_padding": 40,
-        "card_bg_color": "#0b1330",
-        "text_color": "#FFFFFF"
+        "card_bg_color": "#0E1014",
+        "text_color": "#ffffff"
       }
     },
     "impress_order_instructions_EzyRJr": {
@@ -186,12 +186,39 @@
         "vertical_padding": 40,
         "scroll_speed": 35
       }
+    },
+    "impress_rotulation_hero_g9Ky49": {
+      "type": "impress-rotulation-hero",
+      "name": "Impress Rotulation Hero",
+      "settings": {
+        "hero_min_height": 480,
+        "single_image_width": 600,
+        "corner_radius": 16,
+        "hero_width": 1400,
+        "vertical_padding": 20,
+        "bg_color": "#f7f6f0",
+        "text_color": "#000000",
+        "accent_yellow": "#f8db00",
+        "subheading": "DISEÑO • FABRICACIÓN • INSTALACIÓN",
+        "heading": "Hacemos visible tu negocio.",
+        "description": "Rotulación comercial e impresión para empresas en Puerto Rico.",
+        "btn1_label": "Cotizar rotulación",
+        "btn1_url": "",
+        "btn2_label": "Ver proyectos",
+        "btn2_url": "",
+        "btn3_label": "",
+        "btn3_url": "",
+        "btn4_label": "",
+        "btn4_url": "",
+        "card_image": "shopify://shop_images/Barracuda.png"
+      }
     }
   },
   "order": [
     "impress_hero_GaRfJT",
     "impress_catalog_grid_HEyTGa",
     "impress_order_instructions_EzyRJr",
-    "impress_clients_marquee_GJ89in"
+    "impress_clients_marquee_GJ89in",
+    "impress_rotulation_hero_g9Ky49"
   ]
 }

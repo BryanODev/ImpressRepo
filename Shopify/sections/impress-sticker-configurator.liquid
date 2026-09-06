@@ -9,9 +9,10 @@
     --text-color: {{ section.settings.text_color }};
     --text-sub: {{ section.settings.text_sub_color }};
   "
+  data-section-id="{{ section.id }}"
 >
   <div class="sticker-config-container">
-    
+
     <!-- Header -->
     <div class="config-header">
       {% if section.settings.subheading != blank %}
@@ -22,204 +23,191 @@
       {% endif %}
     </div>
 
-    <!-- Main Configurator Layout -->
+    {% if product.has_only_default_variant %}
+
+      <p class="config-no-variants">
+        This product doesn't have any variants set up yet. Add options like Shape, Material and Size
+        in the product admin (Variants section) to use this configurator.
+      </p>
+
+    {% else %}
+
     <div class="config-grid">
-      
-      <!-- Left Column: Step-by-Step Options -->
+
+      <!-- Left Column: Step-by-Step Options, generated from product options -->
       <div class="config-steps-col">
-        
-        <!-- Step 1: Shape & Cut -->
-        <div class="config-step-card">
-          <div class="step-title-row">
-            <span class="step-badge">1</span>
-            <h3 class="step-heading">Elige la Forma / Corte</h3>
-          </div>
-          <div class="options-grid grid-3">
-            <label class="option-card shape-option active">
-              <input type="radio" name="sticker_shape" value="Die Cut" checked>
-              <div class="option-icon">
-                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-              </div>
-              <span class="option-label">Die Cut</span>
-              <span class="option-desc">Corte individual</span>
-            </label>
 
-            <label class="option-card shape-option">
-              <input type="radio" name="sticker_shape" value="Kiss Cut">
-              <div class="option-icon">
-                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><rect x="7" y="7" width="10" height="10" rx="2" stroke-dasharray="2 2"/></svg>
-              </div>
-              <span class="option-label">Kiss Cut</span>
-              <span class="option-desc">Con borde extra</span>
-            </label>
+        {% for option in product.options_with_values %}
+          {% assign option_index = forloop.index0 %}
+          {% assign grid_class = 'grid-3' %}
+          {% if option.values.size <= 2 %}
+            {% assign grid_class = 'grid-2' %}
+          {% endif %}
 
-            <label class="option-card shape-option">
-              <input type="radio" name="sticker_shape" value="Circle / Square">
-              <div class="option-icon">
-                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
-              </div>
-              <span class="option-label">Círculo / Cuadrado</span>
-              <span class="option-desc">Forma estándar</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Step 2: Material & Finish -->
-        <div class="config-step-card">
-          <div class="step-title-row">
-            <span class="step-badge">2</span>
-            <h3 class="step-heading">Elige el Acabado</h3>
-          </div>
-          <div class="options-grid grid-2">
-            <label class="option-card material-option active">
-              <input type="radio" name="sticker_finish" value="Glossy" checked>
-              <div class="option-info">
-                <span class="option-label">Vinilo Brillante (Gloss)</span>
-                <span class="option-desc">Colores vivos, reflejo brillante e impermeable</span>
-              </div>
-            </label>
-
-            <label class="option-card material-option">
-              <input type="radio" name="sticker_finish" value="Matte">
-              <div class="option-info">
-                <span class="option-label">Vinilo Mate</span>
-                <span class="option-desc">Sin reflejo, acabado suave y elegante</span>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <!-- Step 3: Size Selection -->
-        <div class="config-step-card">
-          <div class="step-title-row">
-            <span class="step-badge">3</span>
-            <h3 class="step-heading">Tamaño (Pulgadas)</h3>
-          </div>
-          <div class="options-grid grid-3">
-            <label class="option-card size-option active">
-              <input type="radio" name="sticker_size" value="2x2" checked>
-              <span class="option-label">2" x 2"</span>
-            </label>
-
-            <label class="option-card size-option">
-              <input type="radio" name="sticker_size" value="3x3">
-              <span class="option-label">3" x 3"</span>
-            </label>
-
-            <label class="option-card size-option">
-              <input type="radio" name="sticker_size" value="4x4">
-              <span class="option-label">4" x 4"</span>
-            </label>
-          </div>
-
-          <!-- Custom Size Inputs -->
-          <div class="custom-size-toggle">
-            <button type="button" class="btn-custom-toggle" id="ToggleCustomSize">+ Tamaño Personalizado</button>
-            <div class="custom-size-inputs" id="CustomSizeContainer" style="display: none;">
-              <div class="size-input-field">
-                <label>Ancho (in)</label>
-                <input type="number" id="CustomWidth" value="2" min="1" max="12" step="0.5">
-              </div>
-              <span class="size-sep">×</span>
-              <div class="size-input-field">
-                <label>Alto (in)</label>
-                <input type="number" id="CustomHeight" value="2" min="1" max="12" step="0.5">
-              </div>
+          <div class="config-step-card" data-option-card data-option-index="{{ option_index }}">
+            <div class="step-title-row">
+              <span class="step-badge">{{ forloop.index }}</span>
+              <h3 class="step-heading">{{ option.name }}</h3>
             </div>
-          </div>
-        </div>
 
-        <!-- Step 4: Quantity & Tier Pricing -->
+            <div class="options-grid {{ grid_class }}">
+              {% for value in option.values %}
+
+                {% comment %} Look for a variant carrying this value that also has an image {% endcomment %}
+                {% assign value_image = nil %}
+                {% for variant in product.variants %}
+                  {% assign variant_value = variant.options[option_index] %}
+                  {% if variant_value == value and variant.featured_image %}
+                    {% assign value_image = variant.featured_image %}
+                    {% break %}
+                  {% endif %}
+                {% endfor %}
+
+                <label class="option-card generic-option{% if forloop.first %} active{% endif %}"
+                       data-option-index="{{ option_index }}"
+                       data-value="{{ value | escape }}">
+                  <input type="radio"
+                         name="option-{{ option_index }}"
+                         value="{{ value | escape }}"
+                         {% if forloop.first %}checked{% endif %}>
+
+                  {% if value_image %}
+                    <div class="option-image">
+                      <img src="{{ value_image | image_url: width: 160 }}"
+                           alt="{{ value | escape }}"
+                           loading="lazy" width="64" height="64">
+                    </div>
+                  {% else %}
+                    <div class="option-icon-fallback" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="9"/>
+                      </svg>
+                    </div>
+                  {% endif %}
+
+                  <span class="option-label">{{ value }}</span>
+                </label>
+
+              {% endfor %}
+            </div>
+
+            {% comment %}
+              Optional: only render the custom-size controls under the option literally named "Size"/"Tamaño".
+              If you don't want this at all, delete this whole block.
+            {% endcomment %}
+            {% if option.name == 'Size' or option.name == 'Tamaño' %}
+              <div class="custom-size-toggle">
+                <button type="button" class="btn-custom-toggle" id="ToggleCustomSize">+ Tamaño Personalizado</button>
+                <div class="custom-size-inputs" id="CustomSizeContainer" style="display: none;">
+                  <div class="size-input-field">
+                    <label>Ancho (in)</label>
+                    <input type="number" id="CustomWidth" value="2" min="1" max="12" step="0.5">
+                  </div>
+                  <span class="size-sep">×</span>
+                  <div class="size-input-field">
+                    <label>Alto (in)</label>
+                    <input type="number" id="CustomHeight" value="2" min="1" max="12" step="0.5">
+                  </div>
+                </div>
+                <p class="custom-size-note" id="CustomSizeNote" style="display: none;">
+                  Los tamaños personalizados se cotizan de forma manual — nuestro equipo confirmará el precio final
+                  antes de imprimir.
+                </p>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+
+        <!-- Quantity & Tier Pricing (not a Shopify variant option — Shopify caps products at 3 options,
+             so quantity stays as a client-side discount schedule applied on top of the selected variant's price) -->
         <div class="config-step-card">
           <div class="step-title-row">
-            <span class="step-badge">4</span>
+            <span class="step-badge">{{ product.options_with_values.size | plus: 1 }}</span>
             <h3 class="step-heading">Selecciona la Cantidad</h3>
           </div>
-          
+
           <div class="quantity-tiers-list" id="QuantityTiersList">
-            <!-- Quantity Cards (Initial 4 shown) -->
-            <label class="qty-tier-row active" data-unit-price="0.50" data-total="25.00" data-savings="0">
+            <label class="qty-tier-row active" data-qty="50" data-discount="0">
               <input type="radio" name="sticker_qty" value="50" checked>
               <div class="qty-main-info">
                 <span class="qty-count">50 unid.</span>
-                <span class="qty-price-each">$0.50 c/u</span>
+                <span class="qty-price-each">—</span>
               </div>
               <div class="qty-right-info">
-                <span class="qty-total-price">$25.00</span>
+                <span class="qty-total-price">—</span>
               </div>
             </label>
 
-            <label class="qty-tier-row" data-unit-price="0.38" data-total="38.00" data-savings="24">
+            <label class="qty-tier-row" data-qty="100" data-discount="24">
               <input type="radio" name="sticker_qty" value="100">
               <div class="qty-main-info">
                 <span class="qty-count">100 unid.</span>
-                <span class="qty-price-each">$0.38 c/u</span>
+                <span class="qty-price-each">—</span>
                 <span class="qty-savings-badge">Ahorra 24%</span>
               </div>
               <div class="qty-right-info">
-                <span class="qty-total-price">$38.00</span>
+                <span class="qty-total-price">—</span>
               </div>
             </label>
 
-            <label class="qty-tier-row" data-unit-price="0.26" data-total="65.00" data-savings="48">
+            <label class="qty-tier-row" data-qty="250" data-discount="48">
               <input type="radio" name="sticker_qty" value="250">
               <div class="qty-main-info">
                 <span class="qty-count">250 unid.</span>
-                <span class="qty-price-each">$0.26 c/u</span>
+                <span class="qty-price-each">—</span>
                 <span class="qty-savings-badge">Ahorra 48%</span>
               </div>
               <div class="qty-right-info">
-                <span class="qty-total-price">$65.00</span>
+                <span class="qty-total-price">—</span>
               </div>
             </label>
 
-            <label class="qty-tier-row" data-unit-price="0.19" data-total="95.00" data-savings="62">
+            <label class="qty-tier-row" data-qty="500" data-discount="62">
               <input type="radio" name="sticker_qty" value="500">
               <div class="qty-main-info">
                 <span class="qty-count">500 unid.</span>
-                <span class="qty-price-each">$0.19 c/u</span>
+                <span class="qty-price-each">—</span>
                 <span class="qty-savings-badge">Ahorra 62%</span>
               </div>
               <div class="qty-right-info">
-                <span class="qty-total-price">$95.00</span>
+                <span class="qty-total-price">—</span>
               </div>
             </label>
 
-            <!-- Hidden Tiers for Show More -->
             <div class="extra-tiers-container" id="ExtraTiers" style="display: none;">
-              <label class="qty-tier-row" data-unit-price="0.14" data-total="140.00" data-savings="72">
+              <label class="qty-tier-row" data-qty="1000" data-discount="72">
                 <input type="radio" name="sticker_qty" value="1000">
                 <div class="qty-main-info">
                   <span class="qty-count">1,000 unid.</span>
-                  <span class="qty-price-each">$0.14 c/u</span>
+                  <span class="qty-price-each">—</span>
                   <span class="qty-savings-badge">Ahorra 72%</span>
                 </div>
                 <div class="qty-right-info">
-                  <span class="qty-total-price">$140.00</span>
+                  <span class="qty-total-price">—</span>
                 </div>
               </label>
 
-              <label class="qty-tier-row" data-unit-price="0.11" data-total="275.00" data-savings="78">
+              <label class="qty-tier-row" data-qty="2500" data-discount="78">
                 <input type="radio" name="sticker_qty" value="2500">
                 <div class="qty-main-info">
                   <span class="qty-count">2,500 unid.</span>
-                  <span class="qty-price-each">$0.11 c/u</span>
+                  <span class="qty-price-each">—</span>
                   <span class="qty-savings-badge">Ahorra 78%</span>
                 </div>
                 <div class="qty-right-info">
-                  <span class="qty-total-price">$275.00</span>
+                  <span class="qty-total-price">—</span>
                 </div>
               </label>
 
-              <label class="qty-tier-row" data-unit-price="0.09" data-total="450.00" data-savings="82">
+              <label class="qty-tier-row" data-qty="5000" data-discount="82">
                 <input type="radio" name="sticker_qty" value="5000">
                 <div class="qty-main-info">
                   <span class="qty-count">5,000 unid.</span>
-                  <span class="qty-price-each">$0.09 c/u</span>
+                  <span class="qty-price-each">—</span>
                   <span class="qty-savings-badge">Ahorra 82%</span>
                 </div>
                 <div class="qty-right-info">
-                  <span class="qty-total-price">$450.00</span>
+                  <span class="qty-total-price">—</span>
                 </div>
               </label>
             </div>
@@ -230,13 +218,13 @@
           </button>
         </div>
 
-        <!-- Step 5: Upload Design -->
+        <!-- Upload Design -->
         <div class="config-step-card">
           <div class="step-title-row">
-            <span class="step-badge">5</span>
+            <span class="step-badge">{{ product.options_with_values.size | plus: 2 }}</span>
             <h3 class="step-heading">Sube tu Arte / Diseño</h3>
           </div>
-          
+
           <div class="upload-dropzone" id="DropZone">
             <input type="file" id="StickerDesignFile" accept="image/*,.pdf,.ai,.psd" style="display: none;">
             <div class="upload-content" id="UploadContent">
@@ -246,12 +234,17 @@
               <span class="upload-title">Arrastra tu archivo aquí o <button type="button" class="btn-browse" onclick="document.getElementById('StickerDesignFile').click()">busca en tu equipo</button></span>
               <span class="upload-hint">Formatos soportados: PNG, JPG, PDF, AI, PSD (Máx 50MB)</span>
             </div>
-            
+
             <div class="file-preview-card" id="FilePreview" style="display: none;">
               <span class="file-name" id="FileName">mi-diseno.png</span>
               <button type="button" class="btn-remove-file" id="RemoveFile">Quitar</button>
             </div>
           </div>
+          <p class="upload-note">
+            Nota: la subida de archivos aquí es solo para previsualización local. Para adjuntar el archivo real al
+            pedido necesitas una app de "custom file upload" (o un campo de tipo archivo en el checkout) — este
+            script no lo envía a ningún servidor todavía.
+          </p>
         </div>
 
       </div>
@@ -260,31 +253,27 @@
       <div class="config-summary-col">
         <div class="summary-sticky-card">
           <h3 class="summary-heading">Resumen de tu Pedido</h3>
-          
-          <div class="summary-details">
+
+          <div class="summary-details" id="SummaryDetails">
             <div class="summary-row">
               <span>Producto:</span>
-              <strong>Stickers en Vinilo</strong>
+              <strong>{{ product.title }}</strong>
             </div>
-            <div class="summary-row">
-              <span>Corte:</span>
-              <strong id="SummaryShape">Die Cut</strong>
-            </div>
-            <div class="summary-row">
-              <span>Acabado:</span>
-              <strong id="SummaryFinish">Glossy</strong>
-            </div>
-            <div class="summary-row">
-              <span>Tamaño:</span>
-              <strong id="SummarySize">2" x 2"</strong>
-            </div>
+
+            {% for option in product.options_with_values %}
+              <div class="summary-row">
+                <span>{{ option.name }}:</span>
+                <strong data-summary-option="{{ forloop.index0 }}">{{ option.values.first }}</strong>
+              </div>
+            {% endfor %}
+
             <div class="summary-row">
               <span>Cantidad:</span>
               <strong id="SummaryQty">50 unid.</strong>
             </div>
             <div class="summary-row">
               <span>Precio Unitario:</span>
-              <strong id="SummaryUnitPrice">$0.50</strong>
+              <strong id="SummaryUnitPrice">{{ product.price | money }}</strong>
             </div>
           </div>
 
@@ -292,11 +281,15 @@
 
           <div class="summary-total-box">
             <span>Total Estimado:</span>
-            <span class="summary-total-price" id="SummaryTotal">$25.00</span>
+            <span class="summary-total-price" id="SummaryTotal">{{ product.price | money }}</span>
           </div>
 
-          <button type="button" class="btn-submit-order">
-            Añadir al Carrito — <span id="BtnPrice">$25.00</span>
+          <p class="summary-unavailable" id="SummaryUnavailable" style="display: none;">
+            Esta combinación no está disponible.
+          </p>
+
+          <button type="button" class="btn-submit-order" id="BtnSubmitOrder">
+            Añadir al Carrito — <span id="BtnPrice">{{ product.price | money }}</span>
           </button>
 
           <div class="summary-guarantees">
@@ -308,122 +301,246 @@
 
     </div>
 
+    <!-- Raw variant data for the JS below. Kept as JSON so nothing here needs hardcoding -->
+    <script type="application/json" id="ConfiguratorVariantData-{{ section.id }}">
+      {
+        "moneyFormat": {{ shop.money_format | json }},
+        "optionCount": {{ product.options_with_values.size }},
+        "variants": [
+          {% for variant in product.variants %}
+            {
+              "id": {{ variant.id | json }},
+              "available": {{ variant.available | json }},
+              "price": {{ variant.price | json }},
+              "options": {{ variant.options | json }},
+              "title": {{ variant.title | json }},
+              "image": {% if variant.featured_image %}{{ variant.featured_image | image_url: width: 200 | json }}{% else %}null{% endif %}
+            }{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        ]
+      }
+    </script>
+
+    {% endif %}
+
   </div>
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Option Card Selection Handlers
-    function setupRadioGroup(cardSelector) {
-      const cards = document.querySelectorAll(cardSelector);
-      cards.forEach(card => {
-        card.addEventListener('click', () => {
-          cards.forEach(c => c.classList.remove('active'));
-          card.classList.add('active');
-          const radio = card.querySelector('input[type="radio"]');
-          if (radio) radio.checked = true;
-          updateSummary();
-        });
-      });
+(function() {
+  var sectionId = {{ section.id | json }};
+  var dataEl = document.getElementById('ConfiguratorVariantData-' + sectionId);
+  if (!dataEl) return; // no variants — nothing to wire up
+
+  var data = JSON.parse(dataEl.textContent);
+  var variants = data.variants;
+  var optionCount = data.optionCount;
+
+  // selectedOptions[i] = currently chosen value for option index i
+  var selectedOptions = [];
+  for (var i = 0; i < optionCount; i++) {
+    var checkedInput = document.querySelector('input[name="option-' + i + '"]:checked');
+    selectedOptions[i] = checkedInput ? checkedInput.value : null;
+  }
+
+  function findMatchingVariant() {
+    for (var v = 0; v < variants.length; v++) {
+      var variant = variants[v];
+      var isMatch = true;
+      for (var i = 0; i < optionCount; i++) {
+        if (variant.options[i] !== selectedOptions[i]) {
+          isMatch = false;
+          break;
+        }
+      }
+      if (isMatch) return variant;
+    }
+    return null;
+  }
+
+  function formatMoney(cents) {
+    // Simple fallback formatter; swap for Shopify.formatMoney(data.moneyFormat) if you load money.js
+    return '$' + (cents / 100).toFixed(2);
+  }
+
+  var qtyTiers = Array.prototype.slice.call(document.querySelectorAll('.qty-tier-row'));
+
+  function getActiveQtyTier() {
+    return document.querySelector('.qty-tier-row.active') || qtyTiers[0];
+  }
+
+  function updateAll() {
+    var variant = findMatchingVariant();
+    var submitBtn = document.getElementById('BtnSubmitOrder');
+    var unavailableMsg = document.getElementById('SummaryUnavailable');
+
+    // Update summary column values for each option
+    for (var i = 0; i < optionCount; i++) {
+      var summaryEl = document.querySelector('[data-summary-option="' + i + '"]');
+      if (summaryEl) summaryEl.textContent = selectedOptions[i];
     }
 
-    setupRadioGroup('.shape-option');
-    setupRadioGroup('.material-option');
-    setupRadioGroup('.size-option');
-
-    // Quantity Tier Selection
-    const qtyRows = document.querySelectorAll('.qty-tier-row');
-    qtyRows.forEach(row => {
-      row.addEventListener('click', () => {
-        qtyRows.forEach(r => r.classList.remove('active'));
-        row.classList.add('active');
-        const radio = row.querySelector('input[type="radio"]');
-        if (radio) radio.checked = true;
-        updateSummary();
+    if (!variant || !variant.available) {
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.classList.add('is-disabled'); }
+      if (unavailableMsg) unavailableMsg.style.display = 'block';
+      qtyTiers.forEach(function(row) {
+        row.querySelector('.qty-price-each').textContent = '—';
+        row.querySelector('.qty-total-price').textContent = '—';
       });
+      document.getElementById('SummaryUnitPrice').textContent = '—';
+      document.getElementById('SummaryTotal').textContent = '—';
+      document.getElementById('BtnPrice').textContent = '—';
+      return;
+    }
+
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.classList.remove('is-disabled'); }
+    if (unavailableMsg) unavailableMsg.style.display = 'none';
+
+    var basePrice = variant.price; // cents, at the qty-50 baseline
+
+    // Recompute every tier row's displayed price against this variant's real price
+    qtyTiers.forEach(function(row) {
+      var qty = parseInt(row.getAttribute('data-qty'), 10);
+      var discount = parseInt(row.getAttribute('data-discount'), 10) || 0;
+      var unitCents = Math.round(basePrice * (1 - discount / 100));
+      var totalCents = unitCents * qty;
+      row.querySelector('.qty-price-each').textContent = formatMoney(unitCents) + ' c/u';
+      row.querySelector('.qty-total-price').textContent = formatMoney(totalCents);
+      row.dataset.unitPrice = unitCents;
+      row.dataset.total = totalCents;
     });
 
-    // Toggle Extra Quantities
-    const btnMoreQty = document.getElementById('ToggleMoreQty');
-    const extraTiers = document.getElementById('ExtraTiers');
-    if (btnMoreQty && extraTiers) {
-      btnMoreQty.addEventListener('click', () => {
-        const isHidden = extraTiers.style.display === 'none';
-        extraTiers.style.display = isHidden ? 'block' : 'none';
-        btnMoreQty.innerText = isHidden ? 'Ver menos cantidades ↑' : 'Ver más cantidades ↓';
-      });
-    }
+    var activeTier = getActiveQtyTier();
+    var activeTotal = parseInt(activeTier.dataset.total, 10);
+    var activeUnit = parseInt(activeTier.dataset.unitPrice, 10);
 
-    // Custom Size Toggle
-    const toggleCustomBtn = document.getElementById('ToggleCustomSize');
-    const customSizeContainer = document.getElementById('CustomSizeContainer');
-    if (toggleCustomBtn && customSizeContainer) {
-      toggleCustomBtn.addEventListener('click', () => {
-        const isHidden = customSizeContainer.style.display === 'none';
-        customSizeContainer.style.display = isHidden ? 'flex' : 'none';
-        toggleCustomBtn.innerText = isHidden ? '- Usar tamaños predeterminados' : '+ Tamaño Personalizado';
-        updateSummary();
-      });
-    }
+    document.getElementById('SummaryUnitPrice').textContent = formatMoney(activeUnit);
+    document.getElementById('SummaryTotal').textContent = formatMoney(activeTotal);
+    document.getElementById('BtnPrice').textContent = formatMoney(activeTotal);
+    document.getElementById('SummaryQty').textContent =
+      activeTier.querySelector('input').value + ' unid.';
 
-    // File Upload Handler
-    const fileInput = document.getElementById('StickerDesignFile');
-    const uploadContent = document.getElementById('UploadContent');
-    const filePreview = document.getElementById('FilePreview');
-    const fileNameSpan = document.getElementById('FileName');
-    const removeFileBtn = document.getElementById('RemoveFile');
+    submitBtn.dataset.variantId = variant.id;
+    submitBtn.dataset.quantity = activeTier.querySelector('input').value;
+  }
 
-    if (fileInput) {
-      fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-          fileNameSpan.innerText = e.target.files[0].name;
-          uploadContent.style.display = 'none';
-          filePreview.style.display = 'flex';
-        }
-      });
-
-      removeFileBtn.addEventListener('click', () => {
-        fileInput.value = '';
-        uploadContent.style.display = 'flex';
-        filePreview.style.display = 'none';
-      });
-    }
-
-    // Sync Live Order Summary
-    function updateSummary() {
-      const activeShape = document.querySelector('input[name="sticker_shape"]:checked');
-      const activeFinish = document.querySelector('input[name="sticker_finish"]:checked');
-      const activeSize = document.querySelector('input[name="sticker_size"]:checked');
-      const activeQtyRow = document.querySelector('.qty-tier-row.active');
-
-      if (activeShape) document.getElementById('SummaryShape').innerText = activeShape.value;
-      if (activeFinish) document.getElementById('SummaryFinish').innerText = activeFinish.value;
-
-      // Handle custom size vs preset size
-      if (customSizeContainer && customSizeContainer.style.display !== 'none') {
-        const w = document.getElementById('CustomWidth').value || 0;
-        const h = document.getElementById('CustomHeight').value || 0;
-        document.getElementById('SummarySize').innerText = `${w}" x ${h}"`;
-      } else if (activeSize) {
-        document.getElementById('SummarySize').innerText = `${activeSize.value}"`;
-      }
-
-      if (activeQtyRow) {
-        const qtyVal = activeQtyRow.querySelector('input').value;
-        const totalVal = activeQtyRow.getAttribute('data-total');
-        const unitVal = activeQtyRow.getAttribute('data-unit-price');
-
-        document.getElementById('SummaryQty').innerText = `${qtyVal} unid.`;
-        document.getElementById('SummaryUnitPrice').innerText = `$${unitVal}`;
-        document.getElementById('SummaryTotal').innerText = `$${totalVal}`;
-        document.getElementById('BtnPrice').innerText = `$${totalVal}`;
-      }
-    }
-
-    // Attach listeners to custom inputs
-    document.getElementById('CustomWidth').addEventListener('input', updateSummary);
-    document.getElementById('CustomHeight').addEventListener('input', updateSummary);
+  // Option card clicks
+  document.querySelectorAll('.generic-option').forEach(function(card) {
+    card.addEventListener('click', function() {
+      var idx = parseInt(card.getAttribute('data-option-index'), 10);
+      var group = document.querySelectorAll('.generic-option[data-option-index="' + idx + '"]');
+      group.forEach(function(c) { c.classList.remove('active'); });
+      card.classList.add('active');
+      card.querySelector('input[type="radio"]').checked = true;
+      selectedOptions[idx] = card.getAttribute('data-value');
+      updateAll();
+    });
   });
+
+  // Quantity tier clicks
+  qtyTiers.forEach(function(row) {
+    row.addEventListener('click', function() {
+      qtyTiers.forEach(function(r) { r.classList.remove('active'); });
+      row.classList.add('active');
+      row.querySelector('input').checked = true;
+      updateAll();
+    });
+  });
+
+  // Show/hide extra quantity tiers
+  var btnMoreQty = document.getElementById('ToggleMoreQty');
+  var extraTiers = document.getElementById('ExtraTiers');
+  if (btnMoreQty && extraTiers) {
+    btnMoreQty.addEventListener('click', function() {
+      var isHidden = extraTiers.style.display === 'none';
+      extraTiers.style.display = isHidden ? 'block' : 'none';
+      btnMoreQty.innerText = isHidden ? 'Ver menos cantidades ↑' : 'Ver más cantidades ↓';
+    });
+  }
+
+  // Custom size toggle (only present if an option is literally named Size/Tamaño)
+  var toggleCustomBtn = document.getElementById('ToggleCustomSize');
+  var customSizeContainer = document.getElementById('CustomSizeContainer');
+  var customSizeNote = document.getElementById('CustomSizeNote');
+  if (toggleCustomBtn && customSizeContainer) {
+    toggleCustomBtn.addEventListener('click', function() {
+      var isHidden = customSizeContainer.style.display === 'none';
+      customSizeContainer.style.display = isHidden ? 'flex' : 'none';
+      if (customSizeNote) customSizeNote.style.display = isHidden ? 'block' : 'none';
+      toggleCustomBtn.innerText = isHidden ? '- Usar tamaños predeterminados' : '+ Tamaño Personalizado';
+    });
+  }
+
+  // File upload preview (local only — see note in markup about real uploads)
+  var fileInput = document.getElementById('StickerDesignFile');
+  var uploadContent = document.getElementById('UploadContent');
+  var filePreview = document.getElementById('FilePreview');
+  var fileNameSpan = document.getElementById('FileName');
+  var removeFileBtn = document.getElementById('RemoveFile');
+
+  if (fileInput) {
+    fileInput.addEventListener('change', function(e) {
+      if (e.target.files.length > 0) {
+        fileNameSpan.innerText = e.target.files[0].name;
+        uploadContent.style.display = 'none';
+        filePreview.style.display = 'flex';
+      }
+    });
+    removeFileBtn.addEventListener('click', function() {
+      fileInput.value = '';
+      uploadContent.style.display = 'flex';
+      filePreview.style.display = 'none';
+    });
+  }
+
+  // Add to cart
+  var submitBtn = document.getElementById('BtnSubmitOrder');
+  if (submitBtn) {
+    submitBtn.addEventListener('click', function() {
+      if (submitBtn.disabled) return;
+      var variantId = submitBtn.dataset.variantId;
+      var quantity = submitBtn.dataset.quantity || 1;
+
+      var properties = {};
+      if (customSizeContainer && customSizeContainer.style.display !== 'none') {
+        var w = document.getElementById('CustomWidth').value;
+        var h = document.getElementById('CustomHeight').value;
+        properties['Tamaño Personalizado'] = w + '" x ' + h + '"';
+      }
+      if (fileNameSpan && filePreview.style.display !== 'none') {
+        properties['Archivo de Diseño'] = fileNameSpan.innerText;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.classList.add('is-loading');
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: variantId,
+          quantity: quantity,
+          properties: properties
+        })
+      })
+        .then(function(res) { return res.json(); })
+        .then(function() {
+          submitBtn.classList.remove('is-loading');
+          submitBtn.disabled = false;
+          document.dispatchEvent(new CustomEvent('cart:refresh'));
+          window.location.href = '/cart';
+        })
+        .catch(function(err) {
+          console.error('Add to cart failed:', err);
+          submitBtn.classList.remove('is-loading');
+          submitBtn.disabled = false;
+          alert('No pudimos agregar el producto al carrito. Intenta de nuevo.');
+        });
+    });
+  }
+
+  updateAll();
+})();
 </script>
 
 {% stylesheet %}
@@ -441,6 +558,14 @@
 .sticker-config-container {
   max-width: var(--max-width);
   margin: 0 auto;
+}
+
+.config-no-variants {
+  background-color: rgba(255, 204, 0, 0.08);
+  border: 1px solid rgba(255, 204, 0, 0.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  color: var(--text-color);
 }
 
 .config-subheading {
@@ -466,6 +591,11 @@
   grid-template-columns: 1fr 380px;
   gap: 32px;
   align-items: start;
+}
+
+.config-summary-col {
+  height: 100%;
+  position: relative;
 }
 
 /* CARDS & STEPS */
@@ -500,6 +630,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .step-heading {
@@ -544,25 +675,30 @@
   background-color: rgba(255, 204, 0, 0.06);
 }
 
-.option-icon {
+.option-image {
   margin-bottom: 8px;
-  color: var(--text-color);
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.option-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.option-icon-fallback {
+  margin-bottom: 4px;
+  color: var(--text-sub);
 }
 
 .option-label {
   font-size: 15px;
   font-weight: 800;
-}
-
-.option-desc {
-  font-size: 12px;
-  color: var(--text-sub);
-  margin-top: 4px;
-}
-
-.material-option {
-  text-align: left;
-  align-items: flex-start;
 }
 
 /* CUSTOM SIZE INPUTS */
@@ -585,6 +721,13 @@
   align-items: center;
   gap: 12px;
   margin-top: 12px;
+}
+
+.custom-size-note {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-top: 10px;
+  margin-bottom: 0;
 }
 
 .size-input-field {
@@ -713,6 +856,13 @@
   font-weight: 700;
 }
 
+.upload-note {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
 .btn-browse {
   background: none;
   border: none;
@@ -746,12 +896,15 @@
 
 /* RIGHT SUMMARY CARD */
 .summary-sticky-card {
+  position: -webkit-sticky;
   position: sticky;
-  top: 40px;
+  top: 30px;
   background-color: var(--card-bg);
   border-radius: 20px;
   padding: 28px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: top 0.1s ease-out;
+  will-change: position, top;
 }
 
 .summary-heading {
@@ -770,10 +923,15 @@
   display: flex;
   justify-content: space-between;
   font-size: 14px;
+  gap: 12px;
 }
 
 .summary-row span {
   color: var(--text-sub);
+}
+
+.summary-row strong {
+  text-align: right;
 }
 
 .summary-divider {
@@ -797,6 +955,13 @@
   color: var(--accent-yellow);
 }
 
+.summary-unavailable {
+  color: #ef4444;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+}
+
 .btn-submit-order {
   width: 100%;
   background-color: var(--accent-yellow);
@@ -807,11 +972,22 @@
   font-size: 16px;
   font-weight: 900;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .btn-submit-order:hover {
   transform: translateY(-2px);
+}
+
+.btn-submit-order.is-disabled,
+.btn-submit-order:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-submit-order.is-loading {
+  opacity: 0.7;
 }
 
 .summary-guarantees {
@@ -916,6 +1092,9 @@
     {
       "name": "Sticker Configurator"
     }
-  ]
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
 }
 {% endschema %}
