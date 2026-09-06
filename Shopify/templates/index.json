@@ -15,7 +15,7 @@
       "settings": {
         "hero_min_height": 480,
         "corner_radius": 16,
-        "hero_width": 1300,
+        "hero_width": 1400,
         "vertical_padding": 20,
         "bg_color": "#f7f6f0",
         "text_color": "#000000",

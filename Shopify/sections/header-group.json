@@ -50,6 +50,7 @@
         }
       },
       "disabled": true,
+      "name": "Default Header",
       "settings": {
         "logo_position": "left",
         "menu_position": "left",
@@ -93,6 +94,41 @@
         "enable_transparent_header_collection": false,
         "collection_inverse_logo": false,
         "text_color_transparent_collection": ""
+      }
+    },
+    "impress_header_announcements_y8fWJr": {
+      "type": "impress-header-announcements",
+      "blocks": {
+        "announcement_wKxnaY": {
+          "type": "announcement",
+          "settings": {
+            "text": "FREE SHIPPING IN ORDERS OF MORE THAN $80",
+            "link": ""
+          }
+        },
+        "announcement_FWqLFn": {
+          "type": "announcement",
+          "settings": {
+            "text": "GET 25% OFF FROM YOUR FIRST ORDER OF STICKER OR BANNER!",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement_wKxnaY",
+        "announcement_FWqLFn"
+      ],
+      "name": "Marquee Announcement Bar",
+      "settings": {
+        "bg_color": "#FBD500",
+        "text_color": "#0D0F13",
+        "speed": 150,
+        "item_gap": 280,
+        "pause_on_hover": true,
+        "padding_top": 12,
+        "padding_bottom": 12,
+        "divider_width": 0,
+        "divider_color": ""
       }
     },
     "impress_header_jQRGrQ": {
@@ -166,6 +202,7 @@
   },
   "order": [
     "header_section",
+    "impress_header_announcements_y8fWJr",
     "impress_header_jQRGrQ"
   ]
 }

@@ -7,6 +7,7 @@
     --card-width: {{ section.settings.card_width }}px;
     --gap-size: {{ section.settings.grid_gap }}px;
     --text-color: {{ section.settings.text_color }};
+    --card-bg: {{ section.settings.card_bg_color }};
   "
 >
   <div class="product-grid-container">
@@ -21,7 +22,7 @@
         </div>
       {% endif %}
 
-      <div class="scroll-navigation-buttons">
+      <div class="scroll-navigation-buttons" id="ScrollNav-{{ section.id }}">
         <button type="button" class="scroll-btn prev-btn" aria-label="Scroll left">‹</button>
         <button type="button" class="scroll-btn next-btn" aria-label="Scroll right">›</button>
       </div>
@@ -34,7 +35,7 @@
           class="product-card-button" 
           {{ block.shopify_attributes }}
         >
-          <div class="square-image-wrapper">
+          <div class="card-image-content">
             {% if block.settings.card_image != blank %}
               <img 
                 src="{{ block.settings.card_image | image_url: width: 800 }}" 
@@ -45,13 +46,16 @@
               >
             {% else %}
               <div class="placeholder-image">
-                <span>Square Image</span>
+                <span>Image</span>
               </div>
             {% endif %}
           </div>
           
           {% if block.settings.title != blank %}
-            <span class="card-title">{{ block.settings.title }}</span>
+            <div class="card-title-row">
+              <span class="card-title">{{ block.settings.title }}</span>
+              <span class="card-arrow">→</span>
+            </div>
           {% endif %}
         </a>
       {% endfor %}
@@ -63,18 +67,34 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const track = document.getElementById('ScrollTrack-{{ section.id }}');
-    const wrapper = track ? track.closest('.product-grid-wrapper') : null;
+    const navButtons = document.getElementById('ScrollNav-{{ section.id }}');
     if (!track) return;
 
-    const prevBtn = wrapper ? wrapper.querySelector('.prev-btn') : null;
-    const nextBtn = wrapper ? wrapper.querySelector('.next-btn') : null;
+    const wrapper = track.closest('.product-grid-wrapper');
+    const prevBtn = navButtons ? navButtons.querySelector('.prev-btn') : null;
+    const nextBtn = navButtons ? navButtons.querySelector('.next-btn') : null;
 
     let isDown = false;
     let startX = 0;
     let scrollLeft = 0;
     let hasDragged = false;
 
-    // Disable browser native image and link drag ghosting
+    // Check if scrolling is needed; toggle layout and hide/show navigation
+    function checkOverflow() {
+      const isOverflowing = track.scrollWidth > track.clientWidth;
+      if (isOverflowing) {
+        track.classList.add('has-overflow');
+        if (navButtons) navButtons.style.display = 'flex';
+      } else {
+        track.classList.remove('has-overflow');
+        if (navButtons) navButtons.style.display = 'none';
+      }
+    }
+
+    checkOverflow();
+    window.addEventListener('resize', checkOverflow);
+
+    // Disable browser native image drag ghosting
     track.querySelectorAll('a, img').forEach((el) => {
       el.addEventListener('dragstart', (e) => e.preventDefault());
     });
@@ -110,7 +130,6 @@
       }
     });
 
-    // Handle card clicks cleanly without accidental drag redirection
     const links = track.querySelectorAll('.product-card-button');
     links.forEach((link) => {
       link.addEventListener('click', (e) => {
@@ -122,7 +141,6 @@
       });
     });
 
-    // Arrow navigation controls
     if (prevBtn && nextBtn) {
       prevBtn.addEventListener('click', () => {
         track.scrollBy({ left: -320, behavior: 'smooth' });
@@ -196,17 +214,22 @@
   border-color: #0f172a;
 }
 
-/* HORIZONTAL DRAGGABLE TRACK */
+/* TRACK LAYOUT & AUTO-CENTERING */
 .scrollable-grid-track {
   display: flex;
   gap: var(--gap-size);
   overflow-x: auto;
   scroll-behavior: smooth;
   padding-bottom: 16px;
+  justify-content: center; /* Center cards when they fit screen */
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
   -webkit-overflow-scrolling: touch;
+}
+
+.scrollable-grid-track.has-overflow {
+  justify-content: flex-start; /* Start align when scrolling is active */
 }
 
 .scrollable-grid-track::-webkit-scrollbar {
@@ -222,14 +245,20 @@
   scroll-behavior: auto;
 }
 
+/* CARD CONTAINER WITH INTEGRATED CONTENT */
 .product-card-button {
   flex: 0 0 var(--card-width);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+  background-color: var(--card-bg);
+  border-radius: var(--card-radius);
+  padding: 24px 16px;
+  box-sizing: border-box;
   text-decoration: none;
   color: var(--text-color);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
   -webkit-user-drag: none;
   user-drag: none;
   -webkit-user-select: none;
@@ -238,23 +267,23 @@
 
 .product-card-button:hover {
   transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
-.square-image-wrapper {
+.card-image-content {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: var(--card-radius);
-  overflow: hidden;
-  background-color: #f1f5f9;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
 }
 
-.square-image-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.card-image-content img {
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
   object-position: center;
   pointer-events: none;
   -webkit-user-drag: none;
@@ -262,8 +291,8 @@
   transition: transform 0.3s ease;
 }
 
-.product-card-button:hover .square-image-wrapper img {
-  transform: scale(1.04);
+.product-card-button:hover .card-image-content img {
+  transform: scale(1.08);
 }
 
 .placeholder-image {
@@ -272,23 +301,43 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #e2e8f0;
-  color: #64748b;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: inherit;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
 }
 
+.card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
 .card-title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   text-align: center;
   line-height: 1.3;
 }
 
+.card-arrow {
+  font-size: 18px;
+  font-weight: 700;
+  transition: transform 0.2s ease;
+}
+
+.product-card-button:hover .card-arrow {
+  transform: translateX(4px);
+}
+
 @media (max-width: 768px) {
   .product-card-button {
-    flex: 0 0 calc(var(--card-width) * 0.75);
+    flex: 0 0 calc(var(--card-width) * 0.8);
+    padding: 20px 12px;
   }
 }
 {% endstylesheet %}
@@ -323,7 +372,7 @@
       "max": 340,
       "step": 10,
       "unit": "px",
-      "label": "Square Card Width",
+      "label": "Card Width",
       "default": 240
     },
     {
@@ -334,7 +383,7 @@
       "step": 2,
       "unit": "px",
       "label": "Card Corner Roundness",
-      "default": 16
+      "default": 24
     },
     {
       "type": "range",
@@ -368,9 +417,15 @@
     },
     {
       "type": "color",
+      "id": "card_bg_color",
+      "label": "Card Background Color",
+      "default": "#0b1330"
+    },
+    {
+      "type": "color",
       "id": "text_color",
-      "label": "Text Color",
-      "default": "#0f172a"
+      "label": "Card Text & Arrow Color",
+      "default": "#ffffff"
     }
   ],
   "blocks": [
@@ -381,13 +436,13 @@
         {
           "type": "image_picker",
           "id": "card_image",
-          "label": "Square Product Image"
+          "label": "Product Graphic / Image"
         },
         {
           "type": "text",
           "id": "title",
           "label": "Card Title / Heading",
-          "default": "Business Cards"
+          "default": "Vinyl Stickers"
         },
         {
           "type": "url",
@@ -401,12 +456,24 @@
     {
       "name": "Horizontal Product Scroll",
       "blocks": [
-        { "type": "product_card", "settings": { "title": "Business Cards" } },
-        { "type": "product_card", "settings": { "title": "Flyers & Leaflets" } },
-        { "type": "product_card", "settings": { "title": "Vinyl Banners" } },
-        { "type": "product_card", "settings": { "title": "Posters" } },
-        { "type": "product_card", "settings": { "title": "Custom Stickers" } },
-        { "type": "product_card", "settings": { "title": "Brochures" } }
+        {
+          "type": "product_card",
+          "settings": {
+            "title": "Vinyl Stickers"
+          }
+        },
+        {
+          "type": "product_card",
+          "settings": {
+            "title": "Die Cut Stickers"
+          }
+        },
+        {
+          "type": "product_card",
+          "settings": {
+            "title": "Banners & Signs"
+          }
+        }
       ]
     }
   ]
