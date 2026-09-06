@@ -8,6 +8,7 @@
       --hero-text: {{ section.settings.text_color }};
       --hero-max-width: {{ section.settings.hero_width }}px;
       --accent-yellow: {{ section.settings.accent_yellow }};
+      --image-width: {{ section.settings.single_image_width }}px;
     "
   >
     <!-- Left Column: Content & 4 Action Buttons -->
@@ -52,25 +53,21 @@
       </div>
     </div>
 
-    <!-- Right Column: Double Showcase Image Cards -->
-    <div class="hero-media-grid">
-      {% if section.settings.card_image_1 != blank %}
+    <!-- Right Column: Single Fixed Showcase Image -->
+    <div class="hero-media-wrapper">
+      {% if section.settings.card_image != blank %}
         <div class="hero-media-card">
           <img 
-            src="{{ section.settings.card_image_1 | image_url: width: 800 }}" 
-            alt="Showcase 1" 
+            src="{{ section.settings.card_image | image_url: width: 1000 }}" 
+            alt="{{ section.settings.card_image.alt | default: section.settings.heading | escape }}" 
+            width="{{ section.settings.card_image.width }}" 
+            height="{{ section.settings.card_image.height }}" 
             loading="lazy"
           >
         </div>
-      {% endif %}
-
-      {% if section.settings.card_image_2 != blank %}
-        <div class="hero-media-card">
-          <img 
-            src="{{ section.settings.card_image_2 | image_url: width: 800 }}" 
-            alt="Showcase 2" 
-            loading="lazy"
-          >
+      {% else %}
+        <div class="hero-media-card hero-media-placeholder">
+          <span>Upload Showcase Image</span>
         </div>
       {% endif %}
     </div>
@@ -108,7 +105,7 @@
 
 /* LEFT CONTENT */
 .hero-content {
-  flex: 1 1 50%;
+  flex: 1 1 auto;
   max-width: 580px;
   display: flex;
   flex-direction: column;
@@ -119,7 +116,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: #1e5631; /* Accent green text */
+  color: #1e5631;
   margin-bottom: 16px;
 }
 
@@ -183,22 +180,21 @@
   color: #000000;
 }
 
-/* RIGHT MEDIA GRID */
-.hero-media-grid {
-  flex: 1 1 50%;
+/* RIGHT SINGLE MEDIA SHOWCASE */
+.hero-media-wrapper {
+  flex: 0 0 var(--image-width);
+  max-width: 100%;
   display: flex;
-  gap: 16px;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .hero-media-card {
-  flex: 1;
-  max-width: 270px;
-  border-radius: 8px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.12);
   background: #ffffff;
-  aspect-ratio: 3 / 4;
 }
 
 .hero-media-card img {
@@ -208,6 +204,17 @@
   display: block;
 }
 
+.hero-media-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e2e8f0;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
 @media (max-width: 1024px) {
   .hero-card {
     flex-direction: column;
@@ -215,13 +222,17 @@
   }
   .hero-content {
     max-width: 100%;
+    width: 100%;
   }
   .hero-heading {
     font-size: 38px;
   }
-  .hero-media-grid {
+  .hero-media-wrapper {
+    flex: 1 1 100%;
     width: 100%;
-    justify-content: center;
+  }
+  .hero-media-card {
+    aspect-ratio: 16 / 9;
   }
 }
 
@@ -249,6 +260,16 @@
       "unit": "px",
       "label": "Card Minimum Height",
       "default": 480
+    },
+    {
+      "type": "range",
+      "id": "single_image_width",
+      "min": 280,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "label": "Right Image Width",
+      "default": 440
     },
     {
       "type": "range",
@@ -370,17 +391,12 @@
     },
     {
       "type": "header",
-      "content": "Showcase Images (Right Column)"
+      "content": "Showcase Image"
     },
     {
       "type": "image_picker",
-      "id": "card_image_1",
-      "label": "Image Card 1"
-    },
-    {
-      "type": "image_picker",
-      "id": "card_image_2",
-      "label": "Image Card 2"
+      "id": "card_image",
+      "label": "Hero Image"
     }
   ],
   "presets": [
