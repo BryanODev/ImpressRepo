@@ -1,8 +1,6 @@
-var WHITE_ICON =
-    'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
+var WHITE_ICON = 'https://bryano.dev/ImpressRepo/Assets/ImpressIcon.png';
 
-var BLACK_ICON =
-    'https://cdn.jsdelivr.net/npm/@mdi/v7.2.96/svg/plus-box-outline.svg';
+var BLACK_ICON = 'https://bryano.dev/ImpressRepo/Assets/ImpressIcon.png';
 
 var API_KEY = 'eb1974fbb9e6a0def3d070da33e9cf05';
 
