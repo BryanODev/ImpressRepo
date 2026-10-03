@@ -157,24 +157,144 @@
   </form>
 
   <script>
-    var t = window.TrelloPowerUp.iframe();
+    var API_KEY = 'eb1974fbb9e6a0def3d070da33e9cf05';
+    var TARGET_LIST_NAME = 'Inbox Solicitudes Nuevas';
+    var TEMPLATE_CARD_ID = '6a8cd9ecc1d994336094ee4b';
 
-    document.getElementById('ticketForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      var formData = {
-        vendedor: document.getElementById('vendedor').value,
-        client: document.getElementById('client').value,
-        nombreCliente: document.getElementById('nombreCliente').value,
-        email: document.getElementById('email').value,
-        telefono: document.getElementById('telefono').value,
-        prioridad: document.getElementById('prioridad').value,
-        metodoEntrega: document.getElementById('metodoEntrega').value,
-        arte: document.getElementById('arte').value
-      };
-
-      t.closePopup(formData);
+    var t = window.TrelloPowerUp.iframe({
+        appKey: API_KEY,
+        appName: 'Impress New Task'
     });
-  </script>
+
+    document
+        .getElementById('ticketForm')
+        .addEventListener('submit', async function (e) {
+
+            e.preventDefault();
+
+            var button = this.querySelector('button[type="submit"]');
+
+            button.disabled = true;
+            button.textContent = 'Creating...';
+
+            try {
+
+                var formData = {
+                    vendedor: document.getElementById('vendedor').value,
+                    client: document.getElementById('client').value,
+                    nombreCliente: document.getElementById('nombreCliente').value,
+                    email: document.getElementById('email').value,
+                    telefono: document.getElementById('telefono').value,
+                    prioridad: document.getElementById('prioridad').value,
+                    metodoEntrega: document.getElementById('metodoEntrega').value,
+                    arte: document.getElementById('arte').value
+                };
+
+                var restApi = await t.getRestApi();
+                var token = await restApi.getToken();
+
+                if (!token) {
+                    throw new Error('No Trello authorization token.');
+                }
+
+                // Get ticket number
+                var currentCount = await t.get(
+                    'board',
+                    'shared',
+                    'ticketCounter',
+                    1
+                );
+
+                if (
+                    currentCount === null ||
+                    currentCount === undefined ||
+                    isNaN(currentCount)
+                ) {
+                    currentCount = 1;
+                }
+
+                currentCount = Number(currentCount);
+
+                var formattedId = String(currentCount).padStart(4, '0');
+
+                var cardTitle =
+                    '#' + formattedId + ' - ' + formData.client;
+
+                // Find target list
+                var lists = await t.lists('id', 'name');
+
+                var targetList = lists.find(function (list) {
+                    return list.name === TARGET_LIST_NAME;
+                });
+
+                if (!targetList) {
+                    throw new Error(
+                        'List "' + TARGET_LIST_NAME + '" not found.'
+                    );
+                }
+
+                // Create card
+                var response = await fetch(
+                    'https://api.trello.com/1/cards' +
+                    '?key=' + encodeURIComponent(API_KEY) +
+                    '&token=' + encodeURIComponent(token),
+                    {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+
+                        body: JSON.stringify({
+                            name: cardTitle,
+                            idList: targetList.id,
+                            pos: 'top',
+                            idCardSource: TEMPLATE_CARD_ID
+                        })
+                    }
+                );
+
+                if (!response.ok) {
+                    var errorText = await response.text();
+
+                    throw new Error(
+                        'Trello API error ' +
+                        response.status +
+                        ': ' +
+                        errorText
+                    );
+                }
+
+                var newCard = await response.json();
+
+                // Increase ticket counter
+                await t.set(
+                    'board',
+                    'shared',
+                    'ticketCounter',
+                    currentCount + 1
+                );
+
+                await t.alert({
+                    message: 'Created ticket #' + formattedId + '!',
+                    duration: 'success'
+                });
+
+                return t.closePopup();
+
+            } catch (error) {
+
+                console.error('Ticket creation failed:', error);
+
+                button.disabled = false;
+                button.textContent = 'Create Ticket';
+
+                return t.alert({
+                    message: 'Failed to create ticket: ' + error.message,
+                    duration: 'error'
+                });
+            }
+        });
+</script>
 </body>
 </html>
