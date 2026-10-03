@@ -42,7 +42,7 @@
           "settings": {
             "card_image": "shopify://shop_images/Impress_Mark.png",
             "title": "Vinyl Stickers",
-            "card_link": ""
+            "card_link": "shopify://products/vinyl-sticker"
           }
         },
         "product_card_NywYwM": {
@@ -85,7 +85,7 @@
         "grid_gap": 20,
         "max_width": 1200,
         "vertical_padding": 40,
-        "card_bg_color": "#0E1014",
+        "card_bg_color": "#0e1014",
         "text_color": "#ffffff"
       }
     },
@@ -212,6 +212,26 @@
         "btn4_url": "",
         "card_image": "shopify://shop_images/Barracuda.png"
       }
+    },
+    "impress_quote_YEJWeg": {
+      "type": "impress-quote",
+      "name": "Cotiza Tu Proyecto",
+      "settings": {
+        "subheading": "CONTACTO",
+        "heading_line_1": "Cotiza tu",
+        "heading_line_2": "proyecto",
+        "description": "Cuéntanos sobre tu proyecto y te enviaremos una cotización personalizada. Respuesta en menos de 24 horas.",
+        "location": "Isabela, Puerto Rico",
+        "phone": "(787) 291-4054",
+        "whatsapp": "(939) 489-7806",
+        "email": "impressisabela@gmail.com",
+        "schedule_lines": "<p>Lun - Vie: 8:00 AM - 5:00 PM<br>Sáb: 9:00 AM - 1:00 PM</p>",
+        "accent_color": "#facc15",
+        "card_bg_color": "#f8fafc",
+        "bg_color": "#ffffff",
+        "text_color": "#0f172a",
+        "vertical_padding": 60
+      }
     }
   },
   "order": [
@@ -219,6 +239,7 @@
     "impress_catalog_grid_HEyTGa",
     "impress_order_instructions_EzyRJr",
     "impress_clients_marquee_GJ89in",
-    "impress_rotulation_hero_g9Ky49"
+    "impress_rotulation_hero_g9Ky49",
+    "impress_quote_YEJWeg"
   ]
 }
