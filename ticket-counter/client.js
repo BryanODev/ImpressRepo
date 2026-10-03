@@ -50,7 +50,7 @@ window.TrelloPowerUp.initialize({
                     light: BLACK_ICON
                 },
 
-                text: 'Create Ticket',
+                text: 'Create Job',
 
                 condition: 'edit',
 
