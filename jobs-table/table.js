@@ -856,24 +856,18 @@ function render() {
         const fileTd = document.createElement('td');
         fileTd.className = 'file';
 
-        if (isEditing) {
-            const fileInput = document.createElement('input');
-            fileInput.type = 'text';
-            fileInput.placeholder = 'File name';
-            fileInput.value = row.fileName || '';
+        const fileInput = document.createElement('input');
+        fileInput.type = 'text';
+        fileInput.className = 'file-input'; // Optional: for styling if needed
+        fileInput.placeholder = 'File name';
+        fileInput.value = row.fileName || '';
 
-            fileInput.addEventListener('input', function () {
-                row.fileName = fileInput.value;
-            });
+        fileInput.addEventListener('input', async function () {
+            row.fileName = fileInput.value;
+            await saveTable();
+        });
 
-            fileTd.appendChild(fileInput);
-        } else {
-            const div = document.createElement('div');
-            div.className = 'display-cell';
-            div.textContent = row.fileName || '—';
-            fileTd.appendChild(div);
-        }
-
+        fileTd.appendChild(fileInput);
         tr.appendChild(fileTd);
 
         /* ACTIONS */
