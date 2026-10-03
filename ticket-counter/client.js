@@ -10,187 +10,187 @@ var API_KEY = 'eb1974fbb9e6a0def3d070da33e9cf05';
 
 
 
-function createTicket(t) {
+function createTicket(t, formData) {
 
-return (async function () {
+    return (async function () {
 
-try {
+        try {
 
-let restApi = await t.getRestApi();
+            let restApi = await t.getRestApi();
 
-let token = await restApi.getToken();
+            let token = await restApi.getToken();
 
 
 
-if (!token) {
+            if (!token) {
 
-return t.popup({
+                return t.popup({
 
-title: 'Authorize to continue',
+                    title: 'Authorize to continue',
 
-url: 'authorize.html',
+                    url: 'authorize.html',
 
-height: 140
+                    height: 140
 
-});
+                });
 
-}
+            }
 
 
 
-let currentCount = await t.get(
+            let currentCount = await t.get(
 
-'board',
+                'board',
 
-'shared',
+                'shared',
 
-'ticketCounter',
+                'ticketCounter',
 
-1
+                1
 
-);
+            );
 
 
 
-if (
+            if (
 
-currentCount === null ||
+                currentCount === null ||
 
-currentCount === undefined ||
+                currentCount === undefined ||
 
-isNaN(currentCount)
+                isNaN(currentCount)
 
-) {
+            ) {
 
-currentCount = 1;
+                currentCount = 1;
 
-}
+            }
 
 
 
-currentCount = Number(currentCount);
+            currentCount = Number(currentCount);
 
 
 
-let formattedId = String(currentCount).padStart(4, '0');
+            let formattedId = String(currentCount).padStart(4, '0');
 
-let cardTitle = `#${formattedId} - Impress-Task`;
+            let cardTitle = `#${formattedId} - ${formData.client}`;
 
 
 
-let lists = await t.lists('id', 'name');
+            let lists = await t.lists('id', 'name');
 
 
 
-let targetList = lists.find(function (list) {
+            let targetList = lists.find(function (list) {
 
-return list.name === TARGET_LIST_NAME;
+                return list.name === TARGET_LIST_NAME;
 
-});
+            });
 
 
 
-if (!targetList) {
+            if (!targetList) {
 
-return t.alert({
+                return t.alert({
 
-message: `List "${TARGET_LIST_NAME}" not found on this board!`,
+                    message: `List "${TARGET_LIST_NAME}" not found on this board!`,
 
-duration: 'error'
+                    duration: 'error'
 
-});
+                });
 
-}
+            }
 
 
 
-let response = await fetch(
+            let response = await fetch(
 
-`https://api.trello.com/1/cards?key=${API_KEY}&token=${token}`,
+                `https://api.trello.com/1/cards?key=${API_KEY}&token=${token}`,
 
-{
+                {
 
-method: 'POST',
+                    method: 'POST',
 
-headers: {
+                    headers: {
 
-'Content-Type': 'application/json'
+                        'Content-Type': 'application/json'
 
-},
+                    },
 
-body: JSON.stringify({
+                    body: JSON.stringify({
 
-name: cardTitle,
+                        name: cardTitle,
 
-idList: targetList.id,
+                        idList: targetList.id,
 
-pos: 'top',
+                        pos: 'top',
 
-idCardSource: TEMPLATE_CARD_ID
+                        idCardSource: TEMPLATE_CARD_ID
 
-})
+                    })
 
-}
+                }
 
-);
+            );
 
 
 
-if (!response.ok) {
+            if (!response.ok) {
 
-let errorText = await response.text();
+                let errorText = await response.text();
 
-throw new Error(
+                throw new Error(
 
-`Trello API error ${response.status}: ${errorText}`
+                    `Trello API error ${response.status}: ${errorText}`
 
-);
+                );
 
-}
+            }
 
 
 
-await t.set(
+            await t.set(
 
-'board',
+                'board',
 
-'shared',
+                'shared',
 
-'ticketCounter',
+                'ticketCounter',
 
-currentCount + 1
+                currentCount + 1
 
-);
+            );
 
 
 
-t.alert({
+            t.alert({
 
-message: `Created ticket #${formattedId}!`,
+                message: `Created ticket #${formattedId}!`,
 
-duration: 'success'
+                duration: 'success'
 
-});
+            });
 
 
 
-} catch (error) {
+        } catch (error) {
 
-console.error('Ticket creation failed:', error);
+            console.error('Ticket creation failed:', error);
 
 
 
-t.alert({
+            t.alert({
 
-message: 'Failed to create ticket card.',
+                message: 'Failed to create ticket card.',
 
-duration: 'error'
+                duration: 'error'
 
-});
+            });
 
-}
+        }
 
-})();
+    })();
 
 }
 
@@ -198,15 +198,15 @@ duration: 'error'
 
 function authorizeUser(t) {
 
-return t.popup({
+    return t.popup({
 
-title: 'Authorize to continue',
+        title: 'Authorize to continue',
 
-url: 'authorize.html',
+        url: 'authorize.html',
 
-height: 140
+        height: 140
 
-});
+    });
 
 }
 
@@ -216,78 +216,79 @@ window.TrelloPowerUp.initialize({
 
 
 
-'board-buttons': function (t, opts) {
+    'board-buttons': function (t, opts) {
 
-return [{
+        return [{
 
-icon: {
+            icon: {
 
-dark: WHITE_ICON,
+                dark: WHITE_ICON,
 
-light: BLACK_ICON
+                light: BLACK_ICON
 
-},
+            },
 
-text: 'Create Ticket',
+            text: 'Create Ticket',
 
-condition: 'edit',
+            condition: 'edit',
 
-callback: async function (t) {
+            callback: async function (t) {
+    let restApi = await t.getRestApi();
+    let isAuthorized = await restApi.isAuthorized();
 
-let restApi = await t.getRestApi();
+    if (!isAuthorized) {
+        return authorizeUser(t);
+    }
 
-let isAuthorized = await restApi.isAuthorized();
+    let formData = await t.popup({
+        title: 'New Ticket',
+        url: 'form.html',
+        height: 600
+    });
 
+    if (!formData) {
+        return;
+    }
 
-
-if (!isAuthorized) {
-
-return authorizeUser(t);
-
+    return createTicket(t, formData);
 }
 
+        }];
 
-
-return createTicket(t);
-
-}
-
-}];
-
-},
+    },
 
 
 
-'authorization-status': async function (t, opts) {
+    'authorization-status': async function (t, opts) {
 
-let restApi = await t.getRestApi();
+        let restApi = await t.getRestApi();
 
-let isAuthorized = await restApi.isAuthorized();
-
-
-
-return {
-
-authorized: isAuthorized
-
-};
-
-},
+        let isAuthorized = await restApi.isAuthorized();
 
 
 
-'show-authorization': function (t, opts) {
+        return {
 
-return authorizeUser(t);
+            authorized: isAuthorized
 
-}
+        };
+
+    },
+
+
+
+    'show-authorization': function (t, opts) {
+
+        return authorizeUser(t);
+
+    }
 
 
 
 }, {
 
-appKey: API_KEY,
+    appKey: API_KEY,
 
-appName: 'Impress New Task'
+    appName: 'Impress New Task'
 
 });
