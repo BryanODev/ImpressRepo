@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/BryanODev/ImpressRepo#readme",
   "dependencies": {
-    "@netlify/blobs": "^11.1.4"
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "@netlify/blobs": "^11.1.4",
+    "jose": "^6.2.12",
+    "zod": "^4.6.7"
   }
 }
