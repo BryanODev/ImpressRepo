@@ -1,0 +1,96 @@
+openapi: 3.1.0
+info:
+  title: Impress Trello Jobs API
+  version: 1.0.0
+  description: Create a Trello card and populate the existing jobs-table Power-Up.
+servers:
+  - url: https://idyllic-axolotl-60cda8.netlify.app/.netlify/functions
+paths:
+  /create-job:
+    post:
+      operationId: createJob
+      summary: Create a job in any accessible Trello board and list
+      description: >
+        Creates a Trello card and writes Items to the same Netlify storage used
+        by the jobs-table Power-Up. Use the existing products.json catalog IDs,
+        including banner_lona for banners. Obtain board/list names from the user.
+        Never invent prices, product options or quantities. Request confirmation
+        before creating the card.
+      x-openai-isConsequential: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [business, board, list, items]
+              properties:
+                business:
+                  type: string
+                  description: The card title or customer name
+                board:
+                  type: string
+                  description: Exact Trello board name
+                list:
+                  type: string
+                  description: Exact list name within the selected board
+                description:
+                  type: string
+                items:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required: [productId, quantity]
+                    properties:
+                      productId:
+                        type: string
+                        description: >
+                          Product ID from jobs-table/products.json, e.g. banner_lona,
+                          tarjeta_presentacion, pvc, dboard, rotulacion.
+                      quantity:
+                        type: integer
+                        minimum: 1
+                      options:
+                        type: object
+                        description: >
+                          Product-specific option ID -> value mapping from
+                          products.json, e.g. {tamano: "4 ft x 8 ft"}.
+                        additionalProperties: true
+                      cost:
+                        type: number
+                        minimum: 0
+                        description: Unit cost if explicitly provided; otherwise zero.
+                      fileName:
+                        type: string
+                      finished:
+                        type: boolean
+      responses:
+        '200':
+          description: Trello card created; Items saved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  board:
+                    type: string
+                  list:
+                    type: string
+                  cardId:
+                    type: string
+                  url:
+                    type: string
+                  itemCount:
+                    type: integer
+                  itemsSaved:
+                    type: boolean
+        '400':
+          description: Invalid job details or unavailable/ambiguous board/list/product
+        '401':
+          description: Wrong action secret
+        '502':
+          description: Trello or storage backend failure

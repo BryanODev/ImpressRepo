@@ -118,27 +118,9 @@ function findOptionDefinition(optionId, product) {
 
 
 async function loadTable() {
-
-    try {
-
-        const table =
-            await t.get('card', 'shared', STORAGE_KEY);
-
-        if (Array.isArray(table)) {
-            return table;
-        }
-
-        return [];
-
-    } catch (error) {
-
-        console.error('Could not load table:', error);
-        return [];
-
-    }
-
+    const result = await window.ImpressItemsStore.load(t);
+    return result.items;
 }
-
 
 /*
  * ========================================
@@ -1198,6 +1180,7 @@ function printDocument() {
 
 t.render(async function () {
 
+    try {
     const [table, cardInfo, customFieldDefinitions, catalog] =
         await Promise.all([
             loadTable(),
@@ -1207,6 +1190,14 @@ t.render(async function () {
         ]);
 
     render(table, cardInfo, customFieldDefinitions, catalog);
+    } catch (error) {
+        console.error('Print load failed:', error);
+        const items = document.getElementById('items');
+        if (items) items.textContent = 'Cannot load Items: ' + error.message;
+        const button = document.getElementById('printButton');
+        if (button) button.disabled = true;
+        return;
+    }
 
     const printButton =
         document.getElementById('printButton');

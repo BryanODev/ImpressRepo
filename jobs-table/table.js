@@ -103,54 +103,48 @@ function getActiveProducts() {
  * ========================================
  */
 
+let cloudVersion = null;
+let saveQueue = Promise.resolve();
+let saveBlocked = false;
+
 async function loadTable() {
     try {
-        const savedTable = await t.get('card', 'shared', STORAGE_KEY);
-
-        if (Array.isArray(savedTable)) {
-            table = savedTable;
-        } else {
-            table = [];
-        }
-
+        const result = await window.ImpressItemsStore.load(t);
+        table = result.items;
+        cloudVersion = result.version;
+        saveBlocked = false;
         render();
     } catch (error) {
         console.error('Could not load table:', error);
-        table = [];
-
+        saveBlocked = true;
         const status = document.getElementById('status');
-        if (status) {
-            status.textContent = 'Error loading data';
-        }
+        if (status) status.textContent = 'Error loading Items: ' + error.message;
+        const add = document.getElementById('addRow');
+        if (add) add.disabled = true;
+        // Do not render an empty table if remote data could not be retrieved.
     }
 }
 
-/*
- * ========================================
- * SAVE TABLE
- * ========================================
- */
-
 async function saveTable() {
     const status = document.getElementById('status');
-
-    if (status) {
-        status.textContent = 'Saving...';
+    if (saveBlocked) {
+        if (status) status.textContent = 'Cannot save. Reopen the table to reload changes.';
+        return;
     }
-
-    try {
-        await t.set('card', 'shared', STORAGE_KEY, table);
-
-        if (status) {
-            status.textContent = 'Saved';
+    // Serialize writes so an input event cannot race with the previous save.
+    saveQueue = saveQueue.then(async () => {
+        if (status) status.textContent = 'Saving...';
+        try {
+            const result = await window.ImpressItemsStore.save(t, table, cloudVersion);
+            cloudVersion = result.version;
+            if (status) status.textContent = 'Saved';
+        } catch (error) {
+            saveBlocked = true;
+            if (status) status.textContent = 'Save failed: ' + error.message + ' (reopen table)';
+            console.error('Could not save table:', error);
         }
-    } catch (error) {
-        console.error('Could not save table:', error);
-
-        if (status) {
-            status.textContent = 'Error saving';
-        }
-    }
+    });
+    return saveQueue;
 }
 
 /*
@@ -1088,136 +1082,3 @@ t.render(async function () {
     await loadTable();
 });
 
-/*
- * ========================================
- * CHATGPT COMMUNICATION BRIDGE (ADD TO BOTTOM OF FILE)
- * ========================================
- */
-
-// 1. Listen for external communication messages
-window.addEventListener('message', async function (event) {
-    // Optional: Add security origin filtering if using an external chatbot layout iframe
-    // if (event.origin !== "https://your-allowed-chat-domain.com") return;
-
-    const message = event.data;
-
-    // Ensure the message format matches our expected structure
-    if (!message || typeof message !== 'object' || message.source !== 'chatgpt') {
-        return;
-    }
-
-    try {
-        switch (message.action) {
-            
-            // ACTION: Fetch current state of the table and the catalog
-            case 'getTableState':
-                sendTableStateToChat(event.source);
-                break;
-
-            // ACTION: Add a brand new row to the table
-            case 'addRow':
-                if (message.data) {
-                    const newRow = {
-                        id: generateId(),
-                        quantity: Number(message.data.quantity) || 1,
-                        productId: message.data.productId || '',
-                        options: message.data.options || {},
-                        cost: Number(message.data.cost) || 0,
-                        fileName: message.data.fileName || '',
-                        checked: message.data.checked !== false
-                    };
-                    
-                    table.push(newRow);
-                    await saveTable();
-                    render();
-                    
-                    sendNotificationToChat(event.source, 'success', 'Row added successfully', { rowId: newRow.id });
-                }
-                break;
-
-            // ACTION: Update an existing row by its generated ID
-            case 'updateRow':
-                if (message.data && message.data.id) {
-                    const targetRow = table.find(r => r.id === message.data.id);
-                    
-                    if (!targetRow) {
-                        throw new Error(`Row with ID ${message.data.id} not found.`);
-                    }
-
-                    // Patch only the fields passed by ChatGPT
-                    if (message.data.quantity !== undefined) targetRow.quantity = Number(message.data.quantity);
-                    if (message.data.productId !== undefined) targetRow.productId = message.data.productId;
-                    if (message.data.cost !== undefined) targetRow.cost = Number(message.data.cost);
-                    if (message.data.fileName !== undefined) targetRow.fileName = message.data.fileName;
-                    if (message.data.checked !== undefined) targetRow.checked = Boolean(message.data.checked);
-                    if (message.data.options !== undefined) targetRow.options = { ...targetRow.options, ...message.data.options };
-
-                    await saveTable();
-                    render();
-                    
-                    sendNotificationToChat(event.source, 'success', 'Row updated successfully', { rowId: targetRow.id });
-                }
-                break;
-
-            // ACTION: Delete an item from the canvas
-            case 'deleteRow':
-                if (message.data && message.data.id) {
-                    const originalLength = table.length;
-                    table = table.filter(r => r.id !== message.data.id);
-                    
-                    if (table.length === originalLength) {
-                        throw new Error(`Row with ID ${message.data.id} not found.`);
-                    }
-
-                    await saveTable();
-                    render();
-                    
-                    sendNotificationToChat(event.source, 'success', 'Row deleted successfully');
-                }
-                break;
-
-            // ACTION: Wipe the spreadsheet clean
-            case 'clearTable':
-                table = [];
-                await saveTable();
-                render();
-                sendNotificationToChat(event.source, 'success', 'Table cleared completely');
-                break;
-
-            default:
-                throw new Error(`Unknown communication action: ${message.action}`);
-        }
-    } catch (error) {
-        console.error('ChatGPT Bridge Error:', error);
-        sendNotificationToChat(event.source, 'error', error.message);
-    }
-});
-
-/**
- * Packs the data array, total mathematical breakdowns, and the master
- * product catalog to send back to ChatGPT for context reasoning.
- */
-function sendTableStateToChat(targetWindow) {
-    const currentTotals = calculateTotals();
-    
-    targetWindow.postMessage({
-        source: 'table-iframe',
-        type: 'state',
-        table: table,
-        totals: currentTotals,
-        catalog: catalog ? catalog.products : []
-    }, '*');
-}
-
-/**
- * Simple status callback tool to give ChatGPT instant visual confirmation.
- */
-function sendNotificationToChat(targetWindow, status, message, extraData = {}) {
-    targetWindow.postMessage({
-        source: 'table-iframe',
-        type: 'notification',
-        status: status,
-        message: message,
-        ...extraData
-    }, '*');
-}

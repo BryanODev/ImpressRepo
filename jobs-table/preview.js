@@ -7,16 +7,8 @@ const FOLDER_KEY = 'folderName';
  * Load table data.
  */
 async function loadTable() {
-    try {
-        const savedTable = await t.get('card', 'shared', STORAGE_KEY);
-        if (Array.isArray(savedTable)) {
-            return savedTable;
-        }
-        return [];
-    } catch (error) {
-        console.error('Could not load table:', error);
-        return [];
-    }
+    const result = await window.ImpressItemsStore.load(t);
+    return result.items;
 }
 
 /*
@@ -149,7 +141,15 @@ async function openTable() {
 let isInitialized = false;
 
 t.render(async function () {
-    const table = await loadTable();
+    let table;
+    try {
+        table = await loadTable();
+    } catch (error) {
+        console.error('Could not load Items:', error);
+        const items = document.getElementById('items');
+        if (items) items.textContent = 'Unable to load Items: ' + error.message;
+        return;
+    }
     const folderName = await loadFolderName();
 
     const folderInput = document.getElementById('folderName');
