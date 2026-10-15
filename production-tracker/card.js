@@ -65,11 +65,13 @@
     const completedItems = state.items.filter((item) => item.steps.length && countDone(item.steps) === item.steps.length).length;
     const percent = allSteps.length ? Math.round(100 * completed / allSteps.length) : 0;
     const top = U.el('div', 'summary-top');
-    top.append(U.el('span', 'strong', 'Overall production progress'), U.el('span', 'strong', `${percent}%`));
+    top.append(U.el('span', 'summary-title', 'Overall production progress'), U.el('span', 'summary-percent', `${percent}%`));
     const bottom = U.el('div', 'summary-bottom');
     bottom.append(U.el('span', 'muted', `${completedItems} of ${state.items.length} items completed`),
       U.el('span', 'muted', `${completed} / ${allSteps.length} steps`));
-    root.append(top, makeProgress(completed, allSteps.length), bottom);
+    const progress = makeProgress(completed, allSteps.length);
+    progress.classList.add('progress-overall');
+    root.append(top, progress, bottom);
     return root;
   }
 

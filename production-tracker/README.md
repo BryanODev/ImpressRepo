@@ -1,4 +1,4 @@
-# Production Tracker for Trello — First Working Version
+# Production Tracker for Trello — Refreshed UI Version
 
 A static, no-build Trello Power-Up. Features:
 
@@ -8,6 +8,7 @@ A static, no-build Trello Power-Up. Features:
 - Power-Up settings to create, edit, duplicate, reorder steps, and delete templates.
 - Saves templates to the current Trello board's shared Power-Up data, and items to the current card's shared Power-Up data.
 - Editing a template affects NEW items, not previously created items.
+- Refreshed card and settings UI that automatically follows Trello light/dark theme.
 
 ## Deployment
 
@@ -26,3 +27,16 @@ A static, no-build Trello Power-Up. Features:
 - Templates are specific to each board in this version; workflow/status sync across multiple boards is **not** yet implemented.
 - Shared storage can suffer write conflicts if two people update the same card simultaneously. Before department-wide rollout, implement concurrency-safe persistence (and access controls for template editing).
 - This is a first-test implementation, not yet production-hardened. Test on a test board before use with live orders.
+
+## Updating an existing install (UI refresh)
+
+If the previous Power-Up is already connected and running on GitHub Pages,
+replace the matching files with this package and commit/push. There is no need
+to create a new Power-Up or change the Trello connector URL.
+
+Styling and small presentation changes are in `style.css`, `card.js`, and
+`settings.js`. `card.html` and `settings.html` add CSS/JS version parameters
+to avoid stale browser caches. Existing card and template data is unchanged.
+
+TrelloPowerUp.iframe() automatically sets `data-color-mode` on the root HTML
+element. The CSS follows `light` and `dark` modes without manual settings.

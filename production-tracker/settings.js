@@ -121,7 +121,7 @@
       down.disabled = index === template.steps.length - 1;
       const del = U.button('×', () => { template.steps.splice(index, 1); markDirty(); render(); }, 'danger');
       del.title = 'Remove step';
-      line.append(input, up, down, del);
+      line.append(U.el('span', 'step-index', String(index + 1)), input, up, down, del);
       editor.append(line);
     });
 
