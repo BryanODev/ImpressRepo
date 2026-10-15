@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create Job</title>
+  <link rel="stylesheet" href="./style.css">
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+</head>
+<body>
+  <main class="container compact">
+    <div class="eyebrow">NEW PRODUCTION JOB</div>
+    <header class="heading compact-heading">
+      <div>
+        <h1>Create Job</h1>
+        <p>One quick step to get started.</p>
+      </div>
+      <span class="header-icon" aria-hidden="true">＋</span>
+    </header>
+
+    <form id="jobForm" novalidate>
+      <section class="panel hero">
+        <div class="hero-row">
+          <span class="eyebrow">NEXT JOB ID</span>
+          <span class="pill">Auto-numbered</span>
+        </div>
+        <div class="number" id="jobNumber">#••••</div>
+        <label for="jobName">Job name <span aria-hidden="true">*</span></label>
+        <input id="jobName" type="text" autocomplete="off" placeholder="e.g. ABC Printing - Flyers" maxlength="240" required disabled>
+        <div class="preview" id="preview">#0000 - Your job name</div>
+      </section>
+
+      <section class="panel fields">
+        <label for="boardSelect">Board</label>
+        <select id="boardSelect" required disabled><option>Loading boards…</option></select>
+        <label for="listSelect">List</label>
+        <select id="listSelect" required disabled><option>Select a board first</option></select>
+      </section>
+
+      <div class="automatic">
+        <span class="check-mark" aria-hidden="true">✓</span>
+        <span>You'll be assigned automatically. Start date is set to today.</span>
+      </div>
+      <p class="notice" id="message" hidden role="status" aria-live="polite"></p>
+      <button class="primary" type="submit" id="createButton" disabled>Create Job <span aria-hidden="true">→</span></button>
+    </form>
+  </main>
+  <script src="./common.js"></script>
+  <script src="./form.js"></script>
+</body>
+</html>

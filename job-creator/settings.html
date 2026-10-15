@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Job Creator Settings</title>
+  <link rel="stylesheet" href="./style.css">
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+</head>
+<body>
+  <main class="container settings-container">
+    <div class="eyebrow">POWER-UP PREFERENCES</div>
+    <header class="heading">
+      <div><h1>Job Creator Settings</h1><p>Set up the way new production jobs are created.</p></div>
+      <span class="header-icon" aria-hidden="true">⚙</span>
+    </header>
+
+    <form id="settingsForm" novalidate>
+      <section class="panel settings-panel">
+        <div class="section-heading"><span class="section-icon">01</span><div><h2>Job numbering</h2><p>Choose the number the next job will receive.</p></div></div>
+        <label for="nextNumber">Next job number</label>
+        <div class="number-field"><span class="hash-prefix">#</span><input id="nextNumber" type="number" min="1" max="9007199254740990" step="1" required disabled placeholder="0001"></div>
+        <p class="helper" id="counterHint">Loading counter settings…</p>
+      </section>
+
+      <section class="panel settings-panel">
+        <div class="section-heading"><span class="section-icon">02</span><div><h2>Default destination</h2><p>Preselect this board and list whenever someone creates a job.</p></div></div>
+        <label for="defaultBoard">Default board</label>
+        <select id="defaultBoard" disabled><option>Loading boards…</option></select>
+        <label for="defaultList">Default list</label>
+        <select id="defaultList" disabled><option>Select a board first</option></select>
+      </section>
+
+      <section class="panel settings-panel">
+        <div class="section-heading"><span class="section-icon">03</span><div><h2>Card template</h2><p>Copy content and checklists from an existing Trello template.</p></div></div>
+        <label for="templateBoard">Board containing the template</label>
+        <select id="templateBoard" disabled><option>Loading boards…</option></select>
+        <label for="templateCard">Card template</label>
+        <select id="templateCard" disabled><option>No template (blank card)</option></select>
+        <p class="helper">Templates are Trello cards marked as <strong>Template</strong>. Hidden templates are included.</p>
+      </section>
+
+      <section class="panel settings-panel">
+        <div class="section-heading"><span class="section-icon">04</span><div><h2>Card placement</h2><p>Where new jobs should appear within their destination list.</p></div></div>
+        <div class="radio-group" role="radiogroup" aria-label="Card placement">
+          <label class="radio-option"><input name="position" type="radio" value="top" checked><span>Top of the list</span></label>
+          <label class="radio-option"><input name="position" type="radio" value="bottom"><span>Bottom of the list</span></label>
+        </div>
+      </section>
+
+      <div class="settings-footer">
+        <p class="notice" id="message" hidden role="status" aria-live="polite"></p>
+        <button class="primary" type="submit" id="saveButton" disabled>Save Settings <span aria-hidden="true">→</span></button>
+        <p class="footer-note">Every job automatically gets its creator as a member and a fresh start date.</p>
+      </div>
+    </form>
+  </main>
+  <script src="./common.js"></script>
+  <script src="./settings.js"></script>
+</body>
+</html>
