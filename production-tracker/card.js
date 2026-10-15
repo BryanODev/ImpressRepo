@@ -28,9 +28,9 @@
     state.items = Array.isArray(items) ? items : [];
     state.templates = Array.isArray(templates) ? templates : U.clone(window.ProductionDefaults);
     const remembered = getRememberedExpanded();
-    state.expanded = state.items.some((i) => i.id === remembered)
-      ? remembered
-      : (state.items.find((i) => i.steps.some((s) => !s.done)) || state.items[0] || {}).id || null;
+    state.expanded = state.items.some((i) => i.id === state.expanded)
+    ? state.expanded
+    : null;
     render();
   }
 

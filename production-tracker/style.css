@@ -105,7 +105,16 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
-body.card-view { padding: 12px 4px 16px; background: transparent; }
+
+body.card-view {
+  padding: 0 4px;
+  background: transparent;
+}
+
+body.card-view #app {
+  padding: 12px 0 16px;
+}
+
 body.settings-view { padding: 22px; background: var(--pt-page); }
 button, input, select { font: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
