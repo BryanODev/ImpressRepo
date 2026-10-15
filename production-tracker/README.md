@@ -11,10 +11,10 @@ A static, no-build Trello Power-Up. Features:
 
 ## Deployment
 
-1. Upload these files together to your existing GitHub/Netlify project, in their own directory.
-2. Deploy with Netlify or another HTTPS static host. Ensure all URLs load without authentication.
+1. Upload these files together to your GitHub repository, in their own directory (e.g. `production-tracker/`).
+2. Enable GitHub Pages in repository Settings → Pages, and select the branch/folder containing these files. Make sure the files are accessible over HTTPS.
 3. In https://trello.com/power-ups/admin create a Power-Up owned by the intended workspace. Select "My app will use Power-Up capabilities".
-4. Set the **Iframe Connector URL** to the public HTTPS URL of this directory's **index.html**, e.g. `https://your-site.netlify.app/production-tracker/index.html`.
+4. Set the **Iframe Connector URL** to the public HTTPS URL of this directory's **index.html**, e.g. `https://USERNAME.github.io/REPOSITORY/production-tracker/index.html`.
 5. In **Capabilities**, enable **Card Back Section** and **Show Settings**; save.
 6. Enable your custom Power-Up on a **test board** in that workspace.
 7. Open a card to use Production Items. Open the enabled Power-Up's gear icon to edit Production Templates.

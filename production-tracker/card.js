@@ -5,7 +5,7 @@
   const U = window.PT;
   const app = document.getElementById('app');
   const state = { items: [], templates: [], expanded: null, adding: false, editing: null, pending: false };
-  const context = t.getContext();
+  const context = t.getContext() || {};
   const expandedKey = `production-tracker-expanded-${context.card || 'card'}`;
 
   function rememberExpanded(id) {
