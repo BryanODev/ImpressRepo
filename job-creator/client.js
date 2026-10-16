@@ -32,15 +32,19 @@ function jobIdFromTitle(title) {
 }
 
 function jobBadge(t, detail = false) {
-  return t.card('name').then((card) => {
-    const id = jobIdFromTitle(card.name);
+  return t.card('name', 'shortLink').then((card) => {
+    // Keep the existing numeric Job ID when Job Creator put it in the title.
+    // All other cards show their globally unique Trello short link as a badge.
+    // NOTE: shortLink is not a sequential numeric Job ID.
+    const id = jobIdFromTitle(card.name) ||
+      (card.shortLink ? `#${card.shortLink}` : null);
     if (!id) return [];
     return [detail
-      ? {title: 'Job ID', text: id, color: 'yellow'}
+      ? {title: 'Card ID', text: id, color: 'yellow'}
       : {text: id, color: 'yellow'}
     ];
   }).catch((error) => {
-    console.warn('Job ID badge could not read card name:', error);
+    console.warn('Card badge could not read card information:', error);
     return [];
   });
 }
