@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Authorize Impress Quick Access</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <main class="auth-page">
+        <div class="eyebrow">IMPRESS QUICK ACCESS</div>
+        <h1>Connect your Trello account</h1>
+        <p>Allow the Power-Up to carry out card actions when you click a shortcut. Every user connects their own
+            account.</p><button class="small-primary" type="button" id="connect">Connect Trello</button>
+        <div class="message" id="message" hidden role="status"></div>
+    </main>
+    <script src="https://p.trellocdn.com/power-up.min.js"></script>
+    <script src="./config.js"></script>
+    <script src="./common.js"></script>
+    <script>
+        'use strict';
+        const Q = window.QuickAccess, t = Q.connect(); Q.theme(t);
+        const connect = document.getElementById('connect'), message = document.getElementById('message');
+        connect.addEventListener('click', async () => { connect.disabled = true; try { await Q.authorize(t); message.textContent = 'Connected. You can close this window and use the shortcuts.'; message.className = 'message success'; message.hidden = false; } catch (e) { message.textContent = Q.errorText(e); message.className = 'message error'; message.hidden = false; } finally { connect.disabled = false; } });
+    </script>
+</body>
+
+</html>
