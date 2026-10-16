@@ -121,15 +121,20 @@
       const bg = Q.safeColor(btn.color,settings.defaultColor);
       el.className = 'quick-btn' + (ready ? '' : ' unconfigured');
       el.type = 'button';
-      el.style.setProperty('--button-color',bg);
-      el.style.setProperty('--button-text',Q.contrastText(bg));
-      const content = document.createElement('span');
-      content.className='button-content';
-      const title=document.createElement('span'); title.className='button-title';title.textContent=btn.name;
-      const subtitle=document.createElement('span'); subtitle.className='button-subtitle';subtitle.textContent=ready ? Q.actionDetails(btn) : 'Setup required';
-      content.append(title,subtitle);
-      const glyph=document.createElement('span');glyph.className='button-arrow';glyph.textContent=ready ? '↗' : '⚙';glyph.setAttribute('aria-hidden','true');
-      el.append(content,glyph);
+      el.style.setProperty('--button-color', bg);
+      el.style.setProperty('--button-text', Q.contrastText(bg));
+      // Keep the card buttons visually identical to the Settings live preview.
+      // Missing setup is explained on hover/focus and when the button is clicked.
+      el.title = ready ? Q.actionDetails(btn) : 'Setup required: configure this shortcut in Settings.';
+      el.setAttribute('aria-label', ready ? btn.name : `${btn.name} (setup required)`);
+      const title = document.createElement('span');
+      title.className = 'button-title';
+      title.textContent = btn.name;
+      const glyph = document.createElement('span');
+      glyph.className = 'button-arrow';
+      glyph.textContent = '↗';
+      glyph.setAttribute('aria-hidden', 'true');
+      el.append(title, glyph);
       el.addEventListener('click',()=>run(btn,el));
       ui.buttons.appendChild(el);
     }

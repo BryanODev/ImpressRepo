@@ -38,15 +38,16 @@ h1{letter-spacing:-.65px}
 .link-button{background:transparent;border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--muted);font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px;white-space:nowrap}
 .link-button:hover{background:var(--panel-hover);color:var(--ink)}
 .auth-notice{background:var(--notice);border:1px solid var(--notice-line);color:var(--ink);border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;margin-bottom:13px;font-size:12px}
-.button-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.quick-btn{min-height:67px;width:100%;border-radius:11px;border:1px solid rgba(0,0,0,.09);background:var(--button-color);color:var(--button-text);box-shadow:0 2px 0 rgba(0,0,0,.06);padding:12px 14px;display:flex;justify-content:space-between;gap:9px;text-align:left;align-items:center;transition:transform .14s,filter .14s,box-shadow .14s}
-.quick-btn:hover:not(:disabled){filter:brightness(.965);transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.10)}
+/* The card grid uses the exact compact visual language of Settings' live preview. */
+.button-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.quick-btn,.preview-button{min-height:40px;border-radius:8px;border:1px solid rgba(0,0,0,.08);padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;font-size:11px;font-weight:800}
+.quick-btn{width:100%;background:var(--button-color);color:var(--button-text);transition:transform .14s,filter .14s,box-shadow .14s}
+.quick-btn:hover:not(:disabled){filter:brightness(.965);transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.10)}
 .quick-btn:active:not(:disabled){transform:translateY(1px);box-shadow:none}
-.button-content{min-width:0;display:grid;gap:4px}
-.button-title{font-size:13px;line-height:1.2;font-weight:800;overflow-wrap:anywhere}
-.button-subtitle{font-size:10px;opacity:.75;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;max-width:100%}
-.button-arrow{font-size:20px;line-height:1;opacity:.72;flex:none}
-.quick-btn.unconfigured{background:var(--panel)!important;color:var(--muted)!important;border:1px dashed var(--border);box-shadow:none}
+.button-title,.preview-button strong{min-width:0;font-size:11px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.button-arrow{font-size:13px;line-height:1;flex:none;opacity:.85}
+/* Unconfigured actions stay yellow/colored as in the preview. Click feedback remains intact. */
+.quick-btn.unconfigured{opacity:1}
 .quick-btn.working{cursor:progress;opacity:.65}
 .placeholder{font-size:12px;color:var(--muted);padding:10px}
 .empty{text-align:center;display:flex;align-items:center;flex-direction:column;border:1px dashed var(--border);border-radius:12px;padding:26px 15px;background:var(--panel);gap:6px}
@@ -120,8 +121,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
 .preview-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .preview-heading span{font-size:11px;color:var(--muted)}
 .preview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;font-size:11px;color:var(--muted)}
-.preview-button{border:1px solid rgba(0,0,0,.08);border-radius:8px;padding:11px 12px;display:flex;align-items:center;justify-content:space-between;min-height:40px;gap:8px}
-.preview-button strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.preview-button{width:100%}
 .settings-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px}
 .settings-footer strong{font-size:12px}
 .settings-footer p{color:var(--muted);font-size:11px;margin-top:3px}
@@ -140,10 +140,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{border-color:var
 }
 @media (max-width:420px){
  .card-app{padding:7px 3px 12px}
- .button-grid{grid-template-columns:1fr}
- .quick-btn{min-height:58px}
+ .button-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
  .link-button span{display:none}
  .general-panel{align-items:flex-start;flex-direction:column;gap:12px}
  .settings-footer{align-items:stretch;flex-direction:column}
  .save-button{justify-content:center}
 }
+
+@media (max-width:310px){.button-grid{grid-template-columns:1fr}}
