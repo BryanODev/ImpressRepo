@@ -1,0 +1,99 @@
+:root,
+:root[data-color-mode="light"] {
+  color-scheme: light;
+  --page: #fff;
+  --surface: #f7f8fa;
+  --surface-hover: #f0f3f7;
+  --border: #e1e6ee;
+  --ink: #192b42;
+  --muted: #64748b;
+  --faint: #8290a3;
+  --field: #fff;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-soft: #edf4ff;
+  --accent-soft-border: #c8ddff;
+  --success: #11744c;
+  --success-bg: #edf8f2;
+  --error: #be3c3c;
+  --error-bg: #fff1f0;
+  --shadow: 0 3px 14px rgba(20,34,60,.045);
+}
+:root[data-color-mode="dark"] {
+  color-scheme: dark;
+  --page: #1c2028;
+  --surface: #252b34;
+  --surface-hover: #2e3641;
+  --border: #3d4654;
+  --ink: #ecf2fa;
+  --muted: #a8b5c6;
+  --faint: #8b9caf;
+  --field: #1f252e;
+  --accent: #85b9ff;
+  --accent-hover: #a7ccff;
+  --accent-soft: #21364f;
+  --accent-soft-border: #36577d;
+  --success: #9ee9c2;
+  --success-bg: #1c3a31;
+  --error: #ffaaaa;
+  --error-bg: #522b31;
+  --shadow: 0 3px 14px rgba(0,0,0,.10);
+}
+*, *::before, *::after {box-sizing:border-box}
+html,body {margin:0;min-height:100%;background:var(--page);color:var(--ink)}
+body {font: 14px/1.42 -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,Arial,sans-serif; -webkit-font-smoothing:antialiased}
+.container {max-width:640px; margin:0 auto; padding:23px 23px 30px}
+.container.compact {padding:16px 15px 20px}
+.eyebrow {font-size:10px; letter-spacing:1.4px;font-weight:800;color:var(--faint)}
+.heading {display:flex;align-items:center;justify-content:space-between; gap:14px; margin:7px 0 23px}
+.heading.compact-heading {margin:7px 0 18px}
+h1 {font-weight:730; font-size:25px;line-height:1.18;letter-spacing:-.65px; margin:0}
+.heading p {margin:5px 0 0;font-size:12px;color:var(--muted)}
+.header-icon {display:grid;place-items:center;height:37px;width:37px;flex:none;background:var(--accent-soft);border:1px solid var(--accent-soft-border);border-radius:11px;color:var(--accent);font-weight:600;font-size:21px}
+.panel {background:var(--surface);border:1px solid var(--border); border-radius:12px;box-shadow:var(--shadow)}
+.hero {padding:15px 15px 16px}
+.hero-row {display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pill {font-size:10px; font-weight:650;color:var(--accent);padding:3px 7px;border-radius:6px;background:var(--accent-soft);border:1px solid var(--accent-soft-border)}
+.number {font-size:34px;line-height:1;letter-spacing:-1.6px; font-weight:760;color:var(--accent);margin:11px 0 15px;font-variant-numeric:tabular-nums}
+label:not(.radio-option){display:block;color:var(--ink);font-size:12px;font-weight:700;margin:13px 0 7px}
+label:first-child {margin-top:0}
+input:not([type=radio]),select {display:block;width:100%;height:39px; padding:8px 11px;font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--border);border-radius:8px;outline:none;transition:border-color .15s, box-shadow .15s}
+input::placeholder {color:var(--faint)}
+input:hover:not(:disabled),select:hover:not(:disabled) {border-color:var(--muted)}
+input:focus-visible, select:focus-visible, button:focus-visible {outline:2px solid var(--accent);outline-offset:2px}
+input:disabled, select:disabled{opacity:.65;cursor:wait}
+.preview {font-size:11px;color:var(--muted); margin-top:8px;overflow-wrap:anywhere}
+.fields {margin-top:10px;padding:13px 15px 15px}
+.fields label + select {margin-bottom:7px}
+.automatic {display:flex;align-items:center;gap:9px;color:var(--muted);font-size:11px;line-height:1.5;padding:14px 2px 13px}
+.check-mark{width:17px;height:17px;flex:none;display:grid;place-items:center;border-radius:50%;font-weight:800;background:var(--success-bg);color:var(--success)}
+button.primary{appearance:none;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#102337;border:0;border-radius:9px;padding:12px 16px;font-size:13px;font-weight:750;cursor:pointer;transition:filter .14s, transform .14s}
+:root[data-color-mode="light"] button.primary{color:#fff}
+button.primary:hover:not(:disabled){filter:brightness(.94)}
+button.primary:active:not(:disabled){transform:translateY(1px)}
+button.primary:disabled{opacity:.52;cursor:wait}
+.notice{margin:8px 0 13px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;overflow-wrap:anywhere}
+.notice.error{background:var(--error-bg);color:var(--error)}
+.notice.success{background:var(--success-bg);color:var(--success)}
+.notice a{color:inherit;font-weight:700}
+.settings-container .heading{margin-bottom:18px}
+.settings-panel{padding:17px 18px;margin-top:12px}
+.section-heading{display:flex;gap:11px;align-items:flex-start;margin-bottom:12px}
+.section-icon{flex:none;font-size:11px;font-weight:800;letter-spacing:.2px;width:27px;height:27px;display:grid;place-items:center;background:var(--accent-soft);border:1px solid var(--accent-soft-border);color:var(--accent);border-radius:8px}
+h2{margin:0;font-size:14px;letter-spacing:-.12px;line-height:1.3}
+.section-heading p{margin:4px 0 0;font-size:11px;line-height:1.4;color:var(--muted)}
+.settings-panel > label:first-of-type{margin-top:6px}
+.settings-panel label:not(:first-of-type){margin-top:14px}
+.number-field{position:relative}
+.hash-prefix{position:absolute;top:50%;left:13px;transform:translateY(-50%);color:var(--accent);font-size:17px;font-weight:740}
+.number-field input {padding-left:32px;font-weight:660; font-variant-numeric:tabular-nums}
+.helper {font-size:11px;line-height:1.45;color:var(--muted);margin:9px 0 0}
+.radio-group{display:flex;gap:8px;flex-wrap:wrap}
+.radio-option {display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;flex:1;min-width:170px;background:var(--field)}
+.radio-option:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+input[type="radio"]{accent-color:var(--accent);margin:0}
+.settings-footer{padding:17px 1px 8px}
+.footer-note{text-align:center;font-size:11px;color:var(--muted);margin:11px 3px 0}
+.auth-content {padding:16px}
+.muted {color:var(--muted)}
+@media(max-width:420px){.container{padding:15px}.heading h1{font-size:23px}.settings-panel{padding:14px}.number{font-size:30px}}

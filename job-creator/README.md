@@ -6,9 +6,9 @@ A lightweight static HTML/CSS/JS Power-Up that extends the original **Impress Ne
 
 - A board button that opens a small **Create Job** form.
 - Names formatted as `#0001 - Job name`, with a configurable next number.
-- Automatically attaches the person creating the job and sets a fresh start date.
+- Automatically attaches the person creating the job, sets a fresh start date, and sets a due date 3 calendar days later by default (configurable in Settings).
 - Lets members select a target board and list.
-- Lets admins configure default board, list, and Trello card template.
+- Lets admins configure default board, list, Trello card template, and due-date offset (0–3650 calendar days).
 - Can copy template details, checklists, labels, attachments, and custom-field values, **but not** source members/dates.
 - Automatically navigates to the newly created card (including other boards).
 - Light/dark theme support using Trello's theme context.
@@ -34,6 +34,7 @@ A lightweight static HTML/CSS/JS Power-Up that extends the original **Impress Ne
 ## Notes
 
 - Only Trello cards marked **Template** show up in the template selector. The selector can use a different board from the destination if the current user has access to it.
-- Template copying uses `keepFromSource: attachments,checklists,labels,customFields` and excludes source members and dates. This is intentional.
+- Template copying uses `keepFromSource: attachments,checklists,labels,customFields` and excludes source members and dates. This is intentional: new start/due dates override the template.
+- Due dates retain the local time of day when the job was created, offset by the configured number of calendar days. The setting is stored with the board settings; it does not modify existing cards.
 - Existing Trello tokens are not included in source files; each member must authorize individually.
 - The Trello API key used here is a public client key from the user's original Power-Up, not a secret.

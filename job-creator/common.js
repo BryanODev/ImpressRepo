@@ -30,7 +30,8 @@ window.JobCreator = (() => {
       defaultListId: '',
       templateBoardId: '',
       templateCardId: '',
-      position: 'top'
+      position: 'top',
+      dueInDays: 3
     };
   }
 

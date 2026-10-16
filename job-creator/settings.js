@@ -8,6 +8,7 @@
   const form = document.getElementById('settingsForm');
   const nextNumber = document.getElementById('nextNumber');
   const counterHint = document.getElementById('counterHint');
+  const dueInDays = document.getElementById('dueInDays');
   const defaultBoard = document.getElementById('defaultBoard');
   const defaultList = document.getElementById('defaultList');
   const templateBoard = document.getElementById('templateBoard');
@@ -59,6 +60,11 @@
       J.showStatus(message, 'Enter a positive whole number.', true);
       return;
     }
+    const days = Number(dueInDays.value);
+    if (!dueInDays.value.trim() || !Number.isSafeInteger(days) || days < 0 || days > 3650) {
+      J.showStatus(message, 'Due in (days) must be a whole number between 0 and 3650.', true);
+      return;
+    }
     if (!defaultBoard.value || !defaultList.value) {
       J.showStatus(message, 'Choose a default board and list.', true);
       return;
@@ -77,7 +83,8 @@
         defaultListId: defaultList.value,
         templateBoardId: templateBoard.value,
         templateCardId: templateCard.value,
-        position: form.querySelector('input[name="position"]:checked').value
+        position: form.querySelector('input[name="position"]:checked').value,
+        dueInDays: days
       };
       // Save settings before the counter so a counter permission failure does
       // not silently leave the UI claiming that everything was saved.
@@ -102,6 +109,7 @@
     boards = boardOptions;
     scope = next.scope;
     nextNumber.value = String(next.number);
+    dueInDays.value = String(settings.dueInDays);
     counterHint.textContent = scope === 'organization'
       ? 'Shared across boards in this Trello Workspace. Avoid creating jobs at the exact same time until a server-backed counter is added.'
       : 'Stored on this board only. Numbers on different boards are not synchronized.';
@@ -120,6 +128,7 @@
       updateTemplates(templateBoard.value, settings.templateCardId)
     ]);
     nextNumber.disabled = false;
+    dueInDays.disabled = false;
     saveButton.disabled = false;
     initialized = true;
   } catch (err) {

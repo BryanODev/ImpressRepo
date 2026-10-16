@@ -13,6 +13,7 @@
   const numberLabel = document.getElementById('jobNumber');
   const button = document.getElementById('createButton');
   const message = document.getElementById('message');
+  const automaticNote = document.getElementById('automaticNote');
   let currentBoardId = '';
   let boardData = [];
   let config = null;
@@ -73,6 +74,15 @@
       const next = await J.getNextNumber(t);
       const title = `${J.formatNumber(next.number)} - ${jobName}`;
 
+      const dueDays = Number(config.dueInDays);
+      if (!Number.isSafeInteger(dueDays) || dueDays < 0 || dueDays > 3650) {
+        throw new Error('Invalid due date setting. Please update it in Power-Up Settings.');
+      }
+      const startDate = new Date();
+      const dueDate = new Date(startDate);
+      // Advance calendar days, preserving the creation time across DST changes.
+      dueDate.setDate(dueDate.getDate() + dueDays);
+
       // Reserve the number first. Failed card creates may leave gaps, but won't
       // reuse an already reserved number in ordinary sequential usage.
       await J.saveNextNumber(t, next.number + 1, next.scope);
@@ -81,13 +91,14 @@
         name: title,
         idList: targetList,
         pos: config.position === 'bottom' ? 'bottom' : 'top',
-        start: new Date().toISOString(),
+        start: startDate.toISOString(),
+        due: dueDate.toISOString(),
         idMembers: [member.id]
       };
       if (config.templateCardId) {
         body.idCardSource = config.templateCardId;
         // Deliberately exclude source members and dates. The new job gets
-        // only its creator as a member and a fresh start date.
+        // only its creator as a member and fresh start/due dates.
         body.keepFromSource = 'attachments,checklists,labels,customFields';
       }
       const card = await J.api(t, '/cards', {method: 'POST', body});
@@ -126,6 +137,8 @@
     currentBoardId = current.id;
     const [settings, boards, next] = await Promise.all([J.getSettings(t), J.getBoards(t), J.getNextNumber(t)]);
     config = settings;
+    const dueDays = Number(settings.dueInDays);
+    automaticNote.textContent = `You're assigned automatically. Start date: today. Due date: ${dueDays === 0 ? 'today' : `in ${dueDays} calendar day${dueDays === 1 ? '' : 's'}`}.`;
     boardData = boards;
     numberLabel.textContent = J.formatNumber(next.number);
     numberLabel.dataset.value = String(next.number);

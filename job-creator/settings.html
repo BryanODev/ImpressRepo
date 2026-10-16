@@ -48,10 +48,17 @@
         </div>
       </section>
 
+      <section class="panel settings-panel">
+        <div class="section-heading"><span class="section-icon">05</span><div><h2>Automatic due date</h2><p>Choose how many calendar days after creation a new job is due.</p></div></div>
+        <label for="dueInDays">Due in (days)</label>
+        <input id="dueInDays" type="number" min="0" max="3650" step="1" value="3" required disabled>
+        <p class="helper">Default: 3 days. Enter 0 for a due date of today. The due time matches the creation time.</p>
+      </section>
+
       <div class="settings-footer">
         <p class="notice" id="message" hidden role="status" aria-live="polite"></p>
         <button class="primary" type="submit" id="saveButton" disabled>Save Settings <span aria-hidden="true">→</span></button>
-        <p class="footer-note">Every job automatically gets its creator as a member and a fresh start date.</p>
+        <p class="footer-note">Each new job is assigned to its creator and gets a start date and automatic due date.</p>
       </div>
     </form>
   </main>
