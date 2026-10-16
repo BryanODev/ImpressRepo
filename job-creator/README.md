@@ -38,3 +38,8 @@ A lightweight static HTML/CSS/JS Power-Up that extends the original **Impress Ne
 - Due dates retain the local time of day when the job was created, offset by the configured number of calendar days. The setting is stored with the board settings; it does not modify existing cards.
 - Existing Trello tokens are not included in source files; each member must authorize individually.
 - The Trello API key used here is a public client key from the user's original Power-Up, not a secret.
+
+
+## Badge test (October 2026)
+
+Enable **Card Badges** and **Card Detail Badges** in the Trello Power-Up admin Capabilities page. On cards whose names start with `#1234 - `, Job Creator shows a yellow `#1234` badge on the board and inside the card. This first experiment does not create new IDs or alter numbering, titles, or descriptions. Trello badge colors are named presets: `yellow` is the closest to the desired brand yellow.

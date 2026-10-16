@@ -24,7 +24,34 @@ function openJobForm(t) {
   });
 }
 
+// For the first badge test, read the Job ID from the existing Job Creator
+// title format: "#1042 - Job Name". Display only; do not change cards.
+function jobIdFromTitle(title) {
+  const match = String(title || '').match(/^\s*#(\d{1,12})\s*[-–—]\s*/);
+  return match ? `#${match[1]}` : null;
+}
+
+function jobBadge(t, detail = false) {
+  return t.card('name').then((card) => {
+    const id = jobIdFromTitle(card.name);
+    if (!id) return [];
+    return [detail
+      ? {title: 'Job ID', text: id, color: 'yellow'}
+      : {text: id, color: 'yellow'}
+    ];
+  }).catch((error) => {
+    console.warn('Job ID badge could not read card name:', error);
+    return [];
+  });
+}
+
 window.TrelloPowerUp.initialize({
+  'card-badges': function (t) {
+    return jobBadge(t);
+  },
+  'card-detail-badges': function (t) {
+    return jobBadge(t, true);
+  },
   'board-buttons': function () {
     return [{
       icon: { dark: ICON_URL, light: ICON_URL },
