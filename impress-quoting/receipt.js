@@ -7,7 +7,7 @@
       if(!window.TrelloPowerUp) throw Error('Trello Power-Up library failed to load.');
       t=window.TrelloPowerUp.iframe();I.theme(t);
       const [stored,opts,card]=await Promise.all([
-        t.get('card','shared','quote',null),t.get('board','shared','settings',null),t.card('name','shortUrl','shortLink','due')
+        t.get('card','shared','quote',null),t.get('board','shared','settings',null),t.card('name','shortLink')
       ]);
       const quote=I.normalizeQuote(stored),settings=I.normalizeSettings(opts),effective={...settings,taxRate:quote.taxRate ?? settings.taxRate},totals=I.totals(quote,effective);
       const ready=quote.items.length>0&&totals.unpriced===0&&quote.items.every(x=>x.name.trim());

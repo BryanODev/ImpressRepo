@@ -2,7 +2,7 @@
 (() => {
   const I = window.IQ;
   const root = document.getElementById('app');
-  let t; let quote, settings, card; let dirty = false; let busy = false;
+  let t; let quote, settings; let dirty = false; let busy = false;
   function fail(msg) { root.innerHTML = `<div class="panel"><b>Unable to load Impress Quoting</b><p class="muted">${I.escapeHTML(msg)}</p></div>`; }
   function message(text,kind='') {
     const el = root.querySelector('#feedback');
@@ -103,12 +103,11 @@
     try {
       if(!window.TrelloPowerUp) throw new Error('Trello Power-Up library failed to load.');
       t=window.TrelloPowerUp.iframe();I.theme(t);
-      const [stored,options,cardInfo]=await Promise.all([
+      const [stored,options]=await Promise.all([
         t.get('card','shared','quote',null),
-        t.get('board','shared','settings',null),
-        t.card('name','shortLink','shortUrl')
+        t.get('board','shared','settings',null)
       ]);
-      quote=I.normalizeQuote(stored);settings=I.normalizeSettings(options);card=cardInfo;
+      quote=I.normalizeQuote(stored);settings=I.normalizeSettings(options);
       render();
     } catch(err){fail(err?.message||String(err));}
   }

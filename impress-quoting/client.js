@@ -7,7 +7,7 @@ function url(file) {
 window.TrelloPowerUp.initialize({
   'card-back-section': function (t) {
     return {
-      title: '00 - Impress Quoting',
+      title: 'Impress Quoting',
       icon: url('icon.svg'),
       content: {
         type: 'iframe',
