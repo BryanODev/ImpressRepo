@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Impress Notifications</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="shell" id="app">
+    <header class="topbar">
+      <div class="top-title">
+        <div class="eyebrow">IMPRESS STUDIO <span class="sep">/</span> PERSONAL WORKSPACE</div>
+        <h1>Impress Notifications</h1>
+        <p id="subtitle">Assigned to you on this board</p>
+      </div>
+      <div class="top-actions">
+        <span id="updated" class="muted small"></span>
+        <button id="refresh" type="button" class="button secondary">↻ Refresh</button>
+      </div>
+    </header>
+
+    <section id="connectPanel" class="connect hidden" aria-live="polite">
+      <div class="connect-icon">🔒</div>
+      <div>
+        <h2>Connect your Trello account</h2>
+        <p>Read your own assigned cards and unread Trello notifications. No card-edit permissions required.</p>
+        <button type="button" id="connectBtn" class="button primary">Connect Trello</button>
+      </div>
+    </section>
+
+    <section id="summary" class="stats hidden" aria-label="Work summary">
+      <div class="stat"><div class="stat-label">Assigned cards</div><div id="assignedCount" class="stat-num">—</div></div>
+      <div class="stat"><div class="stat-label">Cards with unread</div><div id="unreadCount" class="stat-num attention">—</div></div>
+      <div class="stat"><div class="stat-label">Due soon or overdue</div><div id="dueCount" class="stat-num">—</div></div>
+    </section>
+
+    <section id="controls" class="controls hidden">
+      <div class="segmented" aria-label="Card filter">
+        <button type="button" data-filter="all" class="active">All cards <span id="allFilterCount">0</span></button>
+        <button type="button" data-filter="unread">Unread only <span id="unreadFilterCount">0</span></button>
+        <button type="button" data-filter="due">Due soon <span id="dueFilterCount">0</span></button>
+      </div>
+      <div class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search my cards…" aria-label="Search my cards" /></div>
+    </section>
+    <div id="error" class="error hidden" role="alert"></div>
+    <section id="loading" class="loading" aria-live="polite"><div class="spinner"></div><span>Loading your jobs…</span></section>
+    <section id="cards" class="cards hidden" aria-label="Assigned cards"></section>
+    <section id="empty" class="empty hidden"><div class="empty-icon">✓</div><h2>Nothing here</h2><p id="emptyText">No cards match this view.</p></section>
+    <footer class="footnote">Unread means a real unread Trello notification on that card. Not every card edit generates a notification. Other Power-Ups' custom badges are not included.</footer>
+  </main>
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script src="config.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
