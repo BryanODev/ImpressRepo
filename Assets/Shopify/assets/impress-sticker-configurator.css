@@ -1,0 +1,312 @@
+/* Impress Sticker Configurator — isolated styles, no frameworks required. */
+.impress-sticker { --ie-ink: #15252d; --ie-muted: #697981; --ie-accent: #ed583a; --ie-line: #dde5e8; --ie-bg: #f5f7f7; font-family: inherit; color: var(--ie-ink); }
+.impress-sticker *, .impress-sticker *::before, .impress-sticker *::after { box-sizing: border-box; }
+.impress-sticker__shell { max-width: 1250px; padding: 50px 22px 70px; margin: auto; }
+.impress-sticker__header { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin: 0 0 28px; }
+.impress-sticker__eyebrow { color: var(--ie-accent); letter-spacing: .16em; font-size: 11px; font-weight: 800; margin: 0 0 12px; }
+.impress-sticker__title { margin: 0; letter-spacing: -.045em; font-size: clamp(30px,4vw,50px); line-height: 1.1; color: var(--ie-ink); }
+.impress-sticker__subtitle { margin: 11px 0 0; font-size: 14px; color: var(--ie-muted); line-height: 1.5; }
+.impress-sticker__version { font-size: 11px; white-space: nowrap; letter-spacing: .15em; color: #9da8ae; font-weight: 750; }
+.impress-sticker__layout { display: grid; grid-template-columns: minmax(0,1.03fr) minmax(350px,.97fr); gap: 26px; align-items: start; }
+.impress-sticker__preview { background: #e9eef0; background-image: radial-gradient(ellipse at 30% 22%,#fbfdfd,transparent 65%); min-height: 545px; border: 1px solid var(--ie-line); border-radius: 16px; padding: 20px; position: relative; display:flex; flex-direction:column; overflow:hidden; }
+.impress-sticker__preview-top { color: #72828a; display:flex; justify-content:space-between; align-items:center; font-size:10px; font-weight:800; letter-spacing:.14em; }
+.impress-sticker__dot { display:inline-block; width:7px;height:7px; border-radius:50%; background:#52b597; margin-right:7px; }
+.impress-sticker__stage { display:grid; place-items:center; flex:1; padding: 38px 20px; perspective:900px; }
+.impress-sticker__bleed { width: min(77%,350px); aspect-ratio:1; padding:11px; border:2px dashed #efab67; border-radius:26%; transform: rotate(-5deg); display:flex; transition:transform .3s ease; filter:drop-shadow(0 20px 15px #52707a24); }
+.impress-sticker__sticker { background:#fff; position:relative; flex:1; border: 3px solid #f6f6f6; border-radius:25%; overflow:hidden; display:grid; place-items:center; box-shadow:0 12px 30px #586b7524; }
+.impress-sticker__sticker::before { content:''; position:absolute; inset:0; border:2px dashed #eb5f58; border-radius:inherit; z-index:4; pointer-events:none; }
+.impress-sticker__safe { position:absolute; inset:13%; border:2px dashed #46b8bd; border-radius:inherit; z-index:4; pointer-events:none; }
+.impress-sticker__art-wrap { position:absolute; inset: 12%; display:grid; place-items:center; overflow:hidden; }
+.impress-sticker__art { display:block; width:100%; height:100%; object-fit:contain; }
+.impress-sticker__art[hidden], .impress-sticker__art-placeholder[hidden] { display:none; }
+.impress-sticker__art-placeholder { display:grid; gap:8px; text-align:center; justify-items:center; }
+.impress-sticker__monogram { font-family:Arial,sans-serif; font-size:clamp(70px,10vw,120px); font-weight:900; letter-spacing:-.1em; color:#17303a; line-height:1; }
+.impress-sticker__placeholder-small { font-size:10px; font-weight:800; letter-spacing:.16em; color:#718590; }
+.impress-sticker__shine { position:absolute; inset:-65%; opacity:0; pointer-events:none; transform:rotate(33deg); background:linear-gradient(90deg, transparent 35%, #fff9 48%, transparent 61%); z-index:5; transition:opacity .2s ease; }
+.impress-sticker[data-impress-finish="gloss"] .impress-sticker__shine { opacity:.65; }
+.impress-sticker[data-impress-finish="gloss"] .impress-sticker__sticker { box-shadow:0 18px 32px #586b754a, inset 0 0 22px #fff; }
+.impress-sticker[data-impress-shape="circular"] .impress-sticker__sticker,
+.impress-sticker[data-impress-shape="circular"] .impress-sticker__bleed { border-radius:50%; }
+.impress-sticker[data-impress-shape="kiss"] .impress-sticker__bleed { border-radius:8px; transform:rotate(-3deg); }
+.impress-sticker[data-impress-shape="kiss"] .impress-sticker__sticker { border-radius:12px; }
+.impress-sticker[data-impress-shape="die"] .impress-sticker__bleed { border-radius: 34% 48% 41% 45% / 44% 30% 50% 35%; }
+.impress-sticker[data-impress-shape="die"] .impress-sticker__sticker { border-radius: 34% 48% 41% 45% / 44% 30% 50% 35%; }
+.impress-sticker__legend { display:flex; flex-wrap:wrap; gap:16px; justify-content:center; color:#697a82; font-size:11px; font-weight:650; }
+.impress-sticker__legend-dot { width:9px;height:9px; border:2px dashed currentColor; display:inline-block; margin-right:5px; border-radius:2px; }
+.impress-sticker__legend-dot--cut { color:#eb5f58; }
+.impress-sticker__legend-dot--safe { color:#46b8bd; }
+.impress-sticker__legend-dot--bleed { color:#efab67; }
+.impress-sticker__disclaimer { color:var(--ie-muted); font-size:11px; line-height:1.6; margin:12px 6px 0; }
+.impress-sticker__controls-column { background:#fff; border:1px solid var(--ie-line); border-radius:16px; box-shadow:0 10px 42px #1b36420b; padding:25px 28px; }
+.impress-sticker__form { margin:0; }
+.impress-sticker__field { margin:0 0 26px; padding:0; }
+.impress-sticker__field-heading { display:flex; align-items:center; gap:10px; margin:0 0 11px; }
+.impress-sticker__step { font-size:10px; color:var(--ie-accent); font-weight:850; letter-spacing:.08em; }
+.impress-sticker__label { color:var(--ie-ink); font-weight:800; font-size:13px; }
+.impress-sticker__choices { display:flex; flex-wrap:wrap; gap:9px; }
+.impress-sticker__choice { cursor:pointer; position:relative; display:inline-flex; }
+.impress-sticker__choice input { position:absolute; opacity:0; width:1px; height:1px; }
+.impress-sticker__choice > span { display:inline-flex; align-items:center; justify-content:center; border:1.5px solid #dce3e6; border-radius:9px; padding:12px 17px; min-height:44px; color:#425760; font-size:12px; font-weight:700; transition:.15s ease; }
+.impress-sticker__choice input:checked + span { color:var(--ie-ink); border-color:var(--ie-ink); background:#f0f5f6; box-shadow:inset 0 0 0 1px var(--ie-ink); }
+.impress-sticker__choice input:focus-visible + span { outline:3px solid #e99c84; outline-offset:3px; }
+
+/* v0.3.9 — compact Forma cards. No nested borders: only the button surface has a border. */
+.impress-sticker__choices[data-impress-shapes] {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+  padding-top:3px; /* give the lifted selected card room */
+}
+.impress-sticker__choice--shape {
+  display:block;
+  min-width:0;
+  width:100%;
+}
+.impress-sticker__choice--shape > span {
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:flex-start;
+  min-height:62px;
+  width:100%;
+  padding:9px 12px;
+  background:#fff;
+  border:1px solid #dce5e9;
+  border-radius:11px;
+  box-shadow:0 1px 2px rgba(22,48,59,.025);
+  transform:translateY(0);
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease;
+}
+.impress-sticker__choice--shape .impress-sticker__choice-inner {
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:flex-start;
+  width:100%;
+  min-width:0;
+  gap:10px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  min-height:0;
+  box-shadow:none;
+  background:transparent;
+}
+.impress-sticker__choice--shape .impress-sticker__choice-icon {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 40px;
+  width:40px;
+  height:40px;
+  min-height:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  background:transparent;
+  transform:rotate(0deg) translateY(0);
+  transition:transform .2s cubic-bezier(.2,.8,.2,1);
+}
+.impress-sticker__choice--shape .impress-sticker__shape-icon { display:block;width:39px;height:39px;overflow:visible; }
+.impress-sticker__choice--shape img.impress-sticker__shape-icon { object-fit:contain; user-select:none; -webkit-user-drag:none; pointer-events:none; }
+.impress-sticker__choice--shape .impress-sticker__choice-text {
+  display:block;
+  flex:1;
+  min-width:0;
+  min-height:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  background:transparent;
+  color:#40545f;
+  font-size:12px;
+  font-weight:750;
+  line-height:1.25;
+  text-align:left;
+}
+.impress-sticker__choice--shape:hover > span { border-color:#b5c5cb; transform:translateY(-1px); }
+.impress-sticker__choice--shape input:checked + span {
+  background:#fffcf0;
+  border:1.5px solid #20343d;
+  box-shadow:0 7px 12px rgba(31,48,56,.11);
+  transform:translateY(-2px);
+}
+.impress-sticker__choice--shape input:checked + span .impress-sticker__choice-icon {
+  transform:rotate(-10deg) translateY(-1px);
+}
+.impress-sticker__choice--shape input:checked + span .impress-sticker__choice-text { color:#172b34; }
+@media (max-width:420px) {
+  .impress-sticker__choices[data-impress-shapes] { gap:7px; }
+  .impress-sticker__choice--shape > span { min-height:58px; padding:8px 9px; }
+  .impress-sticker__choice--shape .impress-sticker__choice-inner { gap:7px; }
+  .impress-sticker__choice--shape .impress-sticker__choice-icon { width:34px;height:34px;flex-basis:34px; }
+  .impress-sticker__choice--shape .impress-sticker__shape-icon { width:33px;height:33px; }
+  .impress-sticker__choice--shape .impress-sticker__choice-text { font-size:11px; }
+}
+.impress-sticker__field--grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.impress-sticker__select { width:100%; height:46px; font-size:13px; border:1.5px solid #dce3e6; border-radius:9px; background:#fff; color:var(--ie-ink); padding:0 12px; font-family:inherit; }
+.impress-sticker__select:focus-visible { outline:3px solid #e99c84; outline-offset:2px; }
+.impress-sticker__dropzone { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; min-height:124px; border:1.5px dashed #b9c9d0; border-radius:11px; background:#f8fafb; cursor:pointer; padding:15px; color:#607782; text-align:center; }
+.impress-sticker__dropzone:hover { border-color:#496b7b; }
+.impress-sticker__upload-text { color:var(--ie-ink); font-size:13px; font-weight:850; max-width:100%; overflow-wrap:anywhere; }
+.impress-sticker__dropzone small { font-size:11px; line-height:1.5; color:#7f929b; }
+.impress-sticker__file-input { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
+.impress-sticker__dropzone.is-file-ready { border-color:#52b597; background:#f4faf7; }
+.impress-sticker__dropzone:has(+ .impress-sticker__file-input:focus-visible) { outline:3px solid #e99c84; outline-offset:3px; }
+.impress-sticker__file-input::file-selector-button { font-family:inherit; padding:7px 10px; margin-right:9px; border:1px solid #d1dcdf; color:#344c57; border-radius:6px; background:white; cursor:pointer; }
+.impress-sticker__file-hint { margin:7px 0 0; font-size:11px; color:var(--ie-muted); line-height:1.5; }
+.impress-sticker__summary { display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--ie-line); padding:20px 0 13px; }
+.impress-sticker__summary-caption { display:block; color:#86969e; letter-spacing:.1em; font-size:10px; font-weight:800; }
+.impress-sticker__price { display:block; color:var(--ie-ink); letter-spacing:-.04em; font-size:32px; line-height:1.5; font-weight:850; }
+.impress-sticker__summary-pieces { display:block; color:var(--ie-muted); font-size:11px; }
+.impress-sticker__summary-mark { color:#cfdbdf; font-size:11px; letter-spacing:.13em; font-weight:900; }
+.impress-sticker__form-message { min-height:16px; color:#c84836; font-size:12px; margin:0 0 7px; }
+.impress-sticker__submit { display:flex; align-items:center; justify-content:space-between; background:var(--ie-ink); color:#fff; border:none; border-radius:9px; width:100%; min-height:52px; padding:0 20px; cursor:pointer; font-family:inherit; font-size:14px; font-weight:800; }
+.impress-sticker__submit:not(:disabled):hover { background:#294653; }
+.impress-sticker__submit:disabled { opacity:.45; cursor:not-allowed; }
+.impress-sticker__checkout-note { color:#87969c; margin:10px 0 0; text-align:center; font-size:10px; }
+.impress-sticker__notice { background:#fff6ef; border:1px solid #f2b392; border-radius:10px; padding:20px; line-height:1.7; color:#65452f; }
+.impress-sticker__notice code { background:#ffe1ca; padding:2px 5px; border-radius:4px; }
+@media (max-width: 850px) { .impress-sticker__layout { grid-template-columns:1fr; } .impress-sticker__preview { min-height:420px; } .impress-sticker__bleed { width:min(63%,270px); } }
+@media (max-width: 480px) { .impress-sticker__shell { padding:26px 14px 45px; } .impress-sticker__header { align-items:flex-start; } .impress-sticker__version { display:none; } .impress-sticker__preview { min-height:365px; padding:16px; } .impress-sticker__bleed { width:min(78%,250px); } .impress-sticker__controls-column { padding:22px 17px; } .impress-sticker__choice:not(.impress-sticker__choice--shape) > span { padding:11px 13px; } }
+@media (prefers-reduced-motion: reduce) { .impress-sticker *, .impress-sticker *::before, .impress-sticker *::after { transition:none !important; } }
+
+/* =========================================================
+ * Impress Editor v0.3 - customer-facing canvas workspace
+ * No bleed rings or false production-ready guides.
+ * ======================================================= */
+.impress-sticker__preview--editor { min-height:0; padding:17px; background:#f4f7f9; gap:12px; overflow:visible; }
+.impress-sticker__editor-tabs { display:flex; background:#e8edef; border:1px solid #dbe4e7; border-radius:10px; padding:4px; gap:3px; }
+.impress-sticker__editor-tabs button { flex:1; border:0; border-radius:7px; padding:10px 12px; background:transparent; color:#566b73; font-size:12px; font-weight:800; font-family:inherit; cursor:pointer; }
+.impress-sticker__editor-tabs button.is-active { background:#fff; color:#182c35; box-shadow:0 2px 8px #213b471a; }
+.impress-sticker__editor-tabs button:focus-visible,.impress-sticker__editor-actions button:focus-visible,.impress-sticker__editor-tools button:focus-visible { outline:3px solid #ed795f;outline-offset:2px; }
+.impress-sticker__editor-stage { position:relative; width:100%; height:440px; overflow:hidden; border:1px solid #e1e8eb; border-radius:12px; background:#eef3f5; }
+.impress-sticker__canvas { display:block; width:100%; height:100%; cursor:default; touch-action:none; }
+.impress-sticker__canvas-empty { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); max-width:240px; width:80%; padding:14px 18px; color:#6a7e87; background:#ffffffed; box-shadow:0 6px 24px #2545541c; border-radius:11px; font-size:13px; line-height:1.55; text-align:center; pointer-events:none; }
+.impress-sticker__canvas-empty[hidden] { display:none; }
+.impress-sticker__editor-actions { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.impress-sticker__editor-actions button { border:1px solid #d8e2e7; background:#fff; color:#324d57; border-radius:7px; padding:9px 11px; font-weight:700; font-size:11px; cursor:pointer; font-family:inherit; }
+.impress-sticker__editor-actions button:disabled { opacity:.38; cursor:default; }
+.impress-sticker__guides-toggle { display:flex; align-items:center; gap:7px; margin-left:auto; color:#526c77; font-size:11px; font-weight:700; white-space:nowrap; cursor:pointer; }
+.impress-sticker__guides-toggle input { accent-color:#0b8a9b; }
+.impress-sticker__editor-tools { margin-top:12px; padding:19px; border:1px solid #dce6ea; border-radius:14px; background:#fff; box-shadow:0 8px 26px #1b364208; }
+.impress-sticker__tools-heading { display:flex; justify-content:space-between; font-size:13px; margin:0 0 15px; color:var(--ie-ink); }
+.impress-sticker__tools-heading span { color:#a0adb3; font-size:10px; letter-spacing:.1em; }
+.impress-sticker__tool-row { margin:0 0 14px; }
+.impress-sticker__tool-row label { display:flex; justify-content:space-between; gap:10px; align-items:center; color:#3d5760; font-size:12px; font-weight:700; margin-bottom:5px; }
+.impress-sticker__tool-row output { font-variant-numeric:tabular-nums; color:#7b8990; }
+.impress-sticker__tool-row input[type="range"],.impress-sticker__bg-row input[type="range"] { appearance:auto; accent-color:#eb583d; width:100%; cursor:pointer; }
+.impress-sticker__tool-row input:disabled,.impress-sticker__bg-row input:disabled { opacity:.35; cursor:default; }
+.impress-sticker__tool-row--two { display:grid; grid-template-columns:1fr 110px; align-items:center; gap:20px; }
+.impress-sticker__tool-row input[type="color"] { width:100%; height:34px; border-radius:7px; border:1px solid #d8e1e5; background:#fff; padding:3px; cursor:pointer; }
+.impress-sticker__bg-row { border-top:1px solid #e6ecef; padding-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.impress-sticker__bg-row button { border:1px solid #cfdde1; background:#f9fbfb; color:#324b55; border-radius:8px; padding:9px; font-size:11px; font-weight:800; cursor:pointer; font-family:inherit; }
+.impress-sticker__bg-row button:disabled { opacity:.48;cursor:default; }
+.impress-sticker__bg-row label { grid-column:1/-1; font-size:11px; font-weight:700; display:flex; justify-content:space-between; color:#60727c; margin-top:5px; }
+.impress-sticker__bg-row input[type="range"],.impress-sticker__bg-row small { grid-column:1/-1; }
+.impress-sticker__bg-row small { color:#788991; font-size:10px; line-height:1.4; }
+.impress-sticker__tool-bottom { display:flex; flex-direction:column; gap:8px; border-top:1px solid #e6ecef; padding-top:13px; margin-top:14px; }
+.impress-sticker__tool-bottom button { display:inline-flex; justify-content:center; border:1px solid #253b46; border-radius:8px; background:#fff; font-size:12px; color:#213943; padding:10px 12px; font-weight:800; font-family:inherit; cursor:pointer; }
+.impress-sticker__tool-bottom button:disabled { opacity:.45;cursor:default; }
+.impress-sticker__tool-bottom span { color:#687d87; font-size:11px; line-height:1.45; }
+.impress-sticker__tool-bottom span[data-error="true"] { color:#bb4839; }
+.impress-sticker__preview-column>.impress-sticker__disclaimer { margin:10px 6px 4px; }
+@media (max-width: 1100px) { .impress-sticker__editor-stage { height:390px; } }
+@media (max-width: 850px) { .impress-sticker__editor-stage { height:420px; } }
+@media (max-width: 480px) { .impress-sticker__preview--editor { padding:11px; } .impress-sticker__editor-stage { height:330px; } .impress-sticker__editor-actions button { padding:8px; } .impress-sticker__editor-actions button span { display:none; } .impress-sticker__editor-tools { padding:14px; } .impress-sticker__tool-row--two { grid-template-columns:1fr 96px; gap:12px; } }
+
+/* v0.3 — perspective product layer, independent of editing/background canvas. */
+.impress-sticker__final-layer { position:absolute;inset:0;pointer-events:none;transform-origin:50% 50%;transition:transform .13s ease-out;will-change:transform; }
+.impress-sticker__final-canvas { display:block;width:100%;height:100%; }
+.impress-sticker__editor-stage[data-ie-view="edit"] .impress-sticker__final-layer,
+.impress-sticker__editor-stage[data-ie-view="edit"] .impress-sticker__final-hint { display:none; }
+.impress-sticker__editor-stage[data-ie-view="final"] { cursor:grab;touch-action:none; }
+.impress-sticker__editor-stage[data-ie-view="final"]:active { cursor:grabbing; }
+.impress-sticker__editor-stage[data-ie-view="final"] .impress-sticker__canvas { pointer-events:none; }
+.impress-sticker__final-hint { position:absolute;left:50%;bottom:13px;transform:translateX(-50%);z-index:3;max-width:90%;width:max-content;padding:8px 13px;border-radius:40px;color:#3c5967;background:#ffffffdd;border:1px solid #d8e3e7;font-size:11px;font-weight:700;pointer-events:none;text-align:center;line-height:1.3; }
+@media (max-width:480px) { .impress-sticker__final-hint { font-size:10px; bottom:8px; width:90%; } }
+@media (prefers-reduced-motion:reduce) { .impress-sticker__final-layer { transition:none;will-change:auto; } }
+
+/* v0.3.1 — contour-specific safe-area explanation */
+.impress-sticker__safety-note { margin:0 3px 2px; color:#52717e; font-size:11px; line-height:1.5; }
+
+/* v0.3.4 — block misleading die-cut guides for opaque photographs. */
+.impress-sticker__contour-alert { display:flex; align-items:center; gap:10px; padding:11px 12px; background:#fff4ef; border:1px solid #f5cbbb; border-radius:10px; color:#8b4637; line-height:1.5; font-size:12px; }
+.impress-sticker__contour-alert[hidden] { display:none; }
+.impress-sticker__contour-alert span { flex:1; }
+.impress-sticker__contour-alert button { flex:none; border:0; border-radius:7px; padding:8px 10px; font:inherit; font-weight:750; color:white; background:#ba5748; cursor:pointer; }
+.impress-sticker__contour-alert button:hover { background:#963e35; }
+.impress-sticker__safety-note[data-warning="true"] { color:#994f3f; font-weight:650; }
+@media(max-width:480px) { .impress-sticker__contour-alert { flex-direction:column; align-items:stretch; } }
+
+/* v0.3.7: independent red cutline / blue safe-zone controls. */
+.impress-sticker__guides-toggle { margin-left:0; }
+.impress-sticker__guides-toggle--cut { margin-left:auto; }
+.impress-sticker__guides-toggle--cut input { accent-color:#eb5860; }
+.impress-sticker__guides-toggle--safe input { accent-color:#3eb1ce; }
+.impress-sticker__guides-toggle--cut span::before,
+.impress-sticker__guides-toggle--safe span::before {
+  content:""; display:inline-block; width:8px; height:8px; border-radius:50%;
+  vertical-align:baseline; margin-right:5px;
+}
+.impress-sticker__guides-toggle--cut span::before { background:#eb5860; }
+.impress-sticker__guides-toggle--safe span::before { background:#3eb1ce; }
+@media (max-width:600px) {
+ .impress-sticker__guides-toggle--cut { margin-left:0; }
+ .impress-sticker__editor-actions { column-gap:10px; row-gap:11px; }
+}
+
+
+/* v0.3.11 — Acabado finish selector; matched in scale to Forma without nested cards. */
+.impress-sticker__choices[data-impress-finishes] {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+  padding-top:3px;
+}
+.impress-sticker__choice--finish { display:block; min-width:0; width:100%; }
+.impress-sticker__choice--finish > span {
+  display:flex; width:100%; min-height:60px; padding:8px 12px;
+  align-items:center; justify-content:flex-start;
+  background:#fff; border:1px solid #dce5e9; border-radius:11px;
+  box-shadow:0 1px 2px rgba(22,48,59,.025);
+  transform:translateY(0);
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease;
+}
+.impress-sticker__choice--finish .impress-sticker__choice-inner {
+  display:flex; flex-direction:row; align-items:center; justify-content:flex-start;
+  width:100%; min-width:0; gap:10px;
+  border:0; padding:0; min-height:0; border-radius:0; background:transparent; box-shadow:none;
+}
+.impress-sticker__choice--finish .impress-sticker__choice-icon {
+  display:flex; flex:0 0 40px; width:40px; height:40px;
+  align-items:center; justify-content:center;
+  border:0; padding:0; min-height:0; border-radius:0; background:transparent; box-shadow:none;
+  transform:rotate(0deg) translateY(0);
+  transition:transform .2s cubic-bezier(.2,.8,.2,1);
+}
+.impress-sticker__choice--finish img.impress-sticker__shape-icon {
+  display:block; width:39px; height:39px; object-fit:contain;
+  user-select:none; -webkit-user-drag:none; pointer-events:none;
+}
+.impress-sticker__choice--finish .impress-sticker__choice-text {
+  flex:1; display:block; min-width:0; min-height:0; padding:0;
+  border:0; border-radius:0; box-shadow:none; background:transparent;
+  color:#40545f; font-size:12px; font-weight:750; line-height:1.25; text-align:left;
+}
+.impress-sticker__choice--finish:hover > span { border-color:#b5c5cb; transform:translateY(-1px); }
+.impress-sticker__choice--finish input:checked + span {
+  background:#fffcf0; border:1.5px solid #20343d;
+  box-shadow:0 7px 12px rgba(31,48,56,.11); transform:translateY(-2px);
+}
+.impress-sticker__choice--finish input:checked + span .impress-sticker__choice-icon { transform:rotate(-10deg) translateY(-1px); }
+.impress-sticker__choice--finish input:checked + span .impress-sticker__choice-text { color:#172b34; }
+@media(max-width:420px) {
+  .impress-sticker__choices[data-impress-finishes] { gap:7px; }
+  .impress-sticker__choice--finish > span { min-height:58px; padding:8px 9px; }
+  .impress-sticker__choice--finish .impress-sticker__choice-inner { gap:7px; }
+  .impress-sticker__choice--finish .impress-sticker__choice-icon { width:34px; height:34px; flex-basis:34px; }
+  .impress-sticker__choice--finish img.impress-sticker__shape-icon { width:33px; height:33px; }
+}

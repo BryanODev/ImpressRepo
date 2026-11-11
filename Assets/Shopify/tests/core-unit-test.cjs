@@ -1,0 +1,26 @@
+/* Run: node tests/core-unit-test.cjs */
+const fs = require('fs');
+const vm = require('vm');
+const assert = require('assert');
+const path = require('path');
+const sandbox={window:{}};
+vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../assets/impress-editor-core.js'),'utf8'),sandbox);
+const core=sandbox.window.ImpressEditorCore;
+assert(core&&core.version==='0.2');
+assert(typeof core.PreviewStage==='function');
+assert(core.PREVIEW_DEFAULTS.grid===false);
+assert.strictEqual(core.clamp(5,0,3),3);
+const g={r:{w:300,h:200},cx:220,cy:140,w:100,h:70,angle:0};
+const h=core.handles(g,36);
+assert.strictEqual(core.hitTest({x:220,y:140},g),'move');
+assert.strictEqual(core.hitTest({x:h.corners[0].x,y:h.corners[0].y},g),'scale');
+assert.strictEqual(core.hitTest({x:h.rotate.x,y:h.rotate.y},g),'rotate');
+let s={x:.5,y:.5,scale:1,angle:0};
+let d=core.startDrag('move',{x:0,y:0},g,s);
+core.updateDrag(s,d,{x:30,y:20});
+assert(Math.abs(s.x-.6)<1e-9&&Math.abs(s.y-.6)<1e-9);
+s={x:.5,y:.5,scale:1,angle:0};
+d=core.startDrag('scale',{x:320,y:140},g,s);
+core.updateDrag(s,d,{x:370,y:140});
+assert(Math.abs(s.scale-1.5)<1e-9);
+console.log('Impress shared core: PASS (bounds, hit tests, movement, scaling)');

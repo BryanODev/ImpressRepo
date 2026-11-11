@@ -1,921 +1,241 @@
-<div 
-  class="sticker-config-wrapper" 
-  style="
-    --padding-v: {{ section.settings.vertical_padding }}px;
-    --max-width: {{ section.settings.max_width }}px;
-    --bg-color: {{ section.settings.bg_color }};
-    --card-bg: {{ section.settings.card_bg_color }};
-    --accent-yellow: {{ section.settings.accent_yellow }};
-    --text-color: {{ section.settings.text_color }};
-    --text-sub: {{ section.settings.text_sub_color }};
-  "
+{{ 'impress-sticker-configurator.css' | asset_url | stylesheet_tag }}
+{{ 'impress-preview-shared.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'impress-editor-core.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-sticker-config.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-sticker-editor.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-sticker-configurator.js' | asset_url }}" defer></script>
+
+{%- assign impress_product = product -%}
+{%- assign impress_form_id = 'ImpressStickerForm-' | append: section.id -%}
+
+<section
+  id="ImpressSticker-{{ section.id }}"
+  class="impress-sticker"
+  data-impress-sticker
+  data-currency="{{ cart.currency.iso_code | default: shop.currency | escape }}"
+  data-initial-variant="{{ impress_product.selected_or_first_available_variant.id }}"
+  data-impress-icon-contour="{{ 'impress-shape-contour.svg' | asset_url | escape }}"
+  data-impress-icon-square="{{ 'impress-shape-square.svg' | asset_url | escape }}"
+  data-impress-icon-circular="{{ 'impress-shape-circular.svg' | asset_url | escape }}"
+  data-impress-icon-rectangle="{{ 'impress-shape-rectangle.svg' | asset_url | escape }}"
+  data-impress-icon-gloss="{{ 'impress-finish-gloss.svg' | asset_url | escape }}"
+  data-impress-icon-mate="{{ 'impress-finish-mate.svg' | asset_url | escape }}"
 >
-  <div class="sticker-config-container">
-    
-    <!-- Header -->
-    <div class="config-header">
-      {% if section.settings.subheading != blank %}
-        <span class="config-subheading">{{ section.settings.subheading }}</span>
-      {% endif %}
-      {% if section.settings.heading != blank %}
-        <h1 class="config-heading">{{ section.settings.heading }}</h1>
-      {% endif %}
-    </div>
-
-    <!-- Main Configurator Layout -->
-    <div class="config-grid">
-      
-      <!-- Left Column: Step-by-Step Options -->
-      <div class="config-steps-col">
-        
-        <!-- Step 1: Shape & Cut -->
-        <div class="config-step-card">
-          <div class="step-title-row">
-            <span class="step-badge">1</span>
-            <h3 class="step-heading">Elige la Forma / Corte</h3>
-          </div>
-          <div class="options-grid grid-3">
-            <label class="option-card shape-option active">
-              <input type="radio" name="sticker_shape" value="Die Cut" checked>
-              <div class="option-icon">
-                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-              </div>
-              <span class="option-label">Die Cut</span>
-              <span class="option-desc">Corte individual</span>
-            </label>
-
-            <label class="option-card shape-option">
-              <input type="radio" name="sticker_shape" value="Kiss Cut">
-              <div class="option-icon">
-                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><rect x="7" y="7" width="10" height="10" rx="2" stroke-dasharray="2 2"/></svg>
-              </div>
-              <span class="option-label">Kiss Cut</span>
-              <span class="option-desc">Con borde extra</span>
-            </label>
-
-            <label class="option-card shape-option">
-              <input type="radio" name="sticker_shape" value="Circle / Square">
-              <div class="option-icon">
-                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
-              </div>
-              <span class="option-label">Círculo / Cuadrado</span>
-              <span class="option-desc">Forma estándar</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Step 2: Material & Finish -->
-        <div class="config-step-card">
-          <div class="step-title-row">
-            <span class="step-badge">2</span>
-            <h3 class="step-heading">Elige el Acabado</h3>
-          </div>
-          <div class="options-grid grid-2">
-            <label class="option-card material-option active">
-              <input type="radio" name="sticker_finish" value="Glossy" checked>
-              <div class="option-info">
-                <span class="option-label">Vinilo Brillante (Gloss)</span>
-                <span class="option-desc">Colores vivos, reflejo brillante e impermeable</span>
-              </div>
-            </label>
-
-            <label class="option-card material-option">
-              <input type="radio" name="sticker_finish" value="Matte">
-              <div class="option-info">
-                <span class="option-label">Vinilo Mate</span>
-                <span class="option-desc">Sin reflejo, acabado suave y elegante</span>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <!-- Step 3: Size Selection -->
-        <div class="config-step-card">
-          <div class="step-title-row">
-            <span class="step-badge">3</span>
-            <h3 class="step-heading">Tamaño (Pulgadas)</h3>
-          </div>
-          <div class="options-grid grid-3">
-            <label class="option-card size-option active">
-              <input type="radio" name="sticker_size" value="2x2" checked>
-              <span class="option-label">2" x 2"</span>
-            </label>
-
-            <label class="option-card size-option">
-              <input type="radio" name="sticker_size" value="3x3">
-              <span class="option-label">3" x 3"</span>
-            </label>
-
-            <label class="option-card size-option">
-              <input type="radio" name="sticker_size" value="4x4">
-              <span class="option-label">4" x 4"</span>
-            </label>
-          </div>
-
-          <!-- Custom Size Inputs -->
-          <div class="custom-size-toggle">
-            <button type="button" class="btn-custom-toggle" id="ToggleCustomSize">+ Tamaño Personalizado</button>
-            <div class="custom-size-inputs" id="CustomSizeContainer" style="display: none;">
-              <div class="size-input-field">
-                <label>Ancho (in)</label>
-                <input type="number" id="CustomWidth" value="2" min="1" max="12" step="0.5">
-              </div>
-              <span class="size-sep">×</span>
-              <div class="size-input-field">
-                <label>Alto (in)</label>
-                <input type="number" id="CustomHeight" value="2" min="1" max="12" step="0.5">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 4: Quantity & Tier Pricing -->
-        <div class="config-step-card">
-          <div class="step-title-row">
-            <span class="step-badge">4</span>
-            <h3 class="step-heading">Selecciona la Cantidad</h3>
-          </div>
-          
-          <div class="quantity-tiers-list" id="QuantityTiersList">
-            <!-- Quantity Cards (Initial 4 shown) -->
-            <label class="qty-tier-row active" data-unit-price="0.50" data-total="25.00" data-savings="0">
-              <input type="radio" name="sticker_qty" value="50" checked>
-              <div class="qty-main-info">
-                <span class="qty-count">50 unid.</span>
-                <span class="qty-price-each">$0.50 c/u</span>
-              </div>
-              <div class="qty-right-info">
-                <span class="qty-total-price">$25.00</span>
-              </div>
-            </label>
-
-            <label class="qty-tier-row" data-unit-price="0.38" data-total="38.00" data-savings="24">
-              <input type="radio" name="sticker_qty" value="100">
-              <div class="qty-main-info">
-                <span class="qty-count">100 unid.</span>
-                <span class="qty-price-each">$0.38 c/u</span>
-                <span class="qty-savings-badge">Ahorra 24%</span>
-              </div>
-              <div class="qty-right-info">
-                <span class="qty-total-price">$38.00</span>
-              </div>
-            </label>
-
-            <label class="qty-tier-row" data-unit-price="0.26" data-total="65.00" data-savings="48">
-              <input type="radio" name="sticker_qty" value="250">
-              <div class="qty-main-info">
-                <span class="qty-count">250 unid.</span>
-                <span class="qty-price-each">$0.26 c/u</span>
-                <span class="qty-savings-badge">Ahorra 48%</span>
-              </div>
-              <div class="qty-right-info">
-                <span class="qty-total-price">$65.00</span>
-              </div>
-            </label>
-
-            <label class="qty-tier-row" data-unit-price="0.19" data-total="95.00" data-savings="62">
-              <input type="radio" name="sticker_qty" value="500">
-              <div class="qty-main-info">
-                <span class="qty-count">500 unid.</span>
-                <span class="qty-price-each">$0.19 c/u</span>
-                <span class="qty-savings-badge">Ahorra 62%</span>
-              </div>
-              <div class="qty-right-info">
-                <span class="qty-total-price">$95.00</span>
-              </div>
-            </label>
-
-            <!-- Hidden Tiers for Show More -->
-            <div class="extra-tiers-container" id="ExtraTiers" style="display: none;">
-              <label class="qty-tier-row" data-unit-price="0.14" data-total="140.00" data-savings="72">
-                <input type="radio" name="sticker_qty" value="1000">
-                <div class="qty-main-info">
-                  <span class="qty-count">1,000 unid.</span>
-                  <span class="qty-price-each">$0.14 c/u</span>
-                  <span class="qty-savings-badge">Ahorra 72%</span>
-                </div>
-                <div class="qty-right-info">
-                  <span class="qty-total-price">$140.00</span>
-                </div>
-              </label>
-
-              <label class="qty-tier-row" data-unit-price="0.11" data-total="275.00" data-savings="78">
-                <input type="radio" name="sticker_qty" value="2500">
-                <div class="qty-main-info">
-                  <span class="qty-count">2,500 unid.</span>
-                  <span class="qty-price-each">$0.11 c/u</span>
-                  <span class="qty-savings-badge">Ahorra 78%</span>
-                </div>
-                <div class="qty-right-info">
-                  <span class="qty-total-price">$275.00</span>
-                </div>
-              </label>
-
-              <label class="qty-tier-row" data-unit-price="0.09" data-total="450.00" data-savings="82">
-                <input type="radio" name="sticker_qty" value="5000">
-                <div class="qty-main-info">
-                  <span class="qty-count">5,000 unid.</span>
-                  <span class="qty-price-each">$0.09 c/u</span>
-                  <span class="qty-savings-badge">Ahorra 82%</span>
-                </div>
-                <div class="qty-right-info">
-                  <span class="qty-total-price">$450.00</span>
-                </div>
-              </label>
-            </div>
-          </div>
-
-          <button type="button" class="btn-show-more-qty" id="ToggleMoreQty">
-            Ver más cantidades ↓
-          </button>
-        </div>
-
-        <!-- Step 5: Upload Design -->
-        <div class="config-step-card">
-          <div class="step-title-row">
-            <span class="step-badge">5</span>
-            <h3 class="step-heading">Sube tu Arte / Diseño</h3>
-          </div>
-          
-          <div class="upload-dropzone" id="DropZone">
-            <input type="file" id="StickerDesignFile" accept="image/*,.pdf,.ai,.psd" style="display: none;">
-            <div class="upload-content" id="UploadContent">
-              <div class="upload-icon">
-                <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-              </div>
-              <span class="upload-title">Arrastra tu archivo aquí o <button type="button" class="btn-browse" onclick="document.getElementById('StickerDesignFile').click()">busca en tu equipo</button></span>
-              <span class="upload-hint">Formatos soportados: PNG, JPG, PDF, AI, PSD (Máx 50MB)</span>
-            </div>
-            
-            <div class="file-preview-card" id="FilePreview" style="display: none;">
-              <span class="file-name" id="FileName">mi-diseno.png</span>
-              <button type="button" class="btn-remove-file" id="RemoveFile">Quitar</button>
-            </div>
-          </div>
-        </div>
-
+  <div class="impress-sticker__shell">
+    <header class="impress-sticker__header">
+      <div>
+        <p class="impress-sticker__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        <h2 class="impress-sticker__title">{{ section.settings.title | escape }}</h2>
+        <p class="impress-sticker__subtitle">{{ section.settings.subtitle | escape }}</p>
       </div>
+      <span class="impress-sticker__version">IMPRESS / STICKERS CONFIG v0.3</span>
+    </header>
 
-      <!-- Right Column: Sticky Live Order Summary -->
-      <div class="config-summary-col">
-        <div class="summary-sticky-card">
-          <h3 class="summary-heading">Resumen de tu Pedido</h3>
-          
-          <div class="summary-details">
-            <div class="summary-row">
-              <span>Producto:</span>
-              <strong>Stickers en Vinilo</strong>
+    {%- if impress_product == blank -%}
+      <div class="impress-sticker__notice" role="status">
+        Añade esta sección a la plantilla de un <strong>producto</strong> de Shopify.
+      </div>
+    {%- elsif impress_product.options.size != 3 -%}
+      <div class="impress-sticker__notice" role="status">
+        <strong>Configura tres opciones del producto:</strong>
+        Forma (según <code>impress-sticker-config.js</code>), Acabado y <code>Tamaño | Cantidad</code>.
+        Ejemplo del valor de la tercera opción: <code>2 x 2 in | 50</code>.
+        Consulta README.md para los pasos exactos.
+      </div>
+    {%- elsif impress_product.variants_count > 250 -%}
+      <div class="impress-sticker__notice" role="status">
+        Este prototipo admite productos con hasta 250 variantes. Este producto tiene
+        {{ impress_product.variants_count }}. Necesitamos un selector de variantes de alta capacidad
+        antes de habilitar compras para evitar que se muestren precios o combinaciones incorrectos.
+      </div>
+    {%- else -%}
+      <div class="impress-sticker__layout">
+        <div class="impress-sticker__preview-column">
+          <div class="impress-sticker__preview impress-sticker__preview--editor" aria-label="Editor visual para stickers">
+            <div class="impress-sticker__preview-top">
+              <span><span class="impress-sticker__dot"></span> IMPRESS EDITOR</span>
+              <span data-impress-preview-finish>ACABADO</span>
             </div>
-            <div class="summary-row">
-              <span>Corte:</span>
-              <strong id="SummaryShape">Die Cut</strong>
+            <div class="impress-sticker__editor-tabs" role="group" aria-label="Modo de vista">
+              <button type="button" data-ie-mode="edit" class="is-active">Editar diseño</button>
+              <button type="button" data-ie-mode="final">Vista final</button>
             </div>
-            <div class="summary-row">
-              <span>Acabado:</span>
-              <strong id="SummaryFinish">Glossy</strong>
+            <div class="impress-sticker__editor-stage" data-ie-stage data-ie-view="edit">
+              <canvas class="impress-sticker__canvas" data-ie-canvas aria-label="Lienzo de diseño; arrastra para mover y usa las esquinas para escalar" role="img"></canvas>
+              <div class="impress-sticker__final-layer" data-ie-final-layer aria-hidden="true">
+                <canvas class="impress-sticker__final-canvas" data-ie-final-canvas></canvas>
+              </div>
+              <span class="impress-sticker__final-hint" data-ie-final-hint>Mueve el cursor o arrastra para inclinar el sticker y ver el acabado</span>
+              <div class="impress-sticker__canvas-empty" data-ie-empty>Sube una imagen para comenzar. Podrás moverla, escalarla, rotarla y añadirle borde.</div>
             </div>
-            <div class="summary-row">
-              <span>Tamaño:</span>
-              <strong id="SummarySize">2" x 2"</strong>
+            <div class="impress-sticker__contour-alert" data-ie-contour-alert hidden role="status">
+              <span>El fondo sigue incluido. Para cortar alrededor del diseño, primero hay que quitarlo.</span>
+              <button type="button" data-ie-contour-remove>Quitar fondo (beta)</button>
             </div>
-            <div class="summary-row">
-              <span>Cantidad:</span>
-              <strong id="SummaryQty">50 unid.</strong>
+            <div class="impress-sticker__editor-actions">
+              <button type="button" data-ie-action="undo" title="Deshacer" disabled>↶ <span>Deshacer</span></button>
+              <button type="button" data-ie-action="redo" title="Rehacer" disabled>↷ <span>Rehacer</span></button>
+              <button type="button" data-ie-action="center" title="Centrar" disabled>⊙ <span>Centrar</span></button>
+              <label class="impress-sticker__guides-toggle impress-sticker__guides-toggle--cut"><input type="checkbox" data-ie-guides checked> <span data-ie-guides-label>Corte</span></label>
+              <label class="impress-sticker__guides-toggle impress-sticker__guides-toggle--safe"><input type="checkbox" data-ie-safe-guides checked> <span>Zona segura · <span data-ie-safe-value>0.0625</span>″</span></label>
             </div>
-            <div class="summary-row">
-              <span>Precio Unitario:</span>
-              <strong id="SummaryUnitPrice">$0.50</strong>
+            <p class="impress-sticker__safety-note" data-ie-safe-note>Rojo: corte. Azul: zona segura. Guías visuales solamente.</p>
+          </div>
+          <div class="impress-sticker__editor-tools" data-ie-tools>
+            <div class="impress-sticker__tools-heading"><strong>Personaliza tu diseño</strong><span>CONFIG v0.3</span></div>
+            <div class="impress-sticker__tool-row">
+              <label for="ieScale-{{ section.id }}">Escala <output data-ie-scale-value>100%</output></label>
+              <input id="ieScale-{{ section.id }}" data-ie-scale type="range" min="20" max="250" step="1" value="100" disabled>
+            </div>
+            <div class="impress-sticker__tool-row">
+              <label for="ieRotate-{{ section.id }}">Rotación <output data-ie-rotate-value>0°</output></label>
+              <input id="ieRotate-{{ section.id }}" data-ie-rotate type="range" min="-180" max="180" step="1" value="0" disabled>
+            </div>
+            <div class="impress-sticker__tool-row impress-sticker__tool-row--two">
+              <div>
+                <label for="ieStroke-{{ section.id }}">Borde <output data-ie-stroke-value>0</output></label>
+                <input id="ieStroke-{{ section.id }}" data-ie-stroke type="range" min="0" max="28" step="1" value="0" disabled>
+              </div>
+              <div>
+                <label for="ieColor-{{ section.id }}">Color del borde</label>
+                <input id="ieColor-{{ section.id }}" data-ie-color type="color" value="#ffffff" disabled aria-label="Color del borde">
+              </div>
+            </div>
+            <div class="impress-sticker__bg-row">
+              <button type="button" data-ie-remove-bg disabled>Quitar fondo simple (beta)</button>
+              <button type="button" data-ie-restore-bg disabled>Restaurar fondo</button>
+              <label for="ieTolerance-{{ section.id }}">Sensibilidad <output data-ie-tolerance-value>35</output></label>
+              <input id="ieTolerance-{{ section.id }}" data-ie-tolerance type="range" min="10" max="100" step="1" value="35" disabled>
+              <small>Funciona mejor con fondos lisos. No es eliminación de fondo por IA.</small>
+            </div>
+            <div class="impress-sticker__tool-bottom">
+              <button type="button" data-ie-download disabled>Descargar vista PNG</button>
+              <span data-ie-editor-message aria-live="polite">La edición funciona en tu navegador.</span>
             </div>
           </div>
+          <p class="impress-sticker__disclaimer">La inclinación y el acabado son simulaciones visuales, no una prueba de imprenta ni un troquel definitivo. Se conserva el archivo original para producción.</p>
+        </div>
 
-          <div class="summary-divider"></div>
+        <div class="impress-sticker__controls-column">
+          {% form 'product', impress_product, id: impress_form_id, class: 'impress-sticker__form' %}
+            <input type="hidden" name="id" value="{{ impress_product.selected_or_first_available_variant.id }}" data-impress-variant-id>
+            <input type="hidden" name="quantity" value="1">
+            <input type="hidden" name="properties[Impress - Tamaño]" value="" data-impress-property-size>
+            <input type="hidden" name="properties[Impress - Piezas por paquete]" value="" data-impress-property-pieces>
+            <input type="hidden" name="properties[Impress - Versión]" value="Sticker v0.4.0">
+            <input type="hidden" name="properties[_Impress - Edición]" data-ie-project value="">
+            <input type="file" class="impress-sticker__file-input" name="properties[Vista editada]" data-ie-output-file tabindex="-1" aria-hidden="true" accept="image/png">
 
-          <div class="summary-total-box">
-            <span>Total Estimado:</span>
-            <span class="summary-total-price" id="SummaryTotal">$25.00</span>
-          </div>
+            <div class="impress-sticker__field">
+              <div class="impress-sticker__field-heading">
+                <span class="impress-sticker__step">01</span>
+                <label class="impress-sticker__label">Forma</label>
+              </div>
+              <div class="impress-sticker__choices" data-impress-shapes role="group" aria-label="Forma"></div>
+            </div>
 
-          <button type="button" class="btn-submit-order">
-            Añadir al Carrito — <span id="BtnPrice">$25.00</span>
-          </button>
+            <div class="impress-sticker__field">
+              <div class="impress-sticker__field-heading">
+                <span class="impress-sticker__step">02</span>
+                <label class="impress-sticker__label">Acabado</label>
+              </div>
+              <div class="impress-sticker__choices" data-impress-finishes role="group" aria-label="Acabado"></div>
+            </div>
 
-          <div class="summary-guarantees">
-            <span>✓ Prueba digital enviada antes de imprimir</span>
-            <span>✓ Envío rápido o recogida disponible</span>
-          </div>
+            <div class="impress-sticker__field impress-sticker__field--grid">
+              <div>
+                <div class="impress-sticker__field-heading">
+                  <span class="impress-sticker__step">03</span>
+                  <label class="impress-sticker__label" for="ImpressSize-{{ section.id }}">Tamaño</label>
+                </div>
+                <select class="impress-sticker__select" id="ImpressSize-{{ section.id }}" data-impress-sizes aria-label="Tamaño"></select>
+              </div>
+              <div>
+                <div class="impress-sticker__field-heading">
+                  <span class="impress-sticker__step">04</span>
+                  <label class="impress-sticker__label" for="ImpressPieces-{{ section.id }}">Cantidad</label>
+                </div>
+                <select class="impress-sticker__select" id="ImpressPieces-{{ section.id }}" data-impress-pieces aria-label="Piezas por paquete"></select>
+              </div>
+            </div>
+
+            <div class="impress-sticker__field">
+              <div class="impress-sticker__field-heading">
+                <span class="impress-sticker__step">05</span>
+                <label class="impress-sticker__label" for="ImpressFile-{{ section.id }}">Sube tu arte original</label>
+              </div>
+              <label class="impress-sticker__dropzone" for="ImpressFile-{{ section.id }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>
+                </svg>
+                <span class="impress-sticker__upload-text" data-impress-file-label>Seleccionar archivo</span>
+                <small>PNG, JPG, WEBP o PDF · hasta 20 MB para esta prueba</small>
+              </label>
+              <input
+                class="impress-sticker__file-input"
+                id="ImpressFile-{{ section.id }}"
+                type="file"
+                name="properties[Arte original]"
+                accept=".png,.jpg,.jpeg,.webp,.pdf"
+                required
+                data-impress-art-input
+                aria-describedby="ImpressFileHint-{{ section.id }}"
+              >
+              <p id="ImpressFileHint-{{ section.id }}" class="impress-sticker__file-hint" data-impress-file-hint aria-live="polite">
+                PNG/JPG/WEBP se pueden editar. Los PDF solo se adjuntan. Original y vista editada se intentan adjuntar al pedido.
+              </p>
+            </div>
+
+            <div class="impress-sticker__summary">
+              <div>
+                <span class="impress-sticker__summary-caption">PRECIO DEL PAQUETE</span>
+                <strong class="impress-sticker__price" data-impress-price>—</strong>
+                <span class="impress-sticker__summary-pieces" data-impress-price-note>Selecciona tus opciones</span>
+              </div>
+              <span class="impress-sticker__summary-mark">IMPRESS</span>
+            </div>
+
+            <p class="impress-sticker__form-message" role="status" aria-live="polite" data-impress-form-message></p>
+            <button type="submit" class="impress-sticker__submit" data-impress-submit disabled>
+              Añadir al carrito
+              <span aria-hidden="true">→</span>
+            </button>
+            <p class="impress-sticker__checkout-note">Precio real de Shopify · 1 paquete por artículo en carrito</p>
+          {% endform %}
         </div>
       </div>
 
-    </div>
-
+      <script type="application/json" data-impress-variants>
+      [
+        {%- for variant in impress_product.variants -%}
+          {
+            "id": {{ variant.id | json }},
+            "options": {{ variant.options | json }},
+            "price": {{ variant.price | json }},
+            "available": {{ variant.available | json }}
+          }{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+      </script>
+    {%- endif -%}
   </div>
-</div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Option Card Selection Handlers
-    function setupRadioGroup(cardSelector) {
-      const cards = document.querySelectorAll(cardSelector);
-      cards.forEach(card => {
-        card.addEventListener('click', () => {
-          cards.forEach(c => c.classList.remove('active'));
-          card.classList.add('active');
-          const radio = card.querySelector('input[type="radio"]');
-          if (radio) radio.checked = true;
-          updateSummary();
-        });
-      });
-    }
-
-    setupRadioGroup('.shape-option');
-    setupRadioGroup('.material-option');
-    setupRadioGroup('.size-option');
-
-    // Quantity Tier Selection
-    const qtyRows = document.querySelectorAll('.qty-tier-row');
-    qtyRows.forEach(row => {
-      row.addEventListener('click', () => {
-        qtyRows.forEach(r => r.classList.remove('active'));
-        row.classList.add('active');
-        const radio = row.querySelector('input[type="radio"]');
-        if (radio) radio.checked = true;
-        updateSummary();
-      });
-    });
-
-    // Toggle Extra Quantities
-    const btnMoreQty = document.getElementById('ToggleMoreQty');
-    const extraTiers = document.getElementById('ExtraTiers');
-    if (btnMoreQty && extraTiers) {
-      btnMoreQty.addEventListener('click', () => {
-        const isHidden = extraTiers.style.display === 'none';
-        extraTiers.style.display = isHidden ? 'block' : 'none';
-        btnMoreQty.innerText = isHidden ? 'Ver menos cantidades ↑' : 'Ver más cantidades ↓';
-      });
-    }
-
-    // Custom Size Toggle
-    const toggleCustomBtn = document.getElementById('ToggleCustomSize');
-    const customSizeContainer = document.getElementById('CustomSizeContainer');
-    if (toggleCustomBtn && customSizeContainer) {
-      toggleCustomBtn.addEventListener('click', () => {
-        const isHidden = customSizeContainer.style.display === 'none';
-        customSizeContainer.style.display = isHidden ? 'flex' : 'none';
-        toggleCustomBtn.innerText = isHidden ? '- Usar tamaños predeterminados' : '+ Tamaño Personalizado';
-        updateSummary();
-      });
-    }
-
-    // File Upload Handler
-    const fileInput = document.getElementById('StickerDesignFile');
-    const uploadContent = document.getElementById('UploadContent');
-    const filePreview = document.getElementById('FilePreview');
-    const fileNameSpan = document.getElementById('FileName');
-    const removeFileBtn = document.getElementById('RemoveFile');
-
-    if (fileInput) {
-      fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-          fileNameSpan.innerText = e.target.files[0].name;
-          uploadContent.style.display = 'none';
-          filePreview.style.display = 'flex';
-        }
-      });
-
-      removeFileBtn.addEventListener('click', () => {
-        fileInput.value = '';
-        uploadContent.style.display = 'flex';
-        filePreview.style.display = 'none';
-      });
-    }
-
-    // Sync Live Order Summary
-    function updateSummary() {
-      const activeShape = document.querySelector('input[name="sticker_shape"]:checked');
-      const activeFinish = document.querySelector('input[name="sticker_finish"]:checked');
-      const activeSize = document.querySelector('input[name="sticker_size"]:checked');
-      const activeQtyRow = document.querySelector('.qty-tier-row.active');
-
-      if (activeShape) document.getElementById('SummaryShape').innerText = activeShape.value;
-      if (activeFinish) document.getElementById('SummaryFinish').innerText = activeFinish.value;
-
-      // Handle custom size vs preset size
-      if (customSizeContainer && customSizeContainer.style.display !== 'none') {
-        const w = document.getElementById('CustomWidth').value || 0;
-        const h = document.getElementById('CustomHeight').value || 0;
-        document.getElementById('SummarySize').innerText = `${w}" x ${h}"`;
-      } else if (activeSize) {
-        document.getElementById('SummarySize').innerText = `${activeSize.value}"`;
-      }
-
-      if (activeQtyRow) {
-        const qtyVal = activeQtyRow.querySelector('input').value;
-        const totalVal = activeQtyRow.getAttribute('data-total');
-        const unitVal = activeQtyRow.getAttribute('data-unit-price');
-
-        document.getElementById('SummaryQty').innerText = `${qtyVal} unid.`;
-        document.getElementById('SummaryUnitPrice').innerText = `$${unitVal}`;
-        document.getElementById('SummaryTotal').innerText = `$${totalVal}`;
-        document.getElementById('BtnPrice').innerText = `$${totalVal}`;
-      }
-    }
-
-    // Attach listeners to custom inputs
-    document.getElementById('CustomWidth').addEventListener('input', updateSummary);
-    document.getElementById('CustomHeight').addEventListener('input', updateSummary);
-  });
-</script>
-
-{% stylesheet %}
-.sticker-config-wrapper {
-  width: 100%;
-  background-color: var(--bg-color);
-  padding-top: var(--padding-v);
-  padding-bottom: var(--padding-v);
-  padding-left: 20px;
-  padding-right: 20px;
-  box-sizing: border-box;
-  color: var(--text-color);
-}
-
-.sticker-config-container {
-  max-width: var(--max-width);
-  margin: 0 auto;
-}
-
-.config-subheading {
-  display: block;
-  font-size: 13px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--accent-yellow);
-  margin-bottom: 8px;
-}
-
-.config-heading {
-  font-size: 42px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  margin: 0 0 40px 0;
-}
-
-/* GRID LAYOUT */
-.config-grid {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 32px;
-  align-items: start;
-}
-
-/* CARDS & STEPS */
-.config-steps-col {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.config-step-card {
-  background-color: var(--card-bg);
-  border-radius: 20px;
-  padding: 28px;
-  box-sizing: border-box;
-}
-
-.step-title-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.step-badge {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: var(--accent-yellow);
-  color: #000000;
-  font-size: 15px;
-  font-weight: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.step-heading {
-  font-size: 20px;
-  font-weight: 800;
-  margin: 0;
-}
-
-/* OPTION GRIDS */
-.options-grid {
-  display: grid;
-  gap: 12px;
-}
-
-.grid-3 { grid-template-columns: repeat(3, 1fr); }
-.grid-2 { grid-template-columns: repeat(2, 1fr); }
-
-.option-card {
-  border: 2px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 16px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  background-color: rgba(255, 255, 255, 0.02);
-  transition: all 0.2s ease;
-  user-select: none;
-}
-
-.option-card input[type="radio"] {
-  display: none;
-}
-
-.option-card:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.option-card.active {
-  border-color: var(--accent-yellow);
-  background-color: rgba(255, 204, 0, 0.06);
-}
-
-.option-icon {
-  margin-bottom: 8px;
-  color: var(--text-color);
-}
-
-.option-label {
-  font-size: 15px;
-  font-weight: 800;
-}
-
-.option-desc {
-  font-size: 12px;
-  color: var(--text-sub);
-  margin-top: 4px;
-}
-
-.material-option {
-  text-align: left;
-  align-items: flex-start;
-}
-
-/* CUSTOM SIZE INPUTS */
-.custom-size-toggle {
-  margin-top: 16px;
-}
-
-.btn-custom-toggle {
-  background: none;
-  border: none;
-  color: var(--accent-yellow);
-  font-weight: 700;
-  cursor: pointer;
-  padding: 0;
-  font-size: 14px;
-}
-
-.custom-size-inputs {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.size-input-field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.size-input-field label {
-  font-size: 12px;
-  color: var(--text-sub);
-}
-
-.size-input-field input {
-  width: 90px;
-  background-color: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-  color: #ffffff;
-  padding: 10px;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.size-sep {
-  font-size: 18px;
-  margin-top: 18px;
-  color: var(--text-sub);
-}
-
-/* QUANTITY TIERS */
-.quantity-tiers-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.qty-tier-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 2px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 14px 18px;
-  cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.02);
-  transition: all 0.2s ease;
-}
-
-.qty-tier-row input { display: none; }
-
-.qty-tier-row:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.qty-tier-row.active {
-  border-color: var(--accent-yellow);
-  background-color: rgba(255, 204, 0, 0.06);
-}
-
-.qty-main-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.qty-count {
-  font-size: 16px;
-  font-weight: 800;
-}
-
-.qty-price-each {
-  font-size: 13px;
-  color: var(--text-sub);
-}
-
-.qty-savings-badge {
-  background-color: #16a34a;
-  color: #ffffff;
-  font-size: 11px;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 20px;
-}
-
-.qty-total-price {
-  font-size: 16px;
-  font-weight: 800;
-}
-
-.btn-show-more-qty {
-  width: 100%;
-  background: none;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  color: var(--text-color);
-  padding: 12px;
-  border-radius: 10px;
-  font-weight: 700;
-  margin-top: 12px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.btn-show-more-qty:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-/* FILE UPLOAD DROPZONE */
-.upload-dropzone {
-  border: 2px dashed rgba(255, 255, 255, 0.2);
-  border-radius: 14px;
-  padding: 28px;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-.upload-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.upload-title {
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.btn-browse {
-  background: none;
-  border: none;
-  color: var(--accent-yellow);
-  text-decoration: underline;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.upload-hint {
-  font-size: 12px;
-  color: var(--text-sub);
-}
-
-.file-preview-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: rgba(255, 255, 255, 0.08);
-  padding: 12px 16px;
-  border-radius: 8px;
-}
-
-.btn-remove-file {
-  background: none;
-  border: none;
-  color: #ef4444;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-/* RIGHT SUMMARY CARD */
-.summary-sticky-card {
-  position: sticky;
-  top: 40px;
-  background-color: var(--card-bg);
-  border-radius: 20px;
-  padding: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.summary-heading {
-  font-size: 22px;
-  font-weight: 900;
-  margin: 0 0 20px 0;
-}
-
-.summary-details {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-}
-
-.summary-row span {
-  color: var(--text-sub);
-}
-
-.summary-divider {
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.1);
-  margin: 20px 0;
-}
-
-.summary-total-box {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  font-size: 16px;
-  font-weight: 800;
-}
-
-.summary-total-price {
-  font-size: 28px;
-  font-weight: 900;
-  color: var(--accent-yellow);
-}
-
-.btn-submit-order {
-  width: 100%;
-  background-color: var(--accent-yellow);
-  color: #000000;
-  border: none;
-  padding: 18px;
-  border-radius: 50px;
-  font-size: 16px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-.btn-submit-order:hover {
-  transform: translateY(-2px);
-}
-
-.summary-guarantees {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text-sub);
-}
-
-/* RESPONSIVE */
-@media (max-width: 960px) {
-  .config-grid {
-    grid-template-columns: 1fr;
-  }
-  .grid-3 {
-    grid-template-columns: 1fr;
-  }
-  .grid-2 {
-    grid-template-columns: 1fr;
-  }
-}
-{% endstylesheet %}
+</section>
 
 {% schema %}
 {
-  "name": "Sticker Configurator",
+  "name": "Impress Sticker Editor",
+  "tag": "section",
+  "class": "impress-sticker-section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
   "settings": [
-    {
-      "type": "header",
-      "content": "Header & Colors"
-    },
-    {
-      "type": "text",
-      "id": "subheading",
-      "label": "Subheading",
-      "default": "CONFIGURADOR DE IMPRESIÓN"
-    },
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Stickers en Vinilo Personalizados"
-    },
-    {
-      "type": "color",
-      "id": "bg_color",
-      "label": "Background Color",
-      "default": "#0e1117"
-    },
-    {
-      "type": "color",
-      "id": "card_bg_color",
-      "label": "Card Background Color",
-      "default": "#161b22"
-    },
-    {
-      "type": "color",
-      "id": "accent_yellow",
-      "label": "Accent Yellow",
-      "default": "#ffcc00"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text Color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "text_sub_color",
-      "label": "Secondary Text Color",
-      "default": "#9198a1"
-    },
-    {
-      "type": "header",
-      "content": "Layout Settings"
-    },
-    {
-      "type": "range",
-      "id": "max_width",
-      "min": 800,
-      "max": 1400,
-      "step": 20,
-      "unit": "px",
-      "label": "Container Max Width",
-      "default": 1240
-    },
-    {
-      "type": "range",
-      "id": "vertical_padding",
-      "min": 0,
-      "max": 100,
-      "step": 5,
-      "unit": "px",
-      "label": "Top & Bottom Spacing",
-      "default": 60
-    }
+    {"type": "text", "id": "eyebrow", "label": "Etiqueta superior", "default": "IMPRESS / CUSTOM PRINT"},
+    {"type": "text", "id": "title", "label": "Título", "default": "Crea tus stickers"},
+    {"type": "text", "id": "subtitle", "label": "Subtítulo", "default": "Escoge el corte, acabado y cantidad. Nosotros nos encargamos del resto."}
   ],
   "presets": [
-    {
-      "name": "Sticker Configurator"
-    }
+    {"name": "Impress Sticker Editor"}
   ]
 }
 {% endschema %}

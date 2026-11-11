@@ -1,0 +1,85 @@
+/* Impress Banners v0.1. Namespaced; cannot affect the Stickers editor. */
+.impress-banner{--ib-ink:#192b34;--ib-muted:#6d808c;--ib-line:#d9e3e8;--ib-red:#ed5d5b;--ib-blue:#42acc0;--ib-yellow:#fbbf00;color:var(--ib-ink);font-family:inherit}
+.impress-banner *, .impress-banner *::before,.impress-banner *::after{box-sizing:border-box}
+.impress-banner__shell{max-width:1280px;margin:0 auto;padding:46px 22px 74px}
+.impress-banner__header{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:26px}
+.impress-banner__eyebrow{font-size:11px;letter-spacing:.16em;font-weight:800;color:#ed583a;margin:0 0 12px}
+.impress-banner__title{font-weight:800;font-size:clamp(30px,4vw,50px);letter-spacing:-.048em;line-height:1.08;margin:0}
+.impress-banner__subtitle{color:var(--ib-muted);font-size:14px;line-height:1.5;margin:12px 0 0}
+.impress-banner__version{letter-spacing:.12em;font-size:10px;color:#a0abb1;white-space:nowrap;font-weight:750}
+.impress-banner__layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(355px,.95fr);gap:24px;align-items:start}
+.impress-banner__left{min-width:0}
+.impress-banner__preview{background:radial-gradient(ellipse at 22% 20%,#f9fbfc 0,#e5eaed 80%);border:1px solid var(--ib-line);border-radius:17px;padding:18px 19px 14px;overflow:hidden}
+.impress-banner__preview-top{display:flex;align-items:center;justify-content:space-between;color:#7d909b;font-size:10px;font-weight:800;letter-spacing:.13em}
+.impress-banner__dot{width:7px;height:7px;display:inline-block;border-radius:50%;background:#58bca1;margin-right:6px}
+.impress-banner__tabs{display:flex;gap:4px;background:#f7fafb;border:1px solid #d9e2e7;border-radius:10px;width:max-content;margin:17px auto 5px;padding:4px}
+.impress-banner__tabs button{appearance:none;border:0;cursor:pointer;color:#71838e;background:transparent;border-radius:7px;font:inherit;font-size:12px;font-weight:700;padding:9px 15px}
+.impress-banner__tabs button.is-active{background:#fff;color:#182c35;box-shadow:0 2px 7px #14283313}
+.impress-banner__stage{position:relative;min-height:390px;width:100%;touch-action:pan-y}
+.impress-banner__canvas{width:100%;height:390px;display:block;touch-action:none;cursor:default}
+.impress-banner__final-layer{position:absolute;inset:0;display:none;pointer-events:none;transform-origin:center center;transition:transform .1s ease-out}
+.impress-banner__final-canvas{width:100%;height:390px;display:block}
+.impress-banner__stage[data-ib-view=final] .impress-banner__final-layer{display:block}
+.impress-banner__stage[data-ib-view=final] .impress-banner__canvas{pointer-events:none}
+.impress-banner__empty{position:absolute;left:50%;top:53%;transform:translate(-50%,-50%);background:#fffdf1df;border:1px solid #e5dfc4;padding:13px 16px;border-radius:10px;color:#67747c;font-size:12px;text-align:center;max-width:250px;line-height:1.5;pointer-events:none}
+.impress-banner__empty[hidden]{display:none}
+.impress-banner__tilt-hint{display:none;position:absolute;bottom:5px;left:0;right:0;text-align:center;color:#71838e;font-size:11px;pointer-events:none}
+.impress-banner__stage[data-ib-view=final] .impress-banner__tilt-hint{display:block}
+.impress-banner__toolbar{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;border-top:1px solid #d3dfe4;padding:11px 0 0}
+.impress-banner__toolbar button,.impress-banner__tool-bottom button{background:#fff;border:1px solid #d4dfe5;border-radius:8px;font:inherit;font-weight:650;font-size:11px;color:#415662;padding:8px 11px;cursor:pointer}
+.impress-banner__toolbar button:disabled,.impress-banner__tool-bottom button:disabled{opacity:.43;cursor:not-allowed}
+.impress-banner__toggle{display:inline-flex;gap:6px;align-items:center;color:#647985;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.impress-banner__toggle input{accent-color:#319ab2}
+.impress-banner__toggle--cut{color:#d66867}
+.impress-banner__toggle--mount{color:#318ca5}
+.impress-banner__guide-note{font-size:11px;line-height:1.5;text-align:center;color:#79909b;margin:12px 0 0;min-height:33px}
+.impress-banner__tools{margin-top:12px;padding:21px 24px;border:1px solid var(--ib-line);border-radius:15px;background:#fff}
+.impress-banner__tools-head{display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-bottom:16px}
+.impress-banner__tools-head span{font-size:10px;font-weight:750;letter-spacing:.09em;color:#a1aeb6}
+.impress-banner__tool{margin-bottom:15px}
+.impress-banner__tool label{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:700;margin-bottom:8px}
+.impress-banner__tool label output{font-size:12px;color:#5d8294}
+.impress-banner__tool input[type=range]{width:100%;accent-color:#1e687e;margin:0;cursor:pointer}
+.impress-banner__tool-bottom{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid #e7edef}
+.impress-banner__tool-bottom span{font-size:10px;color:#8396a0;flex:1;line-height:1.4}
+.impress-banner__disclaimer{font-size:11px;line-height:1.55;color:var(--ib-muted);margin:12px 4px 0}
+.impress-banner__right{padding:26px 27px 28px;border:1px solid var(--ib-line);background:#fff;border-radius:17px;box-shadow:0 9px 32px #203f4e0a}
+.impress-banner__form{margin:0}
+.impress-banner__field{margin-bottom:25px}
+.impress-banner__field-head{display:flex;align-items:center;gap:10px;margin:0 0 11px}
+.impress-banner__step{font-size:10px;font-weight:850;letter-spacing:.1em;color:#ed583a}
+.impress-banner__field-title{font-size:13px;font-weight:800;color:#1c2f38}
+.impress-banner__mounts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding-top:3px}
+.impress-banner__mount-card{cursor:pointer;position:relative;min-width:0}
+.impress-banner__mount-card input{position:absolute;opacity:0;width:1px;height:1px}
+.impress-banner__mount-surface{min-height:69px;border:1px solid #dce4e8;background:#fff;border-radius:11px;display:flex;gap:10px;align-items:center;padding:11px 13px;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
+.impress-banner__mount-card input:checked + .impress-banner__mount-surface{border-color:#1b313d;box-shadow:0 9px 16px #1d38451a,inset 0 0 0 1px #1b313d;transform:translateY(-3px)}
+.impress-banner__mount-card input:focus-visible + .impress-banner__mount-surface{outline:3px solid #ecb08c;outline-offset:3px}
+.impress-banner__mount-icon{width:42px;height:42px;flex:0 0 42px;transition:transform .2s ease}
+.impress-banner__mount-card input:checked + .impress-banner__mount-surface .impress-banner__mount-icon{transform:rotate(-8deg)}
+.impress-banner__mount-label{font-size:12px;font-weight:780}
+.impress-banner__select{height:45px;width:100%;padding:0 13px;background:#fff;border:1px solid #d7e0e6;border-radius:9px;color:#233944;font:inherit;font-size:13px}
+.impress-banner__field-note{font-size:11px;line-height:1.55;color:#8297a2;margin:8px 0 0}
+.impress-banner__qty{display:flex;align-items:center;max-width:183px;height:43px;border:1px solid #d7e0e6;border-radius:9px;overflow:hidden}
+.impress-banner__qty button{background:#f5f8f9;border:0;width:43px;height:100%;font:inherit;font-size:20px;color:#395361;cursor:pointer}
+.impress-banner__qty input{flex:1;width:100%;min-width:0;height:100%;border:0;text-align:center;font:inherit;font-weight:750;font-size:14px;color:#263b45;appearance:textfield;-moz-appearance:textfield}
+.impress-banner__qty input::-webkit-inner-spin-button,.impress-banner__qty input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.impress-banner__dropzone{display:flex;min-height:112px;align-items:center;justify-content:center;flex-direction:column;gap:5px;border:1.5px dashed #b8ccd6;border-radius:11px;background:#f8fafb;cursor:pointer;padding:12px;color:#304d5b}
+.impress-banner__dropzone small{font-size:10px;color:#8ca2ae;text-align:center}
+.impress-banner__upload-icon{display:block;font-size:25px;line-height:1;color:#4b90a4}
+.impress-banner__dropzone strong{font-size:12px;overflow-wrap:anywhere;max-width:100%;text-align:center}
+.impress-banner__file{margin-top:8px;font-size:11px;max-width:100%;color:#708590}
+.impress-banner__hidden-file{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.impress-banner__mount-summary{font-size:12px;line-height:1.5;color:#4a6675;background:#f5f8f9;border:1px solid #e1eaee;border-radius:9px;padding:12px 13px;margin:2px 0 20px}
+.impress-banner__summary{display:flex;flex-direction:column;gap:7px;border-top:1px solid #dce5e9;padding-top:16px;margin-bottom:12px}
+.impress-banner__summary span{font-size:10px;color:#8095a1;letter-spacing:.09em;font-weight:800}
+.impress-banner__summary strong{font-size:30px;font-weight:800;letter-spacing:-.04em}
+.impress-banner__summary small{color:#8496a1;font-size:11px}
+.impress-banner__message{font-size:12px;line-height:1.6;color:#cb5c48;min-height:1em}
+.impress-banner__submit{width:100%;display:flex;justify-content:space-between;align-items:center;border:0;background:#192e3b;color:#fff;border-radius:9px;padding:16px 18px;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.impress-banner__submit:disabled{background:#a2a8aa;cursor:not-allowed}
+.impress-banner__checkout-note{font-size:10px;color:#8fa1aa;text-align:center;margin:11px 0 0}
+.impress-banner__notice{border:1px solid #efd5b7;padding:16px;border-radius:10px;background:#fffaf1}
+@media(max-width:960px){.impress-banner__layout{grid-template-columns:1fr}.impress-banner__shell{max-width:780px}.impress-banner__stage,.impress-banner__canvas,.impress-banner__final-canvas{height:400px}}
+@media(max-width:620px){.impress-banner__shell{padding:26px 14px 50px}.impress-banner__header{align-items:flex-start}.impress-banner__version{display:none}.impress-banner__preview{padding:15px 13px}.impress-banner__stage{min-height:315px}.impress-banner__stage,.impress-banner__canvas,.impress-banner__final-canvas{height:315px}.impress-banner__right{padding:21px 17px}.impress-banner__mount-surface{padding:9px;min-height:63px}.impress-banner__mount-icon{width:36px;height:36px;flex-basis:36px}.impress-banner__tools{padding:17px}.impress-banner__toolbar{gap:6px}.impress-banner__toolbar button{padding:8px 7px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){.impress-banner__mount-surface,.impress-banner__mount-icon,.impress-banner__final-layer{transition:none}}

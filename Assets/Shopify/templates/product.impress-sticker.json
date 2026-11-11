@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "impress-sticker-configurator",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

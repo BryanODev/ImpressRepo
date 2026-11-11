@@ -1,0 +1,46 @@
+{
+  "sticker": {
+    "background": {
+      "pixel": [
+        248,
+        250,
+        251,
+        255
+      ],
+      "width": 564.546875,
+      "height": 438
+    },
+    "center_after_upload": [
+      249,
+      250,
+      252,
+      255
+    ],
+    "tilt_before": "perspective(950px) rotateX(0deg) rotateY(0deg)",
+    "tilt_after": "perspective(950px) rotateX(4.62deg) rotateY(7.02deg)",
+    "errors": [],
+    "shape_or_mount_options": 4
+  },
+  "banner": {
+    "background": {
+      "pixel": [
+        248,
+        250,
+        251,
+        255
+      ],
+      "width": 564.890625,
+      "height": 390
+    },
+    "center_after_upload": [
+      0,
+      57,
+      74,
+      255
+    ],
+    "tilt_before": "perspective(950px) rotateX(0deg) rotateY(0deg)",
+    "tilt_after": "perspective(950px) rotateX(4.62deg) rotateY(7.02deg)",
+    "errors": [],
+    "shape_or_mount_options": 2
+  }
+}

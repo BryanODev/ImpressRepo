@@ -1,0 +1,95 @@
+<!doctype html><html lang="es-PR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/assets/impress-banner-configurator.css"></head><body><section class="impress-banner" id="ImpressBanner-dev" data-impress-banner
+  data-currency="USD"
+  data-selected-variant="1000">
+  <div class="impress-banner__shell">
+    <header class="impress-banner__header">
+      <div>
+        <p class="impress-banner__eyebrow">IMPRESS / CUSTOM PRINT</p>
+        <h2 class="impress-banner__title">Crea tu banner</h2>
+        <p class="impress-banner__subtitle">Selecciona tu tamaño y montaje. Ajusta tu diseño antes de pedir.</p>
+      </div>
+      <span class="impress-banner__version">IMPRESS / BANNERS v0.1</span>
+    </header>
+    
+      <div class="impress-banner__notice" role="status">Agrega esta sección a una plantilla de <strong>producto</strong> en Shopify.</div>
+    
+      <div class="impress-banner__layout">
+        <div class="impress-banner__left">
+          <div class="impress-banner__preview">
+            <div class="impress-banner__preview-top"><span><span class="impress-banner__dot"></span> IMPRESS EDITOR</span><span data-ib-mount-caption>ARGOLLAS</span></div>
+            <div class="impress-banner__tabs" role="group" aria-label="Modo de vista">
+              <button type="button" class="is-active" data-ib-mode="edit">Editar diseño</button>
+              <button type="button" data-ib-mode="final">Vista final</button>
+            </div>
+            <div class="impress-banner__stage" data-ib-stage data-ib-view="edit">
+              <canvas data-ib-canvas class="impress-banner__canvas" aria-label="Lienzo para mover y escalar arte" role="img"></canvas>
+              <div data-ib-final-layer class="impress-banner__final-layer" aria-hidden="true"><canvas class="impress-banner__final-canvas" data-ib-final-canvas></canvas></div>
+              <div class="impress-banner__empty" data-ib-empty>Sube una imagen para comenzar. Podrás moverla, escalarla y rotarla.</div>
+              <span class="impress-banner__tilt-hint">Mueve el cursor o arrastra para ver el montaje</span>
+            </div>
+            <div class="impress-banner__toolbar">
+              <button type="button" data-ib-action="undo" disabled>↶ Deshacer</button>
+              <button type="button" data-ib-action="redo" disabled>↷ Rehacer</button>
+              <button type="button" data-ib-action="center" disabled>⊙ Centrar</button>
+              <label class="impress-banner__toggle impress-banner__toggle--cut"><input type="checkbox" data-ib-show-cut checked><span>Corte</span></label>
+              <label class="impress-banner__toggle impress-banner__toggle--mount"><input type="checkbox" data-ib-show-mount checked><span>Montaje</span></label>
+            </div>
+            <p class="impress-banner__guide-note" data-ib-guide-note>Las líneas punteadas indican áreas de montaje aproximadas, no posiciones definitivas de producción.</p>
+          </div>
+          <div class="impress-banner__tools">
+            <div class="impress-banner__tools-head"><strong>Ajusta tu arte</strong><span>EDICIÓN BÁSICA</span></div>
+            <div class="impress-banner__tool">
+              <label for="IbScale-dev">Escala <output data-ib-scale-value>100%</output></label>
+              <input id="IbScale-dev" type="range" data-ib-scale min="20" max="250" step="1" value="100" disabled>
+            </div>
+            <div class="impress-banner__tool">
+              <label for="IbRotate-dev">Rotación <output data-ib-rotate-value>0°</output></label>
+              <input id="IbRotate-dev" type="range" data-ib-rotate min="-180" max="180" step="1" value="0" disabled>
+            </div>
+            <div class="impress-banner__tool-bottom"><button type="button" data-ib-download disabled>Descargar vista PNG</button><span data-ib-editor-message aria-live="polite">El archivo original se conserva sin modificar.</span></div>
+          </div>
+          <p class="impress-banner__disclaimer">Vista ilustrativa. Argollas, palos, corte y colores requieren revisión de producción. La vista PNG editada no sustituye el archivo original.</p>
+        </div>
+        <div class="impress-banner__right">
+          <form class="impress-banner__form" method="post">
+            <input type="hidden" name="id" value="1000" data-ib-variant-id>
+            <input type="hidden" name="properties[Impress - Tipo de montaje]" data-ib-property-mount>
+            <input type="hidden" name="properties[Impress - Tamaño]" data-ib-property-size>
+            <input type="hidden" name="properties[Impress - Editor]" value="Banner v0.1">
+            <input type="hidden" name="properties[_Impress - Edición]" data-ib-project>
+            <input type="file" class="impress-banner__hidden-file" name="properties[Vista editada]" data-ib-output-file accept="image/png" tabindex="-1" aria-hidden="true">
+            <div class="impress-banner__field">
+              <div class="impress-banner__field-head"><span class="impress-banner__step">01</span><span class="impress-banner__field-title">Montaje</span></div>
+              <div class="impress-banner__mounts" data-ib-mounts role="group" aria-label="Tipo de montaje"></div>
+            </div>
+            <div class="impress-banner__field">
+              <div class="impress-banner__field-head"><span class="impress-banner__step">02</span><label for="IbSize-dev" class="impress-banner__field-title">Tamaño del banner</label></div>
+              <select id="IbSize-dev" data-ib-sizes class="impress-banner__select"></select>
+              <p class="impress-banner__field-note">Alto × ancho. La vista conserva la proporción seleccionada.</p>
+            </div>
+            <div class="impress-banner__field">
+              <div class="impress-banner__field-head"><span class="impress-banner__step">03</span><label for="IbQty-dev" class="impress-banner__field-title">Cantidad de banners</label></div>
+              <div class="impress-banner__qty">
+                <button type="button" data-ib-qty-down aria-label="Reducir cantidad">−</button>
+                <input type="number" id="IbQty-dev" data-ib-quantity name="quantity" min="1" max="100" step="1" value="1" inputmode="numeric">
+                <button type="button" data-ib-qty-up aria-label="Aumentar cantidad">+</button>
+              </div>
+            </div>
+            <div class="impress-banner__field">
+              <div class="impress-banner__field-head"><span class="impress-banner__step">04</span><label for="IbArt-dev" class="impress-banner__field-title">Sube tu diseño</label></div>
+              <label for="IbArt-dev" class="impress-banner__dropzone"><span class="impress-banner__upload-icon" aria-hidden="true">↑</span><strong data-ib-file-label>Seleccionar archivo</strong><small>PNG, JPG, WEBP o PDF · máximo 20 MB en esta prueba</small></label>
+              <input id="IbArt-dev" class="impress-banner__file" type="file" name="properties[Arte original]" accept=".png,.jpg,.jpeg,.webp,.pdf" data-ib-art-input required>
+              <p class="impress-banner__field-note" data-ib-file-hint>El PNG/JPG/WEBP se previsualiza. El PDF se adjunta sin edición visual.</p>
+            </div>
+            <div class="impress-banner__mount-summary" data-ib-mount-summary role="status">Selecciona un tipo de montaje.</div>
+            <div class="impress-banner__summary"><span>PRECIO ESTIMADO DEL PEDIDO</span><strong data-ib-total>—</strong><small data-ib-price-note>Configura un producto para consultar el precio de Shopify.</small></div>
+            <p class="impress-banner__message" data-ib-message role="status" aria-live="polite"></p>
+            <button class="impress-banner__submit" type="submit" data-ib-submit disabled>Añadir al carrito <span aria-hidden="true">→</span></button>
+            <p class="impress-banner__checkout-note">El cobro siempre utiliza variantes y precios reales de Shopify.</p>
+          </form>
+        </div>
+      </div>
+      <script type="application/json" data-ib-variants>[{"id": "1000", "options": ["Argollas", "2 x 4 ft"], "price": 5300, "available": true}, {"id": "1001", "options": ["Argollas", "3 x 6 ft"], "price": 9800, "available": true}, {"id": "1002", "options": ["Argollas", "4 x 8 ft"], "price": 16800, "available": true}, {"id": "1003", "options": ["Palos", "2 x 4 ft"], "price": 4400, "available": true}, {"id": "1004", "options": ["Palos", "3 x 6 ft"], "price": 8900, "available": true}, {"id": "1005", "options": ["Palos", "4 x 8 ft"], "price": 15900, "available": true}]</script>
+    
+  </div>
+</section><script src="/assets/impress-banner-editor.js"></script><script src="/assets/impress-banner-configurator.js"></script></body></html>

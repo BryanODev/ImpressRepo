@@ -1,0 +1,122 @@
+{{ 'impress-banner-configurator.css' | asset_url | stylesheet_tag }}
+{{ 'impress-preview-shared.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'impress-editor-core.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-banner-config.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-banner-editor.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-banner-configurator.js' | asset_url }}" defer></script>
+
+{%- assign ib_product = product -%}
+{%- assign ib_form_id = 'ImpressBannerForm-' | append: section.id -%}
+<section class="impress-banner" id="ImpressBanner-{{ section.id }}" data-impress-banner
+  data-currency="{{ cart.currency.iso_code | default: shop.currency | escape }}"
+  data-selected-variant="{{ ib_product.selected_or_first_available_variant.id }}">
+  <div class="impress-banner__shell">
+    <header class="impress-banner__header">
+      <div>
+        <p class="impress-banner__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        <h2 class="impress-banner__title">{{ section.settings.title | escape }}</h2>
+        <p class="impress-banner__subtitle">{{ section.settings.subtitle | escape }}</p>
+      </div>
+      <span class="impress-banner__version">IMPRESS / BANNERS CONFIG v0.3</span>
+    </header>
+    {%- if ib_product == blank -%}
+      <div class="impress-banner__notice" role="status">Agrega esta sección a una plantilla de <strong>producto</strong> en Shopify.</div>
+    {%- else -%}
+      <div class="impress-banner__layout">
+        <div class="impress-banner__left">
+          <div class="impress-banner__preview">
+            <div class="impress-banner__preview-top"><span><span class="impress-banner__dot"></span> IMPRESS EDITOR</span><span data-ib-mount-caption>ARGOLLAS</span></div>
+            <div class="impress-banner__tabs" role="group" aria-label="Modo de vista">
+              <button type="button" class="is-active" data-ib-mode="edit">Editar diseño</button>
+              <button type="button" data-ib-mode="final">Vista final</button>
+            </div>
+            <div class="impress-banner__stage" data-ib-stage data-ib-view="edit">
+              <canvas data-ib-canvas class="impress-banner__canvas" aria-label="Lienzo para mover y escalar arte" role="img"></canvas>
+              <div data-ib-final-layer class="impress-banner__final-layer" aria-hidden="true"><canvas class="impress-banner__final-canvas" data-ib-final-canvas></canvas></div>
+              <div class="impress-banner__empty" data-ib-empty>Sube una imagen para comenzar. Podrás moverla, escalarla y rotarla.</div>
+              <span class="impress-banner__tilt-hint">Mueve el cursor o arrastra para inclinar el banner</span>
+            </div>
+            <div class="impress-banner__toolbar">
+              <button type="button" data-ib-action="undo" disabled>↶ Deshacer</button>
+              <button type="button" data-ib-action="redo" disabled>↷ Rehacer</button>
+              <button type="button" data-ib-action="center" disabled>⊙ Centrar</button>
+              <label class="impress-banner__toggle impress-banner__toggle--cut"><input type="checkbox" data-ib-show-cut checked><span>Corte</span></label>
+              <label class="impress-banner__toggle impress-banner__toggle--mount"><input type="checkbox" data-ib-show-mount checked><span>Montaje</span></label>
+            </div>
+            <p class="impress-banner__guide-note" data-ib-guide-note>Las líneas punteadas indican áreas de montaje aproximadas, no posiciones definitivas de producción.</p>
+          </div>
+          <div class="impress-banner__tools">
+            <div class="impress-banner__tools-head"><strong>Ajusta tu arte</strong><span>EDICIÓN BÁSICA</span></div>
+            <div class="impress-banner__tool">
+              <label for="IbScale-{{ section.id }}">Escala <output data-ib-scale-value>100%</output></label>
+              <input id="IbScale-{{ section.id }}" type="range" data-ib-scale min="20" max="250" step="1" value="100" disabled>
+            </div>
+            <div class="impress-banner__tool">
+              <label for="IbRotate-{{ section.id }}">Rotación <output data-ib-rotate-value>0°</output></label>
+              <input id="IbRotate-{{ section.id }}" type="range" data-ib-rotate min="-180" max="180" step="1" value="0" disabled>
+            </div>
+            <div class="impress-banner__tool-bottom"><button type="button" data-ib-download disabled>Descargar vista PNG</button><span data-ib-editor-message aria-live="polite">El archivo original se conserva sin modificar.</span></div>
+          </div>
+          <p class="impress-banner__disclaimer">Vista ilustrativa. Argollas, palos, corte y colores requieren revisión de producción. La vista PNG editada no sustituye el archivo original.</p>
+        </div>
+        <div class="impress-banner__right">
+          {% form 'product', ib_product, id: ib_form_id, class: 'impress-banner__form' %}
+            <input type="hidden" name="id" value="{{ ib_product.selected_or_first_available_variant.id }}" data-ib-variant-id>
+            <input type="hidden" name="properties[Impress - Tipo de montaje]" data-ib-property-mount>
+            <input type="hidden" name="properties[Impress - Tamaño]" data-ib-property-size>
+            <input type="hidden" name="properties[Impress - Editor]" value="Banner CONFIG v0.3">
+            <input type="hidden" name="properties[_Impress - Edición]" data-ib-project>
+            <input type="file" class="impress-banner__hidden-file" name="properties[Vista editada]" data-ib-output-file accept="image/png" tabindex="-1" aria-hidden="true">
+            <div class="impress-banner__field">
+              <div class="impress-banner__field-head"><span class="impress-banner__step">01</span><span class="impress-banner__field-title">Montaje</span></div>
+              <div class="impress-banner__mounts" data-ib-mounts role="group" aria-label="Tipo de montaje"></div>
+            </div>
+            <div class="impress-banner__field">
+              <div class="impress-banner__field-head"><span class="impress-banner__step">02</span><label for="IbSize-{{ section.id }}" class="impress-banner__field-title">Tamaño del banner</label></div>
+              <select id="IbSize-{{ section.id }}" data-ib-sizes class="impress-banner__select"></select>
+              <p class="impress-banner__field-note">Alto × ancho. La vista conserva la proporción seleccionada.</p>
+            </div>
+            <div class="impress-banner__field">
+              <div class="impress-banner__field-head"><span class="impress-banner__step">03</span><label for="IbQty-{{ section.id }}" class="impress-banner__field-title">Cantidad de banners</label></div>
+              <div class="impress-banner__qty">
+                <button type="button" data-ib-qty-down aria-label="Reducir cantidad">−</button>
+                <input type="number" id="IbQty-{{ section.id }}" data-ib-quantity name="quantity" min="1" max="100" step="1" value="1" inputmode="numeric">
+                <button type="button" data-ib-qty-up aria-label="Aumentar cantidad">+</button>
+              </div>
+            </div>
+            <div class="impress-banner__field">
+              <div class="impress-banner__field-head"><span class="impress-banner__step">04</span><label for="IbArt-{{ section.id }}" class="impress-banner__field-title">Sube tu diseño</label></div>
+              <label for="IbArt-{{ section.id }}" class="impress-banner__dropzone"><span class="impress-banner__upload-icon" aria-hidden="true">↑</span><strong data-ib-file-label>Seleccionar archivo</strong><small>PNG, JPG, WEBP o PDF · máximo 20 MB en esta prueba</small></label>
+              <input id="IbArt-{{ section.id }}" class="impress-banner__file" type="file" name="properties[Arte original]" accept=".png,.jpg,.jpeg,.webp,.pdf" data-ib-art-input required>
+              <p class="impress-banner__field-note" data-ib-file-hint>El PNG/JPG/WEBP se previsualiza. El PDF se adjunta sin edición visual.</p>
+            </div>
+            <div class="impress-banner__mount-summary" data-ib-mount-summary role="status">Selecciona un tipo de montaje.</div>
+            <div class="impress-banner__summary"><span>PRECIO ESTIMADO DEL PEDIDO</span><strong data-ib-total>—</strong><small data-ib-price-note>Configura un producto para consultar el precio de Shopify.</small></div>
+            <p class="impress-banner__message" data-ib-message role="status" aria-live="polite"></p>
+            <button class="impress-banner__submit" type="submit" data-ib-submit disabled>Añadir al carrito <span aria-hidden="true">→</span></button>
+            <p class="impress-banner__checkout-note">El cobro siempre utiliza variantes y precios reales de Shopify.</p>
+          {% endform %}
+        </div>
+      </div>
+      <script type="application/json" data-ib-variants>
+        [{%- for variant in ib_product.variants -%}
+          {"id":{{ variant.id | json }},"options":{{ variant.options | json }},"price":{{ variant.price | json }},"available":{{ variant.available | json }}}{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}]
+      </script>
+    {%- endif -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Impress Banner Editor",
+  "tag": "section",
+  "class": "impress-banner-section",
+  "enabled_on": {"templates": ["product"]},
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Etiqueta superior","default":"IMPRESS / CUSTOM PRINT"},
+    {"type":"text","id":"title","label":"Título","default":"Crea tu banner"},
+    {"type":"text","id":"subtitle","label":"Subtítulo","default":"Selecciona tu tamaño y montaje. Ajusta tu diseño antes de pedir."}
+  ],
+  "presets": [{"name": "Impress Banner Editor"}]
+}
+{% endschema %}

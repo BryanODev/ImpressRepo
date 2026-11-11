@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Mate non-reflective sticker finish icon">
+  <defs>
+    <clipPath id="sticker-face"><path d="M40 22 H86 C98 22 104 30 104 42 V85 C104 92 101 97 96 101 L91 106 H40 C28 106 22 98 22 86 V42 C22 30 28 22 40 22 Z"/></clipPath>
+    <linearGradient id="paper-fold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffef4"/>
+      <stop offset="0.55" stop-color="#f5eddf"/>
+      <stop offset="1" stop-color="#d6cbbb"/>
+    </linearGradient>
+    <linearGradient id="matte-soft" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#fff6cb" stop-opacity=".26"/>
+      <stop offset="1" stop-color="#a27517" stop-opacity=".06"/>
+    </linearGradient>
+  </defs>
+  <path d="M40 16 H86 C101 16 110 27 110 42 V86 C110 93 108 98 102 104 L94 112 H40 C25 112 16 101 16 86 V42 C16 27 25 16 40 16 Z" fill="#ffffff" stroke="#ffffff" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M40 22 H86 C98 22 104 30 104 42 V85 C104 92 101 97 96 101 L91 106 H40 C28 106 22 98 22 86 V42 C22 30 28 22 40 22 Z" fill="#fbbf00" stroke="#1d2c35" stroke-width="5.2" stroke-linejoin="round"/>
+  <g clip-path="url(#sticker-face)">
+    <!-- Matte: non-reflective uniform soft surface, gentle microtexture instead of gleam. -->
+    <path d="M40 22 H86 C98 22 104 30 104 42 V85 C104 92 101 97 96 101 L91 106 H40 C28 106 22 98 22 86 V42 C22 30 28 22 40 22 Z" fill="url(#matte-soft)"/>
+    <circle cx="33" cy="36" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="51" cy="36" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="60" cy="36" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="78" cy="36" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="87" cy="36" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="42" cy="44" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="51" cy="44" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="69" cy="44" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="78" cy="44" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="96" cy="44" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="33" cy="52" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="42" cy="52" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="60" cy="52" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="69" cy="52" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="87" cy="52" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="96" cy="52" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="33" cy="60" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="51" cy="60" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="60" cy="60" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="78" cy="60" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="87" cy="60" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="42" cy="68" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="51" cy="68" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="69" cy="68" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="78" cy="68" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="96" cy="68" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="33" cy="76" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="42" cy="76" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="60" cy="76" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="69" cy="76" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="87" cy="76" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="96" cy="76" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="33" cy="84" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="51" cy="84" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="60" cy="84" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="78" cy="84" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="87" cy="84" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="42" cy="92" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="51" cy="92" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="69" cy="92" r="0.77" fill="#936d15" opacity=".32"/>
+    <circle cx="78" cy="92" r="1.0" fill="#936d15" opacity=".32"/>
+    <circle cx="96" cy="92" r="1.0" fill="#936d15" opacity=".32"/>
+  </g>
+  <path d="M77 106 C77 91 84 84 99 84 H104 C101 94 94 101 84 106 Z" fill="url(#paper-fold)" stroke="#1d2c35" stroke-width="4.4" stroke-linejoin="round"/>
+  <path d="M79 104 C87 100 97 91 103 85 C97 91 93 97 88 101 Z" fill="#cec4b6" opacity=".54"/>
+</svg>
