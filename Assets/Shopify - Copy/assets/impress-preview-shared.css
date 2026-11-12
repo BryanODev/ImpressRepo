@@ -1,0 +1,27 @@
+/* Impress shared preview shell — ONE place for common preview appearance.
+ * Keep dimensions, tools and product drawings in their product CSS/JS.
+ * This stylesheet is loaded AFTER the product stylesheet by both sections.
+ */
+.impress-sticker__preview--editor,
+.impress-banner__preview {
+  background:#f4f7f9;
+  border-color:#dbe5e8;
+  border-radius:16px;
+}
+.impress-sticker__editor-stage,
+.impress-banner__stage {
+  border:1px solid #e1e8eb;
+  border-radius:12px;
+  overflow:hidden;
+  background:#eef3f5;
+}
+.impress-sticker__final-layer,
+.impress-banner__final-layer {
+  transform-origin:50% 50%;
+  transition:transform .13s ease-out;
+  will-change:transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .impress-sticker__final-layer,
+  .impress-banner__final-layer { transition:none; will-change:auto; }
+}

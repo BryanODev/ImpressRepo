@@ -1,19 +1,17 @@
-# Impress Shopify Sticker Config Hotfix v0.3.1
+# Impress Homepage Hotfix v1.0.1
 
-## Why Rectangle disappeared
-The previous configurator drew buttons from **priced, fully matched variants** rather than from `impress-sticker-config.js`. If your Shopify Rectangle variants were missing, renamed, or used sizes not listed under `sizesByShape.Rectangle`, the Rectangle button vanished.
+Shopify reported:
+- `sections/impress-catalog-grid.liquid`: `vertical_padding` default not on a valid step.
+- `templates/index.json`: `vertical_padding` value not on a valid step.
 
-## Fix
-- Shape buttons come from the `shapes` list in `assets/impress-sticker-config.js`, regardless of pricing matches.
-- Pricing is still read exclusively from matching Shopify variants. Checkout stays disabled for missing/unavailable matches.
-- When there is no matching variant for a shape, its configured sizes, quantities, and finishes can still be previewed, and an explicit message explains the missing price combination.
+Both values are now **45**, matching the configured slider `min: 0, max: 100, step: 5`.
 
-## Install
-For an existing v0.3 installation, replace these two files:
-- `assets/impress-sticker-configurator.js` (fix)
-- `sections/impress-sticker-configurator.liquid` (version label only)
+## How to install
+Replace only the two files at their matching theme paths:
 
-No need to replace SVGs, stickers/banners editors, sections, or config files. Test on a duplicated theme.
+1. `sections/impress-catalog-grid.liquid`
+2. `templates/index.json`
 
-## Shopify values
-Current default Rectangle sizes are `3 x 2 in`, `4 x 3 in`, and `6 x 4 in`. If your Shopify variants use other sizes, either update `sizesByShape.Rectangle` to match them or change Shopify's product variant values. The third Shopify option must still be formatted e.g. `3 x 2 in | 50`.
+**Important:** `templates/index.json` is your homepage arrangement and content. If you've modified the homepage since the full refresh, don't overwrite your newer version. Instead find `impress_catalog_grid_HEyTGa.settings.vertical_padding` in your current `templates/index.json` and change `44` to `45`.
+
+Validated: three custom homepage section JSON schemas, their slider defaults, the updated homepage template values and JSON syntax. Live Shopify theme editor was not tested.

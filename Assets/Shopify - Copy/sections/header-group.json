@@ -1,0 +1,208 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "t:names.header",
+  "sections": {
+    "header_section": {
+      "type": "header",
+      "blocks": {
+        "header-logo": {
+          "type": "_header-logo",
+          "static": true,
+          "settings": {
+            "hide_logo_on_home_page": false,
+            "padding-block-start": 0,
+            "padding-block-end": 0
+          },
+          "blocks": {}
+        },
+        "header-menu": {
+          "type": "_header-menu",
+          "static": true,
+          "settings": {
+            "menu": "main-menu",
+            "background_color": "{{ settings.color_palette.background }}",
+            "text_color": "",
+            "type_font_primary_size": "0.875rem",
+            "menu_font_style": "inverse",
+            "type_font_primary_link": "body",
+            "type_case_primary_link": "none",
+            "menu_style": "featured_products",
+            "featured_products_aspect_ratio": "4 / 5",
+            "featured_collections_aspect_ratio": "16 / 9",
+            "image_border_radius": 0,
+            "navigation_bar": false,
+            "background_color_navigation_bar": "{{ settings.color_palette.background }}",
+            "text_color_navigation_bar": "",
+            "drawer_accordion": false,
+            "drawer_accordion_expand_first": false,
+            "drawer_dividers": false
+          },
+          "blocks": {}
+        }
+      },
+      "disabled": true,
+      "name": "Default Header",
+      "settings": {
+        "logo_position": "left",
+        "menu_position": "left",
+        "menu_row": "top",
+        "customer_account_menu": "customer-account-main-menu",
+        "show_search": true,
+        "search_position": "right",
+        "search_row": "top",
+        "show_country": true,
+        "country_selector_style": false,
+        "show_language": true,
+        "localization_font": "heading",
+        "localization_font_size": "0.875rem",
+        "localization_position": "right",
+        "localization_row": "top",
+        "section_width": "page-width",
+        "section_height": "standard",
+        "enable_sticky_header": "always",
+        "divider_width": 0,
+        "divider_size": "page-width",
+        "divider_color": "",
+        "border_width": 0,
+        "bottom_border_color": "",
+        "actions_display_style": "icon",
+        "actions_font_size": "0.875rem",
+        "actions_font": "body",
+        "actions_text_case": "none",
+        "background_color_top": "{{ settings.color_palette.background }}",
+        "text_color_top": "",
+        "background_color_bottom": "",
+        "text_color_bottom": "",
+        "bubble_style": "default",
+        "bubble_background_color": "",
+        "bubble_text_color": "",
+        "enable_transparent_header_home": false,
+        "home_inverse_logo": false,
+        "text_color_transparent_home": "",
+        "enable_transparent_header_product": false,
+        "product_inverse_logo": false,
+        "text_color_transparent_product": "",
+        "enable_transparent_header_collection": false,
+        "collection_inverse_logo": false,
+        "text_color_transparent_collection": ""
+      }
+    },
+    "impress_header_announcements_y8fWJr": {
+      "type": "impress-header-announcements",
+      "blocks": {
+        "announcement_wKxnaY": {
+          "type": "announcement",
+          "settings": {
+            "text": "FREE SHIPPING IN ORDERS OF MORE THAN $80",
+            "link": ""
+          }
+        },
+        "announcement_FWqLFn": {
+          "type": "announcement",
+          "settings": {
+            "text": "GET 25% OFF FROM YOUR FIRST ORDER OF STICKER OR BANNER!",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement_wKxnaY",
+        "announcement_FWqLFn"
+      ],
+      "name": "Marquee Announcement Bar",
+      "settings": {
+        "bg_color": "#fbd500",
+        "text_color": "#0d0f13",
+        "speed": 150,
+        "item_gap": 280,
+        "pause_on_hover": true,
+        "padding_top": 12,
+        "padding_bottom": 12,
+        "divider_width": 0,
+        "divider_color": ""
+      }
+    },
+    "impress_header_jQRGrQ": {
+      "type": "impress-header",
+      "blocks": {
+        "column_Vdigad": {
+          "type": "column",
+          "settings": {
+            "title": "Order Online & Ship to you"
+          }
+        },
+        "item_card_nK7h94": {
+          "type": "item_card",
+          "settings": {
+            "title": "Vinyl Stickers",
+            "description": "Choose from a variety of vinyl sticker materials, shapes, cuts and sizes!",
+            "link_url": "",
+            "icon": "🎴"
+          }
+        },
+        "item_card_xKYFaT": {
+          "type": "item_card",
+          "settings": {
+            "title": "Banners",
+            "description": "Perfect for advertising or decorating! Choose from a range of sizes or go for a custom size!",
+            "link_url": "",
+            "icon": "📄"
+          }
+        },
+        "column_qMjAYN": {
+          "type": "column",
+          "settings": {
+            "title": "Order and Pickup at Our Location"
+          }
+        },
+        "item_card_nXHUPr": {
+          "type": "item_card",
+          "settings": {
+            "title": "Vinyl Banners",
+            "description": "Heavy-duty outdoor 13oz vinyl.",
+            "link_url": "",
+            "icon": "🚩"
+          }
+        }
+      },
+      "block_order": [
+        "column_Vdigad",
+        "item_card_nK7h94",
+        "item_card_xKYFaT",
+        "column_qMjAYN",
+        "item_card_nXHUPr"
+      ],
+      "name": "Stacked Custom Header",
+      "settings": {
+        "logo": "shopify://shop_images/Impress_Logo.png",
+        "logo_max_height": 42,
+        "header_bg_color": "#111111",
+        "header_text_color": "#ffffff",
+        "accent_color": "#ffd800",
+        "cta_1_label": "Stickers",
+        "cta_1_url": "",
+        "cta_2_label": "Banners",
+        "cta_2_url": "",
+        "pill_label": "Select product or material...",
+        "banner_text": "Need custom volume or bulk specs?",
+        "banner_btn_label": "Get Custom Quote",
+        "banner_btn_url": "",
+        "menu": "main-menu"
+      }
+    }
+  },
+  "order": [
+    "header_section",
+    "impress_header_announcements_y8fWJr",
+    "impress_header_jQRGrQ"
+  ]
+}

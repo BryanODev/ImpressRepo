@@ -1,0 +1,241 @@
+{{ 'impress-sticker-configurator.css' | asset_url | stylesheet_tag }}
+{{ 'impress-preview-shared.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'impress-editor-core.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-sticker-config.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-sticker-editor.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-sticker-configurator.js' | asset_url }}" defer></script>
+
+{%- assign impress_product = product -%}
+{%- assign impress_form_id = 'ImpressStickerForm-' | append: section.id -%}
+
+<section
+  id="ImpressSticker-{{ section.id }}"
+  class="impress-sticker"
+  data-impress-sticker
+  data-currency="{{ cart.currency.iso_code | default: shop.currency | escape }}"
+  data-initial-variant="{{ impress_product.selected_or_first_available_variant.id }}"
+  data-impress-icon-contour="{{ 'impress-shape-contour.svg' | asset_url | escape }}"
+  data-impress-icon-square="{{ 'impress-shape-square.svg' | asset_url | escape }}"
+  data-impress-icon-circular="{{ 'impress-shape-circular.svg' | asset_url | escape }}"
+  data-impress-icon-rectangle="{{ 'impress-shape-rectangle.svg' | asset_url | escape }}"
+  data-impress-icon-gloss="{{ 'impress-finish-gloss.svg' | asset_url | escape }}"
+  data-impress-icon-mate="{{ 'impress-finish-mate.svg' | asset_url | escape }}"
+>
+  <div class="impress-sticker__shell">
+    <header class="impress-sticker__header">
+      <div>
+        <p class="impress-sticker__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        <h2 class="impress-sticker__title">{{ section.settings.title | escape }}</h2>
+        <p class="impress-sticker__subtitle">{{ section.settings.subtitle | escape }}</p>
+      </div>
+      <span class="impress-sticker__version">IMPRESS / STICKERS CONFIG v0.3</span>
+    </header>
+
+    {%- if impress_product == blank -%}
+      <div class="impress-sticker__notice" role="status">
+        Añade esta sección a la plantilla de un <strong>producto</strong> de Shopify.
+      </div>
+    {%- elsif impress_product.options.size != 3 -%}
+      <div class="impress-sticker__notice" role="status">
+        <strong>Configura tres opciones del producto:</strong>
+        Forma (según <code>impress-sticker-config.js</code>), Acabado y <code>Tamaño | Cantidad</code>.
+        Ejemplo del valor de la tercera opción: <code>2 x 2 in | 50</code>.
+        Consulta README.md para los pasos exactos.
+      </div>
+    {%- elsif impress_product.variants_count > 250 -%}
+      <div class="impress-sticker__notice" role="status">
+        Este prototipo admite productos con hasta 250 variantes. Este producto tiene
+        {{ impress_product.variants_count }}. Necesitamos un selector de variantes de alta capacidad
+        antes de habilitar compras para evitar que se muestren precios o combinaciones incorrectos.
+      </div>
+    {%- else -%}
+      <div class="impress-sticker__layout">
+        <div class="impress-sticker__preview-column">
+          <div class="impress-sticker__preview impress-sticker__preview--editor" aria-label="Editor visual para stickers">
+            <div class="impress-sticker__preview-top">
+              <span><span class="impress-sticker__dot"></span> IMPRESS EDITOR</span>
+              <span data-impress-preview-finish>ACABADO</span>
+            </div>
+            <div class="impress-sticker__editor-tabs" role="group" aria-label="Modo de vista">
+              <button type="button" data-ie-mode="edit" class="is-active">Editar diseño</button>
+              <button type="button" data-ie-mode="final">Vista final</button>
+            </div>
+            <div class="impress-sticker__editor-stage" data-ie-stage data-ie-view="edit">
+              <canvas class="impress-sticker__canvas" data-ie-canvas aria-label="Lienzo de diseño; arrastra para mover y usa las esquinas para escalar" role="img"></canvas>
+              <div class="impress-sticker__final-layer" data-ie-final-layer aria-hidden="true">
+                <canvas class="impress-sticker__final-canvas" data-ie-final-canvas></canvas>
+              </div>
+              <span class="impress-sticker__final-hint" data-ie-final-hint>Mueve el cursor o arrastra para inclinar el sticker y ver el acabado</span>
+              <div class="impress-sticker__canvas-empty" data-ie-empty>Sube una imagen para comenzar. Podrás moverla, escalarla, rotarla y añadirle borde.</div>
+            </div>
+            <div class="impress-sticker__contour-alert" data-ie-contour-alert hidden role="status">
+              <span>El fondo sigue incluido. Para cortar alrededor del diseño, primero hay que quitarlo.</span>
+              <button type="button" data-ie-contour-remove>Quitar fondo (beta)</button>
+            </div>
+            <div class="impress-sticker__editor-actions">
+              <button type="button" data-ie-action="undo" title="Deshacer" disabled>↶ <span>Deshacer</span></button>
+              <button type="button" data-ie-action="redo" title="Rehacer" disabled>↷ <span>Rehacer</span></button>
+              <button type="button" data-ie-action="center" title="Centrar" disabled>⊙ <span>Centrar</span></button>
+              <label class="impress-sticker__guides-toggle impress-sticker__guides-toggle--cut"><input type="checkbox" data-ie-guides checked> <span data-ie-guides-label>Corte</span></label>
+              <label class="impress-sticker__guides-toggle impress-sticker__guides-toggle--safe"><input type="checkbox" data-ie-safe-guides checked> <span>Zona segura · <span data-ie-safe-value>0.0625</span>″</span></label>
+            </div>
+            <p class="impress-sticker__safety-note" data-ie-safe-note>Rojo: corte. Azul: zona segura. Guías visuales solamente.</p>
+          </div>
+          <div class="impress-sticker__editor-tools" data-ie-tools>
+            <div class="impress-sticker__tools-heading"><strong>Personaliza tu diseño</strong><span>CONFIG v0.3</span></div>
+            <div class="impress-sticker__tool-row">
+              <label for="ieScale-{{ section.id }}">Escala <output data-ie-scale-value>100%</output></label>
+              <input id="ieScale-{{ section.id }}" data-ie-scale type="range" min="20" max="250" step="1" value="100" disabled>
+            </div>
+            <div class="impress-sticker__tool-row">
+              <label for="ieRotate-{{ section.id }}">Rotación <output data-ie-rotate-value>0°</output></label>
+              <input id="ieRotate-{{ section.id }}" data-ie-rotate type="range" min="-180" max="180" step="1" value="0" disabled>
+            </div>
+            <div class="impress-sticker__tool-row impress-sticker__tool-row--two">
+              <div>
+                <label for="ieStroke-{{ section.id }}">Borde <output data-ie-stroke-value>0</output></label>
+                <input id="ieStroke-{{ section.id }}" data-ie-stroke type="range" min="0" max="28" step="1" value="0" disabled>
+              </div>
+              <div>
+                <label for="ieColor-{{ section.id }}">Color del borde</label>
+                <input id="ieColor-{{ section.id }}" data-ie-color type="color" value="#ffffff" disabled aria-label="Color del borde">
+              </div>
+            </div>
+            <div class="impress-sticker__bg-row">
+              <button type="button" data-ie-remove-bg disabled>Quitar fondo simple (beta)</button>
+              <button type="button" data-ie-restore-bg disabled>Restaurar fondo</button>
+              <label for="ieTolerance-{{ section.id }}">Sensibilidad <output data-ie-tolerance-value>35</output></label>
+              <input id="ieTolerance-{{ section.id }}" data-ie-tolerance type="range" min="10" max="100" step="1" value="35" disabled>
+              <small>Funciona mejor con fondos lisos. No es eliminación de fondo por IA.</small>
+            </div>
+            <div class="impress-sticker__tool-bottom">
+              <button type="button" data-ie-download disabled>Descargar vista PNG</button>
+              <span data-ie-editor-message aria-live="polite">La edición funciona en tu navegador.</span>
+            </div>
+          </div>
+          <p class="impress-sticker__disclaimer">La inclinación y el acabado son simulaciones visuales, no una prueba de imprenta ni un troquel definitivo. Se conserva el archivo original para producción.</p>
+        </div>
+
+        <div class="impress-sticker__controls-column">
+          {% form 'product', impress_product, id: impress_form_id, class: 'impress-sticker__form' %}
+            <input type="hidden" name="id" value="{{ impress_product.selected_or_first_available_variant.id }}" data-impress-variant-id>
+            <input type="hidden" name="quantity" value="1">
+            <input type="hidden" name="properties[Impress - Tamaño]" value="" data-impress-property-size>
+            <input type="hidden" name="properties[Impress - Piezas por paquete]" value="" data-impress-property-pieces>
+            <input type="hidden" name="properties[Impress - Versión]" value="Sticker v0.4.0">
+            <input type="hidden" name="properties[_Impress - Edición]" data-ie-project value="">
+            <input type="file" class="impress-sticker__file-input" name="properties[Vista editada]" data-ie-output-file tabindex="-1" aria-hidden="true" accept="image/png">
+
+            <div class="impress-sticker__field">
+              <div class="impress-sticker__field-heading">
+                <span class="impress-sticker__step">01</span>
+                <label class="impress-sticker__label">Forma</label>
+              </div>
+              <div class="impress-sticker__choices" data-impress-shapes role="group" aria-label="Forma"></div>
+            </div>
+
+            <div class="impress-sticker__field">
+              <div class="impress-sticker__field-heading">
+                <span class="impress-sticker__step">02</span>
+                <label class="impress-sticker__label">Acabado</label>
+              </div>
+              <div class="impress-sticker__choices" data-impress-finishes role="group" aria-label="Acabado"></div>
+            </div>
+
+            <div class="impress-sticker__field impress-sticker__field--grid">
+              <div>
+                <div class="impress-sticker__field-heading">
+                  <span class="impress-sticker__step">03</span>
+                  <label class="impress-sticker__label" for="ImpressSize-{{ section.id }}">Tamaño</label>
+                </div>
+                <select class="impress-sticker__select" id="ImpressSize-{{ section.id }}" data-impress-sizes aria-label="Tamaño"></select>
+              </div>
+              <div>
+                <div class="impress-sticker__field-heading">
+                  <span class="impress-sticker__step">04</span>
+                  <label class="impress-sticker__label" for="ImpressPieces-{{ section.id }}">Cantidad</label>
+                </div>
+                <select class="impress-sticker__select" id="ImpressPieces-{{ section.id }}" data-impress-pieces aria-label="Piezas por paquete"></select>
+              </div>
+            </div>
+
+            <div class="impress-sticker__field">
+              <div class="impress-sticker__field-heading">
+                <span class="impress-sticker__step">05</span>
+                <label class="impress-sticker__label" for="ImpressFile-{{ section.id }}">Sube tu arte original</label>
+              </div>
+              <label class="impress-sticker__dropzone" for="ImpressFile-{{ section.id }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>
+                </svg>
+                <span class="impress-sticker__upload-text" data-impress-file-label>Seleccionar archivo</span>
+                <small>PNG, JPG, WEBP o PDF · hasta 20 MB para esta prueba</small>
+              </label>
+              <input
+                class="impress-sticker__file-input"
+                id="ImpressFile-{{ section.id }}"
+                type="file"
+                name="properties[Arte original]"
+                accept=".png,.jpg,.jpeg,.webp,.pdf"
+                required
+                data-impress-art-input
+                aria-describedby="ImpressFileHint-{{ section.id }}"
+              >
+              <p id="ImpressFileHint-{{ section.id }}" class="impress-sticker__file-hint" data-impress-file-hint aria-live="polite">
+                PNG/JPG/WEBP se pueden editar. Los PDF solo se adjuntan. Original y vista editada se intentan adjuntar al pedido.
+              </p>
+            </div>
+
+            <div class="impress-sticker__summary">
+              <div>
+                <span class="impress-sticker__summary-caption">PRECIO DEL PAQUETE</span>
+                <strong class="impress-sticker__price" data-impress-price>—</strong>
+                <span class="impress-sticker__summary-pieces" data-impress-price-note>Selecciona tus opciones</span>
+              </div>
+              <span class="impress-sticker__summary-mark">IMPRESS</span>
+            </div>
+
+            <p class="impress-sticker__form-message" role="status" aria-live="polite" data-impress-form-message></p>
+            <button type="submit" class="impress-sticker__submit" data-impress-submit disabled>
+              Añadir al carrito
+              <span aria-hidden="true">→</span>
+            </button>
+            <p class="impress-sticker__checkout-note">Precio real de Shopify · 1 paquete por artículo en carrito</p>
+          {% endform %}
+        </div>
+      </div>
+
+      <script type="application/json" data-impress-variants>
+      [
+        {%- for variant in impress_product.variants -%}
+          {
+            "id": {{ variant.id | json }},
+            "options": {{ variant.options | json }},
+            "price": {{ variant.price | json }},
+            "available": {{ variant.available | json }}
+          }{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+      </script>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Impress Sticker Editor",
+  "tag": "section",
+  "class": "impress-sticker-section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {"type": "text", "id": "eyebrow", "label": "Etiqueta superior", "default": "IMPRESS / CUSTOM PRINT"},
+    {"type": "text", "id": "title", "label": "Título", "default": "Crea tus stickers"},
+    {"type": "text", "id": "subtitle", "label": "Subtítulo", "default": "Escoge el corte, acabado y cantidad. Nosotros nos encargamos del resto."}
+  ],
+  "presets": [
+    {"name": "Impress Sticker Editor"}
+  ]
+}
+{% endschema %}

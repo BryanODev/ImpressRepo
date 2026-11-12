@@ -1,0 +1,73 @@
+Title,URL handle,Description,Vendor,Type,Status,Published on online store,Option1 name,Option1 value,Option2 name,Option2 value,Option3 name,Option3 value,Price,SKU
+Impress Stickers — TEST (replace prices),impress-stickers-test,DRAFT TEST PRODUCT: Replace all example prices before selling.,Impress,Custom Stickers,draft,false,Forma,Contour Cut,Acabado,Gloss,Tamaño / Cantidad,2 x 2 in | 50,27.82,IMP-DEMO-111-50
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Gloss,Tamaño / Cantidad,2 x 2 in | 100,43.87,IMP-DEMO-111-100
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Gloss,Tamaño / Cantidad,2 x 2 in | 250,84.53,IMP-DEMO-111-250
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Gloss,Tamaño / Cantidad,3 x 3 in | 50,34.22,IMP-DEMO-112-50
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Gloss,Tamaño / Cantidad,3 x 3 in | 100,53.96,IMP-DEMO-112-100
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Gloss,Tamaño / Cantidad,3 x 3 in | 250,103.97,IMP-DEMO-112-250
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Gloss,Tamaño / Cantidad,4 x 4 in | 50,40.62,IMP-DEMO-113-50
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Gloss,Tamaño / Cantidad,4 x 4 in | 100,64.05,IMP-DEMO-113-100
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Gloss,Tamaño / Cantidad,4 x 4 in | 250,123.41,IMP-DEMO-113-250
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Mate,Tamaño / Cantidad,2 x 2 in | 50,25.59,IMP-DEMO-121-50
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Mate,Tamaño / Cantidad,2 x 2 in | 100,40.36,IMP-DEMO-121-100
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Mate,Tamaño / Cantidad,2 x 2 in | 250,77.77,IMP-DEMO-121-250
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Mate,Tamaño / Cantidad,3 x 3 in | 50,31.48,IMP-DEMO-122-50
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Mate,Tamaño / Cantidad,3 x 3 in | 100,49.64,IMP-DEMO-122-100
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Mate,Tamaño / Cantidad,3 x 3 in | 250,95.65,IMP-DEMO-122-250
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Mate,Tamaño / Cantidad,4 x 4 in | 50,37.37,IMP-DEMO-123-50
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Mate,Tamaño / Cantidad,4 x 4 in | 100,58.93,IMP-DEMO-123-100
+,impress-stickers-test,,,,draft,false,Forma,Contour Cut,Acabado,Mate,Tamaño / Cantidad,4 x 4 in | 250,113.54,IMP-DEMO-123-250
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Gloss,Tamaño / Cantidad,2 x 2 in | 50,26.00,IMP-DEMO-211-50
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Gloss,Tamaño / Cantidad,2 x 2 in | 100,41.00,IMP-DEMO-211-100
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Gloss,Tamaño / Cantidad,2 x 2 in | 250,79.00,IMP-DEMO-211-250
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Gloss,Tamaño / Cantidad,3 x 3 in | 50,31.98,IMP-DEMO-212-50
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Gloss,Tamaño / Cantidad,3 x 3 in | 100,50.43,IMP-DEMO-212-100
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Gloss,Tamaño / Cantidad,3 x 3 in | 250,97.17,IMP-DEMO-212-250
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Gloss,Tamaño / Cantidad,4 x 4 in | 50,37.96,IMP-DEMO-213-50
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Gloss,Tamaño / Cantidad,4 x 4 in | 100,59.86,IMP-DEMO-213-100
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Gloss,Tamaño / Cantidad,4 x 4 in | 250,115.34,IMP-DEMO-213-250
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Mate,Tamaño / Cantidad,2 x 2 in | 50,23.92,IMP-DEMO-221-50
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Mate,Tamaño / Cantidad,2 x 2 in | 100,37.72,IMP-DEMO-221-100
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Mate,Tamaño / Cantidad,2 x 2 in | 250,72.68,IMP-DEMO-221-250
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Mate,Tamaño / Cantidad,3 x 3 in | 50,29.42,IMP-DEMO-222-50
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Mate,Tamaño / Cantidad,3 x 3 in | 100,46.40,IMP-DEMO-222-100
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Mate,Tamaño / Cantidad,3 x 3 in | 250,89.40,IMP-DEMO-222-250
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Mate,Tamaño / Cantidad,4 x 4 in | 50,34.92,IMP-DEMO-223-50
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Mate,Tamaño / Cantidad,4 x 4 in | 100,55.07,IMP-DEMO-223-100
+,impress-stickers-test,,,,draft,false,Forma,Square,Acabado,Mate,Tamaño / Cantidad,4 x 4 in | 250,106.11,IMP-DEMO-223-250
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Gloss,Tamaño / Cantidad,2 x 2 in | 50,26.00,IMP-DEMO-311-50
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Gloss,Tamaño / Cantidad,2 x 2 in | 100,41.00,IMP-DEMO-311-100
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Gloss,Tamaño / Cantidad,2 x 2 in | 250,79.00,IMP-DEMO-311-250
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Gloss,Tamaño / Cantidad,3 x 3 in | 50,31.98,IMP-DEMO-312-50
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Gloss,Tamaño / Cantidad,3 x 3 in | 100,50.43,IMP-DEMO-312-100
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Gloss,Tamaño / Cantidad,3 x 3 in | 250,97.17,IMP-DEMO-312-250
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Gloss,Tamaño / Cantidad,4 x 4 in | 50,37.96,IMP-DEMO-313-50
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Gloss,Tamaño / Cantidad,4 x 4 in | 100,59.86,IMP-DEMO-313-100
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Gloss,Tamaño / Cantidad,4 x 4 in | 250,115.34,IMP-DEMO-313-250
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Mate,Tamaño / Cantidad,2 x 2 in | 50,23.92,IMP-DEMO-321-50
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Mate,Tamaño / Cantidad,2 x 2 in | 100,37.72,IMP-DEMO-321-100
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Mate,Tamaño / Cantidad,2 x 2 in | 250,72.68,IMP-DEMO-321-250
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Mate,Tamaño / Cantidad,3 x 3 in | 50,29.42,IMP-DEMO-322-50
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Mate,Tamaño / Cantidad,3 x 3 in | 100,46.40,IMP-DEMO-322-100
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Mate,Tamaño / Cantidad,3 x 3 in | 250,89.40,IMP-DEMO-322-250
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Mate,Tamaño / Cantidad,4 x 4 in | 50,34.92,IMP-DEMO-323-50
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Mate,Tamaño / Cantidad,4 x 4 in | 100,55.07,IMP-DEMO-323-100
+,impress-stickers-test,,,,draft,false,Forma,Circular,Acabado,Mate,Tamaño / Cantidad,4 x 4 in | 250,106.11,IMP-DEMO-323-250
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Gloss,Tamaño / Cantidad,3 x 2 in | 50,26.00,IMP-DEMO-411-50
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Gloss,Tamaño / Cantidad,3 x 2 in | 100,41.00,IMP-DEMO-411-100
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Gloss,Tamaño / Cantidad,3 x 2 in | 250,79.00,IMP-DEMO-411-250
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Gloss,Tamaño / Cantidad,4 x 3 in | 50,31.98,IMP-DEMO-412-50
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Gloss,Tamaño / Cantidad,4 x 3 in | 100,50.43,IMP-DEMO-412-100
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Gloss,Tamaño / Cantidad,4 x 3 in | 250,97.17,IMP-DEMO-412-250
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Gloss,Tamaño / Cantidad,6 x 4 in | 50,37.96,IMP-DEMO-413-50
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Gloss,Tamaño / Cantidad,6 x 4 in | 100,59.86,IMP-DEMO-413-100
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Gloss,Tamaño / Cantidad,6 x 4 in | 250,115.34,IMP-DEMO-413-250
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Mate,Tamaño / Cantidad,3 x 2 in | 50,23.92,IMP-DEMO-421-50
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Mate,Tamaño / Cantidad,3 x 2 in | 100,37.72,IMP-DEMO-421-100
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Mate,Tamaño / Cantidad,3 x 2 in | 250,72.68,IMP-DEMO-421-250
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Mate,Tamaño / Cantidad,4 x 3 in | 50,29.42,IMP-DEMO-422-50
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Mate,Tamaño / Cantidad,4 x 3 in | 100,46.40,IMP-DEMO-422-100
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Mate,Tamaño / Cantidad,4 x 3 in | 250,89.40,IMP-DEMO-422-250
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Mate,Tamaño / Cantidad,6 x 4 in | 50,34.92,IMP-DEMO-423-50
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Mate,Tamaño / Cantidad,6 x 4 in | 100,55.07,IMP-DEMO-423-100
+,impress-stickers-test,,,,draft,false,Forma,Rectangle,Acabado,Mate,Tamaño / Cantidad,6 x 4 in | 250,106.11,IMP-DEMO-423-250

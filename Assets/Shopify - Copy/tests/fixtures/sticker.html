@@ -1,0 +1,147 @@
+<!doctype html><html lang="es-PR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;font-family:Arial,sans-serif"><section class="impress-sticker" id="ImpressSticker-demo" data-impress-sticker data-currency="USD" data-initial-variant="110"><div class="impress-sticker__shell"><header class="impress-sticker__header"><div><p class="impress-sticker__eyebrow">IMPRESS / CUSTOM PRINT</p><h2 class="impress-sticker__title">Crea tus stickers</h2><p class="impress-sticker__subtitle">Diseña y personaliza tus stickers antes de pedir.</p></div><span class="impress-sticker__version">IMPRESS / v0.3.6</span></header>      <div class="impress-sticker__layout">
+        <div class="impress-sticker__preview-column">
+          <div class="impress-sticker__preview impress-sticker__preview--editor" aria-label="Editor visual para stickers">
+            <div class="impress-sticker__preview-top">
+              <span><span class="impress-sticker__dot"></span> IMPRESS EDITOR</span>
+              <span data-impress-preview-finish>ACABADO</span>
+            </div>
+            <div class="impress-sticker__editor-tabs" role="group" aria-label="Modo de vista">
+              <button type="button" data-ie-mode="edit" class="is-active">Editar diseño</button>
+              <button type="button" data-ie-mode="final">Vista final</button>
+            </div>
+            <div class="impress-sticker__editor-stage" data-ie-stage data-ie-view="edit">
+              <canvas class="impress-sticker__canvas" data-ie-canvas aria-label="Lienzo de diseño; arrastra para mover y usa las esquinas para escalar" role="img"></canvas>
+              <div class="impress-sticker__final-layer" data-ie-final-layer aria-hidden="true"><canvas class="impress-sticker__final-canvas" data-ie-final-canvas></canvas></div><span class="impress-sticker__final-hint">Mueve el cursor o arrastra para inclinar el sticker y ver el acabado</span><div class="impress-sticker__canvas-empty" data-ie-empty>Sube una imagen para comenzar. Podrás moverla, escalarla, rotarla y añadirle borde.</div>
+            </div>
+            <div class="impress-sticker__contour-alert" data-ie-contour-alert hidden role="status"><span>El fondo sigue incluido. Para cortar alrededor del diseño, primero hay que quitarlo.</span><button type="button" data-ie-contour-remove>Quitar fondo (beta)</button></div><div class="impress-sticker__editor-actions">
+              <button type="button" data-ie-action="undo" title="Deshacer" disabled>↶ <span>Deshacer</span></button>
+              <button type="button" data-ie-action="redo" title="Rehacer" disabled>↷ <span>Rehacer</span></button>
+              <button type="button" data-ie-action="center" title="Centrar" disabled>⊙ <span>Centrar</span></button>
+              <label class="impress-sticker__guides-toggle impress-sticker__guides-toggle--cut"><input type="checkbox" data-ie-guides checked><span data-ie-guides-label>Corte</span></label><label class="impress-sticker__guides-toggle impress-sticker__guides-toggle--safe"><input type="checkbox" data-ie-safe-guides checked><span>Zona segura · 0.125″</span></label>
+            </div><p class="impress-sticker__safety-note" data-ie-safe-note>Para Contour Cut, el borde blanco ayuda a proteger el diseño.</p>
+          </div>
+          <div class="impress-sticker__editor-tools" data-ie-tools>
+            <div class="impress-sticker__tools-heading"><strong>Personaliza tu diseño</strong><span>v0.3.6</span></div>
+            <div class="impress-sticker__tool-row">
+              <label for="ieScale-123">Escala <output data-ie-scale-value>100%</output></label>
+              <input id="ieScale-123" data-ie-scale type="range" min="20" max="250" step="1" value="100" disabled>
+            </div>
+            <div class="impress-sticker__tool-row">
+              <label for="ieRotate-123">Rotación <output data-ie-rotate-value>0°</output></label>
+              <input id="ieRotate-123" data-ie-rotate type="range" min="-180" max="180" step="1" value="0" disabled>
+            </div>
+            <div class="impress-sticker__tool-row impress-sticker__tool-row--two">
+              <div>
+                <label for="ieStroke-123">Borde <output data-ie-stroke-value>0</output></label>
+                <input id="ieStroke-123" data-ie-stroke type="range" min="0" max="28" step="1" value="0" disabled>
+              </div>
+              <div>
+                <label for="ieColor-123">Color del borde</label>
+                <input id="ieColor-123" data-ie-color type="color" value="#ffffff" disabled aria-label="Color del borde">
+              </div>
+            </div>
+            <div class="impress-sticker__bg-row">
+              <button type="button" data-ie-remove-bg disabled>Quitar fondo simple (beta)</button>
+              <button type="button" data-ie-restore-bg disabled>Restaurar fondo</button>
+              <label for="ieTolerance-123">Sensibilidad <output data-ie-tolerance-value>35</output></label>
+              <input id="ieTolerance-123" data-ie-tolerance type="range" min="10" max="100" step="1" value="35" disabled>
+              <small>Funciona mejor con fondos lisos. No es eliminación de fondo por IA.</small>
+            </div>
+            <div class="impress-sticker__tool-bottom">
+              <button type="button" data-ie-download disabled>Descargar vista PNG</button>
+              <span data-ie-editor-message aria-live="polite">La edición funciona en tu navegador.</span>
+            </div>
+          </div>
+          <p class="impress-sticker__disclaimer">Vista orientativa, no prueba de imprenta ni línea de troquel definitiva. Se conserva el archivo original para producción.</p>
+        </div>
+
+        <div class="impress-sticker__controls-column">
+          <form action="/cart/add" method="post" class="impress-sticker__form">
+            <input type="hidden" name="id" value="123" data-impress-variant-id>
+            <input type="hidden" name="quantity" value="1">
+            <input type="hidden" name="properties[Impress - Tamaño]" value="" data-impress-property-size>
+            <input type="hidden" name="properties[Impress - Piezas por paquete]" value="" data-impress-property-pieces>
+            <input type="hidden" name="properties[Impress - Versión]" value="Sticker v0.3">
+            <input type="hidden" name="properties[Impress - Edición]" data-ie-project value="">
+            <input type="file" class="impress-sticker__file-input" name="properties[Vista editada]" data-ie-output-file tabindex="-1" aria-hidden="true" accept="image/png">
+
+            <div class="impress-sticker__field">
+              <div class="impress-sticker__field-heading">
+                <span class="impress-sticker__step">01</span>
+                <label class="impress-sticker__label">Forma</label>
+              </div>
+              <div class="impress-sticker__choices" data-impress-shapes role="group" aria-label="Forma"></div>
+            </div>
+
+            <div class="impress-sticker__field">
+              <div class="impress-sticker__field-heading">
+                <span class="impress-sticker__step">02</span>
+                <label class="impress-sticker__label">Acabado</label>
+              </div>
+              <div class="impress-sticker__choices" data-impress-finishes role="group" aria-label="Acabado"></div>
+            </div>
+
+            <div class="impress-sticker__field impress-sticker__field--grid">
+              <div>
+                <div class="impress-sticker__field-heading">
+                  <span class="impress-sticker__step">03</span>
+                  <label class="impress-sticker__label" for="ImpressSize-123">Tamaño</label>
+                </div>
+                <select class="impress-sticker__select" id="ImpressSize-123" data-impress-sizes aria-label="Tamaño"></select>
+              </div>
+              <div>
+                <div class="impress-sticker__field-heading">
+                  <span class="impress-sticker__step">04</span>
+                  <label class="impress-sticker__label" for="ImpressPieces-123">Cantidad</label>
+                </div>
+                <select class="impress-sticker__select" id="ImpressPieces-123" data-impress-pieces aria-label="Piezas por paquete"></select>
+              </div>
+            </div>
+
+            <div class="impress-sticker__field">
+              <div class="impress-sticker__field-heading">
+                <span class="impress-sticker__step">05</span>
+                <label class="impress-sticker__label" for="ImpressFile-123">Sube tu arte original</label>
+              </div>
+              <label class="impress-sticker__dropzone" for="ImpressFile-123">
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>
+                </svg>
+                <span class="impress-sticker__upload-text" data-impress-file-label>Seleccionar archivo</span>
+                <small>PNG, JPG, WEBP o PDF · hasta 20 MB para esta prueba</small>
+              </label>
+              <input
+                class="impress-sticker__file-input"
+                id="ImpressFile-123"
+                type="file"
+                name="properties[Arte original]"
+                accept=".png,.jpg,.jpeg,.webp,.pdf"
+                required
+                data-impress-art-input
+                aria-describedby="ImpressFileHint-123"
+              >
+              <p id="ImpressFileHint-123" class="impress-sticker__file-hint" data-impress-file-hint aria-live="polite">
+                PNG/JPG/WEBP se pueden editar. Los PDF solo se adjuntan. Original y vista editada se intentan adjuntar al pedido.
+              </p>
+            </div>
+
+            <div class="impress-sticker__summary">
+              <div>
+                <span class="impress-sticker__summary-caption">PRECIO DEL PAQUETE</span>
+                <strong class="impress-sticker__price" data-impress-price>—</strong>
+                <span class="impress-sticker__summary-pieces" data-impress-price-note>Selecciona tus opciones</span>
+              </div>
+              <span class="impress-sticker__summary-mark">IMPRESS</span>
+            </div>
+
+            <p class="impress-sticker__form-message" role="status" aria-live="polite" data-impress-form-message></p>
+            <button type="submit" class="impress-sticker__submit" data-impress-submit disabled>
+              Añadir al carrito
+              <span aria-hidden="true">→</span>
+            </button>
+            <p class="impress-sticker__checkout-note">Precio real de Shopify · 1 paquete por artículo en carrito</p>
+          </form>
+        </div>
+      </div>
+
+<script type="application/json" data-impress-variants>[{"id": 110, "options": ["Contour Cut", "Gloss", "2 x 2 in | 50"], "price": 2782, "available": true}, {"id": 111, "options": ["Contour Cut", "Gloss", "2 x 2 in | 100"], "price": 4387, "available": true}, {"id": 112, "options": ["Contour Cut", "Gloss", "2 x 2 in | 250"], "price": 8453, "available": true}, {"id": 113, "options": ["Contour Cut", "Gloss", "3 x 3 in | 50"], "price": 3422, "available": true}, {"id": 114, "options": ["Contour Cut", "Gloss", "3 x 3 in | 100"], "price": 5396, "available": true}, {"id": 115, "options": ["Contour Cut", "Gloss", "3 x 3 in | 250"], "price": 10397, "available": true}, {"id": 116, "options": ["Contour Cut", "Gloss", "4 x 4 in | 50"], "price": 4062, "available": true}, {"id": 117, "options": ["Contour Cut", "Gloss", "4 x 4 in | 100"], "price": 6405, "available": true}, {"id": 118, "options": ["Contour Cut", "Gloss", "4 x 4 in | 250"], "price": 12341, "available": true}, {"id": 119, "options": ["Contour Cut", "Mate", "2 x 2 in | 50"], "price": 2559, "available": true}, {"id": 120, "options": ["Contour Cut", "Mate", "2 x 2 in | 100"], "price": 4036, "available": true}, {"id": 121, "options": ["Contour Cut", "Mate", "2 x 2 in | 250"], "price": 7777, "available": true}, {"id": 122, "options": ["Contour Cut", "Mate", "3 x 3 in | 50"], "price": 3148, "available": true}, {"id": 123, "options": ["Contour Cut", "Mate", "3 x 3 in | 100"], "price": 4964, "available": true}, {"id": 124, "options": ["Contour Cut", "Mate", "3 x 3 in | 250"], "price": 9565, "available": true}, {"id": 125, "options": ["Contour Cut", "Mate", "4 x 4 in | 50"], "price": 3737, "available": true}, {"id": 126, "options": ["Contour Cut", "Mate", "4 x 4 in | 100"], "price": 5893, "available": true}, {"id": 127, "options": ["Contour Cut", "Mate", "4 x 4 in | 250"], "price": 11354, "available": true}, {"id": 128, "options": ["Square", "Gloss", "2 x 2 in | 50"], "price": 2600, "available": true}, {"id": 129, "options": ["Square", "Gloss", "2 x 2 in | 100"], "price": 4100, "available": true}, {"id": 130, "options": ["Square", "Gloss", "2 x 2 in | 250"], "price": 7900, "available": true}, {"id": 131, "options": ["Square", "Gloss", "3 x 3 in | 50"], "price": 3198, "available": true}, {"id": 132, "options": ["Square", "Gloss", "3 x 3 in | 100"], "price": 5043, "available": true}, {"id": 133, "options": ["Square", "Gloss", "3 x 3 in | 250"], "price": 9717, "available": true}, {"id": 134, "options": ["Square", "Gloss", "4 x 4 in | 50"], "price": 3796, "available": true}, {"id": 135, "options": ["Square", "Gloss", "4 x 4 in | 100"], "price": 5986, "available": true}, {"id": 136, "options": ["Square", "Gloss", "4 x 4 in | 250"], "price": 11534, "available": true}, {"id": 137, "options": ["Square", "Mate", "2 x 2 in | 50"], "price": 2392, "available": true}, {"id": 138, "options": ["Square", "Mate", "2 x 2 in | 100"], "price": 3772, "available": true}, {"id": 139, "options": ["Square", "Mate", "2 x 2 in | 250"], "price": 7268, "available": true}, {"id": 140, "options": ["Square", "Mate", "3 x 3 in | 50"], "price": 2942, "available": true}, {"id": 141, "options": ["Square", "Mate", "3 x 3 in | 100"], "price": 4640, "available": true}, {"id": 142, "options": ["Square", "Mate", "3 x 3 in | 250"], "price": 8940, "available": true}, {"id": 143, "options": ["Square", "Mate", "4 x 4 in | 50"], "price": 3492, "available": true}, {"id": 144, "options": ["Square", "Mate", "4 x 4 in | 100"], "price": 5507, "available": true}, {"id": 145, "options": ["Square", "Mate", "4 x 4 in | 250"], "price": 10611, "available": true}, {"id": 146, "options": ["Circular", "Gloss", "2 x 2 in | 50"], "price": 2600, "available": true}, {"id": 147, "options": ["Circular", "Gloss", "2 x 2 in | 100"], "price": 4100, "available": true}, {"id": 148, "options": ["Circular", "Gloss", "2 x 2 in | 250"], "price": 7900, "available": true}, {"id": 149, "options": ["Circular", "Gloss", "3 x 3 in | 50"], "price": 3198, "available": true}, {"id": 150, "options": ["Circular", "Gloss", "3 x 3 in | 100"], "price": 5043, "available": true}, {"id": 151, "options": ["Circular", "Gloss", "3 x 3 in | 250"], "price": 9717, "available": true}, {"id": 152, "options": ["Circular", "Gloss", "4 x 4 in | 50"], "price": 3796, "available": true}, {"id": 153, "options": ["Circular", "Gloss", "4 x 4 in | 100"], "price": 5986, "available": true}, {"id": 154, "options": ["Circular", "Gloss", "4 x 4 in | 250"], "price": 11534, "available": true}, {"id": 155, "options": ["Circular", "Mate", "2 x 2 in | 50"], "price": 2392, "available": true}, {"id": 156, "options": ["Circular", "Mate", "2 x 2 in | 100"], "price": 3772, "available": true}, {"id": 157, "options": ["Circular", "Mate", "2 x 2 in | 250"], "price": 7268, "available": true}, {"id": 158, "options": ["Circular", "Mate", "3 x 3 in | 50"], "price": 2942, "available": true}, {"id": 159, "options": ["Circular", "Mate", "3 x 3 in | 100"], "price": 4640, "available": true}, {"id": 160, "options": ["Circular", "Mate", "3 x 3 in | 250"], "price": 8940, "available": true}, {"id": 161, "options": ["Circular", "Mate", "4 x 4 in | 50"], "price": 3492, "available": true}, {"id": 162, "options": ["Circular", "Mate", "4 x 4 in | 100"], "price": 5507, "available": true}, {"id": 163, "options": ["Circular", "Mate", "4 x 4 in | 250"], "price": 10611, "available": true}, {"id": 164, "options": ["Rectangle", "Gloss", "3 x 2 in | 50"], "price": 2600, "available": true}, {"id": 165, "options": ["Rectangle", "Gloss", "3 x 2 in | 100"], "price": 4100, "available": true}, {"id": 166, "options": ["Rectangle", "Gloss", "3 x 2 in | 250"], "price": 7900, "available": true}, {"id": 167, "options": ["Rectangle", "Gloss", "4 x 3 in | 50"], "price": 3198, "available": true}, {"id": 168, "options": ["Rectangle", "Gloss", "4 x 3 in | 100"], "price": 5043, "available": true}, {"id": 169, "options": ["Rectangle", "Gloss", "4 x 3 in | 250"], "price": 9717, "available": true}, {"id": 170, "options": ["Rectangle", "Gloss", "6 x 4 in | 50"], "price": 3796, "available": true}, {"id": 171, "options": ["Rectangle", "Gloss", "6 x 4 in | 100"], "price": 5986, "available": true}, {"id": 172, "options": ["Rectangle", "Gloss", "6 x 4 in | 250"], "price": 11534, "available": true}, {"id": 173, "options": ["Rectangle", "Mate", "3 x 2 in | 50"], "price": 2392, "available": true}, {"id": 174, "options": ["Rectangle", "Mate", "3 x 2 in | 100"], "price": 3772, "available": true}, {"id": 175, "options": ["Rectangle", "Mate", "3 x 2 in | 250"], "price": 7268, "available": true}, {"id": 176, "options": ["Rectangle", "Mate", "4 x 3 in | 50"], "price": 2942, "available": true}, {"id": 177, "options": ["Rectangle", "Mate", "4 x 3 in | 100"], "price": 4640, "available": true}, {"id": 178, "options": ["Rectangle", "Mate", "4 x 3 in | 250"], "price": 8940, "available": true}, {"id": 179, "options": ["Rectangle", "Mate", "6 x 4 in | 50"], "price": 3492, "available": true}, {"id": 180, "options": ["Rectangle", "Mate", "6 x 4 in | 100"], "price": 5507, "available": true}, {"id": 181, "options": ["Rectangle", "Mate", "6 x 4 in | 250"], "price": 10611, "available": true}]</script></div></section></body></html>

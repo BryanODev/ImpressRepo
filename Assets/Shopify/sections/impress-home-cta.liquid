@@ -1,0 +1,63 @@
+
+<div class="impress-home-cta" style="
+  --cta-bg: {{ section.settings.bg_color }};
+  --cta-accent: {{ section.settings.accent_color }};
+  --cta-max: {{ section.settings.max_width }}px;
+  --cta-padding-top: {{ section.settings.padding_top }}px;
+  --cta-padding-bottom: {{ section.settings.padding_bottom }}px;
+">
+  <div class="impress-home-cta__container">
+    <div class="impress-home-cta__card">
+      <div class="impress-home-cta__copy">
+        {% if section.settings.subheading != blank %}<p class="impress-home-cta__eyebrow">{{ section.settings.subheading }}</p>{% endif %}
+        {% if section.settings.heading != blank %}<h2 class="impress-home-cta__title">{{ section.settings.heading }}</h2>{% endif %}
+        {% if section.settings.description != blank %}<p class="impress-home-cta__description">{{ section.settings.description }}</p>{% endif %}
+      </div>
+      <div class="impress-home-cta__actions">
+        {% if section.settings.primary_label != blank %}<a class="impress-home-cta__btn impress-home-cta__btn--primary" href="{{ section.settings.primary_link | default: '#' }}">{{ section.settings.primary_label }}</a>{% endif %}
+        {% if section.settings.secondary_label != blank %}<a class="impress-home-cta__btn impress-home-cta__btn--secondary" href="{{ section.settings.secondary_link | default: '#' }}">{{ section.settings.secondary_label }}</a>{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% stylesheet %}
+.impress-home-cta { padding: var(--cta-padding-top) 20px var(--cta-padding-bottom); background: transparent; }
+.impress-home-cta__container { max-width: var(--cta-max); margin: 0 auto; }
+.impress-home-cta__card {
+  padding: 34px;
+  border-radius: 28px;
+  color: white;
+  background:
+    radial-gradient(circle at top right, rgba(251, 191, 0, .18), transparent 30%),
+    linear-gradient(180deg, color-mix(in srgb, var(--cta-bg) 92%, white 8%), var(--cta-bg));
+  display: flex; justify-content: space-between; gap: 24px; align-items: center;
+}
+.impress-home-cta__eyebrow { margin: 0 0 10px; color: var(--cta-accent); font-size: 12px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; }
+.impress-home-cta__title { margin: 0 0 10px; font-size: clamp(30px, 3vw, 42px); line-height: 1.05; letter-spacing: -.03em; font-weight: 900; }
+.impress-home-cta__description { margin: 0; max-width: 58ch; font-size: 15px; line-height: 1.6; color: #cfd4da; }
+.impress-home-cta__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.impress-home-cta__btn { min-height: 48px; padding: 0 18px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; text-decoration: none; }
+.impress-home-cta__btn--primary { background: var(--cta-accent); color: #111; }
+.impress-home-cta__btn--secondary { background: rgba(255,255,255,.12); color: #fff; }
+@media (max-width: 768px) { .impress-home-cta { padding-left: 16px; padding-right: 16px; } .impress-home-cta__card { padding: 24px; flex-direction: column; align-items: flex-start; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Impress Home CTA",
+  "settings": [
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "¿Listo para ordenar?" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Empieza por el producto que necesitas." },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Usa el configurador de stickers o banners hoy, y seguimos refinando el resto del catálogo después." },
+    { "type": "text", "id": "primary_label", "label": "Primary button label", "default": "Ordenar Stickers" },
+    { "type": "url", "id": "primary_link", "label": "Primary button link" },
+    { "type": "text", "id": "secondary_label", "label": "Secondary button label", "default": "Ordenar Banners" },
+    { "type": "url", "id": "secondary_link", "label": "Secondary button link" },
+    { "type": "range", "id": "max_width", "label": "Max width", "min": 900, "max": 1440, "step": 20, "unit": "px", "default": 1240 },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#0f1014" },
+    { "type": "color", "id": "accent_color", "label": "Accent", "default": "#fbbf00" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 28 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 60 }
+  ],
+  "presets": [ { "name": "Impress Home CTA" } ]
+}
+{% endschema %}

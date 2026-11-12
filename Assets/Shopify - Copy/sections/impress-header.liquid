@@ -1,0 +1,580 @@
+<header class="impress-header" style="--header-bg: {{ section.settings.header_bg_color }}; --header-text: {{ section.settings.header_text_color }}; --accent-yellow: {{ section.settings.accent_color }};">
+  <div class="header-container header-row">
+    
+    <a href="/" class="brand-logo">
+      {% if section.settings.logo != blank %}
+        <img 
+          src="{{ section.settings.logo | image_url: width: 400 }}" 
+          alt="{{ shop.name }}"
+          style="max-height: {{ section.settings.logo_max_height }}px;"
+        >
+      {% else %}
+        <div class="logo-group">
+          <span class="logo-main"><span class="logo-i">i</span>m<span class="logo-bold">press</span></span>
+          <span class="logo-sub">PRINTING + SIGNS</span>
+        </div>
+      {% endif %}
+    </a>
+
+    <div class="search-pill-container" id="mega-pill-wrapper">
+      <button class="search-pill-trigger" type="button" aria-expanded="false">
+        <span class="sparkle">•</span>
+        <span class="pill-label">{{ section.settings.pill_label }}</span>
+        <span class="chevron">▾</span>
+      </button>
+
+      <div class="mega-dropdown-modal">
+        {% if section.settings.banner_text != blank %}
+          <div class="dropdown-banner">
+            <span>{{ section.settings.banner_text }}</span>
+            {% if section.settings.banner_btn_url != blank %}
+              <a href="{{ section.settings.banner_btn_url }}" class="banner-btn">{{ section.settings.banner_btn_label }}</a>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <div class="dropdown-flex-grid">
+          {% assign is_first_col = true %}
+          {% for block in section.blocks %}
+            {% if block.type == 'column' %}
+              {% unless is_first_col %}
+                </div>
+                </div>
+              {% endunless %}
+              
+              <div class="grid-col" {{ block.shopify_attributes }}>
+                {% if block.settings.title != blank %}
+                  <span class="col-title">{{ block.settings.title }}</span>
+                {% endif %}
+                <div class="column-items">
+              {% assign is_first_col = false %}
+
+            {% elsif block.type == 'item_card' %}
+              <a href="{{ block.settings.link_url }}" class="mega-item" {{ block.shopify_attributes }}>
+                {% if block.settings.icon != blank %}
+                  <span class="item-icon">{{ block.settings.icon }}</span>
+                {% elsif block.settings.image != blank %}
+                  <img src="{{ block.settings.image | image_url: width: 60 }}" alt="" class="item-img">
+                {% endif %}
+                <div class="item-text">
+                  <strong>{{ block.settings.title }} →</strong>
+                  {% if block.settings.description != blank %}
+                    <p>{{ block.settings.description }}</p>
+                  {% endif %}
+                </div>
+              </a>
+            {% endif %}
+
+            {% if forloop.last and is_first_col == false %}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <nav class="main-nav">
+      {% assign nav_menu = linklists[section.settings.menu] %}
+      {% if nav_menu.links.size > 0 %}
+        {% for link in nav_menu.links %}
+          <a href="{{ link.url }}" class="nav-link">{{ link.title }}</a>
+        {% endfor %}
+      {% else %}
+        <a href="/collections/rotulacion" class="nav-link">Rotulación</a>
+        <a href="/pages/proyectos" class="nav-link">Proyectos</a>
+        <a href="/pages/clientes" class="nav-link">Clientes</a>
+      {% endif %}
+    </nav>
+
+    <div class="cta-buttons-group">
+      <a href="{{ section.settings.cta_1_url }}" class="yellow-cta-btn">
+        {{ section.settings.cta_1_label }}
+      </a>
+      <a href="{{ section.settings.cta_2_url }}" class="yellow-cta-btn">
+        {{ section.settings.cta_2_label }}
+      </a>
+    </div>
+
+    <div class="header-actions">
+      <a href="{{ routes.cart_url }}" class="cart-icon-btn" title="Carrito" aria-label="Carrito">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        {% if cart.item_count > 0 %}
+          <span class="cart-badge">{{ cart.item_count }}</span>
+        {% endif %}
+      </a>
+    </div>
+
+  </div>
+</header>
+
+{% stylesheet %}
+:root {
+  --header-bg: #121212;
+  --header-text: #ffffff;
+  --accent-yellow: #f8db00;
+}
+
+.impress-header {
+  width: 100%;
+  background-color: var(--header-bg);
+  color: var(--header-text);
+  font-family: system-ui, -apple-system, sans-serif;
+  border-bottom: 1px solid #222222;
+}
+
+.header-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 75px;
+  gap: 20px;
+}
+
+/* LOGO */
+.brand-logo {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.logo-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-main {
+  font-size: 32px;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 0.9;
+  letter-spacing: -1px;
+}
+
+.logo-i {
+  color: var(--accent-yellow);
+  font-weight: 700;
+}
+
+.logo-bold {
+  font-weight: 800;
+  color: var(--accent-yellow);
+}
+
+.logo-sub {
+  font-size: 8px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+/* SEARCH PILL - EXPANDED WIDTH */
+.search-pill-container {
+  position: relative;
+  flex: 1 1 320px; /* Allows the search bar to grow and take up remaining space */
+  max-width: 480px; /* Expands width significantly */
+  min-width: 240px;
+}
+
+.search-pill-trigger {
+  width: 100%;
+  background: #222222;
+  border: 1px solid #333333;
+  border-radius: 999px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #cccccc;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.search-pill-trigger:hover {
+  background: #2a2a2a;
+  border-color: #444444;
+}
+
+.sparkle {
+  color: var(--accent-yellow);
+  margin-right: 8px;
+}
+
+.pill-label {
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* DROPDOWN MODAL */
+.mega-dropdown-modal {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  width: 700px;
+  background: #181818;
+  border: 1px solid #333333;
+  border-radius: 12px;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.2s ease;
+  z-index: 999;
+}
+
+.search-pill-container:hover .mega-dropdown-modal,
+.search-pill-container:focus-within .mega-dropdown-modal {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-banner {
+  background: #242424;
+  border-radius: 8px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #ffffff;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.banner-btn {
+  background: var(--accent-yellow);
+  color: #000000;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.dropdown-flex-grid {
+  display: flex;
+  gap: 20px;
+}
+
+.grid-col {
+  flex: 1;
+  min-width: 180px;
+}
+
+.col-title {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #888888;
+  letter-spacing: 0.8px;
+  border-bottom: 1px solid #282828;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+
+.column-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mega-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.mega-item:hover {
+  background: #242424;
+}
+
+.item-text strong {
+  display: block;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.item-text p {
+  margin: 0;
+  color: #888888;
+  font-size: 11px;
+}
+
+/* NAV LINKS */
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-shrink: 0;
+}
+
+.nav-link {
+  color: var(--header-text);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  opacity: 0.8;
+}
+
+/* YELLOW CTA BUTTONS */
+.cta-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.yellow-cta-btn {
+  background-color: var(--accent-yellow);
+  color: #000000;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 10px 24px;
+  border-radius: 10px;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.yellow-cta-btn:hover {
+  background-color: #e5ca00;
+  transform: translateY(-1px);
+}
+
+/* CART ICON & BADGE */
+.header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.cart-icon-btn {
+  color: var(--header-text);
+  text-decoration: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  transition: opacity 0.2s ease;
+}
+
+.cart-icon-btn:hover {
+  opacity: 0.8;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -2px;
+  right: -6px;
+  background-color: var(--accent-yellow);
+  color: #000000;
+  font-size: 10px;
+  font-weight: 800;
+  height: 16px;
+  min-width: 16px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+@media (max-width: 1024px) {
+  .header-row {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 0;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Impress Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo Image"
+    },
+    {
+      "type": "range",
+      "id": "logo_max_height",
+      "min": 20,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Logo Height",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Theme Colors"
+    },
+    {
+      "type": "color",
+      "id": "header_bg_color",
+      "label": "Header Background Color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "header_text_color",
+      "label": "Header Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Yellow Accent Color",
+      "default": "#f8db00"
+    },
+    {
+      "type": "header",
+      "content": "Yellow CTA Buttons Settings"
+    },
+    {
+      "type": "text",
+      "id": "cta_1_label",
+      "label": "Button 1 Label",
+      "default": "Stickers"
+    },
+    {
+      "type": "url",
+      "id": "cta_1_url",
+      "label": "Button 1 Link"
+    },
+    {
+      "type": "text",
+      "id": "cta_2_label",
+      "label": "Button 2 Label",
+      "default": "Banners"
+    },
+    {
+      "type": "url",
+      "id": "cta_2_url",
+      "label": "Button 2 Link"
+    },
+    {
+      "type": "header",
+      "content": "Search Pill Settings"
+    },
+    {
+      "type": "text",
+      "id": "pill_label",
+      "label": "Search Bar Text",
+      "default": "Buscar..."
+    },
+    {
+      "type": "text",
+      "id": "banner_text",
+      "label": "Dropdown Banner Text",
+      "default": "Need custom volume or bulk specs?"
+    },
+    {
+      "type": "text",
+      "id": "banner_btn_label",
+      "label": "Dropdown Banner Button Label",
+      "default": "Get Custom Quote"
+    },
+    {
+      "type": "url",
+      "id": "banner_btn_url",
+      "label": "Dropdown Banner Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigation Menu",
+      "default": "main-menu"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "📁 New Column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Column Title",
+          "default": "Productos"
+        }
+      ]
+    },
+    {
+      "type": "item_card",
+      "name": "🃏 Item Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Title",
+          "default": "Stickers"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Card Description",
+          "default": "Vinilo brillante resiste agua y sol."
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Emoji Icon",
+          "default": "🏷️"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom Icon Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Impress Header"
+    }
+  ]
+}
+{% endschema %}

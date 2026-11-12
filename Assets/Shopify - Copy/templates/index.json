@@ -1,0 +1,245 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "impress_hero_GaRfJT": {
+      "type": "impress-hero",
+      "name": "Impress Hero",
+      "settings": {
+        "max_width": 1400,
+        "card_min_height": 520,
+        "card_radius": 24,
+        "card_bg": "#121212",
+        "overlay_opacity": 40,
+        "subheading": "Calidad y Prontitud Nos Define",
+        "subheading_color": "#fbd500",
+        "heading": "¿Necesitas Stickers o Banners para tu negocio?",
+        "heading_color": "#ffffff",
+        "description": "Rotulación comercial e impresión de alta calidad para empresas en Puerto Rico con entregas rápidas y servicio directo.",
+        "desc_color": "#a1a1aa",
+        "primary_btn_text": "Ordenar Stickers",
+        "primary_btn_link": "",
+        "secondary_btn_text": "Ordenar Banners",
+        "secondary_btn_link": "",
+        "caption_text": "",
+        "caption_link": "",
+        "padding_top": 25,
+        "padding_bottom": 25
+      }
+    },
+    "impress_catalog_grid_HEyTGa": {
+      "type": "impress-catalog-grid",
+      "blocks": {
+        "product_card_6Wf6CW": {
+          "type": "product_card",
+          "settings": {
+            "card_image": "shopify://shop_images/Impress_Mark.png",
+            "title": "Vinyl Stickers",
+            "card_link": "shopify://products/vinyl-sticker"
+          }
+        },
+        "product_card_NywYwM": {
+          "type": "product_card",
+          "settings": {
+            "card_image": "shopify://shop_images/Impress_Mark.png",
+            "title": "Banner",
+            "card_link": ""
+          }
+        },
+        "product_card_49eeR3": {
+          "type": "product_card",
+          "settings": {
+            "card_image": "shopify://shop_images/Impress_Mark.png",
+            "title": "Business Cards",
+            "card_link": ""
+          }
+        },
+        "product_card_GW8p74": {
+          "type": "product_card",
+          "settings": {
+            "card_image": "shopify://shop_images/Impress_Mark.png",
+            "title": "Flyers & Leaflets",
+            "card_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "product_card_6Wf6CW",
+        "product_card_NywYwM",
+        "product_card_49eeR3",
+        "product_card_GW8p74"
+      ],
+      "name": "Horizontal Product Scroll",
+      "settings": {
+        "section_heading": "Ordena por Tipo de Producto",
+        "section_subheading": "",
+        "card_width": 240,
+        "corner_radius": 16,
+        "grid_gap": 20,
+        "max_width": 1200,
+        "vertical_padding": 40,
+        "card_bg_color": "#0e1014",
+        "text_color": "#ffffff"
+      }
+    },
+    "impress_order_instructions_EzyRJr": {
+      "type": "impress-order-instructions",
+      "blocks": {
+        "step_rkHRdG": {
+          "type": "step",
+          "settings": {
+            "heading": "Configura",
+            "description": "Elige tamaño, cantidad y acabado."
+          }
+        },
+        "step_gaJijn": {
+          "type": "step",
+          "settings": {
+            "heading": "Sube tu arte",
+            "description": "Adjunta el archivo a tu pedido."
+          }
+        },
+        "step_Q8rx8W": {
+          "type": "step",
+          "settings": {
+            "heading": "Aprueba",
+            "description": "Revisa la prueba antes de producir."
+          }
+        },
+        "step_JX9cLJ": {
+          "type": "step",
+          "settings": {
+            "heading": "Recibe",
+            "description": "Selecciona envío o recogida en nustra localidad en Isabela, Puerto Rico."
+          }
+        }
+      },
+      "block_order": [
+        "step_rkHRdG",
+        "step_gaJijn",
+        "step_Q8rx8W",
+        "step_JX9cLJ"
+      ],
+      "name": "Impress Steps Process",
+      "settings": {
+        "max_width": 1320,
+        "bg_color": "#121212",
+        "subheading": "COMPRAR STICKERS Y BANNERS",
+        "subheading_color": "#ffcc00",
+        "heading": "Un pedido claro desde el principio.",
+        "heading_color": "#ffffff",
+        "badge_bg": "#ffcc00",
+        "badge_color": "#000000",
+        "card_title_color": "#ffffff",
+        "card_desc_color": "#a1a1aa",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "impress_clients_marquee_GJ89in": {
+      "type": "impress-clients-marquee",
+      "blocks": {
+        "logo_UkPPyb": {
+          "type": "logo",
+          "settings": {
+            "title": "Selectos",
+            "image": "shopify://shop_images/Selectos-logo_upscayl_2x_upscayl-standard-4x.png",
+            "logo_width": 200,
+            "link": ""
+          }
+        },
+        "logo_VNfzhk": {
+          "type": "logo",
+          "settings": {
+            "title": "CADEP",
+            "image": "shopify://shop_images/CADEP_upscayl_2x_upscayl-standard-4x.png",
+            "logo_width": 180,
+            "link": ""
+          }
+        },
+        "logo_baEcFF": {
+          "type": "logo",
+          "settings": {
+            "title": "El Fogón de Napo",
+            "image": "shopify://shop_images/El_Fogon_upscayl_2x_upscayl-standard-4x_ce37ed72-4d86-42e5-a509-58e1bbe58564.png",
+            "logo_width": 180,
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "logo_UkPPyb",
+        "logo_VNfzhk",
+        "logo_baEcFF"
+      ],
+      "name": "Client Logo Marquee",
+      "settings": {
+        "title": "CLIENTES Y ORGANIZACIONES ATENDIDAS",
+        "bg_color": "#ffffff",
+        "vertical_padding": 40,
+        "scroll_speed": 35
+      }
+    },
+    "impress_rotulation_hero_g9Ky49": {
+      "type": "impress-rotulation-hero",
+      "name": "Impress Rotulation Hero",
+      "settings": {
+        "hero_min_height": 480,
+        "single_image_width": 600,
+        "corner_radius": 16,
+        "hero_width": 1400,
+        "vertical_padding": 20,
+        "bg_color": "#f7f6f0",
+        "text_color": "#000000",
+        "accent_yellow": "#f8db00",
+        "subheading": "DISEÑO • FABRICACIÓN • INSTALACIÓN",
+        "heading": "Hacemos visible tu negocio.",
+        "description": "Rotulación comercial e impresión para empresas en Puerto Rico.",
+        "btn1_label": "Cotizar rotulación",
+        "btn1_url": "",
+        "btn2_label": "Ver proyectos",
+        "btn2_url": "",
+        "btn3_label": "",
+        "btn3_url": "",
+        "btn4_label": "",
+        "btn4_url": "",
+        "card_image": "shopify://shop_images/Barracuda.png"
+      }
+    },
+    "impress_quote_YEJWeg": {
+      "type": "impress-quote",
+      "name": "Cotiza Tu Proyecto",
+      "settings": {
+        "subheading": "CONTACTO",
+        "heading_line_1": "Cotiza tu",
+        "heading_line_2": "proyecto",
+        "description": "Cuéntanos sobre tu proyecto y te enviaremos una cotización personalizada. Respuesta en menos de 24 horas.",
+        "location": "Isabela, Puerto Rico",
+        "phone": "(787) 291-4054",
+        "whatsapp": "(939) 489-7806",
+        "email": "impressisabela@gmail.com",
+        "schedule_lines": "<p>Lun - Vie: 8:00 AM - 5:00 PM<br>Sáb: 9:00 AM - 1:00 PM</p>",
+        "accent_color": "#facc15",
+        "card_bg_color": "#f8fafc",
+        "bg_color": "#ffffff",
+        "text_color": "#0f172a",
+        "vertical_padding": 60
+      }
+    }
+  },
+  "order": [
+    "impress_hero_GaRfJT",
+    "impress_catalog_grid_HEyTGa",
+    "impress_order_instructions_EzyRJr",
+    "impress_clients_marquee_GJ89in",
+    "impress_rotulation_hero_g9Ky49",
+    "impress_quote_YEJWeg"
+  ]
+}

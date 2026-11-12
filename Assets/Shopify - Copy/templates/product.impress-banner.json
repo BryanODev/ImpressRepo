@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "impress-banner-configurator",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

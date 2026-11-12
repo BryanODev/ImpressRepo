@@ -1,0 +1,32 @@
+{
+  "sticker_original": {
+    "options": 4,
+    "variant_for_100": "111",
+    "upload_and_final_view": true
+  },
+  "sticker_config": {
+    "shapes": [
+      "Contour Cut",
+      "Square",
+      "Circular"
+    ],
+    "extra_unpriced_quantity_hidden": true,
+    "safe_in": 0.09375,
+    "disabled_tools": true
+  },
+  "sticker_unpriced": {
+    "mode": "preview",
+    "checkout_blocked": true
+  },
+  "banner_config": {
+    "mounts": 1,
+    "sizes": 2,
+    "max_qty": 12,
+    "grommet_diameter": 0.375,
+    "selected_variant": "1002"
+  },
+  "banner_original": {
+    "upload_and_final_view": true,
+    "variant": "1000"
+  }
+}

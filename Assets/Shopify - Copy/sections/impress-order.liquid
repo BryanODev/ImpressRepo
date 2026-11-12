@@ -1,0 +1,400 @@
+<div 
+  class="how-to-order-wrapper" 
+  style="
+    --section-padding-v: {{ section.settings.vertical_padding }}px;
+    --section-max-width: {{ section.settings.max_width }}px;
+    --divider-color: {{ section.settings.divider_color }};
+    --divider-height: {{ section.settings.divider_height }}px;
+    --text-color: {{ section.settings.text_color }};
+    --card-radius: {{ section.settings.card_corner_radius }}px;
+  "
+>
+  <div class="how-to-order-container">
+    
+    {% if section.settings.heading != blank or section.settings.description != blank %}
+      <div class="section-header text-{{ section.settings.heading_alignment }}">
+        {% if section.settings.heading != blank %}
+          <h2 class="section-title">{{ section.settings.heading }}</h2>
+        {% endif %}
+        {% if section.settings.description != blank %}
+          <div class="section-description">{{ section.settings.description }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="steps-grid">
+      {% for block in section.blocks %}
+        
+        <div class="step-card" {{ block.shopify_attributes }}>
+          <div class="step-image-wrapper">
+            {% if block.settings.image != blank %}
+              <img 
+                src="{{ block.settings.image | image_url: width: 600 }}" 
+                alt="{{ block.settings.title | escape }}" 
+                width="{{ block.settings.image.width }}" 
+                height="{{ block.settings.image.height }}" 
+                loading="lazy"
+              >
+            {% else %}
+              <div class="step-image-placeholder">
+                <span>Step {{ forloop.index }} Image</span>
+              </div>
+            {% endif %}
+          </div>
+
+          {% if block.settings.title != blank %}
+            <h3 class="step-title">{{ block.settings.title }}</h3>
+          {% endif %}
+
+          {% if block.settings.description != blank %}
+            <p class="step-description">{{ block.settings.description }}</p>
+          {% endif %}
+        </div>
+
+        {% unless forloop.last %}
+          <div class="column-divider" aria-hidden="true"></div>
+        {% endunless %}
+
+      {% endfor %}
+    </div>
+
+    {% if section.settings.cta_button_label != blank %}
+      <div class="cta-wrapper text-{{ section.settings.cta_alignment }}">
+        <a href="{{ section.settings.cta_button_url | default: '#' }}" class="cta-button">
+          {{ section.settings.cta_button_label }}
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% stylesheet %}
+.how-to-order-wrapper {
+  width: 100%;
+  padding-top: var(--section-padding-v);
+  padding-bottom: var(--section-padding-v);
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+  color: var(--text-color);
+}
+
+.how-to-order-container {
+  max-width: var(--section-max-width);
+  margin: 0 auto;
+}
+
+/* HEADER */
+.section-header {
+  margin-bottom: 48px;
+}
+
+.section-header.text-center { text-align: center; }
+.section-header.text-left { text-align: left; }
+.section-header.text-right { text-align: right; }
+
+.section-title {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.5px;
+  color: inherit;
+}
+
+.section-description {
+  font-size: 16px;
+  line-height: 1.6;
+  opacity: 0.85;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.section-header.text-left .section-description { margin-left: 0; }
+.section-header.text-right .section-description { margin-right: 0; }
+
+/* FLEX GRID FOR CARDS & DIVIDERS */
+.steps-grid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.step-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.step-image-wrapper {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  background-color: #f1f5f9;
+  margin-bottom: 20px;
+}
+
+.step-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.step-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e2e8f0;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.step-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: inherit;
+}
+
+.step-description {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* EDITABLE VERTICAL DIVIDER LINE */
+.column-divider {
+  width: 1px;
+  height: var(--divider-height);
+  background-color: var(--divider-color);
+  flex-shrink: 0;
+}
+
+/* CTA BUTTON */
+.cta-wrapper {
+  margin-top: 48px;
+}
+
+.cta-wrapper.text-center { text-align: center; }
+.cta-wrapper.text-left { text-align: left; }
+.cta-wrapper.text-right { text-align: right; }
+
+.cta-button {
+  display: inline-block;
+  background-color: var(--text-color);
+  color: #ffffff;
+  padding: 16px 36px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+  .steps-grid {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .column-divider {
+    width: 80%;
+    height: 1px; /* Turn line horizontal on mobile */
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: 28px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "How to Order Steps",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header Settings"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "How to Order Your Custom Prints"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Body Text",
+      "default": "<p>Follow these simple steps to customize, proof, and place your order in minutes.</p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Divider Line Customization"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider Line Color",
+      "default": "#cbd5e1"
+    },
+    {
+      "type": "range",
+      "id": "divider_height",
+      "min": 40,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Divider Line Height",
+      "default": 180
+    },
+    {
+      "type": "header",
+      "content": "Card Styling & Layout"
+    },
+    {
+      "type": "range",
+      "id": "card_corner_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Image Corner Roundness",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1400,
+      "step": 20,
+      "unit": "px",
+      "label": "Container Max Width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top & Bottom Section Padding",
+      "default": 50
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text & CTA Button Color",
+      "default": "#0f172a"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action (CTA)"
+    },
+    {
+      "type": "text",
+      "id": "cta_button_label",
+      "label": "CTA Button Label",
+      "default": "Start Your Order Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_button_url",
+      "label": "CTA Button Link"
+    },
+    {
+      "type": "select",
+      "id": "cta_alignment",
+      "label": "CTA Button Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step_card",
+      "name": "📌 Step Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Step Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Heading",
+          "default": "1. Choose Product"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Card Description",
+          "default": "Select your paper stock, size, and quantities needed."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "How to Order Steps",
+      "blocks": [
+        {
+          "type": "step_card",
+          "settings": {
+            "title": "1. Select Specs",
+            "description": "Choose your custom dimensions, material stock, and finishes."
+          }
+        },
+        {
+          "type": "step_card",
+          "settings": {
+            "title": "2. Upload Artwork",
+            "description": "Drop your design files directly into our online instant proof system."
+          }
+        },
+        {
+          "type": "step_card",
+          "settings": {
+            "title": "3. Fast Delivery",
+            "description": "Approve your digital proof and we print and ship straight to your door."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

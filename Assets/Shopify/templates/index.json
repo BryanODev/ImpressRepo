@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "impress_hero_GaRfJT": {
@@ -41,16 +32,22 @@
           "type": "product_card",
           "settings": {
             "card_image": "shopify://shop_images/Impress_Mark.png",
-            "title": "Vinyl Stickers",
-            "card_link": "shopify://products/vinyl-sticker"
+            "title": "Stickers",
+            "card_link": "shopify://products/vinyl-sticker",
+            "description": "Configura corte, acabado y cantidad en una experiencia guiada.",
+            "eyebrow": "Ordena online",
+            "cta_label": "Personalizar"
           }
         },
         "product_card_NywYwM": {
           "type": "product_card",
           "settings": {
             "card_image": "shopify://shop_images/Impress_Mark.png",
-            "title": "Business Cards",
-            "card_link": ""
+            "title": "Banners",
+            "card_link": "",
+            "description": "Sube tu arte, ajusta escala y selecciona montaje con vista previa.",
+            "eyebrow": "Formato grande",
+            "cta_label": "Ver banners"
           }
         },
         "product_card_49eeR3": {
@@ -58,7 +55,10 @@
           "settings": {
             "card_image": "shopify://shop_images/Impress_Mark.png",
             "title": "Business Cards",
-            "card_link": ""
+            "card_link": "",
+            "description": "Prepara tu catálogo para tarjetas de presentación con estilo profesional.",
+            "eyebrow": "Próximamente",
+            "cta_label": "Ver más"
           }
         },
         "product_card_GW8p74": {
@@ -66,7 +66,10 @@
           "settings": {
             "card_image": "shopify://shop_images/Impress_Mark.png",
             "title": "Flyers & Leaflets",
-            "card_link": ""
+            "card_link": "",
+            "description": "Promociona eventos, ofertas y menús con impresos listos para producción.",
+            "eyebrow": "Marketing impreso",
+            "cta_label": "Ver más"
           }
         }
       },
@@ -78,15 +81,17 @@
       ],
       "name": "Horizontal Product Scroll",
       "settings": {
-        "section_heading": "Ordena por Tipo de Producto",
-        "section_subheading": "",
-        "card_width": 240,
-        "corner_radius": 16,
-        "grid_gap": 20,
-        "max_width": 1200,
-        "vertical_padding": 40,
+        "section_heading": "Ordena por tipo de producto",
+        "section_subheading": "Productos principales",
+        "corner_radius": 22,
+        "grid_gap": 22,
+        "max_width": 1240,
+        "vertical_padding": 45,
         "card_bg_color": "#0e1014",
-        "text_color": "#ffffff"
+        "text_color": "#ffffff",
+        "section_helper": "Selecciona una categoría para comenzar. Puedes dejar las imágenes como placeholders por ahora y cambiarlas después.",
+        "muted_text_color": "#b3b5bd",
+        "accent_color": "#fbbf00"
       }
     },
     "impress_order_instructions_EzyRJr": {
@@ -232,14 +237,87 @@
         "text_color": "#0f172a",
         "vertical_padding": 60
       }
+    },
+    "impress_home_benefits_kQ2Lk9": {
+      "type": "impress-home-benefits",
+      "blocks": {
+        "benefit1": {
+          "type": "benefit",
+          "settings": {
+            "badge_text": "01",
+            "heading": "Proceso bien explicado",
+            "description": "El cliente entiende rápido cómo ordenar, subir su arte y terminar la compra."
+          }
+        },
+        "benefit2": {
+          "type": "benefit",
+          "settings": {
+            "badge_text": "02",
+            "heading": "Diseñado para producción",
+            "description": "La experiencia está pensada para stickers, banners y luego más productos impresos."
+          }
+        },
+        "benefit3": {
+          "type": "benefit",
+          "settings": {
+            "badge_text": "03",
+            "heading": "Atención local en Puerto Rico",
+            "description": "Comunica confianza con servicio directo, entregas y recogido."
+          }
+        },
+        "benefit4": {
+          "type": "benefit",
+          "settings": {
+            "badge_text": "04",
+            "heading": "Escalable para Impress",
+            "description": "La homepage queda lista para crecer con business cards, postcards y más."
+          }
+        }
+      },
+      "block_order": [
+        "benefit1",
+        "benefit2",
+        "benefit3",
+        "benefit4"
+      ],
+      "settings": {
+        "subheading": "POR QUÉ IMPRESS",
+        "heading": "Un home más claro y más sólido para vender impresión.",
+        "description": "Mientras terminamos el resto del catálogo, esta portada deja bien explicados los productos principales y por qué confiar en ustedes.",
+        "max_width": 1240,
+        "bg_color": "#ffffff",
+        "card_bg": "#ffffff",
+        "accent_color": "#fbbf00",
+        "padding_top": 12,
+        "padding_bottom": 56
+      }
+    },
+    "impress_home_cta_9uV82M": {
+      "type": "impress-home-cta",
+      "settings": {
+        "subheading": "¿Listo para empezar?",
+        "heading": "Ordena stickers y banners hoy mismo.",
+        "description": "Podemos dejar Business Cards y otros productos como próximos, pero la portada ya queda lista para convertir mejor desde hoy.",
+        "primary_label": "Ordenar Stickers",
+        "primary_link": "shopify://products/vinyl-sticker",
+        "secondary_label": "Ordenar Banners",
+        "secondary_link": "",
+        "max_width": 1240,
+        "bg_color": "#0f1014",
+        "accent_color": "#fbbf00",
+        "padding_top": 8,
+        "padding_bottom": 56
+      }
     }
   },
   "order": [
     "impress_hero_GaRfJT",
     "impress_catalog_grid_HEyTGa",
     "impress_order_instructions_EzyRJr",
+    "impress_home_benefits_kQ2Lk9",
     "impress_clients_marquee_GJ89in",
     "impress_rotulation_hero_g9Ky49",
+    "impress_home_cta_9uV82M",
     "impress_quote_YEJWeg"
   ]
 }
