@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "impress_hero_GaRfJT": {
@@ -9,14 +18,14 @@
         "card_radius": 24,
         "card_bg": "#121212",
         "overlay_opacity": 40,
-        "subheading": "Calidad y Prontitud Nos Define",
+        "subheading": "STICKERS Y BANNERS PERSONALIZADOS",
         "subheading_color": "#fbd500",
         "heading": "¿Necesitas Stickers o Banners para tu negocio?",
         "heading_color": "#ffffff",
-        "description": "Rotulación comercial e impresión de alta calidad para empresas en Puerto Rico con entregas rápidas y servicio directo.",
+        "description": "Haz que tu marca destaque. Personaliza tus stickers o banners, elige tus opciones y sube tu diseño desde nuestra tienda online.",
         "desc_color": "#a1a1aa",
         "primary_btn_text": "Ordenar Stickers",
-        "primary_btn_link": "",
+        "primary_btn_link": "shopify://products/vinyl-sticker",
         "secondary_btn_text": "Ordenar Banners",
         "secondary_btn_link": "",
         "caption_text": "",
@@ -32,44 +41,44 @@
           "type": "product_card",
           "settings": {
             "card_image": "shopify://shop_images/Impress_Mark.png",
-            "title": "Stickers",
-            "card_link": "shopify://products/vinyl-sticker",
-            "description": "Configura corte, acabado y cantidad en una experiencia guiada.",
             "eyebrow": "Ordena online",
-            "cta_label": "Personalizar"
+            "title": "Stickers",
+            "description": "Para logos, packaging, promociones y diseños personalizados.",
+            "cta_label": "Personalizar",
+            "card_link": "shopify://products/vinyl-sticker"
           }
         },
         "product_card_NywYwM": {
           "type": "product_card",
           "settings": {
             "card_image": "shopify://shop_images/Impress_Mark.png",
-            "title": "Banners",
-            "card_link": "",
-            "description": "Sube tu arte, ajusta escala y selecciona montaje con vista previa.",
             "eyebrow": "Formato grande",
-            "cta_label": "Ver banners"
+            "title": "Banners",
+            "description": "Haz destacar tu mensaje con impresiones en formato grande.",
+            "cta_label": "Ver banners",
+            "card_link": ""
           }
         },
         "product_card_49eeR3": {
           "type": "product_card",
           "settings": {
             "card_image": "shopify://shop_images/Impress_Mark.png",
-            "title": "Business Cards",
-            "card_link": "",
-            "description": "Prepara tu catálogo para tarjetas de presentación con estilo profesional.",
             "eyebrow": "Próximamente",
-            "cta_label": "Ver más"
+            "title": "Business Cards",
+            "description": "Dale a cada contacto una primera impresión profesional.",
+            "cta_label": "Ver más",
+            "card_link": ""
           }
         },
         "product_card_GW8p74": {
           "type": "product_card",
           "settings": {
             "card_image": "shopify://shop_images/Impress_Mark.png",
-            "title": "Flyers & Leaflets",
-            "card_link": "",
-            "description": "Promociona eventos, ofertas y menús con impresos listos para producción.",
             "eyebrow": "Marketing impreso",
-            "cta_label": "Ver más"
+            "title": "Flyers & Leaflets",
+            "description": "Promueve eventos, servicios y ofertas con piezas impresas.",
+            "cta_label": "Ver más",
+            "card_link": ""
           }
         }
       },
@@ -81,16 +90,70 @@
       ],
       "name": "Horizontal Product Scroll",
       "settings": {
-        "section_heading": "Ordena por tipo de producto",
-        "section_subheading": "Productos principales",
+        "section_subheading": "PRODUCTOS IMPRESS",
+        "section_heading": "¿Qué quieres imprimir hoy?",
+        "section_helper": "Encuentra lo que necesitas para tu marca, negocio o próximo evento.",
         "corner_radius": 22,
         "grid_gap": 22,
         "max_width": 1240,
         "vertical_padding": 45,
         "card_bg_color": "#0e1014",
         "text_color": "#ffffff",
-        "section_helper": "Selecciona una categoría para comenzar. Puedes dejar las imágenes como placeholders por ahora y cambiarlas después.",
         "muted_text_color": "#b3b5bd",
+        "accent_color": "#fbbf00"
+      }
+    },
+    "impress_product_showcase_k9J7Pg": {
+      "type": "impress-product-showcase",
+      "blocks": {
+        "item_QxJGx8": {
+          "type": "item",
+          "settings": {
+            "fallback_image": "sticker",
+            "tag": "Hecho a tu manera",
+            "title": "Stickers personalizados",
+            "description": "Haz destacar tu marca con impresos a tu estilo.",
+            "link": "",
+            "cta_label": "Personalizar"
+          }
+        },
+        "show_banners_93aM4Y": {
+          "type": "item",
+          "settings": {
+            "fallback_image": "banner",
+            "tag": "BANNERS A TU MEDIDA",
+            "title": "Haz que todos te vean",
+            "description": "Banners para eventos, aperturas, promociones y tu próximo gran anuncio.",
+            "link": "",
+            "cta_label": "Ver banners"
+          }
+        },
+        "show_stickers_NQ8q6L": {
+          "type": "item",
+          "settings": {
+            "fallback_image": "sticker",
+            "tag": "STICKERS CUSTOM",
+            "title": "Pequeños detalles, grandes ideas",
+            "description": "Vinyl stickers para packaging, marcas, regalos y cualquier idea que quieras compartir.",
+            "link": "shopify://products/vinyl-sticker",
+            "cta_label": "Personalizar stickers"
+          }
+        }
+      },
+      "block_order": [
+        "item_QxJGx8",
+        "show_banners_93aM4Y",
+        "show_stickers_NQ8q6L"
+      ],
+      "settings": {
+        "eyebrow": "IDEAS PARA INSPIRARTE",
+        "heading": "Lo que imaginas, lo puedes imprimir.",
+        "description": "Desde detalles pequeños para tu marca hasta mensajes que se ven de lejos. Inspírate con estas ideas.",
+        "disclaimer": "Imágenes de ejemplo; el resultado final depende del arte y las opciones de impresión.",
+        "max_width": 1240,
+        "padding_top": 55,
+        "padding_bottom": 65,
+        "bg_color": "#f7f8f9",
         "accent_color": "#fbbf00"
       }
     },
@@ -100,29 +163,29 @@
         "step_rkHRdG": {
           "type": "step",
           "settings": {
-            "heading": "Configura",
-            "description": "Elige tamaño, cantidad y acabado."
+            "heading": "Elige tu producto",
+            "description": "Selecciona el tamaño, acabado y cantidad disponibles."
           }
         },
         "step_gaJijn": {
           "type": "step",
           "settings": {
             "heading": "Sube tu arte",
-            "description": "Adjunta el archivo a tu pedido."
+            "description": "Adjunta tu diseño desde la página del producto."
           }
         },
         "step_Q8rx8W": {
           "type": "step",
           "settings": {
-            "heading": "Aprueba",
-            "description": "Revisa la prueba antes de producir."
+            "heading": "Revisa tu pedido",
+            "description": "Confirma tus opciones y la vista previa antes de comprar."
           }
         },
         "step_JX9cLJ": {
           "type": "step",
           "settings": {
-            "heading": "Recibe",
-            "description": "Selecciona envío o recogida en nustra localidad en Isabela, Puerto Rico."
+            "heading": "Recibe tu orden",
+            "description": "Selecciona la opción disponible de envío o recogido al finalizar."
           }
         }
       },
@@ -136,9 +199,9 @@
       "settings": {
         "max_width": 1320,
         "bg_color": "#121212",
-        "subheading": "COMPRAR STICKERS Y BANNERS",
+        "subheading": "ASÍ DE FÁCIL",
         "subheading_color": "#ffcc00",
-        "heading": "Un pedido claro desde el principio.",
+        "heading": "De tu idea a la impresión, paso a paso.",
         "heading_color": "#ffffff",
         "badge_bg": "#ffcc00",
         "badge_color": "#000000",
@@ -192,52 +255,6 @@
         "scroll_speed": 35
       }
     },
-    "impress_rotulation_hero_g9Ky49": {
-      "type": "impress-rotulation-hero",
-      "name": "Impress Rotulation Hero",
-      "settings": {
-        "hero_min_height": 480,
-        "single_image_width": 600,
-        "corner_radius": 16,
-        "hero_width": 1400,
-        "vertical_padding": 20,
-        "bg_color": "#f7f6f0",
-        "text_color": "#000000",
-        "accent_yellow": "#f8db00",
-        "subheading": "DISEÑO • FABRICACIÓN • INSTALACIÓN",
-        "heading": "Hacemos visible tu negocio.",
-        "description": "Rotulación comercial e impresión para empresas en Puerto Rico.",
-        "btn1_label": "Cotizar rotulación",
-        "btn1_url": "",
-        "btn2_label": "Ver proyectos",
-        "btn2_url": "",
-        "btn3_label": "",
-        "btn3_url": "",
-        "btn4_label": "",
-        "btn4_url": "",
-        "card_image": "shopify://shop_images/Barracuda.png"
-      }
-    },
-    "impress_quote_YEJWeg": {
-      "type": "impress-quote",
-      "name": "Cotiza Tu Proyecto",
-      "settings": {
-        "subheading": "CONTACTO",
-        "heading_line_1": "Cotiza tu",
-        "heading_line_2": "proyecto",
-        "description": "Cuéntanos sobre tu proyecto y te enviaremos una cotización personalizada. Respuesta en menos de 24 horas.",
-        "location": "Isabela, Puerto Rico",
-        "phone": "(787) 291-4054",
-        "whatsapp": "(939) 489-7806",
-        "email": "impressisabela@gmail.com",
-        "schedule_lines": "<p>Lun - Vie: 8:00 AM - 5:00 PM<br>Sáb: 9:00 AM - 1:00 PM</p>",
-        "accent_color": "#facc15",
-        "card_bg_color": "#f8fafc",
-        "bg_color": "#ffffff",
-        "text_color": "#0f172a",
-        "vertical_padding": 60
-      }
-    },
     "impress_home_benefits_kQ2Lk9": {
       "type": "impress-home-benefits",
       "blocks": {
@@ -245,32 +262,32 @@
           "type": "benefit",
           "settings": {
             "badge_text": "01",
-            "heading": "Proceso bien explicado",
-            "description": "El cliente entiende rápido cómo ordenar, subir su arte y terminar la compra."
+            "heading": "Personaliza a tu manera",
+            "description": "Elige las medidas, acabados y cantidades disponibles para cada producto."
           }
         },
         "benefit2": {
           "type": "benefit",
           "settings": {
             "badge_text": "02",
-            "heading": "Diseñado para producción",
-            "description": "La experiencia está pensada para stickers, banners y luego más productos impresos."
+            "heading": "Carga tu diseño",
+            "description": "Adjunta tu arte directamente al preparar tu pedido online."
           }
         },
         "benefit3": {
           "type": "benefit",
           "settings": {
             "badge_text": "03",
-            "heading": "Atención local en Puerto Rico",
-            "description": "Comunica confianza con servicio directo, entregas y recogido."
+            "heading": "Atención en Puerto Rico",
+            "description": "Habla con un equipo local cuando tengas dudas sobre tu proyecto."
           }
         },
         "benefit4": {
           "type": "benefit",
           "settings": {
             "badge_text": "04",
-            "heading": "Escalable para Impress",
-            "description": "La homepage queda lista para crecer con business cards, postcards y más."
+            "heading": "Compra con claridad",
+            "description": "Revisa tus opciones y el precio de tu selección antes de pagar."
           }
         }
       },
@@ -282,22 +299,81 @@
       ],
       "settings": {
         "subheading": "POR QUÉ IMPRESS",
-        "heading": "Un home más claro y más sólido para vender impresión.",
-        "description": "Mientras terminamos el resto del catálogo, esta portada deja bien explicados los productos principales y por qué confiar en ustedes.",
+        "heading": "Impresión que funciona para tus ideas.",
+        "description": "Desde un sticker para tu marca hasta un banner para tu próxima promoción: haz tu pedido con opciones claras y atención cercana.",
         "max_width": 1240,
         "bg_color": "#ffffff",
         "card_bg": "#ffffff",
         "accent_color": "#fbbf00",
-        "padding_top": 12,
-        "padding_bottom": 56
+        "padding_top": 52,
+        "padding_bottom": 60
+      }
+    },
+    "impress_home_faq_p7M8d2": {
+      "type": "impress-home-faq",
+      "blocks": {
+        "faq_arTE2": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Cómo envío mi diseño?",
+            "answer": "Desde la página del producto puedes adjuntar tu archivo mientras preparas el pedido."
+          }
+        },
+        "faq_cant6": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Los stickers tienen cantidad mínima?",
+            "answer": "Las cantidades disponibles aparecen en el selector de cada producto. Solo puedes elegir las opciones ofrecidas para ese artículo."
+          }
+        },
+        "faq_tiempo3": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Cuánto tarda la producción?",
+            "answer": "Depende del producto, la cantidad y los detalles del pedido. Si necesitas una fecha específica, consúltanos antes de comprar."
+          }
+        },
+        "faq_envio4": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Hacen envíos o puedo recoger?",
+            "answer": "Consulta las opciones disponibles de entrega y recogido al finalizar tu compra. Si tienes dudas, contáctanos."
+          }
+        },
+        "faq_ayuda5": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Y si necesito ayuda con mi arte?",
+            "answer": "Podemos orientarte sobre tu archivo y las opciones disponibles. Escríbenos antes de hacer el pedido si tienes alguna pregunta."
+          }
+        }
+      },
+      "block_order": [
+        "faq_arTE2",
+        "faq_cant6",
+        "faq_tiempo3",
+        "faq_envio4",
+        "faq_ayuda5"
+      ],
+      "settings": {
+        "eyebrow": "PREGUNTAS FRECUENTES",
+        "heading": "Todo más claro antes de ordenar.",
+        "description": "Respuestas rápidas para que elijas tu producto y prepares tu archivo con confianza.",
+        "contact_label": "Hablar con Impress",
+        "contact_link": "",
+        "max_width": 1240,
+        "padding_top": 65,
+        "padding_bottom": 65,
+        "bg_color": "#111216",
+        "accent_color": "#fbbf00"
       }
     },
     "impress_home_cta_9uV82M": {
       "type": "impress-home-cta",
       "settings": {
-        "subheading": "¿Listo para empezar?",
-        "heading": "Ordena stickers y banners hoy mismo.",
-        "description": "Podemos dejar Business Cards y otros productos como próximos, pero la portada ya queda lista para convertir mejor desde hoy.",
+        "subheading": "TU PRÓXIMO PROYECTO EMPIEZA AQUÍ",
+        "heading": "¿Listo para imprimir tus ideas?",
+        "description": "Elige stickers o banners, personalízalos y prepara tu pedido en minutos.",
         "primary_label": "Ordenar Stickers",
         "primary_link": "shopify://products/vinyl-sticker",
         "secondary_label": "Ordenar Banners",
@@ -305,19 +381,19 @@
         "max_width": 1240,
         "bg_color": "#0f1014",
         "accent_color": "#fbbf00",
-        "padding_top": 8,
-        "padding_bottom": 56
+        "padding_top": 24,
+        "padding_bottom": 64
       }
     }
   },
   "order": [
     "impress_hero_GaRfJT",
     "impress_catalog_grid_HEyTGa",
+    "impress_product_showcase_k9J7Pg",
     "impress_order_instructions_EzyRJr",
-    "impress_home_benefits_kQ2Lk9",
     "impress_clients_marquee_GJ89in",
-    "impress_rotulation_hero_g9Ky49",
-    "impress_home_cta_9uV82M",
-    "impress_quote_YEJWeg"
+    "impress_home_benefits_kQ2Lk9",
+    "impress_home_faq_p7M8d2",
+    "impress_home_cta_9uV82M"
   ]
 }

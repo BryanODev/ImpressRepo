@@ -1,0 +1,48 @@
+{
+  "impress_rotulation_hero_g9Ky49": {
+    "type": "impress-rotulation-hero",
+    "name": "Impress Rotulation Hero",
+    "settings": {
+      "hero_min_height": 480,
+      "single_image_width": 600,
+      "corner_radius": 16,
+      "hero_width": 1400,
+      "vertical_padding": 20,
+      "bg_color": "#f7f6f0",
+      "text_color": "#000000",
+      "accent_yellow": "#f8db00",
+      "subheading": "DISEÑO • FABRICACIÓN • INSTALACIÓN",
+      "heading": "Hacemos visible tu negocio.",
+      "description": "Rotulación comercial e impresión para empresas en Puerto Rico.",
+      "btn1_label": "Cotizar rotulación",
+      "btn1_url": "",
+      "btn2_label": "Ver proyectos",
+      "btn2_url": "",
+      "btn3_label": "",
+      "btn3_url": "",
+      "btn4_label": "",
+      "btn4_url": "",
+      "card_image": "shopify://shop_images/Barracuda.png"
+    }
+  },
+  "impress_quote_YEJWeg": {
+    "type": "impress-quote",
+    "name": "Cotiza Tu Proyecto",
+    "settings": {
+      "subheading": "CONTACTO",
+      "heading_line_1": "Cotiza tu",
+      "heading_line_2": "proyecto",
+      "description": "Cuéntanos sobre tu proyecto y te enviaremos una cotización personalizada. Respuesta en menos de 24 horas.",
+      "location": "Isabela, Puerto Rico",
+      "phone": "(787) 291-4054",
+      "whatsapp": "(939) 489-7806",
+      "email": "impressisabela@gmail.com",
+      "schedule_lines": "<p>Lun - Vie: 8:00 AM - 5:00 PM<br>Sáb: 9:00 AM - 1:00 PM</p>",
+      "accent_color": "#facc15",
+      "card_bg_color": "#f8fafc",
+      "bg_color": "#ffffff",
+      "text_color": "#0f172a",
+      "vertical_padding": 60
+    }
+  }
+}

@@ -1,0 +1,129 @@
+{% comment %}
+  IMPRESS | Homepage Product Showcase
+  Display-only product examples. Merchant may replace the default images and
+  independently set product URLs; no Shopify price/variant logic lives here.
+{% endcomment %}
+<section class="impress-showcase" style="
+  --ims-max: {{ section.settings.max_width }}px;
+  --ims-pad-top: {{ section.settings.padding_top }}px;
+  --ims-pad-bottom: {{ section.settings.padding_bottom }}px;
+  --ims-accent: {{ section.settings.accent_color }};
+  --ims-bg: {{ section.settings.bg_color }};
+  " aria-labelledby="impress-showcase-title-{{ section.id }}">
+  <div class="impress-showcase__wrap">
+    <div class="impress-showcase__heading-row">
+      <div class="impress-showcase__heading-copy">
+        {% if section.settings.eyebrow != blank %}
+          <p class="impress-showcase__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {% endif %}
+        {% if section.settings.heading != blank %}
+          <h2 id="impress-showcase-title-{{ section.id }}" class="impress-showcase__title">{{ section.settings.heading | escape }}</h2>
+        {% endif %}
+      </div>
+      {% if section.settings.description != blank %}
+        <p class="impress-showcase__intro">{{ section.settings.description | escape }}</p>
+      {% endif %}
+    </div>
+
+    <div class="impress-showcase__grid">
+      {% for block in section.blocks %}
+        {% liquid
+          assign is_banner = false
+          if block.settings.fallback_image == 'banner'
+            assign is_banner = true
+          endif
+        %}
+        <article class="impress-showcase__item" {{ block.shopify_attributes }}>
+          <div class="impress-showcase__media">
+            {% if block.settings.image != blank %}
+              <img src="{{ block.settings.image | image_url: width: 1400 }}"
+                alt="{{ block.settings.image.alt | default: block.settings.title | escape }}"
+                width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}" loading="lazy">
+            {% elsif is_banner %}
+              <img src="{{ 'impress-showcase-banners.svg' | asset_url }}" alt="Ejemplo ilustrativo de un banner impreso con argollas" width="1200" height="900" loading="lazy">
+            {% else %}
+              <img src="{{ 'impress-showcase-stickers.jpg' | asset_url }}" alt="Ejemplo de stickers troquelados y personalizados" width="1500" height="1000" loading="lazy">
+            {% endif %}
+            {% if block.settings.tag != blank %}
+              <span class="impress-showcase__tag">{{ block.settings.tag | escape }}</span>
+            {% endif %}
+          </div>
+          <div class="impress-showcase__detail">
+            <div>
+              {% if block.settings.title != blank %}<h3 class="impress-showcase__item-title">{{ block.settings.title | escape }}</h3>{% endif %}
+              {% if block.settings.description != blank %}<p class="impress-showcase__item-text">{{ block.settings.description | escape }}</p>{% endif %}
+            </div>
+            {% if block.settings.link != blank and block.settings.cta_label != blank %}
+              <a href="{{ block.settings.link }}" class="impress-showcase__link">
+                {{ block.settings.cta_label | escape }} <span aria-hidden="true">↗</span>
+              </a>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+    {% if section.settings.disclaimer != blank %}
+      <p class="impress-showcase__disclaimer">{{ section.settings.disclaimer | escape }}</p>
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+.impress-showcase { background:var(--ims-bg); padding:var(--ims-pad-top) 20px var(--ims-pad-bottom); }
+.impress-showcase__wrap { max-width:var(--ims-max); margin-inline:auto; }
+.impress-showcase__heading-row { display:flex; align-items:end; justify-content:space-between; gap:28px; margin-bottom:28px; }
+.impress-showcase__heading-copy { max-width:700px; }
+.impress-showcase__eyebrow { margin:0 0 10px; color:#987200; font-size:12px; letter-spacing:1.5px; font-weight:850; text-transform:uppercase; }
+.impress-showcase__title { margin:0; color:#121316; font-size:clamp(30px,3.8vw,46px); font-weight:900; line-height:1.08; letter-spacing:-.035em; }
+.impress-showcase__intro { margin:0; width:100%; max-width:410px; color:#666b74; font-size:15px; line-height:1.65; }
+.impress-showcase__grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+.impress-showcase__item { border-radius:24px; overflow:hidden; background:#fff; border:1px solid #e8e9ec; box-shadow:0 12px 32px rgba(14,17,26,.07); min-width:0; }
+.impress-showcase__media { aspect-ratio:1.53; background:#e9ecef; position:relative; overflow:hidden; }
+.impress-showcase__media img { display:block; width:100%; height:100%; object-fit:cover; transition:transform .6s cubic-bezier(.2,.65,.2,1); }
+.impress-showcase__item:hover .impress-showcase__media img { transform:scale(1.045); }
+.impress-showcase__tag { position:absolute; left:20px; top:20px; border-radius:999px; background:#ffcf21; color:#161616; font-size:11px; font-weight:850; padding:9px 12px; line-height:1; letter-spacing:.45px; text-transform:uppercase; box-shadow:0 4px 12px rgba(0,0,0,.11); }
+.impress-showcase__detail { padding:23px 24px 24px; display:flex; align-items:center; gap:18px; justify-content:space-between; }
+.impress-showcase__item-title { margin:0 0 7px; font-size:23px; font-weight:880; line-height:1.1; color:#121316; letter-spacing:-.025em; }
+.impress-showcase__item-text { margin:0; max-width:39ch; color:#60646b; line-height:1.5; font-size:14px; }
+.impress-showcase__link { flex:none; display:inline-flex; align-items:center; gap:9px; text-decoration:none; border-radius:100px; padding:12px 16px; color:#131313; background:var(--ims-accent); font-size:13px; font-weight:850; transition:transform .2s ease,background .2s ease; }
+.impress-showcase__link:hover { transform:translateY(-2px); background:#ffd84f; }
+.impress-showcase__link:focus-visible { outline:3px solid #111; outline-offset:3px; }
+.impress-showcase__link span { font-size:17px; }
+.impress-showcase__disclaimer { margin:14px 3px 0; font-size:12px; line-height:1.5; color:#8b9099; }
+@media (max-width:900px) { .impress-showcase__heading-row { align-items:start; flex-direction:column; gap:12px; } .impress-showcase__detail { align-items:flex-start; flex-direction:column; } }
+@media (max-width:700px) { .impress-showcase { padding-left:16px; padding-right:16px; } .impress-showcase__grid { grid-template-columns:1fr; gap:16px; } .impress-showcase__media { aspect-ratio:1.5; } .impress-showcase__detail { padding:20px; gap:15px; } .impress-showcase__tag { top:14px; left:14px; } }
+@media (prefers-reduced-motion:reduce) { .impress-showcase__media img,.impress-showcase__link { transition:none; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Impress Product Showcase",
+  "max_blocks": 4,
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Small heading","default":"IDEAS PARA INSPIRARTE"},
+    {"type":"text","id":"heading","label":"Heading","default":"Así se ven las buenas ideas impresas."},
+    {"type":"textarea","id":"description","label":"Introduction","default":"Stickers para marcas y eventos, banners que llaman la atención y mucho más. Inspírate y crea algo tuyo."},
+    {"type":"text","id":"disclaimer","label":"Sample image note","default":"Imágenes ilustrativas. El resultado final depende del diseño y las opciones seleccionadas."},
+    {"type":"range","id":"max_width","label":"Max width","min":900,"max":1400,"step":20,"default":1240,"unit":"px"},
+    {"type":"range","id":"padding_top","label":"Top spacing","min":0,"max":120,"step":5,"default":50,"unit":"px"},
+    {"type":"range","id":"padding_bottom","label":"Bottom spacing","min":0,"max":120,"step":5,"default":55,"unit":"px"},
+    {"type":"color","id":"bg_color","label":"Background color","default":"#f7f8f9"},
+    {"type":"color","id":"accent_color","label":"Button accent color","default":"#fbbf00"}
+  ],
+  "blocks": [
+    {"type":"item","name":"Showcase Item","settings":[
+      {"type":"image_picker","id":"image","label":"Custom photo (optional)"},
+      {"type":"select","id":"fallback_image","label":"Placeholder visual","options":[{"value":"sticker","label":"Sticker photo"},{"value":"banner","label":"Banner illustration"}],"default":"sticker"},
+      {"type":"text","id":"tag","label":"Image label","default":"Hecho a tu manera"},
+      {"type":"text","id":"title","label":"Title","default":"Stickers personalizados"},
+      {"type":"textarea","id":"description","label":"Description","default":"Haz destacar tu marca con impresos a tu estilo."},
+      {"type":"url","id":"link","label":"Product or page link"},
+      {"type":"text","id":"cta_label","label":"Button text","default":"Personalizar"}
+    ]}
+  ],
+  "presets":[{"name":"Impress Product Showcase","blocks":[
+    {"type":"item","settings":{"fallback_image":"sticker","tag":"CORTE PERSONALIZADO","title":"Stickers que destacan","description":"De logos y marcas a diseños divertidos: elige corte, tamaño y cantidad."}},
+    {"type":"item","settings":{"fallback_image":"banner","tag":"FORMATO GRANDE","title":"Banners para tu negocio","description":"Para promociones, aperturas y eventos que merecen ser vistos."}}
+  ]}]
+}
+{% endschema %}

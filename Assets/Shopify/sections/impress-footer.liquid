@@ -1,0 +1,228 @@
+{% comment %}
+  Impress | Sitewide storefront footer.
+  Assigned to sections/footer-group.json, not to templates/index.json.
+  All footer-specific CSS is scoped below. Does not render a quote form.
+{% endcomment %}
+
+<div class="impress-site-footer" style="
+  --imf-bg: {{ section.settings.bg_color }};
+  --imf-accent: {{ section.settings.accent_color }};
+  --imf-max: {{ section.settings.max_width }}px;
+  --imf-pad-top: {{ section.settings.padding_top }}px;
+  --imf-pad-bottom: {{ section.settings.padding_bottom }}px;
+" aria-label="Pie de página de Impress">
+  <div class="impress-site-footer__light" aria-hidden="true"></div>
+  <div class="impress-site-footer__inner">
+    <div class="impress-site-footer__prelude">
+      <div class="impress-site-footer__prelude-copy">
+        {% if section.settings.eyebrow != blank %}
+          <p class="impress-site-footer__eyebrow"><span class="impress-site-footer__eyebrow-dot"></span>{{ section.settings.eyebrow | escape }}</p>
+        {% endif %}
+        {% if section.settings.cta_heading != blank %}
+          <h2 class="impress-site-footer__prelude-title">{{ section.settings.cta_heading | escape }}</h2>
+        {% endif %}
+      </div>
+      {% if section.settings.cta_label != blank %}
+        <a class="impress-site-footer__cta" href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}">
+          {{ section.settings.cta_label | escape }}
+          <svg viewBox="0 0 20 20" width="19" height="19" aria-hidden="true" fill="none"><path d="M3.5 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="impress-site-footer__main">
+      <div class="impress-site-footer__brand-col">
+        <a href="{{ routes.root_url }}" class="impress-site-footer__brand" aria-label="Impress - Inicio">
+          {% if section.settings.logo != blank %}
+            <img src="{{ section.settings.logo | image_url: width: 440 }}" alt="{{ shop.name | escape }}" width="{{ section.settings.logo.width }}" height="{{ section.settings.logo.height }}" loading="lazy">
+          {% else %}
+            <span class="impress-site-footer__wordmark">im<span>press</span><b>.</b></span>
+            <span class="impress-site-footer__wordmark-sub">PRINTING + SIGNS</span>
+          {% endif %}
+        </a>
+        {% if section.settings.brand_description != blank %}
+          <p class="impress-site-footer__description">{{ section.settings.brand_description | escape }}</p>
+        {% endif %}
+        {% if section.settings.location != blank %}
+          <p class="impress-site-footer__location">
+            <svg viewBox="0 0 24 24" fill="none" width="17" height="17" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg>
+            {{ section.settings.location | escape }}
+          </p>
+        {% endif %}
+      </div>
+
+      <nav class="impress-site-footer__nav" aria-label="Productos Impress">
+        <h3>{{ section.settings.products_title | escape }}</h3>
+        <ul>
+          {% if section.settings.products_menu != blank and section.settings.products_menu.links.size > 0 %}
+            {% for link in section.settings.products_menu.links %}
+              <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+            {% endfor %}
+          {% else %}
+            <li><a href="{{ section.settings.stickers_link | default: '/products/vinyl-sticker' }}">Stickers personalizados</a></li>
+            {% if section.settings.banners_link != blank %}
+              <li><a href="{{ section.settings.banners_link }}">Banners</a></li>
+            {% else %}
+              <li><span class="impress-site-footer__link-muted">Banners</span></li>
+            {% endif %}
+            <li><a href="{{ routes.all_products_collection_url }}">Todos los productos</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+
+      <nav class="impress-site-footer__nav" aria-label="Enlaces de ayuda">
+        <h3>{{ section.settings.help_title | escape }}</h3>
+        <ul>
+          {% if section.settings.help_menu != blank and section.settings.help_menu.links.size > 0 %}
+            {% for link in section.settings.help_menu.links %}
+              <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+            {% endfor %}
+          {% else %}
+            <li><a href="{{ routes.search_url }}">Buscar productos</a></li>
+            <li><a href="{{ routes.cart_url }}">Mi carrito</a></li>
+            {% if section.settings.help_link != blank %}
+              <li><a href="{{ section.settings.help_link }}">Preguntas frecuentes</a></li>
+            {% endif %}
+            {% if section.settings.contact_link != blank %}
+              <li><a href="{{ section.settings.contact_link }}">Contáctanos</a></li>
+            {% endif %}
+          {% endif %}
+        </ul>
+      </nav>
+
+      <div class="impress-site-footer__contact">
+        <h3>{{ section.settings.contact_title | escape }}</h3>
+        {% if section.settings.contact_description != blank %}
+          <p>{{ section.settings.contact_description | escape }}</p>
+        {% endif %}
+        {% if section.settings.phone != blank %}
+          {% assign clean_phone = section.settings.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' | remove: '.' %}
+          <a class="impress-site-footer__contact-line" href="tel:{{ clean_phone }}">
+            <svg viewBox="0 0 24 24" fill="none" width="17" height="17" aria-hidden="true"><path d="m5 3 4 4-2 3c1.4 3 4 5.6 7 7l3-2 4 4-2 2C9 23 1 15 3 5l2-2Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>{{ section.settings.phone | escape }}</span>
+          </a>
+        {% endif %}
+        {% if section.settings.email != blank %}
+          <a class="impress-site-footer__contact-line" href="mailto:{{ section.settings.email | strip | escape }}">
+            <svg viewBox="0 0 24 24" fill="none" width="17" height="17" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="m4.5 7 7.5 6 7.5-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>{{ section.settings.email | escape }}</span>
+          </a>
+        {% endif %}
+        {% if section.settings.whatsapp != blank %}
+          {% assign clean_whatsapp = section.settings.whatsapp | remove: ' ' | remove: '(' | remove: ')' | remove: '-' | remove: '+' | remove: '.' %}
+          <a class="impress-site-footer__whatsapp" href="https://wa.me/{{ clean_whatsapp }}" target="_blank" rel="noopener noreferrer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.7L3 21l4.4-1.2A9 9 0 1 0 12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5c0 3.3 3.1 6.2 6.4 6.7l1.1-1.5-2-.9-.8.9a6.8 6.8 0 0 1-2.6-2.5l.8-.9-.9-1.9-2 .1Z" fill="currentColor"/></svg>
+            Escríbenos por WhatsApp
+            <span aria-hidden="true">↗</span>
+          </a>
+        {% endif %}
+        {% if section.settings.instagram_url != blank or section.settings.facebook_url != blank %}
+          <div class="impress-site-footer__social" aria-label="Redes sociales">
+            {% if section.settings.instagram_url != blank %}<a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">Instagram ↗</a>{% endif %}
+            {% if section.settings.facebook_url != blank %}<a href="{{ section.settings.facebook_url }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">Facebook ↗</a>{% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="impress-site-footer__bottom">
+      <span>© {{ 'now' | date: '%Y' }} {{ shop.name | escape }}. Todos los derechos reservados.</span>
+      <nav class="impress-site-footer__policies" aria-label="Políticas de la tienda">
+        {% for policy in shop.policies %}
+          {% if policy != blank %}<a href="{{ policy.url }}">{{ policy.title | escape }}</a>{% endif %}
+        {% endfor %}
+      </nav>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+.impress-site-footer { background:var(--imf-bg); color:#fff; position:relative; isolation:isolate; overflow:hidden; font-family:inherit; }
+.impress-site-footer__light { position:absolute; inset:0; pointer-events:none; z-index:-1; opacity:.78; background:radial-gradient(ellipse 38% 46% at 95% 3%,rgba(251,191,0,.12),transparent 100%); }
+.impress-site-footer__inner { width:min(var(--imf-max),calc(100% - 40px)); margin-inline:auto; padding-block:var(--imf-pad-top) var(--imf-pad-bottom); }
+.impress-site-footer__prelude { display:flex; gap:24px; align-items:center; justify-content:space-between; padding-bottom:36px; border-bottom:1px solid rgba(255,255,255,.14); }
+.impress-site-footer__eyebrow { color:var(--imf-accent); font-size:11px; line-height:1.4; font-weight:850; letter-spacing:1.55px; margin:0 0 10px; text-transform:uppercase; display:flex; gap:9px; align-items:center; }
+.impress-site-footer__eyebrow-dot { width:8px; height:8px; border-radius:50%; background:var(--imf-accent); box-shadow:0 0 16px rgba(251,191,0,.45); }
+.impress-site-footer__prelude-title { margin:0; font-size:clamp(26px,3vw,40px); line-height:1.1; letter-spacing:-.035em; font-weight:850; max-width:660px; }
+.impress-site-footer__cta { min-height:54px; display:inline-flex; align-items:center; justify-content:center; gap:20px; flex-shrink:0; padding:12px 20px 12px 22px; border-radius:999px; background:var(--imf-accent); color:#111 !important; font-weight:850; font-size:14px; text-decoration:none; transition:transform .2s ease,box-shadow .2s ease; box-shadow:0 10px 24px rgba(251,191,0,.11); }
+.impress-site-footer__cta:hover { transform:translateY(-3px); box-shadow:0 14px 30px rgba(251,191,0,.22); }
+.impress-site-footer__main { display:grid; grid-template-columns:minmax(250px,1.45fr) minmax(145px,.75fr) minmax(145px,.8fr) minmax(240px,1.08fr); gap:clamp(24px,3.3vw,52px); padding-block:52px 54px; }
+.impress-site-footer__brand { display:inline-flex; flex-direction:column; align-items:flex-start; text-decoration:none; color:#fff !important; max-width:240px; }
+.impress-site-footer__brand img { max-width:235px; max-height:80px; width:auto; height:auto; object-fit:contain; }
+.impress-site-footer__wordmark { font-size:clamp(32px,3vw,42px); font-weight:700; letter-spacing:-.08em; line-height:.95; }
+.impress-site-footer__wordmark span { font-weight:900; }
+.impress-site-footer__wordmark b { color:var(--imf-accent); font-weight:900; }
+.impress-site-footer__wordmark-sub { font-size:9px; font-weight:800; color:var(--imf-accent); letter-spacing:1.5px; line-height:1.3; margin-top:7px; }
+.impress-site-footer__description { color:#aaaeb8; max-width:35ch; font-size:14px; line-height:1.7; margin:21px 0 14px; }
+.impress-site-footer__location { display:inline-flex; gap:8px; align-items:center; color:#d9dde4; font-size:13px; font-weight:650; margin:10px 0 0; }
+.impress-site-footer__location svg { color:var(--imf-accent); flex:0 0 auto; }
+.impress-site-footer__nav h3,.impress-site-footer__contact h3 { color:#fff; font-size:14px; letter-spacing:.1px; font-weight:850; margin:5px 0 22px; }
+.impress-site-footer__nav ul { padding:0; margin:0; list-style:none; display:grid; gap:14px; }
+.impress-site-footer__nav a,.impress-site-footer__link-muted { color:#aeb1ba; font-size:14px; line-height:1.5; text-decoration:none; transition:color .2s ease; }
+.impress-site-footer__nav a:hover,.impress-site-footer__contact-line:hover { color:var(--imf-accent); }
+.impress-site-footer__link-muted { opacity:.55; }
+.impress-site-footer__contact > p { margin:-8px 0 22px; color:#aeb1ba; font-size:14px; line-height:1.65; }
+.impress-site-footer__contact-line { display:flex; align-items:center; gap:10px; color:#e1e3e8; text-decoration:none; font-size:14px; font-weight:650; line-height:1.4; overflow-wrap:anywhere; margin-bottom:14px; transition:color .2s ease; }
+.impress-site-footer__contact-line svg { color:var(--imf-accent); flex:0 0 auto; }
+.impress-site-footer__whatsapp { display:inline-flex; align-items:center; justify-content:center; gap:9px; color:#fff; text-decoration:none; border:1px solid rgba(255,255,255,.2); border-radius:13px; min-height:47px; padding:10px 13px; font-size:13px; font-weight:800; margin-top:9px; background:rgba(255,255,255,.035); transition:background .2s ease,border-color .2s ease; }
+.impress-site-footer__whatsapp:hover { border-color:var(--imf-accent); background:rgba(251,191,0,.07); }
+.impress-site-footer__whatsapp svg { color:#36d975; flex:0 0 auto; }
+.impress-site-footer__whatsapp span { color:var(--imf-accent); margin-left:3px; }
+.impress-site-footer__social { display:flex; flex-wrap:wrap; gap:12px 18px; margin-top:18px; }
+.impress-site-footer__social a { color:#aeb1ba; font-size:12px; font-weight:750; text-decoration:none; }
+.impress-site-footer__social a:hover { color:var(--imf-accent); }
+.impress-site-footer__bottom { border-top:1px solid rgba(255,255,255,.14); padding-top:23px; display:flex; gap:24px; align-items:center; justify-content:space-between; color:#818793; font-size:12px; line-height:1.5; }
+.impress-site-footer__policies { display:flex; gap:11px 22px; align-items:center; justify-content:flex-end; flex-wrap:wrap; }
+.impress-site-footer__policies a { color:#9da2ad; text-decoration:none; transition:color .2s ease; }
+.impress-site-footer__policies a:hover { color:var(--imf-accent); }
+.impress-site-footer :is(a):focus-visible { outline:3px solid var(--imf-accent); outline-offset:4px; }
+@media(max-width:1050px){ .impress-site-footer__main { grid-template-columns:repeat(2,minmax(0,1fr)); gap:36px; } .impress-site-footer__brand-col { max-width:460px; } }
+@media(max-width:690px){ .impress-site-footer__inner { width:calc(100% - 32px); } .impress-site-footer__prelude { flex-direction:column; align-items:flex-start; } .impress-site-footer__cta { width:100%; } .impress-site-footer__main { grid-template-columns:repeat(2,minmax(0,1fr)); padding-block:36px; gap:34px 17px; } .impress-site-footer__brand-col { grid-column:1/-1; } .impress-site-footer__contact { grid-column:1/-1; } .impress-site-footer__nav h3,.impress-site-footer__contact h3 { margin-bottom:16px; } .impress-site-footer__bottom { align-items:flex-start; flex-direction:column; gap:14px; } .impress-site-footer__policies { justify-content:flex-start; } }
+@media(prefers-reduced-motion:reduce){ .impress-site-footer__cta,.impress-site-footer__nav a,.impress-site-footer__contact-line,.impress-site-footer__whatsapp { transition:none; } .impress-site-footer__cta:hover { transform:none; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Impress Footer",
+  "tag": "div",
+  "class": "impress-footer-section",
+  "enabled_on": {"groups": ["footer"]},
+  "settings": [
+    {"type":"header","content":"Diseño"},
+    {"type":"range","id":"max_width","label":"Ancho máximo","min":960,"max":1440,"step":20,"unit":"px","default":1320},
+    {"type":"range","id":"padding_top","label":"Espacio superior","min":20,"max":120,"step":5,"unit":"px","default":65},
+    {"type":"range","id":"padding_bottom","label":"Espacio inferior","min":10,"max":80,"step":5,"unit":"px","default":25},
+    {"type":"color","id":"bg_color","label":"Color de fondo","default":"#101115"},
+    {"type":"color","id":"accent_color","label":"Color de acento","default":"#fbbf00"},
+    {"type":"header","content":"Encabezado"},
+    {"type":"text","id":"eyebrow","label":"Texto pequeño","default":"IMPRESIÓN QUE DEJA HUELLA"},
+    {"type":"text","id":"cta_heading","label":"Título principal","default":"Tu idea merece verse increíble."},
+    {"type":"text","id":"cta_label","label":"Texto del botón","default":"Explorar productos"},
+    {"type":"url","id":"cta_link","label":"Enlace del botón"},
+    {"type":"header","content":"Identidad de marca"},
+    {"type":"image_picker","id":"logo","label":"Logo (opcional)"},
+    {"type":"textarea","id":"brand_description","label":"Descripción","default":"Stickers, banners e impresión personalizada para darle vida a tus ideas y hacer que tu negocio destaque."},
+    {"type":"text","id":"location","label":"Ubicación","default":"Isabela, Puerto Rico"},
+    {"type":"header","content":"Enlaces de productos"},
+    {"type":"text","id":"products_title","label":"Título de columna","default":"Productos"},
+    {"type":"link_list","id":"products_menu","label":"Menú de productos"},
+    {"type":"url","id":"stickers_link","label":"Enlace stickers (sin menú)"},
+    {"type":"url","id":"banners_link","label":"Enlace banners (sin menú)"},
+    {"type":"header","content":"Enlaces de ayuda"},
+    {"type":"text","id":"help_title","label":"Título de columna","default":"Ayuda"},
+    {"type":"link_list","id":"help_menu","label":"Menú de ayuda"},
+    {"type":"url","id":"help_link","label":"Enlace a FAQ (sin menú)"},
+    {"type":"url","id":"contact_link","label":"Página de contacto (sin menú)"},
+    {"type":"header","content":"Contacto"},
+    {"type":"text","id":"contact_title","label":"Título de contacto","default":"¿Hablamos?"},
+    {"type":"textarea","id":"contact_description","label":"Mensaje","default":"¿Tienes preguntas sobre un pedido o un diseño? Estamos para ayudarte."},
+    {"type":"text","id":"phone","label":"Teléfono","default":"(787) 291-4054"},
+    {"type":"text","id":"email","label":"Email","default":"impressisabela@gmail.com"},
+    {"type":"text","id":"whatsapp","label":"WhatsApp (con 1 al inicio)","default":"19394897806"},
+    {"type":"header","content":"Redes sociales (opcionales)"},
+    {"type":"url","id":"instagram_url","label":"Instagram"},
+    {"type":"url","id":"facebook_url","label":"Facebook"}
+  ],
+  "presets": [{"name":"Impress Footer"}]
+}
+{% endschema %}

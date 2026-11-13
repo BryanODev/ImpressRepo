@@ -1,0 +1,90 @@
+{% comment %}
+  IMPRESS | Homepage FAQ
+  Uses native details/summary so it works without JavaScript and is keyboard accessible.
+  Answers are editable blocks; no manufacturing promises are embedded in code.
+{% endcomment %}
+<section class="impress-faq" style="
+  --imf-max: {{ section.settings.max_width }}px;
+  --imf-pad-top: {{ section.settings.padding_top }}px;
+  --imf-pad-bottom: {{ section.settings.padding_bottom }}px;
+  --imf-bg: {{ section.settings.bg_color }};
+  --imf-accent: {{ section.settings.accent_color }};
+  " aria-labelledby="impress-faq-heading-{{ section.id }}">
+  <div class="impress-faq__inner">
+    <div class="impress-faq__intro">
+      {% if section.settings.eyebrow != blank %}<p class="impress-faq__eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
+      {% if section.settings.heading != blank %}<h2 class="impress-faq__title" id="impress-faq-heading-{{ section.id }}">{{ section.settings.heading | escape }}</h2>{% endif %}
+      {% if section.settings.description != blank %}<p class="impress-faq__description">{{ section.settings.description | escape }}</p>{% endif %}
+      {% if section.settings.contact_link != blank and section.settings.contact_label != blank %}
+        <a href="{{ section.settings.contact_link }}" class="impress-faq__contact">{{ section.settings.contact_label | escape }} <span aria-hidden="true">↗</span></a>
+      {% endif %}
+    </div>
+    <div class="impress-faq__list">
+      {% for block in section.blocks %}
+        <details class="impress-faq__item" {{ block.shopify_attributes }}>
+          <summary class="impress-faq__question">
+            <span>{{ block.settings.question | escape }}</span>
+            <span class="impress-faq__plus" aria-hidden="true"></span>
+          </summary>
+          <div class="impress-faq__answer">{{ block.settings.answer | escape | newline_to_br }}</div>
+        </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% stylesheet %}
+.impress-faq { background:var(--imf-bg); padding:var(--imf-pad-top) 20px var(--imf-pad-bottom); }
+.impress-faq__inner { max-width:var(--imf-max); margin:0 auto; display:grid; grid-template-columns:minmax(245px,.8fr) minmax(0,1.5fr); gap:clamp(32px,5vw,90px); align-items:start; }
+.impress-faq__intro { padding-top:8px; }
+.impress-faq__eyebrow { color:var(--imf-accent); font-size:12px; font-weight:850; letter-spacing:1.5px; margin:0 0 12px; text-transform:uppercase; }
+.impress-faq__title { color:#fff; font-size:clamp(32px,3.8vw,50px); font-weight:900; line-height:1.07; letter-spacing:-.035em; margin:0 0 16px; }
+.impress-faq__description { color:#a9adb5; font-size:15px; line-height:1.6; margin:0 0 22px; max-width:38ch; }
+.impress-faq__contact { display:inline-flex; align-items:center; gap:10px; border:1px solid #4a4d54; border-radius:999px; font-size:14px; color:#fff; text-decoration:none; padding:11px 16px; font-weight:750; }
+.impress-faq__contact:hover { border-color:var(--imf-accent); }
+.impress-faq__contact:focus-visible { outline:3px solid var(--imf-accent); outline-offset:3px; }
+.impress-faq__list { display:grid; gap:12px; }
+.impress-faq__item { background:#23252b; border-radius:16px; border:1px solid #363940; overflow:hidden; }
+.impress-faq__item[open] { border-color:#71747b; }
+.impress-faq__question { cursor:pointer; padding:19px 20px; display:flex; align-items:center; justify-content:space-between; gap:22px; color:#fff; font-size:16px; line-height:1.35; font-weight:800; list-style:none; }
+.impress-faq__question::-webkit-details-marker { display:none; }
+.impress-faq__question::marker { content:''; }
+.impress-faq__question:focus-visible { outline:3px solid var(--imf-accent); outline-offset:-4px; border-radius:12px; }
+.impress-faq__plus { width:28px; height:28px; flex:0 0 28px; border-radius:50%; background:rgba(255,255,255,.09); position:relative; }
+.impress-faq__plus:before,.impress-faq__plus:after { content:''; position:absolute; background:#f6ce2c; border-radius:2px; top:50%; left:50%; transform:translate(-50%,-50%); }
+.impress-faq__plus:before { width:12px; height:2px; }
+.impress-faq__plus:after { width:2px; height:12px; transition:transform .2s ease,opacity .2s ease; }
+.impress-faq__item[open] .impress-faq__plus:after { opacity:0; transform:translate(-50%,-50%) rotate(90deg); }
+.impress-faq__answer { color:#bec2c9; font-size:14px; line-height:1.7; padding:0 20px 22px; max-width:70ch; }
+@media (max-width:820px) { .impress-faq__inner { grid-template-columns:1fr; gap:24px; } .impress-faq__description { max-width:60ch; } }
+@media (max-width:700px) { .impress-faq { padding-left:16px; padding-right:16px; } .impress-faq__question { padding:17px; font-size:15px; } .impress-faq__answer { padding:0 17px 18px; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name":"Impress Home FAQ",
+  "max_blocks":10,
+  "settings":[
+    {"type":"text","id":"eyebrow","label":"Small heading","default":"TE AYUDAMOS"},
+    {"type":"text","id":"heading","label":"Heading","default":"¿Tienes preguntas?"},
+    {"type":"textarea","id":"description","label":"Intro","default":"Aquí tienes respuestas rápidas para preparar tu pedido de impresión con confianza."},
+    {"type":"text","id":"contact_label","label":"Contact button","default":"Contáctanos"},
+    {"type":"url","id":"contact_link","label":"Contact page link"},
+    {"type":"range","id":"max_width","label":"Max width","min":900,"max":1400,"step":20,"default":1240,"unit":"px"},
+    {"type":"range","id":"padding_top","label":"Top spacing","min":0,"max":120,"step":5,"default":65,"unit":"px"},
+    {"type":"range","id":"padding_bottom","label":"Bottom spacing","min":0,"max":120,"step":5,"default":65,"unit":"px"},
+    {"type":"color","id":"bg_color","label":"Background color","default":"#111216"},
+    {"type":"color","id":"accent_color","label":"Accent color","default":"#fbbf00"}
+  ],
+  "blocks":[
+    {"type":"faq_item","name":"FAQ Question","settings":[
+      {"type":"text","id":"question","label":"Question","default":"¿Cómo preparo mi pedido?"},
+      {"type":"textarea","id":"answer","label":"Answer","default":"Selecciona el producto, configura sus opciones y adjunta tu diseño antes de añadirlo al carrito."}
+    ]}
+  ],
+  "presets":[{"name":"Impress Home FAQ","blocks":[
+    {"type":"faq_item","settings":{"question":"¿Cómo envío mi diseño?","answer":"Desde la página del producto puedes adjuntar el archivo de tu arte al preparar tu pedido."}},
+    {"type":"faq_item","settings":{"question":"¿Hay una cantidad mínima?","answer":"Cada producto muestra las cantidades disponibles en su configurador. Elige el paquete que mejor se ajuste a lo que necesitas."}},
+    {"type":"faq_item","settings":{"question":"¿Cuánto tarda mi pedido?","answer":"Los tiempos dependen del producto y la cantidad. Si tienes una fecha límite, consúltanos antes de ordenar."}},
+    {"type":"faq_item","settings":{"question":"¿Puedo recibir mi pedido o recogerlo?","answer":"Las opciones disponibles de entrega o recogido se muestran al completar el proceso de compra."}}
+  ]}]
+}
+{% endschema %}

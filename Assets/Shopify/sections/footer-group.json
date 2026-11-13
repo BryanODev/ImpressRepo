@@ -10,6 +10,38 @@
 {
   "type": "footer",
   "name": "t:names.footer",
-  "sections": {},
-  "order": []
+  "sections": {
+    "impress_footer_main": {
+      "type": "impress-footer",
+      "settings": {
+        "max_width": 1320,
+        "padding_top": 65,
+        "padding_bottom": 25,
+        "bg_color": "#101115",
+        "accent_color": "#fbbf00",
+        "cta_link": "",
+        "logo": "shopify://shop_images/Impress_Logo.png",
+        "brand_description": "Stickers, banners e impresión personalizada para darle vida a tus ideas y hacer que tu negocio destaque.",
+        "location": "Isabela, Puerto Rico",
+        "products_title": "Productos",
+        "products_menu": "",
+        "stickers_link": "",
+        "banners_link": "",
+        "help_title": "Ayuda",
+        "help_menu": "",
+        "help_link": "",
+        "contact_link": "",
+        "contact_title": "¿Hablamos?",
+        "contact_description": "¿Tienes preguntas sobre un pedido o un diseño? Estamos para ayudarte.",
+        "phone": "(787) 291-4054",
+        "email": "impressisabela@gmail.com",
+        "whatsapp": "19394897806",
+        "instagram_url": "https://www.instagram.com/impressprintingsigns",
+        "facebook_url": "https://www.facebook.com/impressprintingpr"
+      }
+    }
+  },
+  "order": [
+    "impress_footer_main"
+  ]
 }

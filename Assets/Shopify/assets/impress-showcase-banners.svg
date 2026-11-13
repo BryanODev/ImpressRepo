@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Ejemplo ilustrado de banner personalizado amarillo y negro">
+<defs>
+ <linearGradient id="wall" x2="1" y2="1"><stop stop-color="#d5d9dc"/><stop offset="1" stop-color="#a7afb4"/></linearGradient>
+ <linearGradient id="vinyl" x2="0" y2="1"><stop stop-color="#111820"/><stop offset=".68" stop-color="#080c12"/><stop offset="1" stop-color="#1c2027"/></linearGradient>
+ <linearGradient id="sun" x2="0" y2="1"><stop stop-color="#ffe375"/><stop offset="1" stop-color="#f7b900"/></linearGradient>
+ <linearGradient id="edge" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".42"/><stop offset=".4" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".17"/></linearGradient>
+ <radialGradient id="light"><stop stop-color="#ffffff" stop-opacity=".48"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+ <filter id="shadow" x="-20%" y="-30%" width="150%" height="170%"><feGaussianBlur stdDeviation="26"/></filter>
+ <filter id="softShadow" x="-10%" y="-10%" width="130%" height="150%"><feGaussianBlur stdDeviation="8"/></filter>
+ <pattern id="grain" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="2" cy="4" r=".6" fill="#fff" opacity=".1"/><circle cx="15" cy="10" r=".5" fill="#141414" opacity=".1"/></pattern>
+</defs>
+<rect width="1200" height="900" fill="url(#wall)"/>
+<path d="M0 0H1200V900H0Z" fill="url(#grain)" opacity=".4"/>
+<ellipse cx="1090" cy="80" rx="680" ry="420" fill="url(#light)"/>
+<path d="M0 760H1200" stroke="#8c979b" stroke-width="3" opacity=".5"/>
+<path d="M0 775H1200" stroke="#fff" stroke-width="2" opacity=".25"/>
+<g transform="rotate(-3 602 425)">
+<rect x="132" y="164" width="966" height="563" rx="10" fill="#121212" opacity=".4" filter="url(#shadow)"/>
+<rect x="120" y="148" width="966" height="560" rx="8" fill="url(#vinyl)" stroke="#272b30" stroke-width="3"/>
+<rect x="120" y="148" width="966" height="560" rx="8" fill="url(#edge)"/>
+<path d="M120 148H1086V234H120Z" fill="#eeba03" opacity=".96"/>
+<path d="M120 148H1086V195H120Z" fill="#ffde50" opacity=".48"/>
+<g opacity=".15" stroke="#fff" stroke-width="1"><path d="M142 236H1060"/><path d="M142 690H1060"/></g>
+<path d="M727 234V708H1086V234Z" fill="#262b32"/>
+<path d="M799 234L1086 234V708H920Z" fill="#f0ba0b"/>
+<circle cx="1005" cy="402" r="123" fill="#ffdb46"/>
+<circle cx="1005" cy="402" r="84" fill="#131a22"/>
+<path d="M958 401L994 437 1052 367" fill="none" stroke="#ffce11" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="195" y="378" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="40" letter-spacing="8" fill="#fcca0f">HAZTE VER</text>
+<text x="189" y="475" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="92" letter-spacing="-3" fill="#fff">TU MARCA</text>
+<text x="193" y="573" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="93" letter-spacing="-3" fill="#fff">EN GRANDE</text>
+<rect x="195" y="617" width="304" height="12" rx="6" fill="#fac800"/>
+<text x="195" y="670" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#d2d5d8" font-weight="600">Banners para tu negocio</text>
+<g fill="#aeb4b8" stroke="#484d50" stroke-width="2">
+  <circle cx="144" cy="174" r="8"/><circle cx="1062" cy="174" r="8"/>
+  <circle cx="144" cy="682" r="8"/><circle cx="1062" cy="682" r="8"/>
+</g>
+<g fill="#3e4245"><circle cx="144" cy="174" r="3.8"/><circle cx="1062" cy="174" r="3.8"/><circle cx="144" cy="682" r="3.8"/><circle cx="1062" cy="682" r="3.8"/></g>
+</g>
+</svg>
