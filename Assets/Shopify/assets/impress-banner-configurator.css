@@ -83,3 +83,23 @@
 @media(max-width:960px){.impress-banner__layout{grid-template-columns:1fr}.impress-banner__shell{max-width:780px}.impress-banner__stage,.impress-banner__canvas,.impress-banner__final-canvas{height:400px}}
 @media(max-width:620px){.impress-banner__shell{padding:26px 14px 50px}.impress-banner__header{align-items:flex-start}.impress-banner__version{display:none}.impress-banner__preview{padding:15px 13px}.impress-banner__stage{min-height:315px}.impress-banner__stage,.impress-banner__canvas,.impress-banner__final-canvas{height:315px}.impress-banner__right{padding:21px 17px}.impress-banner__mount-surface{padding:9px;min-height:63px}.impress-banner__mount-icon{width:36px;height:36px;flex-basis:36px}.impress-banner__tools{padding:17px}.impress-banner__toolbar{gap:6px}.impress-banner__toolbar button{padding:8px 7px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.impress-banner__mount-surface,.impress-banner__mount-icon,.impress-banner__final-layer{transition:none}}
+
+/* Same icon-card interaction as montaje, for preview-only orientation. */
+.impress-banner__orientations{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding-top:3px}
+.impress-banner__free-orientation{color:#8ea0aa;font-size:10px;font-weight:600;margin-left:auto}
+.impress-banner .impress-banner__empty.impress-preview-upload{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;pointer-events:auto;border:1px dashed #a6bac4;color:#36505f;background:rgba(255,255,255,.94);z-index:3;font:inherit}
+.impress-banner .impress-banner__empty.impress-preview-upload svg{color:#4b90a4}
+.impress-banner .impress-banner__empty.impress-preview-upload strong{font-size:13px}
+.impress-banner .impress-banner__empty.impress-preview-upload small{font-size:11px;color:#7b909c}
+.impress-banner .impress-banner__empty.impress-preview-upload:hover{border-color:#d6a800;background:#fffdf1}
+.impress-banner .impress-banner__empty.impress-preview-upload[hidden]{display:none!important}
+
+/* IMPRESS banner finishing: grouped reinforced options with conditional spacing. */
+.impress-banner__mount-copy{display:flex;flex-direction:column;min-width:0;gap:4px}
+.impress-banner__mount-copy small{font-size:10px;line-height:1.45;color:#768c98}
+.impress-banner__spacing-row[hidden]{display:none}
+.impress-banner__spacing-options{display:flex;flex-wrap:wrap;gap:10px}
+.impress-banner__spacing-choice{display:flex;align-items:center;gap:9px;padding:13px 17px;border:1px solid #d7e0e6;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;min-width:138px}
+.impress-banner__spacing-choice:has(input:checked){border-color:#1b313d;box-shadow:inset 0 0 0 1px #1b313d}
+.impress-banner__spacing-choice input{accent-color:#1b313d}
+@media(max-width:620px){.impress-banner__mounts{grid-template-columns:1fr}.impress-banner__mount-surface{min-height:66px}}

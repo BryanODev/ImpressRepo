@@ -1,0 +1,37 @@
+/* IMPRESS HERO — storefront-only presentation; each slide is a Shopify block. */
+.impress-slidehero{font-family:var(--font-paragraph--family,Arial,sans-serif);padding:var(--ish-top) 20px var(--ish-bottom);box-sizing:border-box}
+.impress-slidehero__shell{max-width:var(--ish-max);margin:auto}
+.impress-slidehero__viewport{position:relative;min-height:var(--ish-height);border-radius:var(--ish-radius);overflow:hidden;background:#f5f5f3;box-shadow:0 14px 38px rgba(18,20,24,.11)}
+.impress-slidehero__slide{position:absolute;inset:0;display:grid;grid-template-columns:1.03fr .97fr;align-items:center;gap:12px;padding:64px 6% 84px;background:var(--ish-surface,#f6f6f3);color:var(--ish-text,#111318);opacity:0;visibility:hidden;transform:translateX(16px);transition:opacity .45s ease,transform .45s ease,visibility .45s;pointer-events:none}
+.impress-slidehero__slide.is-active{position:relative;min-height:var(--ish-height);opacity:1;visibility:visible;transform:none;pointer-events:auto;z-index:1}
+.impress-slidehero__copy{max-width:590px;z-index:2}
+.impress-slidehero__eyebrow{font-size:12px;font-weight:800;letter-spacing:1.6px;color:#a37b00;margin:0 0 18px;text-transform:uppercase}
+.impress-slidehero__title{font-family:var(--font-h1--family,Arial,sans-serif);font-weight:850;font-size:clamp(38px,4.8vw,70px);line-height:1.04;letter-spacing:-.044em;margin:0 0 20px;color:inherit}
+.impress-slidehero__description{font-size:clamp(16px,1.6vw,20px);line-height:1.5;max-width:49ch;color:color-mix(in srgb,var(--ish-text) 75%,transparent);margin:0 0 30px}
+.impress-slidehero__actions{display:flex;flex-wrap:wrap;gap:12px}
+.impress-slidehero__btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:13px 23px;min-height:50px;text-decoration:none;font-size:14px;font-weight:750;border-radius:8px;transition:transform .18s ease,background .18s ease}
+.impress-slidehero__btn:hover{transform:translateY(-2px)}
+.impress-slidehero__btn--primary{background:var(--ish-accent,#fbbf00);color:#161616}
+.impress-slidehero__btn--secondary{background:transparent;color:inherit;border:1px solid currentColor}
+.impress-slidehero__media{height:100%;min-height:350px;position:relative;display:flex;align-items:center;justify-content:center}
+.impress-slidehero__image-wrap{position:absolute;inset:-12% -12% -12% -4%;display:flex;align-items:center;justify-content:center}
+.impress-slidehero__image{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 18px 20px rgba(8,12,18,.10));user-select:none;pointer-events:none;transition:transform .65s cubic-bezier(.2,.8,.2,1)}
+.impress-slidehero__slide.is-active .impress-slidehero__image{transform:translateX(0) scale(1)}
+.impress-slidehero__slide:not(.is-active) .impress-slidehero__image{transform:translateX(30px) scale(.96)}
+.impress-slidehero__navigation{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:18px}
+.impress-slidehero__arrow{width:38px;height:38px;border:1px solid rgba(20,25,31,.15);background:rgba(255,255,255,.82);border-radius:50%;color:#1e2025;display:grid;place-items:center;cursor:pointer;font-size:23px;line-height:1}
+.impress-slidehero__arrow:hover,.impress-slidehero__arrow:focus-visible{background:#fbbf00}
+.impress-slidehero__dots{display:flex;align-items:center;gap:9px}
+.impress-slidehero__dots button{width:9px;height:9px;min-width:9px;border-radius:50%;padding:0;border:0;background:#a5a5a5;cursor:pointer}
+.impress-slidehero__dots button.is-active{background:#17181a;width:23px;border-radius:12px}
+@media(max-width:900px){.impress-slidehero__slide{grid-template-columns:1fr 1fr;padding:48px 4% 72px}.impress-slidehero__media{min-height:300px}}
+@media(max-width:680px){.impress-slidehero{padding-left:14px;padding-right:14px}.impress-slidehero__slide{display:flex;flex-direction:column-reverse;justify-content:flex-end;gap:10px;padding:16px 22px 77px}.impress-slidehero__slide.is-active{min-height:max(570px,var(--ish-height))}.impress-slidehero__media{height:230px;width:100%;min-height:230px}.impress-slidehero__image-wrap{inset:-9% -4%}.impress-slidehero__copy{width:100%;max-width:100%}.impress-slidehero__title{font-size:clamp(32px,8vw,46px)}.impress-slidehero__description{font-size:15px;margin-bottom:20px}.impress-slidehero__eyebrow{margin-bottom:10px}.impress-slidehero__btn{min-height:45px;padding:10px 16px}}
+@media(prefers-reduced-motion:reduce){.impress-slidehero__slide,.impress-slidehero__image,.impress-slidehero__btn{transition:none!important}}
+
+/* Full-width homepage hero, configurable without replacing slide content */
+.impress-slidehero--full{padding:0 0 var(--ish-bottom)!important}
+.impress-slidehero--full .impress-slidehero__shell{max-width:none}
+.impress-slidehero--full .impress-slidehero__viewport{min-height:max(var(--ish-height),calc(var(--ish-screen-height) - 90px));border-radius:0;box-shadow:none}
+.impress-slidehero--full .impress-slidehero__slide.is-active{min-height:max(var(--ish-height),calc(var(--ish-screen-height) - 90px))}
+.impress-slidehero--full .impress-slidehero__slide{padding-left:max(5%,calc((100% - 1320px)/2));padding-right:max(5%,calc((100% - 1320px)/2))}
+@media(max-width:680px){.impress-slidehero--full .impress-slidehero__viewport,.impress-slidehero--full .impress-slidehero__slide.is-active{min-height:620px}.impress-slidehero--full .impress-slidehero__slide{padding:16px 22px 75px}}

@@ -28,7 +28,12 @@
       {{ 'content.your_cart_is_empty' | t }}
     {%- else -%}
       {{ block_settings.title }}
-      {%- if block_settings.show_count -%}{% render 'cart-bubble' %}{%- endif -%}
+      {%- if block_settings.show_count -%}
+        {%- render 'cart-bubble' -%}
+        {%- capture impress_title_count_text -%}{%- render 'impress-cart-order-count' -%}{%- endcapture -%}
+        {%- assign impress_title_count = impress_title_count_text | strip | plus: 0 -%}
+        <span class="impress-cart-job-label">{% if impress_title_count == 1 %}pedido{% else %}pedidos{% endif %}</span>
+      {%- endif -%}
     {%- endif -%}
   </h1>
 </div>
@@ -41,6 +46,13 @@
     gap: var(--gap-sm);
   }
 
+  .cart-title .impress-cart-job-label {
+    font-family: var(--font-paragraph--family);
+    font-size: .55em;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--color-foreground);
+  }
   .cart-title .cart-bubble {
     width: fit-content;
     display: inline-flex;

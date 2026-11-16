@@ -78,7 +78,7 @@
               <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
             {% endfor %}
           {% else %}
-            <li><a href="{{ routes.search_url }}">Buscar productos</a></li>
+            <li><a href="{{ routes.all_products_collection_url }}">Explorar catálogo</a></li>
             <li><a href="{{ routes.cart_url }}">Mi carrito</a></li>
             {% if section.settings.help_link != blank %}
               <li><a href="{{ section.settings.help_link }}">Preguntas frecuentes</a></li>

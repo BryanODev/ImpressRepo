@@ -11,10 +11,82 @@
   "sections": {
     "impress_hero_GaRfJT": {
       "type": "impress-hero",
+      "blocks": {
+        "slide_sticker_7Gk": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "VINYL STICKERS",
+            "heading": "Stickers para destacar tu marca.",
+            "description": "Personaliza para tu negocio, empaque o proyecto. Elige tamaño, acabado y cantidad.",
+            "primary_text": "Ordenar Stickers",
+            "primary_url": "shopify://products/vinyl-sticker",
+            "secondary_text": "",
+            "secondary_url": "",
+            "fallback_visual": "stickers",
+            "surface_color": "#f7f7f4",
+            "text_color": "#171a1f"
+          }
+        },
+        "slide_banner_7Gk": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "FORMATO GRANDE",
+            "heading": "Que tu mensaje se vea.",
+            "description": "Banners personalizados para tiendas, promociones, eventos y aperturas.",
+            "primary_text": "Explorar Banners",
+            "primary_url": "shopify://products/banners",
+            "secondary_text": "",
+            "secondary_url": "",
+            "fallback_visual": "banners",
+            "surface_color": "#f1f3f4",
+            "text_color": "#11171d"
+          }
+        },
+        "slide_business_7Gk": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "IMPRESIÓN COMERCIAL",
+            "heading": "Una presentación profesional.",
+            "description": "Tarjetas de presentación con orientación horizontal o vertical y opción frente y dorso.",
+            "primary_text": "Ver Business Cards",
+            "primary_url": "shopify://products/business-cards",
+            "secondary_text": "",
+            "secondary_url": "",
+            "fallback_visual": "business",
+            "surface_color": "#f5f2e8",
+            "text_color": "#1c2328"
+          }
+        },
+        "slide_flyers_7Gk": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "MARKETING IMPRESO",
+            "heading": "Flyers para contar tu historia.",
+            "description": "Promociona eventos, servicios o productos con piezas impresas a tu medida.",
+            "primary_text": "Ver Flyers",
+            "primary_url": "shopify://products/flyers",
+            "secondary_text": "",
+            "secondary_url": "",
+            "fallback_visual": "flyers",
+            "surface_color": "#f4f6f7",
+            "text_color": "#131922"
+          }
+        }
+      },
+      "block_order": [
+        "slide_sticker_7Gk",
+        "slide_banner_7Gk",
+        "slide_business_7Gk",
+        "slide_flyers_7Gk"
+      ],
       "name": "Impress Hero",
       "settings": {
+        "autoplay": true,
+        "autoplay_seconds": 6,
+        "full_bleed": true,
+        "viewport_height": 90,
         "max_width": 1400,
-        "card_min_height": 520,
+        "card_min_height": 600,
         "card_radius": 24,
         "card_bg": "#121212",
         "overlay_opacity": 40,
@@ -30,7 +102,7 @@
         "secondary_btn_link": "",
         "caption_text": "",
         "caption_link": "",
-        "padding_top": 25,
+        "padding_top": 0,
         "padding_bottom": 25
       }
     },
@@ -56,18 +128,18 @@
             "title": "Banners",
             "description": "Haz destacar tu mensaje con impresiones en formato grande.",
             "cta_label": "Ver banners",
-            "card_link": ""
+            "card_link": "shopify://products/banners"
           }
         },
         "product_card_49eeR3": {
           "type": "product_card",
           "settings": {
             "card_image": "shopify://shop_images/Impress_Mark.png",
-            "eyebrow": "Próximamente",
+            "eyebrow": "Impresión comercial",
             "title": "Business Cards",
             "description": "Dale a cada contacto una primera impresión profesional.",
             "cta_label": "Ver más",
-            "card_link": ""
+            "card_link": "shopify://products/business-cards"
           }
         },
         "product_card_GW8p74": {
@@ -78,7 +150,7 @@
             "title": "Flyers & Leaflets",
             "description": "Promueve eventos, servicios y ofertas con piezas impresas.",
             "cta_label": "Ver más",
-            "card_link": ""
+            "card_link": "shopify://products/flyers"
           }
         }
       },
@@ -90,6 +162,10 @@
       ],
       "name": "Horizontal Product Scroll",
       "settings": {
+        "show_all_button": true,
+        "all_button_text": "Explora todos nuestros productos",
+        "all_button_caption": "Más opciones para tu negocio o próximo proyecto",
+        "all_button_link": "",
         "section_subheading": "PRODUCTOS IMPRESS",
         "section_heading": "¿Qué quieres imprimir hoy?",
         "section_helper": "Encuentra lo que necesitas para tu marca, negocio o próximo evento.",
@@ -100,60 +176,6 @@
         "card_bg_color": "#0e1014",
         "text_color": "#ffffff",
         "muted_text_color": "#b3b5bd",
-        "accent_color": "#fbbf00"
-      }
-    },
-    "impress_product_showcase_k9J7Pg": {
-      "type": "impress-product-showcase",
-      "blocks": {
-        "item_QxJGx8": {
-          "type": "item",
-          "settings": {
-            "fallback_image": "sticker",
-            "tag": "Hecho a tu manera",
-            "title": "Stickers personalizados",
-            "description": "Haz destacar tu marca con impresos a tu estilo.",
-            "link": "",
-            "cta_label": "Personalizar"
-          }
-        },
-        "show_banners_93aM4Y": {
-          "type": "item",
-          "settings": {
-            "fallback_image": "banner",
-            "tag": "BANNERS A TU MEDIDA",
-            "title": "Haz que todos te vean",
-            "description": "Banners para eventos, aperturas, promociones y tu próximo gran anuncio.",
-            "link": "",
-            "cta_label": "Ver banners"
-          }
-        },
-        "show_stickers_NQ8q6L": {
-          "type": "item",
-          "settings": {
-            "fallback_image": "sticker",
-            "tag": "STICKERS CUSTOM",
-            "title": "Pequeños detalles, grandes ideas",
-            "description": "Vinyl stickers para packaging, marcas, regalos y cualquier idea que quieras compartir.",
-            "link": "shopify://products/vinyl-sticker",
-            "cta_label": "Personalizar stickers"
-          }
-        }
-      },
-      "block_order": [
-        "item_QxJGx8",
-        "show_banners_93aM4Y",
-        "show_stickers_NQ8q6L"
-      ],
-      "settings": {
-        "eyebrow": "IDEAS PARA INSPIRARTE",
-        "heading": "Lo que imaginas, lo puedes imprimir.",
-        "description": "Desde detalles pequeños para tu marca hasta mensajes que se ven de lejos. Inspírate con estas ideas.",
-        "disclaimer": "Imágenes de ejemplo; el resultado final depende del arte y las opciones de impresión.",
-        "max_width": 1240,
-        "padding_top": 55,
-        "padding_bottom": 65,
-        "bg_color": "#f7f8f9",
         "accent_color": "#fbbf00"
       }
     },
@@ -211,6 +233,31 @@
         "padding_bottom": 60
       }
     },
+    "impress_home_blog": {
+      "type": "impress-home-blog",
+      "settings": {
+        "blog": "news",
+        "eyebrow": "BLOG IMPRESS",
+        "heading": "Ideas y consejos para imprimir mejor",
+        "description": "Guías, materiales e inspiración para tu próximo proyecto.",
+        "limit": 3,
+        "desktop_visible": 3,
+        "card_gap": 20,
+        "image_ratio": "1.53",
+        "show_date": true,
+        "show_tag": true,
+        "use_article_tags": false,
+        "fallback_tag": "Blog",
+        "cta_label": "Leer artículo",
+        "show_view_all": true,
+        "button_label": "Ver artículos",
+        "max_width": 1240,
+        "padding_top": 50,
+        "padding_bottom": 55,
+        "bg_color": "#FFFFFF",
+        "accent_color": "#fbbf00"
+      }
+    },
     "impress_clients_marquee_GJ89in": {
       "type": "impress-clients-marquee",
       "blocks": {
@@ -255,58 +302,15 @@
         "scroll_speed": 35
       }
     },
-    "impress_home_benefits_kQ2Lk9": {
-      "type": "impress-home-benefits",
-      "blocks": {
-        "benefit1": {
-          "type": "benefit",
-          "settings": {
-            "badge_text": "01",
-            "heading": "Personaliza a tu manera",
-            "description": "Elige las medidas, acabados y cantidades disponibles para cada producto."
-          }
-        },
-        "benefit2": {
-          "type": "benefit",
-          "settings": {
-            "badge_text": "02",
-            "heading": "Carga tu diseño",
-            "description": "Adjunta tu arte directamente al preparar tu pedido online."
-          }
-        },
-        "benefit3": {
-          "type": "benefit",
-          "settings": {
-            "badge_text": "03",
-            "heading": "Atención en Puerto Rico",
-            "description": "Habla con un equipo local cuando tengas dudas sobre tu proyecto."
-          }
-        },
-        "benefit4": {
-          "type": "benefit",
-          "settings": {
-            "badge_text": "04",
-            "heading": "Compra con claridad",
-            "description": "Revisa tus opciones y el precio de tu selección antes de pagar."
-          }
-        }
-      },
-      "block_order": [
-        "benefit1",
-        "benefit2",
-        "benefit3",
-        "benefit4"
-      ],
+    "impress_home_reviews": {
+      "type": "impress-reviews",
       "settings": {
-        "subheading": "POR QUÉ IMPRESS",
-        "heading": "Impresión que funciona para tus ideas.",
-        "description": "Desde un sticker para tu marca hasta un banner para tu próxima promoción: haz tu pedido con opciones claras y atención cercana.",
+        "eyebrow": "OPINIONES DE CLIENTES",
+        "heading": "La experiencia de nuestros clientes",
+        "description": "Opiniones compartidas por personas y negocios que han trabajado con Impress.",
         "max_width": 1240,
-        "bg_color": "#ffffff",
-        "card_bg": "#ffffff",
-        "accent_color": "#fbbf00",
-        "padding_top": 52,
-        "padding_bottom": 60
+        "bg_color": "#f7f8f9",
+        "accent_color": "#fbbf00"
       }
     },
     "impress_home_faq_p7M8d2": {
@@ -377,7 +381,7 @@
         "primary_label": "Ordenar Stickers",
         "primary_link": "shopify://products/vinyl-sticker",
         "secondary_label": "Ordenar Banners",
-        "secondary_link": "",
+        "secondary_link": "shopify://products/banners",
         "max_width": 1240,
         "bg_color": "#0f1014",
         "accent_color": "#fbbf00",
@@ -389,10 +393,10 @@
   "order": [
     "impress_hero_GaRfJT",
     "impress_catalog_grid_HEyTGa",
-    "impress_product_showcase_k9J7Pg",
     "impress_order_instructions_EzyRJr",
+    "impress_home_blog",
     "impress_clients_marquee_GJ89in",
-    "impress_home_benefits_kQ2Lk9",
+    "impress_home_reviews",
     "impress_home_faq_p7M8d2",
     "impress_home_cta_9uV82M"
   ]

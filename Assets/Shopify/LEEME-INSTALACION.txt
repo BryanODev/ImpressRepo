@@ -1,0 +1,28 @@
+IMPRESS — SHOPIFY VARIANT MAPPING BY INDEX
+
+This package contains ONLY the files changed in the supplied Shopify.zip, under their matching assets/, sections/ and snippets/ folders. Replace those files in a DUPLICATE Shopify theme for testing.
+
+ONE FILE TO CHANGE OPTION ORDER:
+  assets/impress-variant-mapping.js
+
+The index starts at zero. Default mappings:
+  Business Cards: 0=size, 1=sides, 2=quantity
+  Flyers:        0=size, 1=sides, 2=quantity
+  Stickers:      0=shape, 1=finish, 2=pack ("2 x 2 in | 50")
+  Banners:       0=mounting, 1=size
+
+Shopify option names can be ANYTHING. The index defines their meaning. Shopify supplies all option values, availability, actual variant IDs and prices. Adding a new sellable choice does not require JS changes.
+
+Special VALUE formats still matter for physical editing:
+  - Paper sizes: "3.5 x 2.2 in", "8.5 x 11 in", etc.
+  - Paper sides: recognizable 1/2 sided values ("1 cara", "2 caras", etc.).
+  - Paper quantities: positive integer values ("100", "250", "1,000", etc.).
+  - Stickers: pack value combines size and quantity ("2 x 2 in | 50").
+  - Banner sizes: physical dimensions, e.g. "2 x 4 ft".
+  - Banner mounting hardware preview recognizes Argollas/Ojales/Grommets and Palos/Poles/Rods. Any other mounting value is displayed and priced but receives no hardware illustration.
+
+Banner ordered quantity is normal Shopify quantity, independent of variant options.
+Business Cards now REQUIRE 3 Shopify options (including size). Old 2-option products will not be offered for checkout until migrated, to avoid wrong variants.
+Products over 250 variants need a separate loading implementation; otherwise purchase is blocked to prevent an incomplete catalog.
+
+Check products using an actual variant checkout in a duplicated theme before publishing.

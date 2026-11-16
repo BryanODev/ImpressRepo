@@ -6,9 +6,26 @@
 (() => {
   'use strict';
 
-  const VALID_EXTENSIONS = /\.(png|jpe?g|webp|pdf)$/i;
+  const VALID_EXTENSIONS = /\.(svg|png|jpe?g|tiff?|pdf)$/i;
   const productConfig = () => window.ImpressProductConfigs?.stickers || null;
   const unique = array => [...new Set(array)];
+  const isContourShape = shape => /contour|contorno|die.?cut/i.test(String(shape || ''));
+
+  // Display-only format for Contour Cut. The actual Shopify size string
+  // remains the <option> value for variant IDs, prices and add-on matching.
+  function contourHeightLabel(size) {
+    const source = String(size || '').trim();
+    const match = /(?:^|\s)(\d+(?:[.,]\d+)?)\s*(?:x|×)\s*(\d+(?:[.,]\d+)?)/i.exec(source);
+    if (!match) return source;
+    const suffix = source.slice(match.index + match[0].length).trim();
+    const units = suffix.match(/^(mm|cm|in(?:ches)?|pulg(?:adas?)?\.?|ft|pies|[\"″'])/i);
+    let unit = 'in';
+    if (units) {
+      const raw = units[1].toLowerCase();
+      unit = /^mm$|^cm$|^ft$/.test(raw) ? raw : /^pies/.test(raw) ? 'pies' : 'in';
+    }
+    return `${match[2].replace(',', '.')} ${unit} de alto`;
+  }
 
 
   function parsePack(value) {
@@ -32,12 +49,8 @@
       console.error('Impress: missing sticker configuration file.');
       return;
     }
-    const shapes=Array.isArray(cfg.shapes)?cfg.shapes:[];
-    const finishes=Array.isArray(cfg.finishes)?cfg.finishes:[];
-    const quantities=Array.isArray(cfg.quantities)?cfg.quantities.filter(v=>Number.isSafeInteger(v)&&v>0):[];
-    const allowedSize=(shape,size)=>Array.isArray(cfg.sizesByShape?.[shape]) && cfg.sizesByShape[shape].includes(size);
-    const firstShape=shapes[0]||'';
-    const sizesFor=shape=>cfg.sizesByShape?.[shape]||[];
+    // The UI must never use a second option catalogue from the JS config.
+    // It will show only combinations that exist as Shopify variants.
     const MAX_FILE_BYTES=Math.max(1,Number(cfg.maxArtworkMB)||20)*1024*1024;
     root.dataset.impressInitialized = 'true';
     form.enctype = 'multipart/form-data';
@@ -46,6 +59,8 @@
     const shapeHost = find('[data-impress-shapes]');
     const finishHost = find('[data-impress-finishes]');
     const sizeSelect = find('[data-impress-sizes]');
+    const sizeLabel = find('[data-impress-size-label]');
+    const sizeHelp = find('[data-impress-contour-size-help]');
     const piecesSelect = find('[data-impress-pieces]');
     const variantIdInput = find('[data-impress-variant-id]');
     const propSize = find('[data-impress-property-size]');
@@ -82,39 +97,46 @@
     }
 
     const dropzone = find('.impress-sticker__dropzone');
+    // The theme scrolls .page-wrapper, not window/html. Focusing the native file
+    // input can nonetheless scroll html and reveal a blank strip below the page.
+    // Keep the file input for Shopify's original file-property submission;
+    // this safeguard only corrects unintended *outer* scrolling.
+    const correctOuterScroll = () => {
+      if (window.scrollX || window.scrollY) {
+        window.scrollTo({left: 0, top: 0, behavior: 'instant'});
+      }
+    };
+    dropzone?.addEventListener('click', () => {
+      if (artInput.disabled) return;
+      artInput.focus({preventScroll: true});
+      artInput.click();
+      correctOuterScroll();
+    });
+    // The picker can trigger browser scrolling when it closes, after its
+    // change/cancel event. Never reset the user's .page-wrapper position.
+    for (const eventName of ['change', 'cancel']) {
+      artInput.addEventListener(eventName, () => {
+        correctOuterScroll();
+        requestAnimationFrame(correctOuterScroll);
+      });
+    }
 
     // Artwork is independent from variant mapping; no pricing problem may disable editing.
-    artInput.addEventListener('change', () => {
-      const file = artInput.files?.[0];
-      fileLabel.textContent = file ? file.name : 'Seleccionar archivo';
-      dropzone?.classList.remove('is-file-ready');
-      if (!file) {
-        artInput.setCustomValidity('');
-        fileHint.textContent = 'Selecciona un archivo para adjuntarlo al pedido.';
-        editor?.loadFile(null);
-        return;
+    window.ImpressEditorCore?.bindEmptyUpload(root.querySelector('[data-ie-empty]'),()=>artInput);
+    window.ImpressEditorCore?.bindEmptyUpload(root.querySelector('[data-ie-stage]'),()=>artInput);
+    let prepared = false;
+    const stickerSource = window.ImpressArtworkSource.mount({
+      original:artInput,
+      maxBytes:MAX_FILE_BYTES,
+      onChange:()=>{prepared=false;},
+      onFile:(file)=>{
+        fileLabel.textContent=file?file.name:'Seleccionar archivo';
+        dropzone?.classList.toggle('is-file-ready',Boolean(file));
+        fileHint.textContent=file ? 'Original seleccionado. Se preparará una vista editable, conservando el archivo original.' : 'SVG, PNG, JPG, JPEG, TIF o PDF · máximo 20 MB.';
+        editor?.loadFile(file||null);
       }
-      if (!VALID_EXTENSIONS.test(file.name)) {
-        artInput.setCustomValidity('Usa PNG, JPG, WEBP o PDF.');
-        fileHint.textContent = 'Formato no admitido. Usa PNG, JPG, WEBP o PDF.';
-        editor?.loadFile(null);
-        artInput.reportValidity();
-        return;
-      }
-      if (file.size > MAX_FILE_BYTES) {
-        artInput.setCustomValidity('El archivo supera 20 MB (límite de esta prueba).');
-        fileHint.textContent = 'Archivo demasiado grande para esta prueba (20 MB máx.).';
-        editor?.loadFile(null);
-        artInput.reportValidity();
-        return;
-      }
-      artInput.setCustomValidity('');
-      dropzone?.classList.add('is-file-ready');
-      fileHint.textContent = /\.pdf$/i.test(file.name)
-        ? 'PDF adjunto sin editor visual. Se enviará el PDF original.'
-        : 'Arte original conservado. La edición se adjunta como vista de referencia.';
-      editor?.loadFile(file);
     });
+    window.ImpressAddons?.connectArtwork(form,[stickerSource]);
 
     function makeChoice(host, group, value, selected, callback) {
       const label = document.createElement('label');
@@ -135,7 +157,9 @@
         icon.className = 'impress-sticker__choice-icon';
         const svgImage = document.createElement('img');
         svgImage.className = 'impress-sticker__shape-icon';
-        svgImage.src = (group === 'shape' ? iconAssets : finishIconAssets)[String(value).trim().toLowerCase()] || '';
+        const iconUrl = (group === 'shape' ? iconAssets : finishIconAssets)[String(value).trim().toLowerCase()];
+        if(iconUrl) svgImage.src = iconUrl;
+        else svgImage.hidden = true; // New Shopify values need no JS list or broken image.
         svgImage.width = 39;
         svgImage.height = 39;
         svgImage.alt = '';
@@ -157,12 +181,12 @@
       host.replaceChildren();
       values.forEach(value => makeChoice(host, group, value, current, callback));
     }
-    function renderSelect(select, values, current) {
+    function renderSelect(select, values, current, labelForValue = value => String(value)) {
       select.replaceChildren();
       values.forEach(value => {
         const option = document.createElement('option');
         option.value = String(value);
-        option.textContent = String(value);
+        option.textContent = labelForValue(value);
         option.selected = String(value) === String(current);
         select.append(option);
       });
@@ -172,10 +196,18 @@
     function updatePreview(state) {
       root.dataset.impressShape = /circ|round|redond/i.test(state.shape || '') ? 'circular' :
         /square|cuadrad/i.test(state.shape || '') ? 'square' :
-        /rect/i.test(state.shape || '') ? 'rectangle' : 'contour';
+        /contour|contorno|die.?cut/i.test(state.shape || '') ? 'contour' : 'rectangle';
       root.dataset.impressFinish = /gloss|brill/i.test(state.finish || '') ? 'gloss' : 'matte';
       finishPreview.textContent = (state.finish || 'Acabado').toUpperCase();
-      propSize.value = state.size || '';
+      const contour = isContourShape(state.shape);
+      const customerSize = contour ? contourHeightLabel(state.size) : (state.size || '');
+      // Production sees the requested customer-facing height AND the real
+      // Shopify tariff category; the variant ID is not changed.
+      propSize.value = contour && state.size
+        ? `${customerSize} (tarifa Shopify: ${state.size})` : (state.size || '');
+      if (sizeLabel) sizeLabel.textContent = contour ? 'Altura del diseño' : 'Tamaño';
+      sizeSelect.setAttribute('aria-label', contour ? 'Altura del diseño' : 'Tamaño');
+      if (sizeHelp) sizeHelp.hidden = !contour;
       propPieces.value = state.pieces || '';
       editor?.setOptions(state);
     }
@@ -190,27 +222,30 @@
       parsingError = error.message;
     }
 
-    // No option/price guesses: all 4 visible controls map to a real Shopify variant.
+    // Shopify option NAMES are irrelevant; the central map defines the columns.
+    const mapping=window.ImpressResolveOptionMapping?.('stickers',['shape','finish','pack'],3);
+    const count=Number(root.dataset.variantCount);
+    const catalogComplete=!root.dataset.variantCount||count===rawVariants.length;
     const validVariants = rawVariants
       .map(variant => {
-        if (!Array.isArray(variant.options) || variant.options.length !== 3) return null;
-        const pack = parsePack(variant.options[2]);
-        if (!pack || !variant.options[0] || !variant.options[1]) return null;
+        if (!mapping || !Array.isArray(variant.options) || variant.options.length !== 3) return null;
+        const pack = parsePack(variant.options[mapping.pack]);
+        if (!pack || !variant.options[mapping.shape] || !variant.options[mapping.finish]) return null;
         const cents = Number(variant.price);
         if (!Number.isFinite(cents) || cents < 0) return null;
         return {
-          id: String(variant.id), shape: String(variant.options[0]),
-          finish: String(variant.options[1]), ...pack,
+          id: String(variant.id), shape: String(variant.options[mapping.shape]),
+          finish: String(variant.options[mapping.finish]), ...pack,
           priceCents: cents, available: Boolean(variant.available)
         };
       })
       .filter(Boolean);
 
-    // Catalog allow-list: hide disabled choices, but NEVER invent a Shopify price.
-    const purchasable = validVariants.filter(v => shapes.includes(v.shape) && finishes.includes(v.finish) &&
-      allowedSize(v.shape,v.size) && quantities.includes(v.pieces));
-    const allValid = !parsingError && rawVariants.length > 0 && purchasable.length > 0 &&
-      shapes.length > 0 && finishes.length > 0 && quantities.length > 0 &&
+    const purchasable = validVariants;
+    const tupleKeys=purchasable.map(v=>[v.shape,v.finish,v.size,v.pieces].join('\u0000'));
+    const allValid = !parsingError && Boolean(mapping) && catalogComplete &&
+      rawVariants.length > 0 && purchasable.length === rawVariants.length &&
+      new Set(tupleKeys).size===tupleKeys.length &&
       purchasable.every(v=>v.id && v.id!=='undefined');
 
     const state = { shape: '', finish: '', size: '', pieces: 0 };
@@ -247,7 +282,7 @@
         const finishMatches = shapeMatches.filter(v => v.finish === state.finish);
         const sizes = unique(finishMatches.map(v => v.size));
         if (!sizes.includes(state.size)) state.size = sizes[0];
-        renderSelect(sizeSelect, sizes, state.size);
+        renderSelect(sizeSelect, sizes, state.size, isContourShape(state.shape) ? contourHeightLabel : undefined);
         const sizeMatches = finishMatches.filter(v => v.size === state.size);
         const quantities = unique(sizeMatches.map(v => v.pieces)).sort((a, b) => a - b);
         if (!quantities.includes(state.pieces)) state.pieces = quantities[0];
@@ -257,7 +292,9 @@
         const ready = Boolean(match && match.available);
         variantIdInput.value = match ? match.id : '';
         price.textContent = match ? money.format(match.priceCents / 100) : '—';
-        priceNote.textContent = match ? `${state.pieces} piezas · ${state.size}` : 'No hay precio para esta combinación';
+        window.ImpressAddons?.setContext(form,{size:state.size,pack:state.pieces,units:1});
+        window.ImpressAddons?.setBase(form,match ? match.priceCents : null);
+        priceNote.textContent = match ? `${state.pieces} piezas · ${isContourShape(state.shape) ? contourHeightLabel(state.size) : state.size}` : 'No hay precio para esta combinación';
         submit.disabled = !ready;
         message.textContent = match && !ready ? 'Esta combinación está agotada.' : '';
         updatePreview(state);
@@ -267,41 +304,19 @@
       piecesSelect.addEventListener('change', () => { state.pieces = Number(piecesSelect.value); syncShopify(); });
       syncShopify();
     } else {
-      // Preview/demo mode: NEVER submit a guessed price or mismatched variant.
+      // No invented demo values: keep the artwork editor but disable checkout.
       root.dataset.impressMode = 'preview';
-      Object.assign(state, { shape: firstShape, finish: finishes[0]||'',
-        size: sizesFor(firstShape)[0]||'', pieces: quantities[0]||0 });
-      const syncDemo = () => {
-        const sizes = sizesFor(state.shape);
-        if (!sizes.includes(state.size)) state.size = sizes[0];
-        renderSelect(sizeSelect, sizes, state.size);
-        updatePreview(state);
-        variantIdInput.value = '';
-        price.textContent = '—';
-        priceNote.textContent = 'Vista previa · Precio no configurado';
-        submit.disabled = true;
-      };
-      renderChoices(shapeHost, 'shape', shapes, state.shape, event => {
-        state.shape = event.currentTarget.value; syncDemo();
-      });
-      renderChoices(finishHost, 'finish', finishes, state.finish, event => {
-        state.finish = event.currentTarget.value; syncDemo();
-      });
-      renderSelect(piecesSelect, quantities, state.pieces);
-      sizeSelect.addEventListener('change', () => { state.size = sizeSelect.value; syncDemo(); });
-      piecesSelect.addEventListener('change', () => { state.pieces = Number(piecesSelect.value); syncDemo(); });
-      syncDemo();
-
-      const current = rawVariants[0]?.options?.join(' / ') || '(sin variantes válidas)';
-      const reason = parsingError ? `${parsingError}. ` : '';
-      message.textContent = 'MODO VISTA PREVIA — ' + reason +
-        'Para habilitar el precio y el carrito, configura las variantes de Shopify como ' +
-        'Forma y Acabado permitidos en el archivo de configuración, con Tamaño | Cantidad real en Shopify. ' +
-        'Ejemplo: “Contour Cut / Gloss / 2 x 2 in | 50”. ' +
-        'Primera variante encontrada: “' + current + '”.';
+      shapeHost.replaceChildren();finishHost.replaceChildren();
+      renderSelect(sizeSelect, [], '');renderSelect(piecesSelect, [], '');
+      variantIdInput.value = '';price.textContent = '—';
+      window.ImpressAddons?.setBase(form,null);
+      priceNote.textContent = 'Sin variantes Shopify válidas';submit.disabled = true;
+      message.textContent = !mapping
+        ? 'Compras deshabilitadas: revisa los índices shape, finish y pack en impress-variant-mapping.js.'
+        : !catalogComplete?'Compras deshabilitadas: catálogo de variantes incompleto.'
+        : 'Compras deshabilitadas: configura variantes de Shopify con Forma, Acabado y Tamaño | Cantidad (ej. 2 x 2 in | 50).';
     }
 
-    let prepared = false;
     let preparing = false;
     form.addEventListener('submit', async event => {
       if (!allValid || !variantIdInput.value || submit.disabled) {
@@ -309,9 +324,9 @@
         if (!allValid) message.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         return;
       }
-      if (!artInput.files?.length || !artInput.checkValidity()) {
+      if ((window.ImpressAddons && !window.ImpressAddons.ready(form))) { event.preventDefault(); return; }
+      if (!stickerSource.validate()) {
         event.preventDefault();
-        artInput.reportValidity();
         return;
       }
       if (prepared) return; // The second, fully prepared native form submission.
@@ -320,7 +335,7 @@
       preparing = true;
       submit.disabled = true;
       try {
-        if (editor) await editor.prepareOrderFiles();
+        if (editor && artInput.files?.length) await editor.prepareOrderFiles();
         prepared = true;
         submit.disabled = false;
         form.requestSubmit(submit); // Submit with original + preview using Shopify product form.

@@ -1,0 +1,12 @@
+{%- comment -%}
+  Impress printing-order total. The appropriate configurator still owns the Shopify
+  base variant price, while impress-addons.js composes the visible total.
+  main_attr: data attribute used by the existing product JS
+  note_attr: data attribute used by the existing product JS
+{%- endcomment -%}
+<div class="impress-price-summary" data-impress-price-summary aria-live="polite" aria-atomic="true">
+  <div class="impress-price-summary__row"><span>Precio del producto</span><strong data-impress-base-price>—</strong></div>
+  <div class="impress-price-summary__row"><span>Servicios adicionales</span><strong data-impress-services-price>—</strong></div>
+  <div class="impress-price-summary__grand"><span>TOTAL DEL PEDIDO</span><strong {{ main_attr }} data-impress-grand-price>—</strong></div>
+  <small {{ note_attr }}>{{ note_text }}</small>
+</div>

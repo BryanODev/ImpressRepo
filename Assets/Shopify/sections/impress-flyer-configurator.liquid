@@ -1,0 +1,24 @@
+{{ 'impress-paper-configurator.css' | asset_url | stylesheet_tag }}
+{{ 'impress-preview-shared.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'impress-addons.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-variant-mapping.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-editor-core.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-artwork-source.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-artwork-preview.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-artwork-quality.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-flyer-config.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-paper-editor.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-paper-configurator.js' | asset_url }}" defer></script>
+{% render 'impress-paper-configurator', paper_product: product, paper_type: 'flyers', paper_section_id: section.id, paper_title: section.settings.heading, paper_subtitle: section.settings.subtitle %}
+{% schema %}
+{
+  "name":"Impress Flyers",
+  "tag":"section",
+  "enabled_on":{"templates":["product"]},
+  "settings":[
+    {"type":"text","id":"heading","label":"Flyers personalizados","default":"Personaliza tus flyers"},
+    {"type":"text","id":"subtitle","label":"Subtítulo","default":"Elige formato y caras. Sube tu diseño y edita cada lado por separado."}
+  ],
+  "presets":[{"name":"Impress Flyers"}]
+}
+{% endschema %}

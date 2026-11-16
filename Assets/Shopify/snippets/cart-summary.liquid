@@ -257,13 +257,23 @@
   </div>
 </div>
 
+{% liquid
+  assign impress_protected_cart = false
+  for item in cart.items
+    if item.properties['_Impress Addons'] != blank
+      assign impress_protected_cart = true
+      break
+    endif
+  endfor
+%}
 <div class="cart__ctas">
   <button
     type="submit"
     id="checkout"
     class="cart__checkout-button button"
     name="checkout"
-    {% if cart == empty %}
+    data-impress-guard="true"
+    {% if cart == empty or impress_protected_cart %}
       disabled
     {% endif %}
     form="cart-form"
@@ -273,7 +283,7 @@
     </span>
   </button>
 
-  {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
+  {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons and impress_protected_cart == false %}
     <div
       class="
         additional-checkout-buttons
@@ -282,6 +292,9 @@
     >
       {{ content_for_additional_checkout_buttons }}
     </div>
+  {% endif %}
+  {% if impress_protected_cart %}
+    <p class="impress-cart-warning" data-impress-cart-notice role="status">Confirmando los servicios adjuntos antes de continuar al pago…</p>
   {% endif %}
 </div>
 

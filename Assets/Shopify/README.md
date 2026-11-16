@@ -1,26 +1,33 @@
-# Impress Footer v1.0
+# Impress Shopify v0.4.4 — Artwork formats + removal of sharing links
 
-A footer for **the whole Shopify storefront**, not only the homepage. The existing `sections/impress-footer.liquid` was empty and the footer group had no sections.
+## Upload into a DUPLICATED Shopify theme
 
-## Install to a DUPLICATE theme
-1. In Shopify > Online Store > Themes > ... > Edit code, replace `sections/impress-footer.liquid` with this file.
-2. Replace `sections/footer-group.json` with this package's version **ONLY if your footer group is still empty**. If you have already created a footer in the theme editor since your last ZIP, instead add **Impress Footer** to the existing footer group from Shopify Theme Editor (Footer section), rather than overwriting your saved layout.
-3. In Theme Editor > Footer > Impress Footer, upload the official Impress logo if desired, and select links/menus for Products and Help.
-4. Assign the **Banners** product link. It is intentionally not guessed; until configured, Banners is visible but non-clickable. Sticker link defaults to the existing `vinyl-sticker` product handle. Verify it still points to the correct product.
-5. Verify the existing phone / email / WhatsApp number, and add Instagram or Facebook URLs if desired.
-6. Configure Shopify's Policies under Settings > Policies. Only policies that exist in Shopify will be shown in the bottom footer.
+Copy the files under `assets/`, `sections/`, and `snippets/` to those same folders in Shopify. You can replace the existing files with the names in this ZIP. **Do not overwrite your homepage JSON or product variants.**
 
-## Files in this ZIP
-- `sections/impress-footer.liquid` (replaces your existing empty section)
-- `sections/footer-group.json` (activates the section across all pages)
+New shared file: `assets/impress-artwork-preview.js`. This must be uploaded along with the editor/controller changes.
 
-## Design and functionality
-- Consistent dark theme, yellow accent, large headline and secondary product CTA.
-- Brand area, 2 navigation columns, contact, working tel/mailto/WhatsApp links, current year, dynamic Shopify policy links.
-- Mobile and desktop layouts, no external fonts or JavaScript.
-- No quote form and no Rotulación hero.
-- Contact information comes from your existing `impress-quote.liquid` settings; double-check before publishing.
+## New workflow
 
-## Note
-No changes to stickers, banners, pricing, checkout, homepage sections or product templates.
-All Shopify section schema settings and footer-group references were validated locally, but the sitewide Shopify render should be previewed in your duplicate theme before publishing.
+- No external artwork URLs, no second preview file, no external-storage link field.
+- One direct upload per side (front / back if applicable), maximum 20 MB per file.
+- Accepted types: SVG, PNG, JPG, JPEG, TIF, TIFF, PDF.
+- Clicking the empty editor still opens the same file picker.
+- Original is kept unchanged as a Shopify line-item file property. An edited PNG reference is prepared as a separate line-item property.
+- PNG/JPEG/SVG can display locally without extra dependencies.
+- PDF and TIFF first-page previews need the browser to fetch pinned JavaScript decoders from cdnjs/jsDelivr/unpkg. No separate Node.js server or paid hosting required, but they will not preview if those CDNs are blocked.
+- SVG previews are sanitized; user-supplied original files are not modified.
+- Multi-page PDF/TIFF: only FIRST PAGE visible/editable; original full file still goes to Shopify.
+
+## Before showing this to your boss
+
+1. Upload a PNG and place a test order. Check Shopify Admin > Orders for **Arte original** and **Vista editada**.
+2. Repeat for SVG, JPG/JPEG, TIF and PDF, and check which formats Shopify actually retains. **Acceptance by the local editor is not proof Shopify retains every file type.**
+3. Repeat a double-sided Business Card or Flyer order; verify both front and back originals/previews.
+4. Check the 20 MB behavior and file accessibility in the order detail.
+
+## Limitations
+
+- 20 MB is the configured storefront file-size ceiling, not a promise that Shopify accepts all formats on product forms.
+- Some PDFs and TIFFs may fail to render due to unsupported compression, password protection, or browser memory limits. The UI shows an error; checkout will not silently treat a missing preview as completed artwork.
+- The edited PNG is a design reference, not guaranteed to be print-ready (bleed, DPI, CMYK, fonts).
+- No hosting/back-end changes. Pricing and product variants are untouched.

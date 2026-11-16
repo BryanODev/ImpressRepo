@@ -56,10 +56,24 @@ class CartIcon extends Component {
    */
   onCartUpdate = (event) => {
     event.promise
-      ?.then(({ cart, detail }) => {
-        const itemCount = cart?.totalQuantity ?? detail?.itemCount ?? 0;
-
-        this.renderCartBubble(itemCount);
+      ?.then(async ({ detail }) => {
+        // Shopify counts nested service lines as items. The Impress badge counts
+        // printing-order lines only. Re-read the authoritative Ajax cart after
+        // the mutation; fall back to the section-rendered parent-line count.
+        let count = detail?.itemCount;
+        try {
+          const base = (window.Shopify?.routes?.root || '/').replace(/\/?$/, '/');
+          const response = await fetch(`${base}cart.js`, { credentials: 'same-origin' });
+          if (!response.ok) throw new Error('Cart request failed');
+          const data = await response.json();
+          if (Array.isArray(data.items)) {
+            count = data.items.filter((item) => !(
+              item.properties?.['_Impress Addon'] === '1' &&
+              (item.parent_relationship?.parent_key || item.parent_relationship?.parent?.key)
+            )).length;
+          }
+        } catch (_) { /* Rendered count is already filtered by Liquid. */ }
+        if (Number.isInteger(count)) this.renderCartBubble(count);
       })
       .catch((error) => {
         if (error?.name !== 'AbortError') console.warn('[cart-icon] Event promise rejected:', error);
@@ -80,7 +94,7 @@ class CartIcon extends Component {
     this.classList.toggle('header-actions__cart-icon--has-cart', itemCount > 0);
 
     sessionStorage.setItem(
-      'cart-count',
+      'impress-cart-job-count-v1',
       JSON.stringify({
         value: String(this.currentCartCount),
         timestamp: Date.now(),
@@ -106,7 +120,7 @@ class CartIcon extends Component {
     // Ensure refs are available
     if (!this.refs.cartBubbleCount) return;
 
-    const sessionStorageCount = sessionStorage.getItem('cart-count');
+    const sessionStorageCount = sessionStorage.getItem('impress-cart-job-count-v1');
 
     // If no session storage data, nothing to check
     if (sessionStorageCount === null) return;

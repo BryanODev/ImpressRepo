@@ -26,6 +26,8 @@
   const isSquare = shape => /square|cuadrad/i.test(shape);
   const DEFAULT_SAFE_INSET_INCHES = 0.0625; // Customer preview only; not a production toolpath.
   const BLUE_SPEED_FACTOR = 0.36; // Slower than the red cutline.
+  const EXPORT_DPI = 300;
+  const EXPORT_LONGEST_EDGE_CAP = 3200; // Prevent oversized browser exports while targeting print-quality pixels.
   function stickerPath(ctx, x,y,w,h,shape) {
     if (isCircle(shape)) {
       ctx.beginPath(); ctx.ellipse(x+w/2,y+h/2,w/2,h/2,0,0,Math.PI*2); ctx.closePath();
@@ -68,6 +70,39 @@
     }
     return true;
   }
+  function exportPixelDimensions(size, shape) {
+    const physical = sizeInches(size);
+    if (physical) {
+      let width = Math.max(1, Math.round(physical.width * EXPORT_DPI));
+      let height = Math.max(1, Math.round(physical.height * EXPORT_DPI));
+      const longest = Math.max(width, height);
+      if (longest > EXPORT_LONGEST_EDGE_CAP) {
+        const scale = EXPORT_LONGEST_EDGE_CAP / longest;
+        width = Math.max(1, Math.round(width * scale));
+        height = Math.max(1, Math.round(height * scale));
+      }
+      return { width, height };
+    }
+    const ratio = dimensionRatio(size, shape);
+    const max = 1600;
+    return {
+      width: Math.round(max * ratio / Math.max(ratio, 1)),
+      height: Math.round(max / Math.max(1, ratio))
+    };
+  }
+  function drawExpandedStroke(ctx, tintedArt, w, h, strokeW) {
+    if (!(strokeW > 0)) return;
+    const rings = Math.max(2, Math.min(7, Math.ceil(strokeW / 3)));
+    for (let ring = 1; ring <= rings; ring++) {
+      const radius = strokeW * (ring / rings);
+      const samples = Math.max(28, Math.ceil(Math.PI * 2 * radius * 1.15));
+      for (let i = 0; i < samples; i++) {
+        const angle = i * Math.PI * 2 / samples;
+        ctx.drawImage(tintedArt, -w / 2 + Math.cos(angle) * radius, -h / 2 + Math.sin(angle) * radius, w, h);
+      }
+    }
+  }
+
   function dimensionRatio(size, shape) {
     if (isCircle(shape) || isSquare(shape)) return 1;
     const m = String(size||'').match(/(\d+(?:[.,]\d+)?)\s*(?:x|×)\s*(\d+(?:[.,]\d+)?)/i);
@@ -104,6 +139,7 @@
     const c = canvas.getContext('2d');
     const fc = finalCanvas.getContext('2d');
     if (!c || !fc) return null;
+    let quality=null;
     const ui = { scale:el('scale'), rotate:el('rotate'), stroke:el('stroke'), color:el('color'),
       guides:el('guides'), safeGuides:el('safe-guides'), tolerance:el('tolerance'), remove:el('remove-bg'), restore:el('restore-bg'),
       download:el('download'), note:el('editor-message'), empty:el('empty'), safeNote:el('safe-note'),
@@ -128,7 +164,10 @@
     let drag=null, editBefore=null, waiting=false, fileToken=0;
     let latestGeometry=null;
     const editorControls=[ui.scale,ui.rotate,ui.stroke,ui.color,ui.tolerance,ui.remove,ui.download];
-
+    const lockedContourTransform=()=>isContour(shape);
+    // View-only camera: shared with Banners, Flyers and Business Cards.
+    // Reuse the sticker toolbar markup so its customer-facing UI is unchanged.
+    const canNavigate=()=>!!art&&!waiting&&mode==='edit';
     function note(txt, bad=false) {
       if(ui.note) { ui.note.textContent=txt; ui.note.dataset.error=bad?'true':'false'; }
     }
@@ -143,16 +182,19 @@
       el('tolerance-value').textContent=String(state.tolerance);
       const active=!!art;
       for(const item of editorControls) if(item) item.disabled=!active || waiting ||
-        ((item===ui.scale)&&allow.allowScaling===false) ||
-        ((item===ui.rotate)&&allow.allowRotation===false) ||
+        ((item===ui.scale)&&(allow.allowScaling===false || lockedContourTransform())) ||
+        ((item===ui.rotate)&&(allow.allowRotation===false || lockedContourTransform())) ||
         ((item===ui.stroke||item===ui.color)&&allow.allowStroke===false) ||
         ((item===ui.remove||item===ui.tolerance)&&allow.allowBackgroundRemoval===false);
       ui.restore.disabled=!original || !state.removed || waiting || allow.allowBackgroundRemoval===false;
       for (const action of ['undo','redo','center']) {
         const button=$(root,`[data-ie-action="${action}"]`);
-        if(button) button.disabled=!active || waiting || (action==='undo'&&!history.length) || (action==='redo'&&!future.length);
+        if(button) button.disabled=!active || waiting || (action==='undo'&&!history.length) ||
+          (action==='redo'&&!future.length) || (action==='center'&&lockedContourTransform());
       }
-      if(ui.empty) ui.empty.hidden=active;
+      navigation.sync();
+
+      if(ui.empty) ui.empty.hidden=active || Boolean(root.querySelector('[data-impress-art-input]')?.files?.length);
       if(project) project.value=active ? JSON.stringify({v:2,x:+state.x.toFixed(4),y:+state.y.toFixed(4),s:+state.scale.toFixed(3),r:Math.round(state.angle*180/Math.PI),b:state.stroke,c:state.color,rm:state.removed,t:state.tolerance}) : '';
     }
     function markBegin() { if(!editBefore) editBefore=snapshot(state); }
@@ -197,6 +239,8 @@
     }
     function appliedState(newState) {
       Object.assign(state,newState);
+      // Undo/redo must not reintroduce rotations or zoom on Contour Cut.
+      if (lockedContourTransform()) { state.x=.5;state.y=.5;state.scale=1;state.angle=0; }
       setArt(state.removed && cleaned ? cleaned : original);
     }
     function undo() {
@@ -223,10 +267,7 @@
       const key=`${state.color}:${art===cleaned?'clean':'orig'}`;
       if (strokeW>0) {
         if(!tint || tintKey!==key) { tint=makeTint(art,state.color);tintKey=key; }
-        for(let i=0;i<32;i++) {
-          const a=i*Math.PI*2/32;
-          ctx.drawImage(tint,-w/2+Math.cos(a)*strokeW,-h/2+Math.sin(a)*strokeW,w,h);
-        }
+        drawExpandedStroke(ctx, tint, w, h, strokeW);
       }
       ctx.drawImage(art,-w/2,-h/2,w,h);
       ctx.restore();
@@ -447,7 +488,7 @@
           }
         }
       }
-      if(!exporting&&showControls&&art&&latestGeometry)drawHandles(ctx,latestGeometry);
+      if(!exporting&&showControls&&art&&latestGeometry&&!contour)drawHandles(ctx,latestGeometry);
     }
     const handles = g => core.handles(g,36);
     function drawHandles(ctx,g) {
@@ -458,12 +499,18 @@
       for(const p of pts.corners) {ctx.beginPath();ctx.fillStyle='white';ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fill();ctx.stroke();}
       ctx.beginPath();ctx.fillStyle='#3e8090';ctx.arc(pts.rotate.x,pts.rotate.y,8,0,Math.PI*2);ctx.fill();ctx.restore();
     }
-    const preview = new core.PreviewStage({
+    const workspace=core.createWorkspace({
       canvas,finalCanvas,finalLayer,stage,viewKey:'ieView',
       getMode:()=>mode,hasArtwork:()=>Boolean(art),
       drawEdit:(ctx,W,H)=>drawScene(ctx,W,H,{showControls:true}),
-      drawFinal:(ctx,W,H,tilt)=>drawScene(ctx,W,H,{transparentBackground:true,tilt})
+      drawFinal:(ctx,W,H,tilt)=>drawScene(ctx,W,H,{transparentBackground:true,tilt}),
+      render:()=>render(),zoomMin:1,zoomMax:4,fallbackHeight:440,
+      controls:{toolbar:el('view-toolbar'),level:el('zoom-level'),
+        in:el('zoom-in'),out:el('zoom-out'),reset:el('zoom-reset')},
+      hint:el('view-hint'),qualityRoot:root,qualityType:'stickers'
     });
+    const {preview,navigation}=workspace;
+    quality=workspace.quality;
     function drawFinal(){preview.redrawFinal();}
     function animateGuides(now=0) {
       const shouldRun = !reduceMotion && mode==='edit' && (ui.guides.checked||ui.safeGuides.checked) && (isContour(shape) ? !!art : true);
@@ -486,25 +533,35 @@
       preview.render();
       syncUI();
       refreshGuideAnimation();
+      const d=sizeInches(size);
+      quality?.setPlacement({printWidthIn:d?.width,printHeightIn:d?.height,scale:state.scale,fit:1,contour:isContour(shape)});
     }
-    const point = e => core.pointer(canvas,e);
-    const nearestHandle = (p,g) => core.hitTest(p,g,{rotateOffset:36,rotateRadius:19,scaleRadius:19,padding:8});
-    canvas.addEventListener('pointerdown', e=> {
-      if(!art||mode!=='edit'||waiting||!latestGeometry)return;
+    const point=e=>navigation.point(e);
+    const nearestHandle=(p,g)=>lockedContourTransform() ? null :
+      core.hitTest(p,g,{rotateOffset:36,rotateRadius:19,scaleRadius:19,padding:8});
+    canvas.addEventListener('pointerdown',e=>{
+      if(!canNavigate()||e.button!==0||navigation.isPanning()||lockedContourTransform()||!latestGeometry)return;
       const p=point(e),kind=nearestHandle(p,latestGeometry);
       if(!kind || (kind==='scale'&&allow.allowScaling===false) || (kind==='rotate'&&allow.allowRotation===false))return;
       markBegin();
       drag=core.startDrag(kind,p,latestGeometry,state);
       canvas.setPointerCapture(e.pointerId);e.preventDefault();canvas.style.cursor='grabbing';
     });
-    canvas.addEventListener('pointermove',e=> {
+    canvas.addEventListener('pointermove',e=>{
+      if(navigation.isPanning())return;
       const p=point(e);
-      if(!drag){canvas.style.cursor=art&&mode==='edit'&&latestGeometry&&nearestHandle(p,latestGeometry)?'grab':'default';return;}
+      if(!drag) {
+        canvas.style.cursor=canNavigate()&&latestGeometry&&nearestHandle(p,latestGeometry)?'grab':'default';
+        return;
+      }
       core.updateDrag(state,drag,p,{minPosition:-.6,maxPosition:1.6});
       render();e.preventDefault();
     });
-    const finishDrag=()=> {if(drag){drag=null;markEnd();canvas.style.cursor='default';render();}};
-    canvas.addEventListener('pointerup',finishDrag);canvas.addEventListener('pointercancel',finishDrag);
+    const finishDrag=e=>{
+      if(drag){drag=null;markEnd();canvas.style.cursor='default';render();}
+    };
+    canvas.addEventListener('pointerup',finishDrag);
+    canvas.addEventListener('pointercancel',finishDrag);
     for(const [key,prop,parse] of [
       ['scale','scale',v=>Number(v)/100],['rotate','angle',v=>Number(v)*Math.PI/180],
       ['stroke','stroke',Number],['color','color',String]
@@ -512,7 +569,10 @@
       if((key==='scale'&&allow.allowScaling===false)||(key==='rotate'&&allow.allowRotation===false)||((key==='stroke'||key==='color')&&allow.allowStroke===false))continue;
       ui[key].addEventListener('pointerdown',markBegin);
       ui[key].addEventListener('keydown',markBegin);
-      ui[key].addEventListener('input',e=>{markBegin();state[prop]=parse(e.target.value);render();});
+      ui[key].addEventListener('input',e=>{
+        if(lockedContourTransform() && (key==='scale'||key==='rotate'))return;
+        markBegin();state[prop]=parse(e.target.value);render();
+      });
       ui[key].addEventListener('change',()=>{markEnd();render();});
     }
     ui.guides.addEventListener('change',()=>{refreshGuideAnimation();render();});
@@ -523,7 +583,7 @@
       $(root,`[data-ie-action="${name}"]`).addEventListener('click',()=>{
         if(!art)return;
         if(name==='undo')undo();else if(name==='redo')redo();
-        else {markBegin();state.x=.5;state.y=.5;markEnd();render();}
+        else if(!lockedContourTransform()) {markBegin();state.x=.5;state.y=.5;markEnd();render();}
       });
     }
     root.querySelectorAll('[data-ie-mode]').forEach(button=>button.addEventListener('click',()=>{
@@ -532,35 +592,32 @@
       root.querySelectorAll('[data-ie-mode]').forEach(b=>b.classList.toggle('is-active',b===button));
       syncContourHelp();render();
     }));
-    function loadFile(file) {
+    let pendingArtwork=Promise.resolve();
+    function loadFile(file){pendingArtwork=decodeArtwork(file);return pendingArtwork;}
+    async function decodeArtwork(file){
       const token=++fileToken;
+      quality?.setFile(file);
       original=null;cleaned=null;setArt(null);history.length=0;future.length=0;
-      Object.assign(state,initial); if(objectURL){URL.revokeObjectURL(objectURL);objectURL=null;}
+      Object.assign(state,initial);if(objectURL){URL.revokeObjectURL(objectURL);objectURL=null;}
       outputFile.value='';
-      if(!file){note('Sube una imagen para comenzar.');return Promise.resolve(false);}
-      if(!/\.(png|jpe?g|webp)$/i.test(file.name)) {
-        note('PDF adjunto: el editor de imagen se desactiva, pero Shopify conserva el archivo original.');return Promise.resolve(false);
+      if(!file){note('Sube una imagen para comenzar.');return false;}
+      note('Preparando vista del archivo…');
+      try{
+        const result=await window.ImpressArtworkPreview.render(file,{maxDimension:1600});
+        if(token!==fileToken)return false;
+        original=result.image;quality?.setResult(file,result);setArt(original);
+        note(!contourReady&&isContour(shape)
+          ? 'La vista tiene fondo opaco. Para Contour Cut utiliza una imagen transparente o la herramienta de quitar fondo.'
+          : result.notice + (lockedContourTransform()
+            ? ' Contour Cut: diseño centrado y bloqueado; puedes acercar con la rueda y desplazar la vista con el botón central.'
+            : ' Arrastra el arte para moverlo; rueda para zoom de vista y botón central para desplazar la vista.'));
+        return true;
+      }catch(error){
+        if(token!==fileToken)return false;
+        quality?.setResult(file,null);
+        note('Original seleccionado; la vista no pudo abrirse: '+(error?.message||'formato no disponible'),true);
+        return false;
       }
-      objectURL=URL.createObjectURL(file);
-      return new Promise(resolve=> {
-        const img=new Image();
-        img.onload=()=> {
-          if(token!==fileToken){resolve(false);return;}
-          const orig=document.createElement('canvas');
-          // Editor working copy is constrained for browser memory. Original file is not downsampled.
-          const factor=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight));
-          orig.width=Math.max(1,Math.round(img.naturalWidth*factor));
-          orig.height=Math.max(1,Math.round(img.naturalHeight*factor));
-          orig.getContext('2d',{willReadFrequently:true}).drawImage(img,0,0,orig.width,orig.height);
-          original=orig;setArt(orig);
-          note(!contourReady && isContour(shape)
-            ? 'Esta imagen tiene un fondo opaco. Usa «Quitar fondo para Contour Cut» o sube un PNG transparente.'
-            : `Imagen lista · ${img.naturalWidth} × ${img.naturalHeight} px. Arrastra para mover; usa las esquinas para escalar.`);
-          URL.revokeObjectURL(objectURL);objectURL=null;resolve(true);
-        };
-        img.onerror=()=>{if(token===fileToken)note('No se pudo abrir esta imagen.',true);resolve(false);};
-        img.src=objectURL;
-      });
     }
     // Basic uniform-color, border-connected flood fill. Not semantic/AI segmentation.
     function simpleBackgroundRemove(source,tolerance) {
@@ -602,11 +659,11 @@
     });
     function exportCanvas() {
       if(!art)return null;
-      const ratio=dimensionRatio(size,shape);
-      const max=1600, W=Math.round(max*ratio/Math.max(ratio,1)),H=Math.round(max/Math.max(1,ratio));
+      const dims=exportPixelDimensions(size,shape);
+      const W=Math.max(1,dims.width),H=Math.max(1,dims.height);
       const out=document.createElement('canvas');out.width=W;out.height=H;
       const ctx=out.getContext('2d');
-      const {x,y,w,h}=dimensions(ctx,W,H,true);
+      if(ctx){ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';}
       // Export is an isolated flattened preview with transparent outside the sticker.
       drawScene(ctx,W,H,{exporting:true});
       return out;
@@ -625,10 +682,25 @@
     });
     function setOptions(next) {
       shape=next.shape||shape;finish=next.finish||finish;size=next.size||size;
+      if(lockedContourTransform()) {drag=null;navigation.cancelPan();
+        // Lock placement as well as transform; undo/redo cannot bypass it.
+        const changed=state.x!==.5||state.y!==.5||state.scale!==1||state.angle!==0;
+        state.x=.5;state.y=.5;state.scale=1;state.angle=0;
+        if(changed){history.length=0;future.length=0;editBefore=null;}
+        // Keep independent preview zoom/pan; only printed artwork is locked.
+      }
+      canvas.setAttribute('aria-label',lockedContourTransform()
+        ? 'Lienzo de Contour Cut. Arte fijo y centrado. Rueda para zoom y botón central para mover la vista.'
+        : 'Lienzo de diseño. Arrastra para mover arte; rueda para acercar; botón central para desplazar vista.');
+      if(art && ui.note?.dataset.error!=='true')note(lockedContourTransform()
+        ? 'Contour Cut: arte fijo, sin mover, escalar ni rotar. Usa la rueda para zoom y el botón central para desplazar la vista; no afecta la impresión.'
+        : 'Arrastra para mover el arte; usa la rueda para zoom y el botón central para desplazar la vista.');
       syncContourHelp();
       render();
     }
     async function prepareOrderFiles() {
+      await pendingArtwork;
+      if(!art)throw new Error('No se pudo visualizar el arte. Usa otro archivo o revisa que el PDF/TIFF sea compatible.');
       // Shopify may reject multiple file properties or larger uploads; verify on a real test order.
       if(!art){outputFile.value='';return true;}
       const blob=await exportBlob();

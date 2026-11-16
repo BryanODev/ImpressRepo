@@ -78,7 +78,7 @@
       ref="cartItemCount"
       aria-hidden="true"
     >
-      {{- cart.item_count -}}
+      {%- render 'impress-cart-order-count' -%}
     </span>
     <form
       action="{{ routes.cart_url }}"
@@ -150,6 +150,7 @@
                 ref="cartItemRows[]"
                 data-parent-key="{{ item.parent_relationship.parent.key }}"
                 data-key="{{ item.key }}"
+                {% if item.properties['_Impress Addon'] == '1' and item.parent_relationship.parent != null %}data-impress-addon-child{% endif %}
               >
                 <td
                   class="cart-items__media"
@@ -210,6 +211,9 @@
                         mode: 'trigger'
                       %}
                     </div>
+                    {% if item.properties['_Impress Addon'] == '1' and item.parent_relationship.parent != null %}
+                      <p class="impress-cart__attached">↳ Servicio adjunto a este pedido · Se elimina con el producto principal</p>
+                    {% endif %}
                     {% if item.product.vendor and block_settings.vendor %}
                       <p>
                         {{ item.product.vendor }}

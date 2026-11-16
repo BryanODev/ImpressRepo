@@ -1,13 +1,17 @@
-<header class="impress-header" style="--header-bg: {{ section.settings.header_bg_color }}; --header-text: {{ section.settings.header_text_color }}; --accent-yellow: {{ section.settings.accent_color }};">
+{%- comment -%}
+  Impress Header — 2026-11 update
+  Existing column and item_card block type IDs are intentionally preserved so
+  configured blocks in header-group.json remain editable after installation.
+{%- endcomment -%}
+<header
+  class="impress-header"
+  data-impress-header="{{ section.id }}"
+  style="--header-bg: {{ section.settings.header_bg_color }}; --header-text: {{ section.settings.header_text_color }}; --accent-yellow: {{ section.settings.accent_color }}; --impress-menu-width: {{ section.settings.dropdown_width }}px;"
+>
   <div class="header-container header-row">
-    
-    <a href="/" class="brand-logo">
+    <a href="{{ routes.root_url }}" class="brand-logo" style="--impress-logo-height: {{ section.settings.logo_max_height }}px;" aria-label="{{ shop.name | escape }} — Inicio">
       {% if section.settings.logo != blank %}
-        <img 
-          src="{{ section.settings.logo | image_url: width: 400 }}" 
-          alt="{{ shop.name }}"
-          style="max-height: {{ section.settings.logo_max_height }}px;"
-        >
+        {{ section.settings.logo | image_url: width: 400 | image_tag: alt: shop.name, loading: 'eager', class: 'impress-logo-image' }}
       {% else %}
         <div class="logo-group">
           <span class="logo-main"><span class="logo-i">i</span>m<span class="logo-bold">press</span></span>
@@ -16,405 +20,402 @@
       {% endif %}
     </a>
 
-    <div class="search-pill-container" id="mega-pill-wrapper">
-      <button class="search-pill-trigger" type="button" aria-expanded="false">
-        <span class="sparkle">•</span>
-        <span class="pill-label">{{ section.settings.pill_label }}</span>
-        <span class="chevron">▾</span>
-      </button>
+    {% if section.settings.show_product_menu %}
+      <div class="search-pill-container" data-impress-search>
+        <button class="search-pill-trigger" type="button" aria-expanded="false" aria-controls="impress-menu-{{ section.id }}">
+          <span class="sparkle" aria-hidden="true">•</span>
+          <span class="pill-label">{{ section.settings.pill_label | escape }}</span>
+          <span class="chevron" aria-hidden="true">▾</span>
+        </button>
+        <div class="mega-dropdown-modal" id="impress-menu-{{ section.id }}" aria-label="Catálogo de productos">
+          {% if section.settings.banner_text != blank %}
+            <div class="dropdown-banner">
+              <span>{{ section.settings.banner_text | escape }}</span>
+              {% if section.settings.banner_btn_url != blank %}
+                <a href="{{ section.settings.banner_btn_url }}" class="banner-btn">{{ section.settings.banner_btn_label | escape }}</a>
+              {% endif %}
+            </div>
+          {% endif %}
 
-      <div class="mega-dropdown-modal">
-        {% if section.settings.banner_text != blank %}
-          <div class="dropdown-banner">
-            <span>{{ section.settings.banner_text }}</span>
-            {% if section.settings.banner_btn_url != blank %}
-              <a href="{{ section.settings.banner_btn_url }}" class="banner-btn">{{ section.settings.banner_btn_label }}</a>
-            {% endif %}
-          </div>
-        {% endif %}
-
-        <div class="dropdown-flex-grid">
-          {% assign is_first_col = true %}
-          {% for block in section.blocks %}
-            {% if block.type == 'column' %}
-              {% unless is_first_col %}
-                </div>
-                </div>
-              {% endunless %}
-              
-              <div class="grid-col" {{ block.shopify_attributes }}>
-                {% if block.settings.title != blank %}
-                  <span class="col-title">{{ block.settings.title }}</span>
-                {% endif %}
-                <div class="column-items">
-              {% assign is_first_col = false %}
-
-            {% elsif block.type == 'item_card' %}
-              <a href="{{ block.settings.link_url }}" class="mega-item" {{ block.shopify_attributes }}>
-                {% if block.settings.icon != blank %}
-                  <span class="item-icon">{{ block.settings.icon }}</span>
-                {% elsif block.settings.image != blank %}
-                  <img src="{{ block.settings.image | image_url: width: 60 }}" alt="" class="item-img">
-                {% endif %}
-                <div class="item-text">
-                  <strong>{{ block.settings.title }} →</strong>
-                  {% if block.settings.description != blank %}
-                    <p>{{ block.settings.description }}</p>
+          <div class="dropdown-flex-grid">
+            {% assign has_column = false %}
+            {% assign active_mode = 'manual' %}
+            {% for block in section.blocks %}
+              {% case block.type %}
+                {% when 'column' %}
+                  {% if has_column %}
+                      </div>
+                    </div>
                   {% endif %}
-                </div>
-              </a>
-            {% endif %}
+                  {% assign has_column = true %}
+                  {% assign active_mode = block.settings.source_mode | default: 'manual' %}
+                  {% assign column_collection = block.settings.collection %}
+                  {% assign column_heading = block.settings.title %}
+                  {% if column_heading == blank and column_collection != blank %}
+                    {% assign column_heading = column_collection.title %}
+                  {% endif %}
+                  <div class="grid-col" {{ block.shopify_attributes }}>
+                    <div class="col-heading">
+                      {% if column_heading != blank %}
+                        <span class="col-title">{{ column_heading | escape }}</span>
+                      {% endif %}
+                      {% if column_collection != blank and block.settings.show_collection_link %}
+                        <a class="col-see-all" href="{{ column_collection.url }}">Ver todos</a>
+                      {% endif %}
+                    </div>
+                    <div class="column-items">
+                      {% if active_mode == 'collection' %}
+                        {% if column_collection != blank %}
+                          {% for product in column_collection.products limit: block.settings.product_limit %}
+                            <a href="{{ product.url }}" class="mega-item">
+                              {% if product.featured_image != blank %}
+                                <span class="item-visual">
+                                  {{ product.featured_image | image_url: width: 112 | image_tag: loading: 'lazy', class: 'item-img', alt: product.title }}
+                                </span>
+                              {% else %}
+                                <span class="item-visual item-visual-placeholder" aria-hidden="true">✦</span>
+                              {% endif %}
+                              <span class="item-text">
+                                <strong>{{ product.title | escape }} <span aria-hidden="true">→</span></strong>
+                                {% if product.description != blank %}
+                                  <span class="item-description">{{ product.description | strip_html | truncate: 90 | escape }}</span>
+                                {% elsif product.type != blank %}
+                                  <span class="item-description">{{ product.type | escape }}</span>
+                                {% endif %}
+                              </span>
+                            </a>
+                          {% else %}
+                            {% if request.design_mode %}
+                              <p class="impress-editor-note">No hay productos en esta colección.</p>
+                            {% endif %}
+                          {% endfor %}
+                        {% elsif request.design_mode %}
+                          <p class="impress-editor-note">Selecciona una colección para esta categoría.</p>
+                        {% endif %}
+                      {% endif %}
 
-            {% if forloop.last and is_first_col == false %}
+                {% when 'item_card' %}
+                  {% if has_column and active_mode == 'manual' %}
+                    {% assign card_product = block.settings.product %}
+                    {% assign card_url = block.settings.link_url %}
+                    {% if card_url == blank and card_product != blank %}
+                      {% assign card_url = card_product.url %}
+                    {% endif %}
+                    {% assign card_title = block.settings.title %}
+                    {% if card_title == blank and card_product != blank %}
+                      {% assign card_title = card_product.title %}
+                    {% endif %}
+                    {% assign card_description = block.settings.description %}
+                    {% if card_description == blank and card_product != blank %}
+                      {% assign card_description = card_product.description | strip_html | truncate: 90 %}
+                    {% endif %}
+                    {% assign card_image = block.settings.image %}
+                    {% if card_image == blank and card_product != blank %}
+                      {% assign card_image = card_product.featured_image %}
+                    {% endif %}
+                    {% assign visual_mode = block.settings.visual_mode | default: 'auto' %}
+                    {% if card_url != blank %}
+                      <a href="{{ card_url }}" class="mega-item" {{ block.shopify_attributes }}>
+                    {% else %}
+                      <div class="mega-item mega-item-unlinked" {{ block.shopify_attributes }}>
+                    {% endif %}
+                      {% if visual_mode == 'emoji' and block.settings.icon != blank %}
+                        <span class="item-visual item-emoji" aria-hidden="true">{{ block.settings.icon | escape }}</span>
+                      {% elsif visual_mode == 'image' and block.settings.image != blank %}
+                        <span class="item-visual">
+                          {{ block.settings.image | image_url: width: 112 | image_tag: loading: 'lazy', class: 'item-img', alt: card_title }}
+                        </span>
+                      {% elsif card_image != blank %}
+                        <span class="item-visual">
+                          {{ card_image | image_url: width: 112 | image_tag: loading: 'lazy', class: 'item-img', alt: card_title }}
+                        </span>
+                      {% elsif block.settings.icon != blank %}
+                        <span class="item-visual item-emoji" aria-hidden="true">{{ block.settings.icon | escape }}</span>
+                      {% else %}
+                        <span class="item-visual item-visual-placeholder" aria-hidden="true">✦</span>
+                      {% endif %}
+                      <span class="item-text">
+                        {% if card_title != blank %}
+                          <strong>{{ card_title | escape }} {% if card_url != blank %}<span aria-hidden="true">→</span>{% endif %}</strong>
+                        {% endif %}
+                        {% if card_description != blank %}
+                          <span class="item-description">{{ card_description | strip_html | truncate: 105 | escape }}</span>
+                        {% endif %}
+                      </span>
+                    {% if card_url != blank %}
+                      </a>
+                    {% else %}
+                      </div>
+                    {% endif %}
+                  {% endif %}
+              {% endcase %}
+            {% endfor %}
+            {% if has_column %}
                 </div>
               </div>
+            {% elsif request.design_mode %}
+              <div class="grid-col"><p class="impress-editor-note">Añade una categoría y después sus tarjetas de producto.</p></div>
             {% endif %}
-          {% endfor %}
+          </div>
+          {% if section.settings.show_catalog_link %}
+            <a class="impress-catalog-link" href="{{ routes.all_products_collection_url }}">
+              {{ section.settings.catalog_link_label | escape }} <span aria-hidden="true">→</span>
+            </a>
+          {% endif %}
         </div>
       </div>
-    </div>
+    {% endif %}
 
-    <nav class="main-nav">
-      {% assign nav_menu = linklists[section.settings.menu] %}
-      {% if nav_menu.links.size > 0 %}
+    {% if section.settings.show_nav %}
+      <nav class="main-nav" aria-label="Navegación principal">
+        {% assign nav_menu = linklists[section.settings.menu] %}
         {% for link in nav_menu.links %}
-          <a href="{{ link.url }}" class="nav-link">{{ link.title }}</a>
+          <a href="{{ link.url }}" class="nav-link">{{ link.title | escape }}</a>
         {% endfor %}
-      {% else %}
-        <a href="/collections/rotulacion" class="nav-link">Rotulación</a>
-        <a href="/pages/proyectos" class="nav-link">Proyectos</a>
-        <a href="/pages/clientes" class="nav-link">Clientes</a>
-      {% endif %}
-    </nav>
+      </nav>
+    {% endif %}
 
-    <div class="cta-buttons-group">
-      <a href="{{ section.settings.cta_1_url }}" class="yellow-cta-btn">
-        {{ section.settings.cta_1_label }}
-      </a>
-      <a href="{{ section.settings.cta_2_url }}" class="yellow-cta-btn">
-        {{ section.settings.cta_2_label }}
-      </a>
-    </div>
+    {% if section.settings.show_cta_buttons %}
+      <div class="cta-buttons-group">
+        {% if section.settings.show_cta_1 and section.settings.cta_1_url != blank and section.settings.cta_1_label != blank %}
+          <a href="{{ section.settings.cta_1_url }}" class="yellow-cta-btn">{{ section.settings.cta_1_label | escape }}</a>
+        {% endif %}
+        {% if section.settings.show_cta_2 and section.settings.cta_2_url != blank and section.settings.cta_2_label != blank %}
+          <a href="{{ section.settings.cta_2_url }}" class="yellow-cta-btn">{{ section.settings.cta_2_label | escape }}</a>
+        {% endif %}
+        {% for block in section.blocks %}
+          {% if block.type == 'cta_button' and block.settings.link_url != blank and block.settings.title != blank %}
+            <a href="{{ block.settings.link_url }}" class="yellow-cta-btn" {{ block.shopify_attributes }}>{{ block.settings.title | escape }}</a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
 
     <div class="header-actions">
+      {% if section.settings.show_account and shop.customer_accounts_enabled %}
+        <details class="impress-account-menu" data-impress-account>
+          <summary class="account-icon-btn" aria-label="Mi cuenta" title="Mi cuenta">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="4"></circle>
+              <path d="M4 21v-2a8 8 0 0 1 16 0v2"></path>
+            </svg>
+          </summary>
+          <div class="account-dropdown">
+            {% if customer %}
+              <p class="account-dropdown-eyebrow">{{ section.settings.account_heading | escape }}</p>
+              <p class="account-greeting">
+                {% if customer.first_name != blank %}
+                  {{ customer.first_name | escape }}
+                {% elsif customer.email != blank %}
+                  {{ customer.email | escape }}
+                {% else %}
+                  Mi cuenta
+                {% endif %}
+              </p>
+              <a class="account-menu-link" href="{{ routes.account_url }}">Mis pedidos <span aria-hidden="true">→</span></a>
+              <a class="account-menu-link" href="{{ routes.account_profile_url }}">Mi perfil <span aria-hidden="true">→</span></a>
+              <a class="account-menu-link" href="{{ routes.account_addresses_url }}">Mis direcciones <span aria-hidden="true">→</span></a>
+              <a class="account-menu-link account-logout" href="{{ routes.account_logout_url }}">Cerrar sesión</a>
+            {% else %}
+              <p class="account-dropdown-eyebrow">{{ section.settings.account_heading | escape }}</p>
+              <p class="account-dropdown-description">{{ section.settings.account_description | escape }}</p>
+              <a href="{{ routes.account_login_url }}" class="account-primary-btn">Iniciar sesión</a>
+              <a href="{{ routes.account_register_url }}" class="account-secondary-btn">Crear cuenta</a>
+            {% endif %}
+          </div>
+        </details>
+      {% endif %}
+
       <a href="{{ routes.cart_url }}" class="cart-icon-btn" title="Carrito" aria-label="Carrito">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="9" cy="21" r="1"></circle>
           <circle cx="20" cy="21" r="1"></circle>
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
         </svg>
-        {% if cart.item_count > 0 %}
-          <span class="cart-badge">{{ cart.item_count }}</span>
+        {%- capture impress_header_count_text -%}{%- render 'impress-cart-order-count' -%}{%- endcapture -%}
+        {%- assign impress_header_count = impress_header_count_text | strip | plus: 0 -%}
+        {% if impress_header_count > 0 %}
+          <span class="cart-badge" data-impress-cart-count>{{ impress_header_count }}</span>
         {% endif %}
       </a>
     </div>
-
   </div>
 </header>
 
-{% stylesheet %}
-:root {
-  --header-bg: #121212;
-  --header-text: #ffffff;
-  --accent-yellow: #f8db00;
-}
+<script>
+  (function () {
+    if (!window.ImpressHeaderMenus) {
+      window.ImpressHeaderMenus = function (scope) {
+        (scope || document).querySelectorAll('.impress-header').forEach(function (header) {
+          if (header.dataset.impressMenuReady === 'true') return;
+          header.dataset.impressMenuReady = 'true';
 
+          var account = header.querySelector('[data-impress-account]');
+          var search = header.querySelector('[data-impress-search]');
+          var searchButton = search && search.querySelector('.search-pill-trigger');
+
+          function closeSearch(dismissHover) {
+            if (!search) return;
+            search.classList.remove('is-open');
+            if (dismissHover) search.classList.add('is-dismissed');
+            if (searchButton) searchButton.setAttribute('aria-expanded', 'false');
+          }
+          function closeAccount() { if (account) account.open = false; }
+
+          if (search && searchButton) {
+            searchButton.addEventListener('click', function () {
+              var willOpen = !search.classList.contains('is-open');
+              search.classList.remove('is-dismissed');
+              search.classList.toggle('is-open', willOpen);
+              if (!willOpen) search.classList.add('is-dismissed');
+              searchButton.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+              if (willOpen) closeAccount();
+            });
+            search.addEventListener('pointerenter', function () {
+              if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                searchButton.setAttribute('aria-expanded', 'true');
+              }
+            });
+            search.addEventListener('pointerleave', function () {
+              search.classList.remove('is-dismissed');
+              if (!search.classList.contains('is-open')) {
+                searchButton.setAttribute('aria-expanded', 'false');
+              }
+            });
+          }
+          if (account) {
+            account.addEventListener('toggle', function () {
+              if (account.open) closeSearch();
+            });
+          }
+          document.addEventListener('pointerdown', function (event) {
+            if (!header.isConnected) return;
+            if (search && !search.contains(event.target)) closeSearch();
+            if (account && !account.contains(event.target)) closeAccount();
+          });
+          document.addEventListener('keydown', function (event) {
+            if (!header.isConnected || event.key !== 'Escape') return;
+            if (search && (search.classList.contains('is-open') || search.contains(document.activeElement))) {
+              closeSearch(true);
+              if (searchButton) searchButton.blur();
+            }
+            if (account && account.open) {
+              closeAccount();
+              var summary = account.querySelector('summary');
+              if (summary) summary.focus();
+            }
+          });
+        });
+      };
+      document.addEventListener('shopify:section:load', function (event) {
+        window.ImpressHeaderMenus(event.target);
+      });
+    }
+    window.ImpressHeaderMenus(document);
+  }());
+</script>
+
+{% stylesheet %}
 .impress-header {
   width: 100%;
-  background-color: var(--header-bg);
+  background: var(--header-bg);
   color: var(--header-text);
   font-family: system-ui, -apple-system, sans-serif;
-  border-bottom: 1px solid #222222;
-}
-
-.header-container {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 75px;
-  gap: 20px;
-}
-
-/* LOGO */
-.brand-logo {
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.logo-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.logo-main {
-  font-size: 32px;
-  font-weight: 400;
-  color: #ffffff;
-  line-height: 0.9;
-  letter-spacing: -1px;
-}
-
-.logo-i {
-  color: var(--accent-yellow);
-  font-weight: 700;
-}
-
-.logo-bold {
-  font-weight: 800;
-  color: var(--accent-yellow);
-}
-
-.logo-sub {
-  font-size: 8px;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 1px;
-  margin-top: 2px;
-}
-
-/* SEARCH PILL - EXPANDED WIDTH */
-.search-pill-container {
+  border-bottom: 1px solid #222;
   position: relative;
-  flex: 1 1 320px; /* Allows the search bar to grow and take up remaining space */
-  max-width: 480px; /* Expands width significantly */
-  min-width: 240px;
+  z-index: 50;
 }
+.impress-header *, .impress-header *::before, .impress-header *::after { box-sizing: border-box; }
+.impress-header .header-container { max-width: 1440px; margin: 0 auto; padding: 0 20px; }
+.impress-header .header-row { display: flex; align-items: center; justify-content: space-between; min-height: 75px; gap: 18px; }
+.impress-header .brand-logo { display: flex; align-items: center; flex-shrink: 0; text-decoration: none; }
+.impress-header .impress-logo-image { max-height: var(--impress-logo-height, 40px); width: auto; object-fit: contain; }
+.impress-header .logo-group { display: flex; flex-direction: column; }
+.impress-header .logo-main { color: #fff; font-size: 32px; line-height: .9; letter-spacing: -1px; }
+.impress-header .logo-i { color: var(--accent-yellow); font-weight: 700; }
+.impress-header .logo-bold { color: var(--accent-yellow); font-weight: 800; }
+.impress-header .logo-sub { margin-top: 2px; color: #fff; font-size: 8px; font-weight: 700; letter-spacing: 1px; }
 
-.search-pill-trigger {
-  width: 100%;
-  background: #222222;
-  border: 1px solid #333333;
-  border-radius: 999px;
-  padding: 10px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #cccccc;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+.impress-header .search-pill-container { position: relative; flex: 1 1 320px; max-width: 480px; min-width: 220px; }
+.impress-header .search-pill-container::after { content: ""; position: absolute; top: 100%; left: 0; height: 14px; width: 100%; }
+.impress-header details > summary { list-style: none; }
+.impress-header details > summary::-webkit-details-marker { display: none; }
+.impress-header .search-pill-trigger { display: flex; width: 100%; align-items: center; justify-content: space-between; padding: 10px 18px; border: 1px solid #333; border-radius: 999px; background: #222; color: #ccc; font-size: 14px; font-weight: 600; cursor: pointer; }
+.impress-header .search-pill-trigger:hover, .impress-header .search-pill-container.is-open .search-pill-trigger { background: #2a2a2a; border-color: #444; }
+.impress-header .sparkle { color: var(--accent-yellow); margin-right: 8px; }
+.impress-header .pill-label { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.impress-header .chevron { transition: transform .2s ease; margin-left: 10px; }
+.impress-header .search-pill-container.is-open .chevron { transform: rotate(180deg); }
+.impress-header .search-pill-trigger:focus-visible, .impress-header .account-icon-btn:focus-visible, .impress-header a:focus-visible { outline: 2px solid var(--accent-yellow); outline-offset: 3px; }
+
+.impress-header .mega-dropdown-modal { display: block; position: absolute; z-index: 999; top: calc(100% + 10px); left: 50%; width: min(var(--impress-menu-width), calc(100vw - 30px)); max-height: min(72vh, 680px); overflow-y: auto; background: #181818; border: 1px solid #333; border-radius: 12px; box-shadow: 0 20px 30px rgba(0,0,0,.6); padding: 18px; visibility: hidden; opacity: 0; pointer-events: none; transform: translate(-50%, 10px); transition: opacity .2s ease, transform .2s ease, visibility .2s; }
+.impress-header .search-pill-container.is-open .mega-dropdown-modal { visibility: visible; opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+@media (hover: hover) and (pointer: fine) {
+  .impress-header .search-pill-container:not(.is-dismissed):hover .mega-dropdown-modal { visibility: visible; opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
 }
+.impress-header .dropdown-banner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 10px 16px; border-radius: 8px; margin-bottom: 16px; background: #242424; color: #fff; font-size: 13px; }
+.impress-header .banner-btn { display: inline-flex; align-items: center; background: var(--accent-yellow); color: #000; padding: 7px 13px; border-radius: 6px; font-size: 12px; font-weight: 700; text-decoration: none; }
+.impress-header .dropdown-flex-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 22px; }
+.impress-header .grid-col { min-width: 0; }
+.impress-header .col-heading { display: flex; align-items: baseline; gap: 8px; justify-content: space-between; border-bottom: 1px solid #282828; margin-bottom: 11px; padding-bottom: 7px; }
+.impress-header .col-title { font-size: 11px; text-transform: uppercase; color: #aaa; font-weight: 800; letter-spacing: .8px; }
+.impress-header .col-see-all { flex-shrink: 0; font-size: 11px; color: var(--accent-yellow); text-decoration: none; font-weight: 700; }
+.impress-header .column-items { display: flex; flex-direction: column; gap: 7px; }
+.impress-header .mega-item { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 7px; text-decoration: none; min-width: 0; transition: background .15s ease; }
+.impress-header a.mega-item:hover { background: #272727; }
+.impress-header .mega-item-unlinked { opacity: .7; }
+.impress-header .item-visual { flex: 0 0 43px; display: flex; align-items: center; justify-content: center; width: 43px; height: 43px; overflow: hidden; border-radius: 8px; background: #2c2c2c; }
+.impress-header .item-img { height: 100%; width: 100%; object-fit: cover; }
+.impress-header .item-emoji { font-size: 24px; }
+.impress-header .item-visual-placeholder { color: var(--accent-yellow); font-size: 22px; }
+.impress-header .item-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.impress-header .item-text strong { display: block; font-size: 13px; color: #fff; line-height: 1.3; }
+.impress-header .item-text strong span { color: var(--accent-yellow); }
+.impress-header .item-description { color: #aaa; font-size: 11px; line-height: 1.35; overflow-wrap: anywhere; }
+.impress-header .impress-editor-note { font-size: 12px; color: #aaa; }
+.impress-header .impress-catalog-link { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 16px; border: 1px solid #393939; border-radius: 8px; padding: 10px 14px; color: #fff; text-decoration: none; font-size: 13px; font-weight: 700; }
+.impress-header .impress-catalog-link:hover { border-color: var(--accent-yellow); color: var(--accent-yellow); }
 
-.search-pill-trigger:hover {
-  background: #2a2a2a;
-  border-color: #444444;
+.impress-header .main-nav { display: flex; align-items: center; gap: 18px; flex-shrink: 0; }
+.impress-header .nav-link { color: var(--header-text); text-decoration: none; font-size: 15px; font-weight: 600; white-space: nowrap; }
+.impress-header .nav-link:hover { opacity: .8; }
+.impress-header .cta-buttons-group { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.impress-header .yellow-cta-btn { background: var(--accent-yellow); color: #000; font-size: 15px; font-weight: 800; padding: 10px 19px; border-radius: 10px; text-decoration: none; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; transition: transform .15s ease, background .2s ease; }
+.impress-header .yellow-cta-btn:hover { background: #e5ca00; transform: translateY(-1px); }
+
+.impress-header .header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.impress-header .cart-icon-btn, .impress-header .account-icon-btn { display: flex; align-items: center; justify-content: center; position: relative; padding: 7px; border: 0; background: none; color: var(--header-text); text-decoration: none; cursor: pointer; }
+.impress-header .cart-icon-btn:hover, .impress-header .account-icon-btn:hover { opacity: .8; }
+.impress-header .cart-badge { position: absolute; top: -2px; right: -6px; background: var(--accent-yellow); color: #000; height: 16px; min-width: 16px; padding: 0 4px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; }
+.impress-header .impress-account-menu { position: relative; }
+.impress-header .account-dropdown { position: absolute; right: 0; top: calc(100% + 15px); width: min(290px, calc(100vw - 28px)); padding: 18px; border: 1px solid #333; border-radius: 12px; background: #1b1b1b; box-shadow: 0 20px 30px rgba(0,0,0,.55); color: #fff; z-index: 1001; display: flex; flex-direction: column; gap: 10px; }
+.impress-header .account-dropdown-eyebrow { color: #fff; font-size: 14px; font-weight: 800; margin: 0; }
+.impress-header .account-dropdown-description { color: #aaa; font-size: 12px; line-height: 1.45; margin: 0 0 4px; }
+.impress-header .account-greeting { font-size: 12px; color: #ccc; overflow-wrap: anywhere; margin: 0 0 5px; }
+.impress-header .account-primary-btn, .impress-header .account-secondary-btn { display: flex; justify-content: center; align-items: center; border-radius: 9px; padding: 11px; font-size: 13px; font-weight: 800; text-decoration: none; }
+.impress-header .account-primary-btn { background: var(--accent-yellow); color: #000; }
+.impress-header .account-secondary-btn { border: 1px solid var(--accent-yellow); color: var(--accent-yellow); }
+.impress-header .account-menu-link { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid #303030; color: #eee; text-decoration: none; font-size: 13px; }
+.impress-header .account-menu-link:hover { color: var(--accent-yellow); }
+.impress-header .account-logout { color: #aaa; border-bottom: 0; }
+
+@media (max-width: 1150px) {
+  .impress-header .header-row { flex-wrap: wrap; padding: 12px 0; }
+  .impress-header .search-pill-container { flex: 1 1 280px; max-width: none; }
+  .impress-header .main-nav { order: 5; width: 100%; overflow-x: auto; padding-bottom: 3px; }
 }
-
-.sparkle {
-  color: var(--accent-yellow);
-  margin-right: 8px;
-}
-
-.pill-label {
-  flex: 1;
-  text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* DROPDOWN MODAL */
-.mega-dropdown-modal {
-  position: absolute;
-  top: calc(100% + 12px);
-  left: 0;
-  width: 700px;
-  background: #181818;
-  border: 1px solid #333333;
-  border-radius: 12px;
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.6);
-  padding: 20px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px);
-  transition: all 0.2s ease;
-  z-index: 999;
-}
-
-.search-pill-container:hover .mega-dropdown-modal,
-.search-pill-container:focus-within .mega-dropdown-modal {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.dropdown-banner {
-  background: #242424;
-  border-radius: 8px;
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #ffffff;
-  font-size: 13px;
-  margin-bottom: 16px;
-}
-
-.banner-btn {
-  background: var(--accent-yellow);
-  color: #000000;
-  padding: 6px 12px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 12px;
-}
-
-.dropdown-flex-grid {
-  display: flex;
-  gap: 20px;
-}
-
-.grid-col {
-  flex: 1;
-  min-width: 180px;
-}
-
-.col-title {
-  display: block;
-  font-size: 11px;
-  text-transform: uppercase;
-  font-weight: 800;
-  color: #888888;
-  letter-spacing: 0.8px;
-  border-bottom: 1px solid #282828;
-  padding-bottom: 6px;
-  margin-bottom: 12px;
-}
-
-.column-items {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.mega-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px;
-  border-radius: 6px;
-  text-decoration: none;
-}
-
-.mega-item:hover {
-  background: #242424;
-}
-
-.item-text strong {
-  display: block;
-  color: #ffffff;
-  font-size: 13px;
-}
-
-.item-text p {
-  margin: 0;
-  color: #888888;
-  font-size: 11px;
-}
-
-/* NAV LINKS */
-.main-nav {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  flex-shrink: 0;
-}
-
-.nav-link {
-  color: var(--header-text);
-  text-decoration: none;
-  font-size: 15px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.nav-link:hover {
-  opacity: 0.8;
-}
-
-/* YELLOW CTA BUTTONS */
-.cta-buttons-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.yellow-cta-btn {
-  background-color: var(--accent-yellow);
-  color: #000000;
-  font-size: 15px;
-  font-weight: 800;
-  padding: 10px 24px;
-  border-radius: 10px;
-  text-decoration: none;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.15s ease, background-color 0.2s ease;
-}
-
-.yellow-cta-btn:hover {
-  background-color: #e5ca00;
-  transform: translateY(-1px);
-}
-
-/* CART ICON & BADGE */
-.header-actions {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.cart-icon-btn {
-  color: var(--header-text);
-  text-decoration: none;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px;
-  transition: opacity 0.2s ease;
-}
-
-.cart-icon-btn:hover {
-  opacity: 0.8;
-}
-
-.cart-badge {
-  position: absolute;
-  top: -2px;
-  right: -6px;
-  background-color: var(--accent-yellow);
-  color: #000000;
-  font-size: 10px;
-  font-weight: 800;
-  height: 16px;
-  min-width: 16px;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 4px;
-}
-
-@media (max-width: 1024px) {
-  .header-row {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 12px 0;
-  }
+@media (max-width: 650px) {
+  .impress-header .header-container { padding: 0 14px; }
+  .impress-header .header-row { gap: 10px; }
+  .impress-header .search-pill-container { order: 4; flex: 1 1 100%; min-width: 0; }
+  .impress-header .mega-dropdown-modal { left: 0; width: calc(100vw - 28px); transform: translateY(10px); }
+  .impress-header .search-pill-container.is-open .mega-dropdown-modal { transform: translateY(0); }
+  .impress-header .header-actions { margin-left: auto; }
+  .impress-header .cta-buttons-group { order: 6; width: 100%; flex-wrap: wrap; }
+  .impress-header .yellow-cta-btn { flex: 1 1 auto; }
+  .impress-header .main-nav { order: 5; gap: 14px; }
+  .impress-header .dropdown-flex-grid { grid-template-columns: 1fr; gap: 18px; }
+  .impress-header .account-dropdown { right: -40px; }
 }
 {% endstylesheet %}
 
@@ -422,159 +423,73 @@
 {
   "name": "Impress Header",
   "settings": [
-    {
-      "type": "image_picker",
-      "id": "logo",
-      "label": "Logo Image"
-    },
-    {
-      "type": "range",
-      "id": "logo_max_height",
-      "min": 20,
-      "max": 100,
-      "step": 2,
-      "unit": "px",
-      "label": "Logo Height",
-      "default": 36
-    },
-    {
-      "type": "header",
-      "content": "Theme Colors"
-    },
-    {
-      "type": "color",
-      "id": "header_bg_color",
-      "label": "Header Background Color",
-      "default": "#121212"
-    },
-    {
-      "type": "color",
-      "id": "header_text_color",
-      "label": "Header Text Color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "accent_color",
-      "label": "Yellow Accent Color",
-      "default": "#f8db00"
-    },
-    {
-      "type": "header",
-      "content": "Yellow CTA Buttons Settings"
-    },
-    {
-      "type": "text",
-      "id": "cta_1_label",
-      "label": "Button 1 Label",
-      "default": "Stickers"
-    },
-    {
-      "type": "url",
-      "id": "cta_1_url",
-      "label": "Button 1 Link"
-    },
-    {
-      "type": "text",
-      "id": "cta_2_label",
-      "label": "Button 2 Label",
-      "default": "Banners"
-    },
-    {
-      "type": "url",
-      "id": "cta_2_url",
-      "label": "Button 2 Link"
-    },
-    {
-      "type": "header",
-      "content": "Search Pill Settings"
-    },
-    {
-      "type": "text",
-      "id": "pill_label",
-      "label": "Search Bar Text",
-      "default": "Buscar..."
-    },
-    {
-      "type": "text",
-      "id": "banner_text",
-      "label": "Dropdown Banner Text",
-      "default": "Need custom volume or bulk specs?"
-    },
-    {
-      "type": "text",
-      "id": "banner_btn_label",
-      "label": "Dropdown Banner Button Label",
-      "default": "Get Custom Quote"
-    },
-    {
-      "type": "url",
-      "id": "banner_btn_url",
-      "label": "Dropdown Banner Button Link"
-    },
-    {
-      "type": "header",
-      "content": "Navigation"
-    },
-    {
-      "type": "link_list",
-      "id": "menu",
-      "label": "Navigation Menu",
-      "default": "main-menu"
-    }
+    { "type": "header", "content": "Brand" },
+    { "type": "image_picker", "id": "logo", "label": "Logo Image" },
+    { "type": "range", "id": "logo_max_height", "min": 20, "max": 100, "step": 2, "unit": "px", "label": "Logo Height", "default": 36 },
+    { "type": "header", "content": "Theme Colors" },
+    { "type": "color", "id": "header_bg_color", "label": "Header Background Color", "default": "#121212" },
+    { "type": "color", "id": "header_text_color", "label": "Header Text Color", "default": "#ffffff" },
+    { "type": "color", "id": "accent_color", "label": "Accent Color", "default": "#f8db00" },
+    { "type": "header", "content": "Product Explorer (hover)" },
+    { "type": "checkbox", "id": "show_product_menu", "label": "Show product explorer", "default": true },
+    { "type": "text", "id": "pill_label", "label": "Explorer label", "default": "Buscar productos..." },
+    { "type": "range", "id": "dropdown_width", "min": 540, "max": 1120, "step": 20, "unit": "px", "label": "Explorer width", "default": 840 },
+    { "type": "text", "id": "banner_text", "label": "Explorer banner text", "default": "Need custom volume or bulk specs?" },
+    { "type": "text", "id": "banner_btn_label", "label": "Explorer banner button label", "default": "Get Custom Quote" },
+    { "type": "url", "id": "banner_btn_url", "label": "Explorer banner button link" },
+    { "type": "checkbox", "id": "show_catalog_link", "label": "Show view-all-products link", "default": true },
+    { "type": "text", "id": "catalog_link_label", "label": "View-all link label", "default": "Ver todos los productos" },
+    { "type": "header", "content": "Navigation" },
+    { "type": "checkbox", "id": "show_nav", "label": "Show navigation links", "default": true },
+    { "type": "link_list", "id": "menu", "label": "Navigation Menu", "default": "main-menu" },
+    { "type": "header", "content": "Yellow CTA Buttons" },
+    { "type": "checkbox", "id": "show_cta_buttons", "label": "Enable yellow CTA buttons", "default": true },
+    { "type": "paragraph", "content": "The two original buttons are optional. You can also add extra CTA Button blocks below." },
+    { "type": "checkbox", "id": "show_cta_1", "label": "Show original button 1", "default": true },
+    { "type": "text", "id": "cta_1_label", "label": "Button 1 Label", "default": "Stickers" },
+    { "type": "url", "id": "cta_1_url", "label": "Button 1 Link" },
+    { "type": "checkbox", "id": "show_cta_2", "label": "Show original button 2", "default": true },
+    { "type": "text", "id": "cta_2_label", "label": "Button 2 Label", "default": "Banners" },
+    { "type": "url", "id": "cta_2_url", "label": "Button 2 Link" },
+    { "type": "header", "content": "Customer Account" },
+    { "type": "checkbox", "id": "show_account", "label": "Show account button", "default": true },
+    { "type": "text", "id": "account_heading", "label": "Account dropdown heading", "default": "Mi cuenta" },
+    { "type": "textarea", "id": "account_description", "label": "Text for signed-out visitors", "default": "Inicia sesión o crea una cuenta para ver tus pedidos." }
   ],
   "blocks": [
     {
       "type": "column",
-      "name": "📁 New Column",
+      "name": "Product Category",
       "settings": [
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Column Title",
-          "default": "Productos"
-        }
+        { "type": "text", "id": "title", "label": "Category heading", "default": "Productos" },
+        { "type": "select", "id": "source_mode", "label": "Show products from", "default": "manual", "options": [ { "value": "manual", "label": "Product Card blocks below" }, { "value": "collection", "label": "Shopify collection automatically" } ] },
+        { "type": "collection", "id": "collection", "label": "Collection (optional)" },
+        { "type": "range", "id": "product_limit", "min": 2, "max": 12, "step": 1, "label": "Auto product limit", "default": 6 },
+        { "type": "checkbox", "id": "show_collection_link", "label": "Show category View All link", "default": true }
       ]
     },
     {
       "type": "item_card",
-      "name": "🃏 Item Card",
+      "name": "Product Card",
       "settings": [
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Card Title",
-          "default": "Stickers"
-        },
-        {
-          "type": "textarea",
-          "id": "description",
-          "label": "Card Description",
-          "default": "Vinilo brillante resiste agua y sol."
-        },
-        {
-          "type": "url",
-          "id": "link_url",
-          "label": "Link URL"
-        },
-        {
-          "type": "text",
-          "id": "icon",
-          "label": "Emoji Icon",
-          "default": "🏷️"
-        },
-        {
-          "type": "image_picker",
-          "id": "image",
-          "label": "Custom Icon Image"
-        }
+        { "type": "product", "id": "product", "label": "Shopify product (recommended)" },
+        { "type": "text", "id": "title", "label": "Custom card title (optional)" },
+        { "type": "textarea", "id": "description", "label": "Short text below heading (optional)" },
+        { "type": "url", "id": "link_url", "label": "Custom link (optional)" },
+        { "type": "select", "id": "visual_mode", "label": "Icon/Image source", "default": "auto", "options": [ { "value": "auto", "label": "Custom image or product image" }, { "value": "image", "label": "Custom image" }, { "value": "emoji", "label": "Emoji icon" } ] },
+        { "type": "image_picker", "id": "image", "label": "Custom icon image" },
+        { "type": "text", "id": "icon", "label": "Emoji icon", "default": "🏷️" }
+      ]
+    },
+    {
+      "type": "cta_button",
+      "name": "Yellow CTA Button",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Button label", "default": "Ver productos" },
+        { "type": "url", "id": "link_url", "label": "Button link" }
       ]
     }
   ],
-  "presets": [
-    {
-      "name": "Impress Header"
-    }
-  ]
+  "presets": [{ "name": "Impress Header" }]
 }
 {% endschema %}

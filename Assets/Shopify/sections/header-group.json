@@ -102,14 +102,14 @@
         "announcement_wKxnaY": {
           "type": "announcement",
           "settings": {
-            "text": "FREE SHIPPING IN ORDERS OF MORE THAN $80",
+            "text": "IMPRESIÓN PERSONALIZADA EN PUERTO RICO",
             "link": ""
           }
         },
         "announcement_FWqLFn": {
           "type": "announcement",
           "settings": {
-            "text": "GET 25% OFF FROM YOUR FIRST ORDER OF STICKER OR BANNER!",
+            "text": "ELIGE TU PRODUCTO, PERSONALIZA Y SUBE TU DISEÑO",
             "link": ""
           }
         }
@@ -134,52 +134,92 @@
     "impress_header_jQRGrQ": {
       "type": "impress-header",
       "blocks": {
-        "column_Vdigad": {
+        "column_Wk8edD": {
           "type": "column",
           "settings": {
-            "title": "Order Online & Ship to you"
+            "title": "Stickers",
+            "source_mode": "manual",
+            "collection": "",
+            "product_limit": 6,
+            "show_collection_link": true
           }
         },
-        "item_card_nK7h94": {
+        "item_card_nierEL": {
           "type": "item_card",
           "settings": {
+            "product": "vinyl-sticker",
             "title": "Vinyl Stickers",
-            "description": "Choose from a variety of vinyl sticker materials, shapes, cuts and sizes!",
+            "description": "",
             "link_url": "",
-            "icon": "🎴"
+            "visual_mode": "auto",
+            "image": "shopify://shop_images/ChatGPT_Image_Nov_15_2026_09_51_02_PM-1.png",
+            "icon": "🏷️"
           }
         },
-        "item_card_xKYFaT": {
-          "type": "item_card",
+        "column_hymwr3": {
+          "type": "column",
           "settings": {
             "title": "Banners",
-            "description": "Perfect for advertising or decorating! Choose from a range of sizes or go for a custom size!",
-            "link_url": "",
-            "icon": "📄"
+            "source_mode": "manual",
+            "collection": "",
+            "product_limit": 6,
+            "show_collection_link": true
           }
         },
-        "column_qMjAYN": {
-          "type": "column",
-          "settings": {
-            "title": "Order and Pickup at Our Location"
-          }
-        },
-        "item_card_nXHUPr": {
+        "item_card_xRYEhV": {
           "type": "item_card",
           "settings": {
-            "title": "Vinyl Banners",
-            "description": "Heavy-duty outdoor 13oz vinyl.",
+            "product": "banners",
+            "title": "Banners",
+            "description": "",
             "link_url": "",
-            "icon": "🚩"
+            "visual_mode": "auto",
+            "image": "shopify://shop_images/ChatGPT_Image_Nov_15_2026_09_51_02_PM-2.png",
+            "icon": "🏷️"
+          }
+        },
+        "column_VqtJbe": {
+          "type": "column",
+          "settings": {
+            "title": "Stationary",
+            "source_mode": "manual",
+            "collection": "",
+            "product_limit": 6,
+            "show_collection_link": true
+          }
+        },
+        "item_card_eEMUJQ": {
+          "type": "item_card",
+          "settings": {
+            "product": "business-cards",
+            "title": "",
+            "description": "",
+            "link_url": "",
+            "visual_mode": "auto",
+            "icon": "🏷️"
+          }
+        },
+        "item_card_gp4bEL": {
+          "type": "item_card",
+          "settings": {
+            "product": "flyers",
+            "title": "",
+            "description": "",
+            "link_url": "",
+            "visual_mode": "auto",
+            "image": "shopify://shop_images/ChatGPT_Image_Nov_15_2026_09_51_03_PM-3.png",
+            "icon": "🏷️"
           }
         }
       },
       "block_order": [
-        "column_Vdigad",
-        "item_card_nK7h94",
-        "item_card_xKYFaT",
-        "column_qMjAYN",
-        "item_card_nXHUPr"
+        "column_Wk8edD",
+        "item_card_nierEL",
+        "column_hymwr3",
+        "item_card_xRYEhV",
+        "column_VqtJbe",
+        "item_card_eEMUJQ",
+        "item_card_gp4bEL"
       ],
       "name": "Stacked Custom Header",
       "settings": {
@@ -188,15 +228,26 @@
         "header_bg_color": "#111111",
         "header_text_color": "#ffffff",
         "accent_color": "#ffd800",
-        "cta_1_label": "Stickers",
-        "cta_1_url": "",
-        "cta_2_label": "Banners",
-        "cta_2_url": "",
-        "pill_label": "Select product or material...",
-        "banner_text": "Need custom volume or bulk specs?",
+        "show_product_menu": true,
+        "pill_label": "Explora nuestros productos y materiales",
+        "dropdown_width": 840,
+        "banner_text": "¿Necesitas un pedido especial? Escríbenos para una cotización.",
         "banner_btn_label": "Get Custom Quote",
         "banner_btn_url": "",
-        "menu": "main-menu"
+        "show_catalog_link": true,
+        "catalog_link_label": "Ver todos los productos",
+        "show_nav": true,
+        "menu": "",
+        "show_cta_buttons": true,
+        "show_cta_1": true,
+        "cta_1_label": "Stickers",
+        "cta_1_url": "",
+        "show_cta_2": true,
+        "cta_2_label": "Banners",
+        "cta_2_url": "",
+        "show_account": true,
+        "account_heading": "Mi cuenta",
+        "account_description": "Inicia sesión o crea una cuenta para ver tus pedidos."
       }
     }
   },

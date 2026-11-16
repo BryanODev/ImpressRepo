@@ -1,11 +1,5 @@
 /*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
+ * IMPRESS storefront layout. Editable in Shopify Theme Editor.
  */
 {
   "type": "footer",
@@ -25,8 +19,8 @@
         "location": "Isabela, Puerto Rico",
         "products_title": "Productos",
         "products_menu": "",
-        "stickers_link": "",
-        "banners_link": "",
+        "stickers_link": "shopify://products/vinyl-sticker",
+        "banners_link": "shopify://products/banners",
         "help_title": "Ayuda",
         "help_menu": "",
         "help_link": "",

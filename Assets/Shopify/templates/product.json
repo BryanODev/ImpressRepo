@@ -1,12 +1,7 @@
 /*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */{
+ * IMPRESS storefront layout. Editable in Shopify Theme Editor.
+ */
+{
   "sections": {
     "main": {
       "type": "product-information",
@@ -465,10 +460,69 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "product_faq": {
+      "type": "impress-home-faq",
+      "blocks": {
+        "faq_1": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Cómo subo mi diseño?",
+            "answer": "Utiliza el control de archivo en el configurador. Revisa la vista previa y las indicaciones antes de añadir al carrito."
+          }
+        },
+        "faq_2": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Y si necesito que me diseñen el arte?",
+            "answer": "Si aparece la opción de servicio de arte, puedes seleccionarla y explicar qué necesitas. Verás el costo adicional antes de pagar."
+          }
+        },
+        "faq_3": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Qué significa el indicador de DPI?",
+            "answer": "Es una estimación de resolución a tamaño de impresión. Un valor bajo puede producir pérdida de nitidez; la resolución no garantiza por sí sola la calidad final."
+          }
+        },
+        "faq_4": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Puedo cambiar los acabados o cantidades?",
+            "answer": "Sí, selecciona las opciones disponibles antes de añadir al carrito. El precio mostrado corresponde a la selección actual."
+          }
+        },
+        "faq_5": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Cuánto tarda la producción?",
+            "answer": "Depende del producto, material y cantidad. Consulta con Impress si necesitas una fecha específica."
+          }
+        }
+      },
+      "block_order": [
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4",
+        "faq_5"
+      ],
+      "settings": {
+        "eyebrow": "PREGUNTAS FRECUENTES",
+        "heading": "Preguntas frecuentes",
+        "description": "Resolvemos tus dudas antes de ordenar.",
+        "contact_label": "Contáctanos",
+        "max_width": 1240,
+        "padding_top": 55,
+        "padding_bottom": 60,
+        "bg_color": "#111216",
+        "accent_color": "#fbbf00"
+      }
     }
   },
   "order": [
     "main",
+    "product_faq",
     "product_recommendations_qggXJq"
   ]
 }

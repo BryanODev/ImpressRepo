@@ -1,9 +1,82 @@
+/*
+ * IMPRESS storefront layout. Editable in Shopify Theme Editor.
+ */
 {
   "sections": {
     "main": {
       "type": "impress-sticker-configurator",
       "settings": {}
+    },
+    "product_faq": {
+      "type": "impress-home-faq",
+      "blocks": {
+        "faq_1": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Cómo subo mi diseño?",
+            "answer": "Utiliza el control de archivo en el configurador. Revisa la vista previa y las indicaciones antes de añadir al carrito."
+          }
+        },
+        "faq_2": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Y si necesito que me diseñen el arte?",
+            "answer": "Si aparece la opción de servicio de arte, puedes seleccionarla y explicar qué necesitas. Verás el costo adicional antes de pagar."
+          }
+        },
+        "faq_3": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Qué significa el indicador de DPI?",
+            "answer": "Es una estimación de resolución a tamaño de impresión. Un valor bajo puede producir pérdida de nitidez; la resolución no garantiza por sí sola la calidad final."
+          }
+        },
+        "faq_4": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Puedo cambiar los acabados o cantidades?",
+            "answer": "Sí, selecciona las opciones disponibles antes de añadir al carrito. El precio mostrado corresponde a la selección actual."
+          }
+        },
+        "faq_5": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Cuánto tarda la producción?",
+            "answer": "Depende del producto, material y cantidad. Consulta con Impress si necesitas una fecha específica."
+          }
+        }
+      },
+      "block_order": [
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4",
+        "faq_5"
+      ],
+      "settings": {
+        "eyebrow": "PREGUNTAS FRECUENTES",
+        "heading": "Antes de hacer tu pedido",
+        "description": "Respuestas sobre archivos, personalización y producción.",
+        "contact_label": "Contáctanos",
+        "max_width": 1240,
+        "padding_top": 55,
+        "padding_bottom": 60,
+        "bg_color": "#111216",
+        "accent_color": "#fbbf00"
+      }
+    },
+    "related_products": {
+      "type": "impress-related-products",
+      "settings": {
+        "heading": "También te puede interesar",
+        "limit": 4,
+        "max_width": 1240
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main",
+    "product_faq",
+    "related_products"
+  ]
 }

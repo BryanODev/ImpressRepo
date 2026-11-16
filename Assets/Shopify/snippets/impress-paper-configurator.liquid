@@ -1,0 +1,118 @@
+{% doc %}
+  Shared layout for two-sided Impress paper product editors.
+  @param {product} paper_product - Shopify product whose variants determine the price.
+  @param {string} paper_type - Either businessCards or flyers.
+  @param {string} paper_section_id - Stable section identifier.
+  @param {string} paper_title - Heading.
+  @param {string} paper_subtitle - Subtitle.
+  @example
+  {% render 'impress-paper-configurator', paper_product: product, paper_type: 'flyers', paper_section_id: section.id, paper_title: 'Flyers', paper_subtitle: 'Personaliza' %}
+{% enddoc %}
+{% assign ie_form_id = 'ImpressPaperForm-' | append: paper_section_id %}
+{% assign ie_is_business = false %}{% if paper_type == 'businessCards' %}{% assign ie_is_business = true %}{% endif %}
+<section class="impress-paper" id="ImpressPaper-{{ paper_section_id }}" data-impress-paper data-product-type="{{ paper_type }}" data-currency="{{ cart.currency.iso_code | default: shop.currency | escape }}" data-selected-variant="{{ paper_product.selected_or_first_available_variant.id }}" data-variant-count="{{ paper_product.variants_count }}" data-ip-icon-one="{{ 'impress-paper-one-side.svg' | asset_url }}" data-ip-icon-two="{{ 'impress-paper-two-sides.svg' | asset_url }}" data-ip-icon-horizontal="{{ 'impress-paper-horizontal.svg' | asset_url }}" data-ip-icon-vertical="{{ 'impress-paper-vertical.svg' | asset_url }}">
+  <div class="impress-paper__shell">
+    <header class="impress-paper__header">
+      <div>
+        <p class="impress-paper__eyebrow">IMPRESS / CUSTOM PRINT</p>
+        <h1>{{ paper_title | escape }}</h1>
+        <p>{{ paper_subtitle | escape }}</p>
+      </div>
+      <span class="impress-paper__version">IMPRESS / {% if ie_is_business %}TARJETAS{% else %}FLYERS{% endif %} CONFIG</span>
+    </header>
+    {% if paper_product == blank %}
+      <p class="impress-paper__notice">Esta sección debe estar en una plantilla de producto Shopify.</p>
+    {% else %}
+      <div class="impress-paper__layout">
+        <div class="impress-paper__left">
+          <div class="impress-paper__preview">
+            <div class="impress-paper__preview-head"><span><span class="impress-paper__dot"></span> IMPRESS EDITOR</span><span data-ip-spec>—</span></div>
+            <div class="impress-paper__sides" role="group" aria-label="Cara del diseño">
+              <button type="button" data-ip-side="front" class="is-active" aria-pressed="true">Frente</button>
+              <button type="button" data-ip-side="back" aria-pressed="false" disabled>Dorso <span data-ip-back-chip>· 2 caras</span></button>
+            </div>
+            <div class="impress-paper__modes" role="group" aria-label="Modo de visualización">
+              <button type="button" data-ip-mode="edit" class="is-active">Editar diseño</button>
+              <button type="button" data-ip-mode="final">Vista final</button>
+            </div>
+            <div class="impress-paper__stage" data-ip-stage data-ip-view="edit">
+              <div class="impress-quality" data-impress-quality hidden role="status" aria-live="polite" aria-atomic="true"><span class="impress-quality__resolution" data-impress-quality-resolution></span><strong class="impress-quality__dpi" data-impress-quality-status></strong></div>
+              <canvas data-ip-canvas aria-label="Área de edición del arte seleccionado" role="img"></canvas>
+              <div class="impress-paper__final-layer" data-ip-final-layer aria-hidden="true"><canvas data-ip-final-canvas></canvas></div>
+              <button type="button" class="impress-paper__empty impress-preview-upload" data-ip-empty aria-label="Seleccionar archivo para la cara activa">
+                <svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                <strong>Subir diseño</strong><small data-ip-empty-label>Haz clic aquí o selecciona un archivo abajo</small>
+              </button>
+            </div>
+            <div class="impress-paper__toolbar">
+              <button type="button" data-ip-action="undo" disabled><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 7v6h6M3 13A9 9 0 1 1 7 20"/></svg> Deshacer</button>
+              <button type="button" data-ip-action="redo" disabled><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 7v6h-6M21 13A9 9 0 1 0 17 20"/></svg> Rehacer</button>
+              <button type="button" data-ip-action="center" disabled><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg> Centrar</button>
+              <label><input type="checkbox" data-ip-guide-cut checked> Corte</label>
+              <label><input type="checkbox" data-ip-guide-safe checked> Margen seguro</label>
+            </div>
+            <p class="impress-paper__guide-note" data-ip-guide-description>Las guías son referencias visuales. Requieren revisión antes de producir.</p>
+          </div>
+          <div class="impress-paper__controls">
+            <div class="impress-paper__tools-head"><strong>Ajusta tu arte</strong><span>EDICIÓN BÁSICA</span></div>
+            <div class="impress-paper__range"><label>Escala <output data-ip-scale-output>100%</output></label><input type="range" data-ip-scale min="20" max="250" value="100" disabled></div>
+            <div class="impress-paper__range"><label>Rotación <output data-ip-rotate-output>0°</output></label><input type="range" data-ip-rotate min="-180" max="180" value="0" disabled></div>
+            <div class="impress-paper__control-bottom"><button type="button" data-ip-download disabled>Descargar vista PNG</button><span data-ip-editor-status aria-live="polite">La edición es ilustrativa; se conserva el arte original.</span></div>
+          </div>
+        </div>
+        <div class="impress-paper__right">
+          {% form 'product', paper_product, id: ie_form_id, class: 'impress-paper__form' %}
+            <input type="hidden" name="id" data-ip-variant-id value="{{ paper_product.selected_or_first_available_variant.id }}">
+            <input type="hidden" name="quantity" value="1">
+            <input type="hidden" name="properties[Impress - Tamaño]" data-ip-property-size>
+            <input type="hidden" name="properties[Impress - Orientación]" data-ip-property-orientation>
+            <input type="hidden" name="properties[Impress - Caras]" data-ip-property-sides>
+            <input type="hidden" name="properties[Impress - Paquete]" data-ip-property-package>
+            <input type="hidden" name="properties[_Impress - Editor]" data-ip-project>
+            <input type="file" name="properties[Vista frente PNG]" data-ip-output-front class="impress-paper__hidden-file" accept="image/png" tabindex="-1" aria-hidden="true" disabled>
+            <input type="file" name="properties[Vista dorso PNG]" data-ip-output-back class="impress-paper__hidden-file" accept="image/png" tabindex="-1" aria-hidden="true" disabled>
+            <div class="impress-paper__field">
+              <label for="IpSize-{{ paper_section_id }}"><span class="impress-paper__step">01</span> Tamaño</label>
+              <select class="impress-paper__select" id="IpSize-{{ paper_section_id }}" data-ip-sizes></select>
+            </div>
+            <div class="impress-paper__field" data-ip-orientation-row>
+              <div class="impress-paper__field-label"><span class="impress-paper__step">02</span> Orientación <small>Solo diseño · mismo precio</small></div>
+              <div class="impress-paper__choices" data-ip-orientation-choices role="radiogroup" aria-label="Orientación del arte"></div>
+              <select class="impress-paper__native-select" id="IpOrientation-{{ paper_section_id }}" data-ip-orientation aria-hidden="true" tabindex="-1"><option>Horizontal</option><option>Vertical</option></select>
+            </div>
+            <div class="impress-paper__field">
+              <div class="impress-paper__field-label"><span class="impress-paper__step">03</span> Impresión</div>
+              <div class="impress-paper__choices" data-ip-sides-choices role="radiogroup" aria-label="Una o dos caras"></div>
+              <select class="impress-paper__native-select" id="IpSides-{{ paper_section_id }}" data-ip-sides aria-hidden="true" tabindex="-1"></select>
+            </div>
+            <div class="impress-paper__field">
+              <label for="IpPackage-{{ paper_section_id }}"><span class="impress-paper__step">04</span> Cantidad por paquete</label>
+              <select class="impress-paper__select" id="IpPackage-{{ paper_section_id }}" data-ip-package></select>
+              <p>Una unidad en el carrito equivale a un paquete de la cantidad seleccionada.</p>
+            </div>
+            <div class="impress-paper__field">
+              <label for="IpFrontFile-{{ paper_section_id }}"><span class="impress-paper__step">05</span> Arte del frente</label>
+
+              <label class="impress-paper__upload" for="IpFrontFile-{{ paper_section_id }}"><svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-3v-3"/></svg><strong data-ip-front-label>Seleccionar archivo frontal</strong><small>SVG, PNG, JPG, JPEG, TIF o PDF · máx. 20 MB</small></label>
+              <input id="IpFrontFile-{{ paper_section_id }}" type="file" name="properties[Arte frente original]" data-ip-file-front accept=".svg,.png,.jpg,.jpeg,.tif,.tiff,.pdf" required>
+            </div>
+            <div class="impress-paper__field" data-ip-back-field hidden>
+              <label for="IpBackFile-{{ paper_section_id }}"><span class="impress-paper__step">06</span> Arte del dorso</label>
+
+              <label class="impress-paper__upload" for="IpBackFile-{{ paper_section_id }}"><svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-3v-3"/></svg><strong data-ip-back-label>Seleccionar archivo posterior</strong><small>SVG, PNG, JPG, JPEG, TIF o PDF · máx. 20 MB; dorso por separado</small></label>
+              <input id="IpBackFile-{{ paper_section_id }}" type="file" name="properties[Arte dorso original]" data-ip-file-back accept=".svg,.png,.jpg,.jpeg,.tif,.tiff,.pdf" disabled>
+            </div>
+            {% render 'impress-addon-picker', product: paper_product, section_id: paper_section_id %}
+            {% render 'impress-price-summary', main_attr: 'data-ip-price', note_attr: 'data-ip-price-note', note_text: 'Precios según las variantes del producto en Shopify' %}
+            <p class="impress-paper__message" data-ip-message role="status" aria-live="polite"></p>
+            <button type="submit" class="impress-paper__submit" data-ip-submit disabled>Añadir al carrito <span aria-hidden="true">→</span></button>
+            <p class="impress-paper__disclaimer">Las líneas marcan el tamaño final y el margen interior indicado. No representan sangrado ni garantizan un archivo listo para corte. Conservamos los originales.</p>
+          {% endform %}
+        </div>
+      </div>
+      <script type="application/json" data-ip-variants>
+        {"names":{{ paper_product.options | json }},"variants":[{% for variant in paper_product.variants %}{"id":{{ variant.id | json }},"options":{{ variant.options | json }},"price":{{ variant.price | json }},"available":{{ variant.available | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}]}
+      </script>
+    {% endif %}
+  </div>
+</section>

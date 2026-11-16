@@ -3,25 +3,79 @@
  * This stylesheet is loaded AFTER the product stylesheet by both sections.
  */
 .impress-sticker__preview--editor,
-.impress-banner__preview {
+.impress-banner__preview,
+.impress-paper__preview {
   background:#f4f7f9;
   border-color:#dbe5e8;
   border-radius:16px;
 }
 .impress-sticker__editor-stage,
-.impress-banner__stage {
+.impress-banner__stage,
+.impress-paper__stage {
   border:1px solid #e1e8eb;
   border-radius:12px;
   overflow:hidden;
   background:#eef3f5;
 }
 .impress-sticker__final-layer,
-.impress-banner__final-layer {
+.impress-banner__final-layer,
+.impress-paper__final-layer {
   transform-origin:50% 50%;
   transition:transform .13s ease-out;
   will-change:transform;
 }
 @media (prefers-reduced-motion: reduce) {
   .impress-sticker__final-layer,
-  .impress-banner__final-layer { transition:none; will-change:auto; }
+  .impress-banner__final-layer,
+.impress-paper__final-layer { transition:none; will-change:auto; }
 }
+
+/* An empty stage is an upload target in every Impress product editor. */
+.impress-sticker__editor-stage:has(.impress-preview-upload:not([hidden])),
+.impress-banner__stage:has(.impress-preview-upload:not([hidden])),
+.impress-paper__stage:has(.impress-preview-upload:not([hidden])){cursor:pointer}
+
+/* Original-upload quality estimate. Floating over the preview, outside the
+ * rendered/exported canvas. Never participates in artwork transforms. */
+.impress-quality {
+  position:absolute;z-index:14;top:10px;right:10px;
+  max-width:min(235px,calc(100% - 20px));
+  display:flex;flex-direction:column;gap:3px;
+  padding:8px 10px;border-radius:9px;
+  background:rgba(255,255,255,.96);border:1px solid #d8e2e8;
+  box-shadow:0 5px 16px rgba(18,41,57,.10);
+  color:#536675;font:600 11px/1.3 system-ui,-apple-system,sans-serif;
+  pointer-events:none;text-align:right;
+}
+.impress-quality[hidden]{display:none!important}
+.impress-quality__resolution{font-size:10px;overflow-wrap:anywhere}
+.impress-quality__dpi{font-size:12px;font-weight:800;color:#60707c}
+.impress-quality[data-quality="good"] .impress-quality__dpi{color:#17804e}
+.impress-quality[data-quality="warning"] .impress-quality__dpi{color:#a96a00}
+.impress-quality[data-quality="low"] .impress-quality__dpi{color:#be3434}
+@media(max-width:620px){.impress-quality{top:7px;right:7px;padding:6px 8px;max-width:170px;font-size:10px}.impress-quality__dpi{font-size:11px}}
+
+/* Common view-only canvas navigation for banners, flyers and business cards.
+ * This sits ABOVE the canvas, never inside the rendered/exported artwork. */
+.impress-view-toolbar {
+  position:absolute;z-index:16;bottom:12px;right:12px;
+  display:flex;align-items:center;gap:3px;padding:5px;
+  background:rgba(255,255,255,.96);border:1px solid #ced9de;
+  border-radius:10px;box-shadow:0 5px 20px #18364622;
+  font-variant-numeric:tabular-nums;
+}
+.impress-view-toolbar[hidden]{display:none!important}
+.impress-view-toolbar button {
+  display:flex;align-items:center;justify-content:center;
+  width:31px;height:29px;padding:0;border:0;border-radius:6px;
+  background:transparent;color:#213d49;font:700 19px/1 system-ui,sans-serif;
+  cursor:pointer;
+}
+.impress-view-toolbar button:hover:not(:disabled){background:#edf3f6}
+.impress-view-toolbar button:disabled{opacity:.34;cursor:default}
+.impress-view-toolbar button:focus-visible{outline:2px solid #eb795f;outline-offset:1px}
+.impress-view-toolbar output{min-width:42px;text-align:center;color:#253e48;font:850 11px system-ui,sans-serif}
+.impress-view-toolbar .impress-view-toolbar__reset{
+  font-size:18px;border-left:1px solid #e1e8ec;border-radius:0 6px 6px 0;
+}
+@media(max-width:480px){.impress-view-toolbar{bottom:8px;right:8px}}

@@ -77,19 +77,21 @@
               </button>
             </div>
           {%- else -%}
+            {%- capture impress_drawer_count_text -%}{%- render 'impress-cart-order-count' -%}{%- endcapture -%}
+            {%- assign impress_drawer_count = impress_drawer_count_text | strip | plus: 0 -%}
             {% capture cart_badge_html %}
               <span
-                class="theme-drawer__badge{% if cart.item_count == 0 %} visually-hidden{% endif %}"
+                class="theme-drawer__badge{% if impress_drawer_count == 0 %} visually-hidden{% endif %}"
                 aria-hidden="true"
-                {% if cart.item_count <= 99 %}
+                {% if impress_drawer_count <= 99 %}
                   data-maintain-ratio
                 {% endif %}
               >
-                {{- cart.item_count -}}
+                {{- impress_drawer_count -}}
               </span>
-              {% if cart.item_count > 0 %}
+              {% if impress_drawer_count > 0 %}
                 <span class="visually-hidden">
-                  {{ 'accessibility.cart_count' | t }}: {{ cart.item_count }}
+                  Pedidos en carrito: {{ impress_drawer_count }}
                 </span>
               {% endif %}
             {% endcapture %}

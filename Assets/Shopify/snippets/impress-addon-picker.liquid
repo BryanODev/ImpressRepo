@@ -1,0 +1,73 @@
+{% doc %}
+  Impress optional/required service variant references live on the PRINT product:
+  custom.impress_addons / custom.impress_required_addons (list.variant_reference).
+  On service VARIANTS, optional metadata controls dynamic pricing/display:
+  custom.impress_addon_group  -> shared selector label, e.g. Laminado
+  custom.impress_addon_size   -> exact print size (units required), e.g. 3 x 3 in
+  custom.impress_addon_pack   -> optional print pack quantity (integer)
+  custom.impress_addon_charge -> per_unit (per physical banner); default per_job
+  custom.impress_addon_role   -> artwork (existing artwork workflow)
+  With no group, an add-on stays a simple fixed-price checkbox (backwards compatible).
+{% enddoc %}
+{%- liquid
+  assign optional_services = product.metafields.custom.impress_addons.value
+  assign required_services = product.metafields.custom.impress_required_addons.value
+  assign required_ids = required_services | map: 'id'
+  assign has_services = false
+  if optional_services.size > 0 or required_services.size > 0
+    assign has_services = true
+  endif
+-%}
+  <div class="impress-addons" {% unless has_services %}hidden{% endunless %} data-impress-addons data-currency="{{ cart.currency.iso_code | default: shop.currency | escape }}">
+    <div class="impress-addons__heading"><strong>Servicios adicionales</strong><small>Elige los servicios para este pedido. Los precios vienen de Shopify.</small></div>
+    {%- for service in required_services -%}
+      {%- assign role = service.metafields.custom.impress_addon_role.value | downcase | strip -%}
+      {%- assign group = service.metafields.custom.impress_addon_group.value | strip -%}
+      {%- assign size = service.metafields.custom.impress_addon_size.value | strip -%}
+      {%- assign pack = service.metafields.custom.impress_addon_pack.value -%}
+      {%- assign charge = service.metafields.custom.impress_addon_charge.value | strip | downcase -%}
+      {%- if group != blank -%}
+        <input type="hidden" data-impress-addon-candidate data-id="{{ service.id }}" data-price="{{ service.price }}" data-role="{{ role | escape }}" data-group="{{ group | escape }}" data-size="{{ size | escape }}" data-pack="{{ pack }}" data-charge="{{ charge | escape }}" data-required="true" data-available="{{ service.available }}">
+      {%- else -%}
+        <label class="impress-addons__choice impress-addons__choice--required">
+          <input type="checkbox" data-impress-addon-choice data-id="{{ service.id }}" data-price="{{ service.price }}" data-role="{{ role | escape }}" data-required="true" checked {% unless service.available %}disabled{% endunless %}>
+          <span class="impress-addons__copy"><strong>{{ service.product.title | escape }}{%- unless service.product.has_only_default_variant -%} · {{ service.title | escape }}{%- endunless -%}</strong><small>{% if service.available %}Obligatorio para este pedido{% else %}Servicio obligatorio no disponible; no se puede completar el pedido.{% endif %}</small></span>
+          <span class="impress-addons__price">{{ service.price | money }}</span>
+        </label>
+      {%- endif -%}
+    {%- endfor -%}
+    {%- for service in optional_services -%}
+      {%- unless required_ids contains service.id -%}
+        {%- assign role = service.metafields.custom.impress_addon_role.value | downcase | strip -%}
+        {%- assign group = service.metafields.custom.impress_addon_group.value | strip -%}
+        {%- assign size = service.metafields.custom.impress_addon_size.value | strip -%}
+        {%- assign pack = service.metafields.custom.impress_addon_pack.value -%}
+        {%- assign charge = service.metafields.custom.impress_addon_charge.value | strip | downcase -%}
+        {%- if group != blank -%}
+          <input type="hidden" data-impress-addon-candidate data-id="{{ service.id }}" data-price="{{ service.price }}" data-role="{{ role | escape }}" data-group="{{ group | escape }}" data-size="{{ size | escape }}" data-pack="{{ pack }}" data-charge="{{ charge | escape }}" data-required="false" data-available="{{ service.available }}">
+        {%- else -%}
+          <label class="impress-addons__choice{% unless service.available %} impress-addons__choice--unavailable{% endunless %}">
+            <input type="checkbox" data-impress-addon-choice data-id="{{ service.id }}" data-price="{{ service.price }}" data-role="{{ role | escape }}" {% unless service.available %}disabled{% endunless %}>
+            <span class="impress-addons__copy"><strong>{{ service.product.title | escape }}{%- unless service.product.has_only_default_variant -%} · {{ service.title | escape }}{%- endunless -%}</strong><small>{% if service.available %}Añadir al pedido{% else %}No disponible{% endif %}</small></span>
+            <span class="impress-addons__price">+{{ service.price | money }}</span>
+          </label>
+        {%- endif -%}
+      {%- endunless -%}
+    {%- endfor -%}
+    <div data-impress-addon-groups></div>
+    <div class="impress-addons__art-notes" data-impress-artwork-notes hidden>
+      <label for="ImpressArtNotes-{{ section_id | default: product.id }}">Describe el diseño que necesitas <span aria-hidden="true">*</span></label>
+      <textarea id="ImpressArtNotes-{{ section_id | default: product.id }}" name="properties[Indicaciones para el diseño]" placeholder="Texto, colores, estilo, referencias y detalles del diseño…" rows="3" disabled></textarea>
+      <small>También puedes subir un archivo de referencia. No es obligatorio si solicitas diseño.</small>
+    </div>
+    <div class="impress-addons__total" data-impress-addon-total hidden>
+      <span>Servicios seleccionados</span><strong data-impress-addon-subtotal>—</strong>
+    </div>
+    <p class="impress-addons__grand" data-impress-addon-grand hidden>Total con servicios: <strong data-impress-addon-grand-value>—</strong></p>
+    <p class="impress-addons__message" data-impress-addon-message role="status" aria-live="polite"></p>
+    <input type="hidden" name="properties[_Impress Addons]" data-impress-addon-ids value="">
+    <input type="hidden" name="properties[_Impress Addon Quantities]" data-impress-addon-quantities value="">
+    <input type="hidden" name="properties[_Impress Addon Modes]" data-impress-addon-modes value="">
+    <input type="hidden" name="properties[_Impress Job]" data-impress-job-id value="">
+    <input type="hidden" name="properties[Preparación del arte]" data-impress-art-choice value="Archivo del cliente">
+  </div>

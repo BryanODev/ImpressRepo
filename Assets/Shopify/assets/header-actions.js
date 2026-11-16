@@ -53,11 +53,11 @@ class HeaderActions extends Component {
    */
   #onCartUpdate = (event) => {
     event.promise
-      ?.then(({ cart }) => {
-        const cartCount = cart?.totalQuantity;
-        if (cartCount === undefined) return;
-
-        this.refs.liveRegion.textContent = `${Theme.translations.cart_count}: ${cartCount}`;
+      ?.then(({ cart, detail }) => {
+        // Prefer the same top-level job count rendered in the cart section.
+        const orderCount = Number.isInteger(detail?.itemCount) ? detail.itemCount : cart?.totalQuantity;
+        if (!Number.isInteger(orderCount)) return;
+        this.refs.liveRegion.textContent = `Pedidos en carrito: ${orderCount}`;
       })
       .catch((error) => {
         if (error?.name !== 'AbortError') console.warn('[header-actions] Event promise rejected:', error);

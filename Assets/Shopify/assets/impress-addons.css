@@ -1,0 +1,106 @@
+/* Impress services are configured per product via Shopify variant-reference metafields. */
+.impress-addons{margin:22px 0;padding:18px;border:1px solid rgba(31,48,55,.16);border-radius:14px;background:#fff;color:#1c313a}
+.impress-addons__heading{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.impress-addons__heading strong{font-size:16px}
+.impress-addons__heading small,.impress-addons__copy small,.impress-addons__art-notes small{color:#60727b;font-size:12px}
+.impress-addons__choice{display:flex;align-items:center;gap:12px;margin:0;padding:12px 0;border-top:1px solid rgba(31,48,55,.10);cursor:pointer}
+.impress-addons__choice input{flex:0 0 auto;width:18px;height:18px;accent-color:#197f93}
+.impress-addons__copy{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px;line-height:1.35}
+.impress-addons__copy strong{font-size:14px;font-weight:650}
+.impress-addons__price{font-size:14px;font-weight:700;white-space:nowrap}
+.impress-addons__choice--unavailable{opacity:.55;cursor:not-allowed}
+.impress-addons__choice--required input{pointer-events:none}
+.impress-addons__art-notes{margin:12px 0 0}
+.impress-addons__art-notes label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.impress-addons__art-notes textarea{width:100%;min-height:88px;padding:10px;border:1px solid #b7c6cc;border-radius:8px;background:#fff;color:#1c313a;font:inherit;resize:vertical}
+.impress-addons__art-notes small{display:block;margin-top:5px}
+.impress-addons__total,.impress-addons__grand{display:flex;gap:12px;justify-content:space-between;align-items:center;margin:10px 0 0;padding-top:10px;border-top:1px solid rgba(31,48,55,.12);font-size:14px}
+.impress-addons__grand{font-size:15px;font-weight:700}
+.impress-addons__message{color:#a02b22;font-size:12px;margin:7px 0 0}
+.impress-cart__attached{margin-top:5px;font-size:12px;color:#456874;font-weight:650}
+.cart-items__table-row[data-impress-addon-child] .cart-items__details{padding-inline-start:14px}
+.cart-items__table-row[data-impress-addon-child] .cart-items__quantity-controls{display:none}
+.cart-items__table-row[data-impress-addon-child] .cart-items__media-container{transform:scale(.82)}
+.impress-cart-warning{color:#922d26;font-size:13px;margin:10px 0;padding:10px;border:1px solid #e7aba6;border-radius:8px;background:#fff7f5}
+/* Grouped size-priced add-ons are presented as one yes/no finishing selector. */
+.impress-addons__group{border:0;border-top:1px solid rgba(31,48,55,.12);margin:0;padding:13px 0 11px;min-width:0}
+.impress-addons__group legend{padding:0;font-size:14px;font-weight:700;color:inherit}
+.impress-addons__group-options{display:flex;gap:9px;flex-wrap:wrap;margin-top:8px}
+.impress-addons__group-option{flex:1 1 125px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 12px;border:1px solid #bdccd0;border-radius:9px;font-size:13px;font-weight:650;line-height:1.3}
+.impress-addons__group-option:has(input:checked){border-color:#197f93;background:#effafc;color:#105b6c}
+.impress-addons__group-option:has(input:disabled){opacity:.5;cursor:not-allowed}
+.impress-addons__group-option input{width:16px;height:16px;accent-color:#197f93;flex-shrink:0}
+.impress-addons__group-price{display:block;margin:7px 0 0;color:#556c77;font-size:12px}
+
+/* The price candidate records are data, never visible controls. */
+.impress-addons [data-impress-addon-candidate],
+.impress-addons [data-impress-addon-choice][hidden],
+.impress-sticker [data-impress-addon-choice][hidden] { display:none !important; }
+.impress-addons__group-icon { display:none; }
+.impress-addons__group-option-content { display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0; }
+.impress-addons__group-option-price { font-size:11px;color:#52717e;font-weight:650; }
+.impress-addons__group-price:empty { display:none; }
+.impress-sticker [data-impress-addon-finishing-slot][hidden] { display:none!important; }
+
+/* Sticker finishing is a product choice, not a row of tiny generic radio boxes. */
+.impress-sticker .impress-sticker__field--finishing { margin-top:-6px; }
+.impress-sticker .impress-addons__group { padding:0;margin:0 0 13px;border:0; }
+.impress-sticker .impress-addons__group legend {
+  padding:0;margin:0 0 10px;color:var(--ie-ink);font-size:13px;font-weight:800;
+}
+.impress-sticker .impress-addons__group-options {
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:0;padding-top:3px;
+}
+.impress-sticker .impress-addons__group-option {
+  position:relative;display:flex;justify-content:flex-start;align-items:center;
+  flex:none;min-width:0;min-height:60px;width:100%;margin:0;padding:8px 12px;gap:10px;
+  background:#fff;border:1px solid #dce5e9;border-radius:11px;color:#40545f;
+  font-size:12px;font-weight:750;line-height:1.25;box-shadow:0 1px 2px rgba(22,48,59,.025);
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease;
+}
+.impress-sticker .impress-addons__group-option > input[type="radio"] {
+  position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none;
+}
+.impress-sticker .impress-addons__group-option .impress-addons__group-icon {
+  display:block;position:relative;flex:0 0 40px;width:40px;height:40px;border:0;
+  border-radius:8px;background:#fff6d3;box-shadow:inset 0 0 0 1px #e4b942;
+}
+.impress-sticker .impress-addons__group-option .impress-addons__group-icon::before {
+  content:"";position:absolute;left:9px;top:8px;width:22px;height:24px;
+  background:linear-gradient(135deg,#ffce39,#e3a800);border:1px solid #ce9a04;border-radius:3px;
+}
+.impress-sticker .impress-addons__group-option:has(input[value="yes"]) .impress-addons__group-icon::after {
+  content:"";position:absolute;left:12px;top:4px;width:22px;height:24px;
+  border-radius:3px;border:1px solid #81b1c4;background:linear-gradient(120deg,#fff9,#ffffff1c 40%,#cae8f6b8 65%,#fff8);
+  transform:rotate(8deg);box-shadow:0 1px 3px #315b7329;
+}
+.impress-sticker .impress-addons__group-option:hover:not(:has(input:disabled)) { border-color:#b5c5cb;transform:translateY(-1px); }
+.impress-sticker .impress-addons__group-option:has(input:checked) {
+  color:#172b34;background:#fffcf0;border:1.5px solid #20343d;
+  box-shadow:0 7px 12px rgba(31,48,56,.11);transform:translateY(-2px);
+}
+.impress-sticker .impress-addons__group-option:has(input:focus-visible) {outline:3px solid #e99c84;outline-offset:3px;}
+.impress-sticker .impress-addons__group-option:has(input:disabled) { opacity:.48;cursor:not-allowed; }
+.impress-sticker .impress-addons__group-option-price {font-size:11px;font-weight:650;color:#647983;}
+.impress-sticker .impress-addons__group-price {margin:6px 0 0;font-size:11px;line-height:1.4;}
+@media(max-width:420px){
+  .impress-sticker .impress-addons__group-options {gap:7px;}
+  .impress-sticker .impress-addons__group-option {min-height:58px;padding:8px 9px;gap:7px;}
+  .impress-sticker .impress-addons__group-option .impress-addons__group-icon {flex-basis:34px;width:34px;height:34px;}
+  .impress-sticker .impress-addons__group-option .impress-addons__group-icon::before {left:8px;top:7px;width:19px;height:20px;}
+  .impress-sticker .impress-addons__group-option:has(input[value="yes"]) .impress-addons__group-icon::after {left:11px;top:3px;width:19px;height:20px;}
+}
+
+
+/* Uniform, live Shopify order total for Stickers / Banners / Flyers / Cards. */
+.impress-price-summary{display:flex;flex-direction:column;gap:9px;margin:0 0 12px;padding:19px 0 12px;border-top:1px solid #dce5e9;min-width:0;color:inherit}
+.impress-price-summary__row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:13px;line-height:1.45}
+.impress-price-summary__row span{color:#6b808b;font-size:13px;font-weight:500;letter-spacing:normal}
+.impress-price-summary__row strong{font-size:14px;font-weight:700;white-space:nowrap;letter-spacing:normal}
+.impress-price-summary__grand{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-top:3px;padding-top:12px;border-top:1px solid #dce5e9}
+.impress-price-summary__grand>span{color:#657e8a;font-size:11px;font-weight:800;letter-spacing:.085em}
+.impress-price-summary__grand>strong{color:#152d37;font-size:32px;font-weight:850;line-height:1.2;letter-spacing:-.04em}
+.impress-price-summary>small{color:#718792;font-size:11px;font-weight:400;letter-spacing:normal;line-height:1.5}
+@media(max-width:500px){.impress-price-summary__grand>strong{font-size:28px}}
+/* The single grand total lives beneath the product selector; avoid duplicates. */
+form:has([data-impress-price-summary]) .impress-addons__grand{display:none!important}

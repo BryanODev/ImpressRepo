@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Mockup de flyers impresos para promociones comerciales">
+ <defs><filter id="shadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="16" dy="23" stdDeviation="25" flood-color="#1b2732" flood-opacity=".22"/></filter><linearGradient id="charcoal" x2=".9" y2="1"><stop stop-color="#262b31"/><stop offset="1" stop-color="#0b0f13"/></linearGradient></defs>
+ <ellipse cx="570" cy="815" rx="395" ry="62" fill="#59616b" opacity=".13"/>
+ <g filter="url(#shadow)" transform="translate(180 65) rotate(-10 350 380)">
+   <rect width="550" height="740" rx="8" fill="#fff"/><path d="M0 0H550V430H0Z" fill="url(#charcoal)"/>
+   <path d="M0 270L550 70V430H0Z" fill="#fbbf00"/>
+   <path d="M0 420L550 245V530H0Z" fill="#e5e9ec"/>
+   <text x="39" y="98" font-family="Arial,sans-serif" font-weight="850" font-size="53" fill="white">TU NEGOCIO</text>
+   <text x="39" y="158" font-family="Arial,sans-serif" font-weight="850" font-size="53" fill="white">DESTACA.</text>
+   <text x="37" y="585" font-family="Arial,sans-serif" font-weight="800" font-size="42" fill="#1d2228">CALIDAD QUE</text>
+   <text x="37" y="633" font-family="Arial,sans-serif" font-weight="800" font-size="42" fill="#1d2228">SE NOTA.</text>
+   <path d="M40 669h325" stroke="#fbbf00" stroke-width="10"/>
+ </g>
+ <g filter="url(#shadow)" transform="translate(628 245) rotate(9 215 290)">
+   <rect width="450" height="575" rx="9" fill="#fff"/>
+   <path d="M0 0H450V285H0Z" fill="#fbbf00"/>
+   <circle cx="330" cy="135" r="108" fill="#20252a"/>
+   <path d="M260 145H408" stroke="white" stroke-width="14"/><path d="M334 70V220" stroke="white" stroke-width="14"/>
+   <text x="34" y="361" font-family="Arial,sans-serif" font-weight="850" font-size="45" fill="#161b20">FLYERS</text>
+   <text x="34" y="416" font-family="Arial,sans-serif" font-size="25" fill="#515f69">Promociones · eventos</text>
+   <text x="34" y="448" font-family="Arial,sans-serif" font-size="25" fill="#515f69">y comunicación impresa</text>
+   <path d="M33 491H360" stroke="#fbbf00" stroke-width="8"/>
+ </g>
+</svg>

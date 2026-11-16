@@ -16,7 +16,8 @@
   ref="cartBubble"
   class="cart-bubble{% if cart == empty %} visually-hidden{% endif %}"
   style="--cart-bubble-background-fallback: {{ bubble_bg_fallback }}; --cart-bubble-text-fallback: {{ bubble_text_fallback }};"
-  {% assign item_count = cart.item_count %}
+  {%- capture impress_count_text -%}{%- render 'impress-cart-order-count' -%}{%- endcapture -%}
+  {%- assign item_count = impress_count_text | strip | plus: 0 -%}
   {% if item_count <= 99 %}
     data-maintain-ratio
   {% endif %}
@@ -33,8 +34,8 @@
       aria-hidden="true"
       data-testid="cart-bubble"
     >
-      {%- if limit == blank or cart.item_count < limit %}
-        {{- cart.item_count -}}
+      {%- if limit == blank or item_count < limit %}
+        {{- item_count -}}
       {%- endif -%}
     </span>
   </span>

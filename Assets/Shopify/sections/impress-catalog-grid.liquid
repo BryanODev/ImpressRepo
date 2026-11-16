@@ -59,10 +59,19 @@
         </a>
       {% endfor %}
     </div>
+    {% if section.settings.show_all_button %}
+      <a class="impress-catalog__all" href="{{ section.settings.all_button_link | default: routes.all_products_collection_url }}">
+        <span><strong>{{ section.settings.all_button_text | escape }}</strong><small>{{ section.settings.all_button_caption | escape }}</small></span>
+        <span class="impress-catalog__all-arrow" aria-hidden="true">↗</span>
+      </a>
+    {% endif %}
   </div>
 </div>
 
 {% stylesheet %}
+.impress-catalog__all{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:22px 28px;margin-top:22px;border-radius:18px;background:#fbbf00;color:#111;text-decoration:none;min-height:90px;transition:background .2s,transform .2s}
+.impress-catalog__all:hover{transform:translateY(-2px);background:#ffdc48}
+.impress-catalog__all strong{display:block;font-size:clamp(18px,2vw,25px);font-weight:900}.impress-catalog__all small{display:block;color:#34312b;font-size:13px;margin-top:4px}.impress-catalog__all-arrow{width:43px;height:43px;border-radius:50%;background:#161719;color:white;display:grid;place-items:center;flex:0 0 43px;font-size:23px}
 .impress-catalog {
   padding: var(--catalog-padding-v) 20px;
 }
@@ -261,6 +270,10 @@
 {
   "name": "Impress Catalog Grid",
   "settings": [
+    { "type":"checkbox","id":"show_all_button","label":"Mostrar botón de catálogo completo","default":true },
+    { "type":"text","id":"all_button_text","label":"Texto del botón","default":"Explora todos nuestros productos" },
+    { "type":"text","id":"all_button_caption","label":"Texto secundario","default":"Más tamaños, materiales y soluciones de impresión" },
+    { "type":"url","id":"all_button_link","label":"Enlace (vacío = todos los productos)" },
     { "type": "text", "id": "section_subheading", "label": "Section Eyebrow", "default": "Productos principales" },
     { "type": "text", "id": "section_heading", "label": "Section Heading", "default": "Ordena por tipo de producto" },
     { "type": "textarea", "id": "section_helper", "label": "Helper Text", "default": "Selecciona el producto que necesitas y personalízalo directamente online." },

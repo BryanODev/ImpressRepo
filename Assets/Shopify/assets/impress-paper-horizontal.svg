@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="horizontal">
+<defs><filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#27343d" flood-opacity=".18"/></filter></defs>
+<g filter="url(#s)"><rect x="10" y="25" width="76" height="47" rx="6" fill="#fff" stroke="#233846" stroke-width="4"/><path d="M17 32h62v22H17z" fill="#fbbf00"/><path d="M19 62h35" stroke="#233846" stroke-width="4" stroke-linecap="round"/><path d="M58 63h16" stroke="#233846" stroke-width="3" stroke-linecap="round"/></g></svg>

@@ -1,0 +1,17 @@
+{%- comment -%}
+  One visible cart job for each parent/top-level line, regardless of its
+  quantity or how many nested Artwork / Finishing / Rush service lines it has.
+  Non-Impress top-level products each count as one line too. This count does
+  not change Shopify's real line items, quantity, totals or checkout.
+{%- endcomment -%}
+{%- assign impress_order_count = 0 -%}
+{%- for impress_line in cart.items -%}
+  {%- assign impress_is_service_child = false -%}
+  {%- if impress_line.properties['_Impress Addon'] == '1' and impress_line.parent_relationship.parent != blank -%}
+    {%- assign impress_is_service_child = true -%}
+  {%- endif -%}
+  {%- unless impress_is_service_child -%}
+    {%- assign impress_order_count = impress_order_count | plus: 1 -%}
+  {%- endunless -%}
+{%- endfor -%}
+{{- impress_order_count -}}

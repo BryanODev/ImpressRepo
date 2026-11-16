@@ -1,4 +1,4 @@
-/* IMPRESS Editor Shared Core v0.2 — framework-free, browser-only helpers.
+/* IMPRESS Editor Shared Core v0.3 — framework-free, browser-only helpers.
  * SHARED: move / resize / rotate, preview background, canvas sizing, tilt, pointer handling.
  * PRODUCT PLUGINS: Sticker and Banner own product visuals, print guides and SKU logic.
  * This file MUST load before either product editor script.
@@ -9,6 +9,20 @@
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   const snapshotTransform = state => ({ x:state.x, y:state.y, scale:state.scale, angle:state.angle });
+  // One interaction for every editor: a visible button in an empty stage opens
+  // the SAME Shopify file property input used by the regular upload area.
+  function bindEmptyUpload(button, input) {
+    if(!button || !input || button.dataset.impressUploadBound==='true')return;
+    button.dataset.impressUploadBound='true';
+    button.addEventListener('click',event=>{
+      // A centered upload button may sit inside a clickable empty canvas.
+      // Don't open two choosers when its click bubbles to the canvas stage.
+      if(!button.classList.contains('impress-preview-upload') && event.target.closest?.('.impress-preview-upload'))return;
+      const target=typeof input==='function'?input():input;
+      if(target && !target.files?.length && !target.disabled)target.click();
+    });
+  }
+
   function handles(g, rotateOffset=36) {
     const {cx,cy,w,h,angle} = g, co=Math.cos(angle), si=Math.sin(angle);
     const pt=(x,y)=>({x:cx+x*co-y*si,y:cy+x*si+y*co});
@@ -156,8 +170,148 @@
     }
   }
 
+
+  /** A camera for the editable canvas only. Never modifies artwork state,
+   * print geometry, history, metadata, or exported PNGs. */
+  class ViewNavigation {
+    constructor({canvas,stage,getMode,hasArtwork,render,min=1,max=4,controls=null,hint=null,fallbackHeight=400}){
+      this.canvas=canvas;this.stage=stage;this.getMode=getMode;
+      this.hasArtwork=hasArtwork;this.render=render;
+      this.min=min;this.max=max;this.zoom=1;this.panX=0;this.panY=0;
+      this.fallbackHeight=fallbackHeight;
+      this.panDrag=null;
+      // Keep any existing product-specific toolbar markup/styles; the camera and
+      // input handling stay universal. New products get a built-in toolbar.
+      this.toolbar=controls?.toolbar||document.createElement('div');
+      this.hint=hint;
+      if(!controls?.toolbar){
+        this.toolbar.className='impress-view-toolbar';
+        this.toolbar.setAttribute('role','group');
+        this.toolbar.setAttribute('aria-label','Zoom y desplazamiento de la vista');
+      }
+      this.toolbar.title='Rueda: zoom · Arrastrar con botón central: desplazar vista';
+      this.toolbar.hidden=true;
+      const makeButton=(text,label,action)=>{
+        const b=document.createElement('button');b.type='button';b.textContent=text;
+        b.setAttribute('aria-label',label);b.title=label;
+        b.addEventListener('click',action);this.toolbar.append(b);return b;
+      };
+      if(controls?.toolbar){
+        this.zoomOut=controls.out;this.zoomIn=controls.in;
+        this.level=controls.level;this.resetButton=controls.reset;
+        this.zoomOut?.addEventListener('click',()=>this.zoomAt(this.zoom/1.25));
+        this.zoomIn?.addEventListener('click',()=>this.zoomAt(this.zoom*1.25));
+        this.resetButton?.addEventListener('click',()=>this.reset());
+      }else{
+        this.zoomOut=makeButton('−','Alejar vista',()=>this.zoomAt(this.zoom/1.25));
+        this.level=document.createElement('output');this.level.textContent='100%';
+        this.level.setAttribute('aria-label','Nivel de zoom de vista');this.toolbar.append(this.level);
+        this.zoomIn=makeButton('+','Acercar vista',()=>this.zoomAt(this.zoom*1.25));
+        this.resetButton=makeButton('↺','Restablecer zoom y vista',()=>this.reset());
+        this.resetButton.className='impress-view-toolbar__reset';
+        stage.append(this.toolbar);
+      }
+      stage.addEventListener('wheel',event=>{
+        if(!this.active())return;
+        event.preventDefault();
+        const dy=event.deltaY*(event.deltaMode===1?16:event.deltaMode===2?400:1);
+        this.zoomAt(this.zoom*Math.exp(-clamp(dy,-600,600)*.00165),event.clientX,event.clientY);
+      },{passive:false});
+      canvas.addEventListener('auxclick',event=>{
+        if(event.button===1&&this.active())event.preventDefault();
+      });
+      canvas.addEventListener('mousedown',event=>{
+        if(event.button===1&&this.active())event.preventDefault();
+      });
+      canvas.addEventListener('pointerdown',event=>{
+        if(event.button!==1||!this.active())return;
+        this.panDrag={id:event.pointerId,clientX:event.clientX,clientY:event.clientY,
+          panX:this.panX,panY:this.panY};
+        canvas.setPointerCapture(event.pointerId);
+        canvas.style.cursor='grabbing';event.preventDefault();
+      });
+      canvas.addEventListener('pointermove',event=>{
+        if(!this.panDrag||this.panDrag.id!==event.pointerId)return;
+        this.panX=this.panDrag.panX+event.clientX-this.panDrag.clientX;
+        this.panY=this.panDrag.panY+event.clientY-this.panDrag.clientY;
+        this.clampPan();this.render();event.preventDefault();
+      });
+      const finish=event=>{
+        if(!this.panDrag||this.panDrag.id!==event.pointerId)return;
+        this.panDrag=null;
+        if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);
+        canvas.style.cursor='default';this.render();
+      };
+      canvas.addEventListener('pointerup',finish);
+      canvas.addEventListener('pointercancel',finish);
+      this.sync();
+    }
+    active(){return this.getMode()==='edit'&&Boolean(this.hasArtwork());}
+    isPanning(){return Boolean(this.panDrag);}
+    cancelPan(){this.panDrag=null;this.canvas.style.cursor='default';}
+    dimensions(){const r=this.canvas.getBoundingClientRect();return {W:r.width||560,H:r.height||this.fallbackHeight};}
+    clampPan(W=this.dimensions().W,H=this.dimensions().H){
+      this.panX=clamp(this.panX,-(this.zoom-1)*W/2,(this.zoom-1)*W/2);
+      this.panY=clamp(this.panY,-(this.zoom-1)*H/2,(this.zoom-1)*H/2);
+    }
+    reset(redraw=true){this.zoom=1;this.panX=0;this.panY=0;this.panDrag=null;
+      if(redraw)this.render();else this.sync();}
+    zoomAt(value,clientX,clientY){
+      if(!this.active())return;
+      const {W,H}=this.dimensions(),r=this.canvas.getBoundingClientRect();
+      const x=Number.isFinite(clientX)?clientX-r.left:W/2;
+      const y=Number.isFinite(clientY)?clientY-r.top:H/2;
+      const next=clamp(value,this.min,this.max);
+      if(Math.abs(next-this.zoom)<1e-6)return;
+      const ratio=next/this.zoom;
+      this.panX=(x-W/2)-ratio*(x-W/2-this.panX);
+      this.panY=(y-H/2)-ratio*(y-H/2-this.panY);
+      this.zoom=next;this.clampPan(W,H);this.render();
+    }
+    point(event){
+      const p=pointer(this.canvas,event),{W,H}=this.dimensions();
+      return {x:W/2+(p.x-W/2-this.panX)/this.zoom,
+        y:H/2+(p.y-H/2-this.panY)/this.zoom};
+    }
+    draw(ctx,W,H,fn){
+      this.clampPan(W,H);
+      ctx.save();ctx.translate(W/2+this.panX,H/2+this.panY);
+      ctx.scale(this.zoom,this.zoom);ctx.translate(-W/2,-H/2);
+      try{fn();}finally{ctx.restore();}
+    }
+    sync(){
+      const active=this.active();this.toolbar.hidden=!active;
+      if(this.hint)this.hint.hidden=!active;
+      if(this.level)this.level.textContent=`${Math.round(this.zoom*100)}%`;
+      if(this.zoomOut)this.zoomOut.disabled=!active||this.zoom<=this.min+1e-4;
+      if(this.zoomIn)this.zoomIn.disabled=!active||this.zoom>=this.max-1e-4;
+      if(this.resetButton)this.resetButton.disabled=!active||(this.zoom===1&&this.panX===0&&this.panY===0);
+    }
+  }
+
+  /** Standard Impress workspace used by every product editor.
+   * New product modules only supply drawEdit/drawFinal and product-specific
+   * inputs. All editors inherit the same canvas camera, preview background,
+   * final-view tilt, and optional image resolution analyzer.
+   * Exports must render from product draw functions directly without camera.
+   */
+  function createWorkspace({canvas,finalCanvas,finalLayer,stage,viewKey,
+      getMode,hasArtwork,drawEdit,drawFinal,render,
+      controls=null,hint=null,zoomMin=1,zoomMax=4,
+      fallbackHeight=400,settings={},qualityRoot=null,qualityType=null}){
+    const navigation=new ViewNavigation({canvas,stage,getMode,hasArtwork,render,
+      controls,hint,min:zoomMin,max:zoomMax,fallbackHeight});
+    const preview=new PreviewStage({canvas,finalCanvas,finalLayer,stage,viewKey,
+      getMode,hasArtwork,
+      drawEdit:(ctx,W,H)=>navigation.draw(ctx,W,H,()=>drawEdit(ctx,W,H)),
+      drawFinal,settings});
+    const quality=qualityRoot && qualityType
+      ? window.ImpressArtworkQuality?.mount(qualityRoot,qualityType) : null;
+    return Object.freeze({preview,navigation,quality});
+  }
+
   window.ImpressEditorCore=Object.freeze({
-    version:'0.2',clamp,same,snapshotTransform,handles,pointer,hitTest,startDrag,updateDrag,resetCanvas,
-    PreviewStage,PREVIEW_DEFAULTS
+    version:'0.4',clamp,same,snapshotTransform,handles,pointer,hitTest,startDrag,updateDrag,resetCanvas,
+    PreviewStage,ViewNavigation,createWorkspace,PREVIEW_DEFAULTS,bindEmptyUpload
   });
 })();

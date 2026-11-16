@@ -1,404 +1,117 @@
-<div 
-  class="impress-hero-outer-wrapper" 
-  style="
-    --padding-top: {{ section.settings.padding_top }}px; 
-    --padding-bottom: {{ section.settings.padding_bottom }}px;
-    --max-width: {{ section.settings.max_width }}px;
-  "
->
-  <div 
-    class="impress-hero-card" 
-    style="
-      --card-bg: {{ section.settings.card_bg }}; 
-      --card-radius: {{ section.settings.card_radius }}px;
-      --card-min-height: {{ section.settings.card_min_height }}px;
-      --overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
-    "
-  >
-    {% if section.settings.bg_image != blank %}
-      <div class="impress-hero-bg-image-wrapper">
-        <img 
-          src="{{ section.settings.bg_image | image_url: width: 2000 }}" 
-          alt="{{ section.settings.bg_image.alt | escape }}"
-          loading="eager"
-          width="{{ section.settings.bg_image.width }}"
-          height="{{ section.settings.bg_image.height }}"
-          class="impress-hero-bg-image"
-        >
-        <div class="impress-hero-overlay"></div>
-      </div>
-    {% endif %}
-
-    <div class="impress-hero-content">
-      {% if section.settings.subheading != blank %}
-        <span class="impress-hero-subheading" style="--subheading-color: {{ section.settings.subheading_color }};">
-          {{ section.settings.subheading }}
-        </span>
-      {% endif %}
-
-      {% if section.settings.heading != blank %}
-        <h1 class="impress-hero-heading" style="--heading-color: {{ section.settings.heading_color }};">
-          {{ section.settings.heading }}
-        </h1>
-      {% endif %}
-
-      {% if section.settings.description != blank %}
-        <p class="impress-hero-description" style="--desc-color: {{ section.settings.desc_color }};">
-          {{ section.settings.description }}
-        </p>
-      {% endif %}
-
-      <div class="impress-hero-actions">
-        {% if section.settings.primary_btn_text != blank %}
-          <a href="{{ section.settings.primary_btn_link }}" class="impress-hero-btn impress-hero-btn-primary">
-            {{ section.settings.primary_btn_text }}
-          </a>
-        {% endif %}
-
-        {% if section.settings.secondary_btn_text != blank %}
-          <a href="{{ section.settings.secondary_btn_link }}" class="impress-hero-btn impress-hero-btn-secondary">
-            {{ section.settings.secondary_btn_text }}
-          </a>
-        {% endif %}
-      </div>
-
-      {% if section.settings.caption_text != blank %}
-        <a href="{{ section.settings.caption_link }}" class="impress-hero-caption">
-          {{ section.settings.caption_text }}
-        </a>
+{{ 'impress-hero-slider.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'impress-hero-slider.js' | asset_url }}" defer></script>
+{% comment %} IMPRESS HOMEPAGE HERO. Slides are editable Shopify blocks; product rules stay outside this section. {% endcomment %}
+<section id="ImpressHero-{{ section.id }}" class="impress-slidehero{% if section.settings.full_bleed %} impress-slidehero--full{% endif %}"
+  data-impress-slidehero
+  data-auto-play="{{ section.settings.autoplay }}"
+  data-interval="{{ section.settings.autoplay_seconds | times: 1000 }}"
+  style="--ish-radius: {{ section.settings.card_radius }}px; --ish-accent: {{ section.settings.subheading_color }}; --ish-height: {{ section.settings.card_min_height }}px; --ish-screen-height: {{ section.settings.viewport_height }}svh; --ish-max: {{ section.settings.max_width }}px; --ish-top: {{ section.settings.padding_top }}px; --ish-bottom: {{ section.settings.padding_bottom }}px;">
+  <div class="impress-slidehero__shell">
+    <div class="impress-slidehero__viewport" data-ish-viewport aria-roledescription="carrusel" aria-label="Promociones y productos Impress">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- assign visual = block.settings.fallback_visual -%}
+          {%- assign visual_asset = 'impress-hero-sticker-collage.png' -%}
+          {%- if visual == 'banners' -%}{%- assign visual_asset = 'impress-showcase-banners.svg' -%}{%- endif -%}
+          {%- if visual == 'business' -%}{%- assign visual_asset = 'impress-hero-business-cards.svg' -%}{%- endif -%}
+          {%- if visual == 'flyers' -%}{%- assign visual_asset = 'impress-hero-flyers.svg' -%}{%- endif -%}
+          <article class="impress-slidehero__slide{% if forloop.first %} is-active{% endif %}" data-ish-slide
+            data-block-id="{{ block.id }}" data-index="{{ forloop.index0 }}"
+            aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+            {% unless forloop.first %}inert{% endunless %}
+            style="--ish-surface: {{ block.settings.surface_color }}; --ish-text: {{ block.settings.text_color }};" {{ block.shopify_attributes }}>
+            <div class="impress-slidehero__copy">
+              {% if block.settings.eyebrow != blank %}<p class="impress-slidehero__eyebrow">{{ block.settings.eyebrow | escape }}</p>{% endif %}
+              {% if block.settings.heading != blank %}<h2 class="impress-slidehero__title">{{ block.settings.heading | escape }}</h2>{% endif %}
+              {% if block.settings.description != blank %}<p class="impress-slidehero__description">{{ block.settings.description | escape }}</p>{% endif %}
+              <div class="impress-slidehero__actions">
+                {% if block.settings.primary_text != blank and block.settings.primary_url != blank %}
+                  <a class="impress-slidehero__btn impress-slidehero__btn--primary" href="{{ block.settings.primary_url }}">{{ block.settings.primary_text | escape }} <span aria-hidden="true">→</span></a>
+                {% endif %}
+                {% if block.settings.secondary_text != blank and block.settings.secondary_url != blank %}
+                  <a class="impress-slidehero__btn impress-slidehero__btn--secondary" href="{{ block.settings.secondary_url }}">{{ block.settings.secondary_text | escape }}</a>
+                {% endif %}
+              </div>
+            </div>
+            <div class="impress-slidehero__media" aria-hidden="true">
+              <div class="impress-slidehero__image-wrap">
+                {%- if block.settings.image != blank -%}
+                  {{ block.settings.image | image_url: width: 1200 | image_tag: loading: 'eager', class: 'impress-slidehero__image' }}
+                {%- else -%}
+                  <img class="impress-slidehero__image" src="{{ visual_asset | asset_url }}" width="1200" height="900" alt="" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
+                {%- endif -%}
+              </div>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- else -%}
+        <article class="impress-slidehero__slide is-active impress-slidehero__slide--empty" data-ish-slide data-index="0" aria-hidden="false">
+          <div class="impress-slidehero__copy"><p class="impress-slidehero__eyebrow">IMPRESS</p><h2 class="impress-slidehero__title">Impresión personalizada para tu negocio.</h2><p class="impress-slidehero__description">Añade diapositivas en el editor de temas.</p></div>
+          <div class="impress-slidehero__media"><img class="impress-slidehero__image" src="{{ 'impress-hero-sticker-collage.png' | asset_url }}" width="1200" height="900" alt=""></div>
+        </article>
+      {%- endif -%}
+      {% if section.blocks.size > 1 %}
+        <div class="impress-slidehero__navigation" aria-label="Controles del carrusel">
+          <button type="button" class="impress-slidehero__arrow" data-ish-prev aria-label="Diapositiva anterior">‹</button>
+          <div class="impress-slidehero__dots" role="group" aria-label="Elegir diapositiva">
+            {% for block in section.blocks %}<button type="button" data-ish-dot="{{ forloop.index0 }}" aria-label="Ir a diapositiva {{ forloop.index }}" aria-current="{% if forloop.first %}true{% else %}false{% endif %}" class="{% if forloop.first %}is-active{% endif %}"></button>{% endfor %}
+          </div>
+          <button type="button" class="impress-slidehero__arrow" data-ish-next aria-label="Siguiente diapositiva">›</button>
+        </div>
       {% endif %}
     </div>
   </div>
-</div>
-
-{% stylesheet %}
-  .impress-hero-outer-wrapper {
-    width: 100%;
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding-top: var(--padding-top);
-    padding-bottom: var(--padding-bottom);
-    padding-left: 20px;
-    padding-right: 20px;
-    box-sizing: border-box;
-  }
-
-  .impress-hero-card {
-    background-color: var(--card-bg);
-    border-radius: var(--card-radius);
-    min-height: var(--card-min-height);
-    padding: 60px 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-    box-sizing: border-box;
-  }
-
-  .impress-hero-bg-image-wrapper {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-  }
-
-  .impress-hero-bg-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-  }
-
-  .impress-hero-overlay {
-    position: absolute;
-    inset: 0;
-    background-color: #000000;
-    opacity: var(--overlay-opacity);
-  }
-
-  .impress-hero-content {
-    max-width: 800px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 2;
-    position: relative;
-  }
-
-  .impress-hero-subheading {
-    font-size: 13px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: var(--subheading-color, #ffcc00);
-    margin-bottom: 16px;
-  }
-
-  .impress-hero-heading {
-    font-size: 56px;
-    font-weight: 900;
-    line-height: 1.05;
-    letter-spacing: -1px;
-    color: var(--heading-color, #ffffff);
-    margin: 0 0 20px 0;
-  }
-
-  .impress-hero-description {
-    font-size: 18px;
-    line-height: 1.5;
-    color: var(--desc-color, #a1a1aa);
-    margin: 0 0 32px 0;
-    max-width: 600px;
-  }
-
-  .impress-hero-actions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .impress-hero-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px 36px;
-    border-radius: 50px;
-    font-size: 16px;
-    font-weight: 800;
-    text-decoration: none;
-    transition: transform 0.15s ease, opacity 0.15s ease;
-  }
-
-  .impress-hero-btn:hover {
-    transform: translateY(-2px);
-  }
-
-  .impress-hero-btn-primary {
-    background-color: #ffcc00;
-    color: #000000;
-  }
-
-  .impress-hero-btn-secondary {
-    background-color: rgba(255, 255, 255, 0.12);
-    color: #ffffff;
-    backdrop-filter: blur(8px);
-  }
-
-  .impress-hero-caption {
-    display: inline-block;
-    margin-top: 24px;
-    font-size: 14px;
-    font-weight: 700;
-    color: #a1a1aa;
-    text-decoration: none;
-    transition: color 0.15s ease;
-  }
-
-  .impress-hero-caption:hover {
-    color: #ffffff;
-  }
-
-  @media (max-width: 768px) {
-    .impress-hero-card {
-      padding: 50px 20px;
-      min-height: auto;
-    }
-
-    .impress-hero-heading {
-      font-size: 36px;
-    }
-
-    .impress-hero-description {
-      font-size: 16px;
-    }
-
-    .impress-hero-actions {
-      width: 100%;
-      flex-direction: column;
-    }
-
-    .impress-hero-btn {
-      width: 100%;
-    }
-  }
-{% endstylesheet %}
-
+</section>
 {% schema %}
 {
   "name": "Impress Hero",
   "settings": [
-    {
-      "type": "header",
-      "content": "Card Layout & Size"
-    },
-    {
-      "type": "range",
-      "id": "max_width",
-      "label": "Maximum Width",
-      "min": 800,
-      "max": 1400,
-      "step": 20,
-      "default": 1320,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "card_min_height",
-      "label": "Minimum Height",
-      "min": 300,
-      "max": 900,
-      "step": 20,
-      "default": 560,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "card_radius",
-      "label": "Card Corner Radius",
-      "min": 0,
-      "max": 60,
-      "step": 2,
-      "default": 24,
-      "unit": "px"
-    },
-    {
-      "type": "color",
-      "id": "card_bg",
-      "label": "Card Background Color",
-      "default": "#121212"
-    },
-    {
-      "type": "header",
-      "content": "Card Background Image"
-    },
-    {
-      "type": "image_picker",
-      "id": "bg_image",
-      "label": "Background Image"
-    },
-    {
-      "type": "range",
-      "id": "overlay_opacity",
-      "label": "Image Dark Overlay Opacity",
-      "min": 0,
-      "max": 100,
-      "step": 5,
-      "default": 40,
-      "unit": "%"
-    },
-    {
-      "type": "header",
-      "content": "Content & Colors"
-    },
-    {
-      "type": "text",
-      "id": "subheading",
-      "label": "Subheading",
-      "default": "DISEÑO • FABRICACIÓN • INSTALACIÓN"
-    },
-    {
-      "type": "color",
-      "id": "subheading_color",
-      "label": "Subheading Color",
-      "default": "#ffcc00"
-    },
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "¿Cansado de esperar semanas por tus stickers?"
-    },
-    {
-      "type": "color",
-      "id": "heading_color",
-      "label": "Heading Color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "textarea",
-      "id": "description",
-      "label": "Description",
-      "default": "Mira por qué más de 20,000 negocios confían en nosotros para sus impresiones y rotulaciones."
-    },
-    {
-      "type": "color",
-      "id": "desc_color",
-      "label": "Description Color",
-      "default": "#a1a1aa"
-    },
-    {
-      "type": "header",
-      "content": "Primary Button"
-    },
-    {
-      "type": "text",
-      "id": "primary_btn_text",
-      "label": "Button Text",
-      "default": "Comenzar aquí →"
-    },
-    {
-      "type": "url",
-      "id": "primary_btn_link",
-      "label": "Button Link"
-    },
-    {
-      "type": "header",
-      "content": "Secondary Button"
-    },
-    {
-      "type": "text",
-      "id": "secondary_btn_text",
-      "label": "Button Text",
-      "default": "Cotizar rotulación"
-    },
-    {
-      "type": "url",
-      "id": "secondary_btn_link",
-      "label": "Button Link"
-    },
-    {
-      "type": "header",
-      "content": "Caption Link"
-    },
-    {
-      "type": "text",
-      "id": "caption_text",
-      "label": "Caption Text",
-      "default": "Ver ofertas de la semana →"
-    },
-    {
-      "type": "url",
-      "id": "caption_link",
-      "label": "Caption Link"
-    },
-    {
-      "type": "header",
-      "content": "Section Spacing"
-    },
-    {
-      "type": "number",
-      "id": "padding_top",
-      "label": "Top Padding (px)",
-      "default": 40
-    },
-    {
-      "type": "number",
-      "id": "padding_bottom",
-      "label": "Bottom Padding (px)",
-      "default": 40
-    }
+    {"type":"header","content":"Carrusel"},
+    {"type":"checkbox","id":"autoplay","label":"Cambiar diapositivas automáticamente","default":true},
+    {"type":"range","id":"autoplay_seconds","label":"Segundos por diapositiva","min":3,"max":12,"step":1,"default":6,"unit":"s"},
+    {"type":"header","content":"Diseño"},
+    {"type":"checkbox","id":"full_bleed","label":"Hero ancho completo, sin bordes de tarjeta","default":true},
+    {"type":"range","id":"viewport_height","label":"Altura de pantalla (desktop)","min":60,"max":100,"step":5,"unit":"%","default":90},
+    {"type":"range","id":"max_width","label":"Maximum Width","min":800,"max":1400,"step":20,"default":1320,"unit":"px"},
+    {"type":"range","id":"card_min_height","label":"Minimum Height","min":300,"max":900,"step":20,"default":560,"unit":"px"},
+    {"type":"range","id":"card_radius","label":"Card Corner Radius","min":0,"max":60,"step":2,"default":24,"unit":"px"},
+    {"type":"color","id":"card_bg","label":"Legacy background (not used by slides)","default":"#121212"},
+    {"type":"image_picker","id":"bg_image","label":"Legacy image (set per slide instead)"},
+    {"type":"range","id":"overlay_opacity","label":"Legacy overlay (not used)","min":0,"max":100,"step":5,"default":40,"unit":"%"},
+    {"type":"text","id":"subheading","label":"Legacy subtitle (set per slide)","default":"STICKERS Y BANNERS PERSONALIZADOS"},
+    {"type":"color","id":"subheading_color","label":"Accent color","default":"#fbbf00"},
+    {"type":"text","id":"heading","label":"Legacy title (set per slide)","default":"Impresión personalizada"},
+    {"type":"color","id":"heading_color","label":"Legacy heading color","default":"#ffffff"},
+    {"type":"textarea","id":"description","label":"Legacy description","default":"Productos impresos para tu negocio."},
+    {"type":"color","id":"desc_color","label":"Legacy description color","default":"#a1a1aa"},
+    {"type":"text","id":"primary_btn_text","label":"Legacy primary button","default":"Ordenar Stickers"},
+    {"type":"url","id":"primary_btn_link","label":"Legacy primary link"},
+    {"type":"text","id":"secondary_btn_text","label":"Legacy secondary button","default":"Ordenar Banners"},
+    {"type":"url","id":"secondary_btn_link","label":"Legacy secondary link"},
+    {"type":"text","id":"caption_text","label":"Legacy caption","default":"Explorar productos"},
+    {"type":"url","id":"caption_link","label":"Legacy caption link"},
+    {"type":"number","id":"padding_top","label":"Top padding (px)","default":25},
+    {"type":"number","id":"padding_bottom","label":"Bottom padding (px)","default":25}
   ],
-  "presets": [
-    {
-      "name": "Impress Hero"
-    }
-  ]
+  "blocks": [{"type":"slide","name":"Diapositiva","settings":[
+    {"type":"text","id":"eyebrow","label":"Etiqueta","default":"IMPRESS PRINTING"},
+    {"type":"text","id":"heading","label":"Título","default":"Impresión para tu próximo proyecto."},
+    {"type":"textarea","id":"description","label":"Descripción","default":"Personaliza y ordena con confianza."},
+    {"type":"text","id":"primary_text","label":"Botón principal","default":"Explorar productos"},
+    {"type":"url","id":"primary_url","label":"Destino principal"},
+    {"type":"text","id":"secondary_text","label":"Botón secundario","default":"Conoce más"},
+    {"type":"url","id":"secondary_url","label":"Destino secundario"},
+    {"type":"image_picker","id":"image","label":"Imagen del producto"},
+    {"type":"select","id":"fallback_visual","label":"Imagen provisional","options":[
+      {"value":"stickers","label":"Stickers"},{"value":"banners","label":"Banners"},{"value":"business","label":"Business Cards"},{"value":"flyers","label":"Flyers"}
+    ],"default":"stickers"},
+    {"type":"color","id":"surface_color","label":"Fondo","default":"#f6f6f3"},
+    {"type":"color","id":"text_color","label":"Texto","default":"#111318"}
+  ]}],
+  "max_blocks":8,
+  "presets":[{"name":"Impress Hero","blocks":[
+    {"type":"slide","settings":{"fallback_visual":"stickers","heading":"Stickers personalizados","eyebrow":"VINYL STICKERS"}},
+    {"type":"slide","settings":{"fallback_visual":"banners","heading":"Banners para tu negocio","eyebrow":"GRAN FORMATO"}}
+  ]}]
 }
 {% endschema %}

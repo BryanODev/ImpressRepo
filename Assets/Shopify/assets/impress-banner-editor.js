@@ -12,12 +12,26 @@
   const snap=s=>({x:s.x,y:s.y,scale:s.scale,angle:s.angle});
   const same=core.same;
   function parseSize(size){
-    const m=/^\s*(\d+(?:[.,]\d+)?)\s*(?:x|×)\s*(\d+(?:[.,]\d+)?)\s*(ft|feet|pies|in|inch|pulgadas?|\")\s*$/i.exec(String(size||''));
-    if(!m)return null;
-    const h=Number(m[1].replace(',','.')),w=Number(m[2].replace(',','.'));
-    const ft=/^(ft|feet|pies)$/i.test(m[3]);
-    if(!(h>0&&w>0))return null;
-    return {heightIn:h*(ft?12:1),widthIn:w*(ft?12:1),ratio:w/h};
+    // Accept both Shopify's typography (2’ x 3’) and explicit ft/in dimensions.
+    const text=String(size||'').trim().replace(/[×✕*]/g,'x').replace(/[’‘′`]/g,"'");
+    const m=/^\s*(\d+(?:[.,]\d+)?)\s*(ft|feet|foot|pies|pie|inches|inch|in|pulgadas|pulgada|pulg|'|")?\s*x\s*(\d+(?:[.,]\d+)?)\s*(ft|feet|foot|pies|pie|inches|inch|in|pulgadas|pulgada|pulg|'|")?\s*$/i.exec(text);if(!m)return null;
+    const first=Number(m[1].replace(',','.')),second=Number(m[3].replace(',','.'));
+    const u1=(m[2]||m[4]||'').toLowerCase(),u2=(m[4]||m[2]||'').toLowerCase();
+    if(!(first>0&&second>0)||!u1||!u2)return null;
+    const isFoot=u=>/^(ft|feet|foot|pie|pies|')$/.test(u);
+    const isInch=u=>/^(in|inches|inch|pulg|pulgada|pulgadas|")$/.test(u);
+    const mul1=isFoot(u1)?12:isInch(u1)?1:0;
+    const mul2=isFoot(u2)?12:isInch(u2)?1:0;
+    if(!mul1||!mul2)return null;
+    const heightIn=first*mul1,widthIn=second*mul2;
+    return {heightIn,widthIn,ratio:widthIn/heightIn};
+  }
+  function orientedSize(dims,orientation){
+    if(!dims)return null;
+    let {widthIn,heightIn}=dims;
+    if(orientation==='Vertical'&&widthIn>heightIn)[widthIn,heightIn]=[heightIn,widthIn];
+    if(orientation==='Horizontal'&&heightIn>widthIn)[widthIn,heightIn]=[heightIn,widthIn];
+    return {widthIn,heightIn,ratio:widthIn/heightIn};
   }
   function bannerRect(W,H,dims,exporting=false){
     if(exporting)return {x:0,y:0,w:W,h:H};
@@ -48,7 +62,7 @@
   // Grommet centers typically sit about 1/2"–1" in from each banner edge.
   // Use 3/4" as a provisional preview default; these are center coordinates,
   // NOT measurements from the rim of the metal eyelet or print bleed.
-  function grommetPositions(r,dims,settings=DEFAULT_SETTINGS){
+  function grommetPositions(r,dims,settings=DEFAULT_SETTINGS,cornerOnly=false){
     // PROVISIONAL: corner centers 0.75" from both edges, additional holes at
     // intervals no greater than ~24" around the perimeter (production TBC).
     const widthIn=Math.max(1,dims?.widthIn||48),heightIn=Math.max(1,dims?.heightIn||24);
@@ -57,6 +71,7 @@
     const insetY=Math.min(settings.corner,Math.max(.1,(heightIn-settings.diameter)/2));
     const xp=insetX*r.w/widthIn,yp=insetY*r.h/heightIn;
     const left=r.x+xp,right=r.x+r.w-xp,top=r.y+yp,bottom=r.y+r.h-yp;
+    if(cornerOnly)return [{x:left,y:top},{x:right,y:top},{x:left,y:bottom},{x:right,y:bottom}];
     const xs=Math.max(1,Math.ceil((widthIn-2*insetX)/settings.spacing));
     const ys=Math.max(1,Math.ceil((heightIn-2*insetY)/settings.spacing));
     const points=[];
@@ -70,10 +85,12 @@
     }
     return points;
   }
-  function mountCount(size,settings=DEFAULT_SETTINGS){
-    const dims=parseSize(size);
+  function mountCount(size,settings=DEFAULT_SETTINGS,orientation='Horizontal',kind='Argollas',spacingInches=null){
+    const dims=orientedSize(parseSize(size),orientation);
     if(!dims)return null;
-    return grommetPositions({x:0,y:0,w:200,h:120},dims,settings).length;
+    if(kind!=='Argollas'&&kind!=='Argollas4')return 0;
+    return grommetPositions({x:0,y:0,w:200,h:120},dims,
+      {...settings,spacing:spacingInches||settings.spacing},kind==='Argollas4').length;
   }
   function mount(root){
     const config=window.ImpressProductConfigs?.banners;
@@ -84,13 +101,14 @@
     const canvas=el('canvas'),stage=el('stage'),finalCanvas=el('final-canvas'),finalLayer=el('final-layer'),project=el('project'),output=el('output-file');
     if(!canvas||!stage||!finalCanvas||!finalLayer||!project||!output)return null;
     const ctx=canvas.getContext('2d'),fx=finalCanvas.getContext('2d');
+    let quality=null;
     if(!ctx||!fx)return null;
     const ui={scale:el('scale'),rotate:el('rotate'),scaleValue:el('scale-value'),rotateValue:el('rotate-value'),download:el('download'),empty:el('empty'),editorMessage:el('editor-message'),guideNote:el('guide-note'),cut:el('show-cut'),mount:el('show-mount')};
     if(allow.allowScaling===false){const row=ui.scale.closest('.impress-banner__tool');if(row)row.style.display='none';}
     if(allow.allowRotation===false){const row=ui.rotate.closest('.impress-banner__tool');if(row)row.style.display='none';}
     ui.cut.checked=config.cutGuideDefaultOn!==false;
     ui.mount.checked=config.mountGuideDefaultOn!==false;
-    let art=null,original=null,objectUrl=null,token=0,mode='edit',mounting=config.mounts?.[0]||'Argollas',size=config.sizes?.[0]||'2 x 4 ft';
+    let art=null,original=null,objectUrl=null,token=0,mode='edit',mounting='Sin guía',size=config.sizes?.[0]||'2 x 4 ft',orientation=config.orientation?.default||'Horizontal',spacingInches=null,folding=null;
     const state=initial(),history=[],future=[];
     let drag=null,editStart=null,geometry=null,guidePhase=0,guideRAF=0,lastGuideTime=0;
     const reduced=Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
@@ -103,8 +121,8 @@
         const btn=$(root,`[data-ib-action="${action}"]`);
         btn.disabled=!art||(action==='undo'&&!history.length)||(action==='redo'&&!future.length);
       }
-      ui.empty.hidden=Boolean(art);
-      project.value=art?JSON.stringify({version:1,product:'banner',mounting,size,x:+state.x.toFixed(5),y:+state.y.toFixed(5),scale:+state.scale.toFixed(4),angle:Math.round(state.angle*180/Math.PI)}):'';
+      ui.empty.hidden=Boolean(art)||Boolean(root.querySelector('[data-ib-art-input]')?.files?.length);
+      project.value=art?JSON.stringify({version:1,product:'banner',mounting,size,orientation,x:+state.x.toFixed(5),y:+state.y.toFixed(5),scale:+state.scale.toFixed(4),angle:Math.round(state.angle*180/Math.PI)}):'';
     }
     function begin(){if(!editStart)editStart=snap(state)}
     function end(){if(editStart&&!same(editStart,snap(state))){history.push(editStart);if(history.length>40)history.shift();future.length=0;}editStart=null;syncUI();}
@@ -112,9 +130,11 @@
     function drawArtwork(c,r){
       geometry=null;
       if(!art){
+        const attachment=root.querySelector('[data-ib-art-input]')?.files?.[0];
+        if(!attachment||!/\.pdf$/i.test(attachment.name))return;
         c.save();c.fillStyle='#adbac2';c.textAlign='center';
         c.font=`800 ${Math.max(12,Math.min(31,r.h*.21))}px system-ui, sans-serif`;
-        c.fillText('TU DISEÑO AQUÍ',r.x+r.w/2,r.y+r.h/2+5,Math.max(20,r.w*.85));c.restore();return;
+        c.fillText('PDF ADJUNTO',r.x+r.w/2,r.y+r.h/2+5,Math.max(20,r.w*.85));c.restore();return;
       }
       const iw=art.width,ih=art.height;
       const base=Math.min(r.w*.90/iw,r.h*.90/ih);
@@ -126,8 +146,8 @@
     function paintHardware(c,r,dims){
       // Argollas are shown at their actual proportional size. Palos/boards are
       // mounted BEHIND the banner and cannot be seen from the front in Vista Final.
-      if(mounting!=='Argollas')return;
-      const pts=grommetPositions(r,dims,settings),radius=grommetRadius(r,dims,settings);
+      if(mounting!=='Argollas'&&mounting!=='Argollas4')return;
+      const pts=grommetPositions(r,dims,{...settings,spacing:spacingInches||settings.spacing},mounting==='Argollas4'),radius=grommetRadius(r,dims,settings);
       pts.forEach(p=>{
         c.save();
         c.beginPath();c.arc(p.x,p.y,radius,0,Math.PI*2);
@@ -145,13 +165,20 @@
       }
       if(ui.mount.checked){
         c.save();c.strokeStyle='rgba(50,163,192,.95)';c.lineWidth=1.8;c.setLineDash([4,5]);c.lineDashOffset=-guidePhase*.35;
-        if(mounting==='Argollas'){
+        // Approximate hem/fold zones. These are visualization guides only.
+        if(folding==='sides'||folding==='all'){
+          const inX=Math.min(9,Math.max(3,r.w*.025)),inY=Math.min(9,Math.max(3,r.h*.025));
+          for(const x of [r.x+inX,r.x+r.w-inX]){c.beginPath();c.moveTo(x,r.y);c.lineTo(x,r.y+r.h);c.stroke();}
+          if(folding==='all')for(const y of [r.y+inY,r.y+r.h-inY]){c.beginPath();c.moveTo(r.x,y);c.lineTo(r.x+r.w,y);c.stroke();}
+        }
+        if(mounting==='Argollas'||mounting==='Argollas4'){
           // Match the actual 1/2" visual footprint, not a fixed large canvas circle.
           const radius=grommetRadius(r,dims,settings);
           c.lineWidth=Math.min(1.3,Math.max(.8,radius*.55));
           c.setLineDash([2.5,2]);
-          grommetPositions(r,dims,settings).forEach(p=>{c.beginPath();c.arc(p.x,p.y,radius,0,Math.PI*2);c.stroke();});
-        }else{
+          grommetPositions(r,dims,{...settings,spacing:spacingInches||settings.spacing},mounting==='Argollas4')
+            .forEach(p=>{c.beginPath();c.arc(p.x,p.y,radius,0,Math.PI*2);c.stroke();});
+        }else if(mounting==='Palos'){
           // Guide only: show where hidden rear boards/pockets are expected.
           // These are NOT visible hardware, and disappear in Vista Final.
           const margin=Math.min(7,Math.max(3,r.h*.032));
@@ -173,7 +200,7 @@
       c.beginPath();c.arc(ps.rotate.x,ps.rotate.y,7.5,0,2*Math.PI);c.fillStyle='#ed5d5b';c.fill();c.restore();
     }
     function drawScene(c,W,H,{exporting=false,final=false}={}){
-      const dims=parseSize(size)||{heightIn:24,widthIn:48,ratio:2};
+      const dims=orientedSize(parseSize(size),orientation)||{heightIn:24,widthIn:48,ratio:2};
       const r=bannerRect(W,H,dims,exporting);
       // PreviewStage draws the shared workspace background (not export files).
       c.save();
@@ -189,12 +216,15 @@
       }
       return r;
     }
-    const preview = new core.PreviewStage({
+    const workspace=core.createWorkspace({
       canvas,finalCanvas,finalLayer,stage,viewKey:'ibView',
       getMode:()=>mode,hasArtwork:()=>Boolean(art),
       drawEdit:(ctx,W,H)=>drawScene(ctx,W,H),
-      drawFinal:(ctx,W,H)=>drawScene(ctx,W,H,{final:true})
+      drawFinal:(ctx,W,H)=>drawScene(ctx,W,H,{final:true}),
+      render:()=>render(),qualityRoot:root,qualityType:'banners'
     });
+    const {preview,navigation}=workspace;
+    quality=workspace.quality;
     function drawFinal(){preview.redrawFinal();}
     function animate(now){
       if(!guideRAF)return;
@@ -209,17 +239,20 @@
     }
     function render(){
       preview.render();
-      syncUI();animationState();
+      syncUI();navigation.sync();animationState();
+      const d=orientedSize(parseSize(size),orientation);
+      quality?.setPlacement({printWidthIn:d?.widthIn,printHeightIn:d?.heightIn,scale:state.scale,fit:1});
     }
-    const point=e=>core.pointer(canvas,e);
+    const point=e=>navigation.point(e);
     const nearest=(p,g)=>core.hitTest(p,g,{rotateOffset:32,rotateRadius:19,scaleRadius:18,padding:8});
     canvas.addEventListener('pointerdown',e=>{
-      if(mode!=='edit'||!art||!geometry)return;
+      if(mode!=='edit'||!art||!geometry||e.button!==0||navigation.isPanning())return;
       const p=point(e),kind=nearest(p,geometry);if(!kind||(kind==='scale'&&allow.allowScaling===false)||(kind==='rotate'&&allow.allowRotation===false))return;
       begin();drag=core.startDrag(kind,p,geometry,state);
       canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing';e.preventDefault();
     });
     canvas.addEventListener('pointermove',e=>{
+      if(navigation.isPanning())return;
       const p=point(e);if(!drag){canvas.style.cursor=art&&mode==='edit'&&geometry&&nearest(p,geometry)?'grab':'default';return;}
       core.updateDrag(state,drag,p,{minPosition:-.7,maxPosition:1.7});
       render();e.preventDefault();
@@ -245,31 +278,29 @@
       mode=btn.dataset.ibMode;preview.resetTilt();root.querySelectorAll('[data-ib-mode]').forEach(b=>b.classList.toggle('is-active',b===btn));render();
     }));
     function setArt(img){art=img;syncUI();render();}
-    function loadFile(file){
+    let pendingArtwork=Promise.resolve();
+    function loadFile(file){navigation.reset(false);pendingArtwork=decodeArtwork(file);return pendingArtwork;}
+    async function decodeArtwork(file){
       const current=++token;art=null;original=null;history.length=0;future.length=0;Object.assign(state,initial());
+      quality?.setFile(file);
       output.value='';if(objectUrl){URL.revokeObjectURL(objectUrl);objectUrl=null;}
       setArt(null);
-      if(!file){note('Sube una imagen para comenzar.');return Promise.resolve(false);}
-      if(!/\.(png|jpe?g|webp)$/i.test(file.name)){
-        note('PDF adjunto: se conservará para el pedido, sin vista editable.');return Promise.resolve(false);
+      if(!file){note('Sube un diseño para comenzar.');return false;}
+      note('Preparando vista del archivo…');
+      try{
+        const result=await window.ImpressArtworkPreview.render(file,{maxDimension:2000});
+        if(current!==token)return false;
+        original=result.image;quality?.setResult(file,result);setArt(result.image);note(result.notice);return true;
+      }catch(error){
+        if(current!==token)return false;
+        quality?.setResult(file,null);
+        note('Original seleccionado; la vista no pudo abrirse: '+(error?.message||'formato no disponible'),true);
+        return false;
       }
-      objectUrl=URL.createObjectURL(file);
-      return new Promise(resolve=>{
-        const image=new Image();image.onload=()=>{
-          if(current!==token){resolve(false);return;}
-          const factor=Math.min(1,2000/Math.max(image.naturalWidth,image.naturalHeight));
-          const copy=document.createElement('canvas');copy.width=Math.max(1,Math.round(image.naturalWidth*factor));copy.height=Math.max(1,Math.round(image.naturalHeight*factor));
-          copy.getContext('2d').drawImage(image,0,0,copy.width,copy.height);
-          original=copy;setArt(copy);note(`Imagen lista · ${image.naturalWidth} × ${image.naturalHeight} px. Mueve, escala o rota tu diseño.`);
-          URL.revokeObjectURL(objectUrl);objectUrl=null;resolve(true);
-        };
-        image.onerror=()=>{if(current===token)note('No se pudo abrir esta imagen.',true);resolve(false)};
-        image.src=objectUrl;
-      });
     }
     function exportCanvas(){
       if(!art)return null;
-      const dims=parseSize(size)||{ratio:2};const ratio=clamp(dims.ratio,.3,6);
+      const dims=orientedSize(parseSize(size),orientation)||{ratio:2};const ratio=clamp(dims.ratio,.3,6);
       const W=Math.round(1800*Math.min(1,ratio)),H=Math.round(1800/Math.max(1,ratio));
       const out=document.createElement('canvas');out.width=W;out.height=H;
       drawScene(out.getContext('2d'),W,H,{exporting:true});return out;
@@ -283,13 +314,21 @@
       catch{note('No se pudo exportar la vista.',true)}
     });
     function setOptions(opts){
-      mounting=opts.mounting||mounting;size=opts.size||size;
-      ui.guideNote.textContent=mounting==='Argollas'
-        ? `Círculos azules: argollas de ${settings.diameter}″ de diámetro; centros a ${settings.corner}″ de los bordes. Separación máxima ilustrativa de ${settings.spacing}″.`
-        : 'Líneas azules: ubicación orientativa de los palos detrás del banner. Los palos no se ven desde el frente en Vista final.';
+      mounting=opts.mounting||'Sin guía';size=opts.size||size;orientation=opts.orientation||orientation;
+      spacingInches=opts.spacingInches===12||opts.spacingInches===24?opts.spacingInches:null;
+      folding=opts.folding==='all'||opts.folding==='sides'?opts.folding:null;
+      ui.guideNote.textContent=mounting==='Argollas4'
+        ? 'Cuatro argollas ilustrativas, una por esquina; dobladillos laterales. Posiciones por confirmar en producción.'
+        : mounting==='Argollas'
+        ? `Argollas ilustrativas alrededor del perímetro; separación máxima aproximada de ${spacingInches||settings.spacing}″. Posiciones por confirmar en producción.`
+        : mounting==='Palos'
+          ? 'Líneas azules: ubicación orientativa de los palos detrás del banner. Los palos no se ven desde el frente en Vista final.'
+          : folding==='sides' ? 'Líneas azules: dobladillos solo a izquierda y derecha; sin argollas.' : 'Sin guía de montaje para esta variante. Consulta las especificaciones de producción.';
       render();
     }
     async function prepareOrderFiles(){
+      await pendingArtwork;
+      if(!art)throw new Error('No se pudo visualizar el arte. Usa otro archivo o revisa que el PDF/TIFF sea compatible.');
       if(!art){output.value='';return true;}
       const blob=await exportBlob();
       if(!blob||blob.size>15*1024*1024)throw new Error('La vista editada es demasiado grande para esta prueba.');
@@ -300,7 +339,7 @@
     }
     preview.observeResize(render);
     syncUI();render();
-    return {loadFile,setOptions,prepareOrderFiles,mountCount:(size)=>mountCount(size,settings),parseSize};
+    return {loadFile,setOptions,prepareOrderFiles,mountCount:(size,orientation,kind,spacing)=>mountCount(size,settings,orientation||'Horizontal',kind,spacing),parseSize};
   }
   window.ImpressBannerEditor={mount,mountCount,parseSize};
 })();
