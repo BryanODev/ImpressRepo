@@ -1,9 +1,14 @@
 
-<div class="impress-catalog" style="
+<div class="impress-catalog{% if section.settings.image_edge_to_edge %} impress-catalog--edge-to-edge{% endif %}" style="
   --catalog-padding-v: {{ section.settings.vertical_padding }}px;
   --catalog-max-width: {{ section.settings.max_width }}px;
   --catalog-gap: {{ section.settings.grid_gap }}px;
   --catalog-card-radius: {{ section.settings.corner_radius }}px;
+  --catalog-card-padding: 28px;
+  --catalog-image-width: {{ section.settings.image_area_width }}%;
+  --catalog-image-padding: {{ section.settings.image_padding }}px;
+  --catalog-image-scale: {{ section.settings.image_scale | divided_by: 100.0 }};
+  --catalog-image-fit: {{ section.settings.image_fit }};
   --catalog-card-bg: {{ section.settings.card_bg_color }};
   --catalog-text-color: {{ section.settings.text_color }};
   --catalog-muted: {{ section.settings.muted_text_color }};
@@ -118,10 +123,10 @@
   grid-column: span 6;
   min-height: 250px;
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(180px, .8fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, var(--catalog-image-width));
   gap: 22px;
   align-items: center;
-  padding: 28px;
+  padding: var(--catalog-card-padding);
   border-radius: var(--catalog-card-radius);
   background:
     radial-gradient(circle at top right, rgba(251, 191, 0, 0.22), transparent 34%),
@@ -202,15 +207,35 @@
   justify-content: center;
 }
 .impress-catalog-card__media img {
+  display: block;
   width: 100%;
   height: 100%;
   max-height: 210px;
-  object-fit: contain;
+  object-fit: var(--catalog-image-fit);
+  transform: scale(var(--catalog-image-scale));
   filter: drop-shadow(0 12px 26px rgba(0,0,0,.28));
   transition: transform .28s ease;
 }
 .impress-catalog-card:hover .impress-catalog-card__media img {
-  transform: scale(1.04) rotate(-2deg);
+  transform: scale(calc(var(--catalog-image-scale) * 1.04)) rotate(-2deg);
+}
+/* Full-bleed mode removes the card's padding ONLY from the media area.
+   Text retains its original spacing and remains readable. */
+.impress-catalog--edge-to-edge .impress-catalog-card__media {
+  align-self: stretch;
+  min-height: 250px;
+  margin: calc(-1 * var(--catalog-card-padding)) calc(-1 * var(--catalog-card-padding)) calc(-1 * var(--catalog-card-padding)) 0;
+  overflow: hidden;
+}
+.impress-catalog--edge-to-edge .impress-catalog-card__media img {
+  position: absolute;
+  inset: var(--catalog-image-padding);
+  width: calc(100% - 2 * var(--catalog-image-padding));
+  height: calc(100% - 2 * var(--catalog-image-padding));
+  max-height: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .impress-catalog-card__media img { transition: none; }
 }
 .impress-catalog-card__placeholder {
   width: 100%;
@@ -258,11 +283,17 @@
     grid-column: auto;
     grid-template-columns: 1fr;
     gap: 12px;
-    padding: 22px;
+    --catalog-card-padding: 22px;
+    padding: var(--catalog-card-padding);
     min-height: auto;
   }
   .impress-catalog-card__media { order: -1; min-height: 120px; }
   .impress-catalog-card__media img { max-height: 140px; }
+  .impress-catalog--edge-to-edge .impress-catalog-card__media {
+    min-height: clamp(190px, 50vw, 300px);
+    margin: calc(-1 * var(--catalog-card-padding)) calc(-1 * var(--catalog-card-padding)) 0;
+  }
+  .impress-catalog--edge-to-edge .impress-catalog-card__media img { max-height: none; }
 }
 {% endstylesheet %}
 
@@ -279,6 +310,12 @@
     { "type": "textarea", "id": "section_helper", "label": "Helper Text", "default": "Selecciona el producto que necesitas y personalízalo directamente online." },
     { "type": "range", "id": "corner_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Card Corner Roundness", "default": 22 },
     { "type": "range", "id": "grid_gap", "min": 10, "max": 36, "step": 2, "unit": "px", "label": "Space Between Cards", "default": 22 },
+    { "type": "header", "content": "Catalog card images" },
+    { "type": "checkbox", "id": "image_edge_to_edge", "label": "Extend image to card edges", "default": false },
+    { "type": "range", "id": "image_scale", "min": 80, "max": 180, "step": 10, "unit": "%", "label": "Image size", "default": 100 },
+    { "type": "range", "id": "image_area_width", "min": 30, "max": 60, "step": 5, "unit": "%", "label": "Image area width (desktop)", "default": 40 },
+    { "type": "range", "id": "image_padding", "min": 0, "max": 50, "step": 2, "unit": "px", "label": "Image inner spacing", "default": 0 },
+    { "type": "select", "id": "image_fit", "label": "Image fit", "options": [ {"value":"contain","label":"Show entire image"}, {"value":"cover","label":"Fill area (may crop)"} ], "default": "contain" },
     { "type": "range", "id": "max_width", "min": 900, "max": 1440, "step": 20, "unit": "px", "label": "Container Max Width", "default": 1240 },
     { "type": "range", "id": "vertical_padding", "min": 0, "max": 100, "step": 5, "unit": "px", "label": "Top & Bottom Spacing", "default": 45 },
     { "type": "color", "id": "card_bg_color", "label": "Card Background", "default": "#0e1014" },

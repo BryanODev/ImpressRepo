@@ -1,0 +1,193 @@
+{% comment %}
+  IMPRESS | Static Client Logos
+
+  Visual twin of sections/impress-clients-marquee.liquid, without animation.
+  Uses the original marquee's heading, individual image widths, image proportions,
+  spacing, hover effect, and section/container sizing.
+
+  Shopify Theme Editor: add logo image blocks in display order. The first
+  first_row_count populated images appear in row 1, and the next
+  second_row_count populated images appear in row 2. Blank images are ignored.
+  The original Client Logo Marquee section is not modified.
+{% endcomment %}
+{% liquid
+  assign first_row_count = section.settings.first_row_count
+  assign second_row_count = section.settings.second_row_count
+  assign max_visible_logos = first_row_count | plus: second_row_count
+  assign uploaded_logo_count = 0
+  for block in section.blocks
+    if block.settings.image != blank
+      assign uploaded_logo_count = uploaded_logo_count | plus: 1
+    endif
+  endfor
+%}
+
+<section
+  id="impress-static-logos-{{ section.id }}"
+  class="impress-static-logo-wrapper"
+  style="--imsl-bg: {{ section.settings.bg_color }}; --imsl-padding-v: {{ section.settings.vertical_padding }}px; --imsl-max-width: {{ section.settings.max_width }}px; --imsl-row-gap: {{ section.settings.row_gap }}px; --imsl-logo-gap: {{ section.settings.logo_gap }}px; --imsl-heading-color: {{ section.settings.title_color }};"
+  aria-label="{{ section.settings.title | default: 'Clientes y organizaciones' | escape }}"
+>
+  <div class="impress-static-logo-container">
+    {% if section.settings.title != blank %}
+      <div class="impress-static-logo-header">
+        <span class="impress-static-logo-title">{{ section.settings.title | escape }}</span>
+      </div>
+    {% endif %}
+
+    {% if uploaded_logo_count > 0 %}
+      <div class="impress-static-logo-rows">
+        <div class="impress-static-logo-row" role="list">
+          {% assign image_index = 0 %}
+          {% for block in section.blocks %}
+            {% if block.settings.image != blank %}
+              {% assign image_index = image_index | plus: 1 %}
+              {% if image_index <= first_row_count %}
+                <div class="impress-static-logo-item" role="listitem" {{ block.shopify_attributes }}>
+                  {% if block.settings.link != blank %}<a href="{{ block.settings.link }}" class="impress-static-logo-link">{% endif %}
+                  <div class="impress-static-logo-box" style="--imsl-logo-width: {{ block.settings.logo_width }}px;">
+                    <img
+                      src="{{ block.settings.image | image_url: width: 800 }}"
+                      alt="{{ block.settings.title | default: block.settings.image.alt | default: 'Logo de cliente' | escape }}"
+                      width="{{ block.settings.image.width }}"
+                      height="{{ block.settings.image.height }}"
+                      loading="lazy"
+                    >
+                  </div>
+                  {% if block.settings.link != blank %}</a>{% endif %}
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        {% if uploaded_logo_count > first_row_count %}
+          <div class="impress-static-logo-row" role="list">
+            {% assign image_index = 0 %}
+            {% for block in section.blocks %}
+              {% if block.settings.image != blank %}
+                {% assign image_index = image_index | plus: 1 %}
+                {% if image_index > first_row_count and image_index <= max_visible_logos %}
+                  <div class="impress-static-logo-item" role="listitem" {{ block.shopify_attributes }}>
+                    {% if block.settings.link != blank %}<a href="{{ block.settings.link }}" class="impress-static-logo-link">{% endif %}
+                    <div class="impress-static-logo-box" style="--imsl-logo-width: {{ block.settings.logo_width }}px;">
+                      <img
+                        src="{{ block.settings.image | image_url: width: 800 }}"
+                        alt="{{ block.settings.title | default: block.settings.image.alt | default: 'Logo de cliente' | escape }}"
+                        width="{{ block.settings.image.width }}"
+                        height="{{ block.settings.image.height }}"
+                        loading="lazy"
+                      >
+                    </div>
+                    {% if block.settings.link != blank %}</a>{% endif %}
+                  </div>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+/* Match Client Logo Marquee's original appearance; only scrolling is removed. */
+.impress-static-logo-wrapper {
+  width: 100%;
+  background-color: var(--imsl-bg);
+  padding-top: var(--imsl-padding-v);
+  padding-bottom: var(--imsl-padding-v);
+  box-sizing: border-box;
+}
+.impress-static-logo-container {
+  max-width: var(--imsl-max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.impress-static-logo-header { margin-bottom: 28px; }
+.impress-static-logo-title {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--imsl-heading-color);
+}
+.impress-static-logo-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--imsl-row-gap);
+}
+.impress-static-logo-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--imsl-logo-gap);
+  width: 100%;
+}
+.impress-static-logo-item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.impress-static-logo-link { display: block; text-decoration: none; }
+.impress-static-logo-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--imsl-logo-width);
+  max-width: 100%;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.impress-static-logo-box:hover {
+  transform: translateY(-2px);
+  opacity: .85;
+}
+.impress-static-logo-box img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+.impress-static-logo-link:focus-visible {
+  outline: 2px solid #f8db00;
+  outline-offset: 5px;
+  border-radius: 4px;
+}
+@media (max-width: 768px) {
+  .impress-static-logo-box { width: calc(var(--imsl-logo-width) * .7); }
+  .impress-static-logo-row { gap: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .impress-static-logo-box { transition: none; }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Impress Static Logos",
+  "settings": [
+    {"type":"text","id":"title","label":"Section Heading","default":"CLIENTES Y ORGANIZACIONES ATENDIDAS"},
+    {"type":"color","id":"bg_color","label":"Background Color","default":"#ffffff"},
+    {"type":"range","id":"vertical_padding","min":10,"max":100,"step":5,"unit":"px","label":"Top & Bottom Padding","default":40},
+    {"type":"range","id":"first_row_count","label":"Logos in first row","min":1,"max":12,"step":1,"default":6},
+    {"type":"range","id":"second_row_count","label":"Logos in second row","min":1,"max":12,"step":1,"default":4},
+    {"type":"range","id":"row_gap","label":"Gap between rows","min":0,"max":100,"step":5,"unit":"px","default":45},
+    {"type":"range","id":"logo_gap","label":"Space between logos","min":16,"max":80,"step":4,"unit":"px","default":48},
+    {"type":"range","id":"max_width","label":"Section max width","min":900,"max":1600,"step":20,"unit":"px","default":1440},
+    {"type":"color","id":"title_color","label":"Heading Color","default":"#888888"}
+  ],
+  "max_blocks": 24,
+  "blocks": [
+    {"type":"logo","name":"Client Logo","settings":[
+      {"type":"text","id":"title","label":"Client Name"},
+      {"type":"image_picker","id":"image","label":"Logo Image"},
+      {"type":"range","id":"logo_width","min":60,"max":400,"step":10,"unit":"px","label":"Custom Card Width","default":180},
+      {"type":"url","id":"link","label":"Client Link (Optional)"}
+    ]}
+  ],
+  "presets": [{"name":"Impress Static Logos"}]
+}
+{% endschema %}

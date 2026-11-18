@@ -1,63 +1,122 @@
-<div 
-  class="impress-steps-outer-wrapper" 
+{% liquid
+  assign visible_icon_size = section.settings.icon_size | times: section.settings.icon_scale | divided_by: 100
+%}
+<section
+  class="impress-steps-outer-wrapper"
   style="
     --bg-color: {{ section.settings.bg_color }};
-    --padding-top: {{ section.settings.padding_top }}px; 
+    --padding-top: {{ section.settings.padding_top }}px;
     --padding-bottom: {{ section.settings.padding_bottom }}px;
     --max-width: {{ section.settings.max_width }}px;
+    --step-icon-size: {{ visible_icon_size }}px;
+    --step-badge-bg: {{ section.settings.badge_bg }};
+    --step-badge-color: {{ section.settings.badge_color }};
+    --step-title-color: {{ section.settings.card_title_color }};
+    --step-desc-color: {{ section.settings.card_desc_color }};
+    --steps-reveal-duration: {{ section.settings.reveal_duration }}ms;
+    --steps-stagger-delay: {{ section.settings.stagger_delay }}ms;
+    --steps-hover-lift: {{ section.settings.hover_lift }}px;
   "
+  data-steps-animate="{{ section.settings.enable_scroll_reveal }}"
+  data-steps-hover="{{ section.settings.enable_hover_lift }}"
+  aria-label="Pasos para realizar un pedido"
 >
   <div class="impress-steps-container">
-    <!-- Header Content -->
     {% if section.settings.subheading != blank %}
       <span class="impress-steps-subheading" style="--subheading-color: {{ section.settings.subheading_color }};">
-        {{ section.settings.subheading }}
+        {{ section.settings.subheading | escape }}
       </span>
     {% endif %}
 
     {% if section.settings.heading != blank %}
       <h2 class="impress-steps-heading" style="--heading-color: {{ section.settings.heading_color }};">
-        {{ section.settings.heading }}
+        {{ section.settings.heading | escape }}
       </h2>
     {% endif %}
 
-    <!-- Step Blocks Grid -->
     <div class="impress-steps-grid">
       {% for block in section.blocks %}
-        <div class="impress-step-card" {{ block.shopify_attributes }}>
-          <div class="impress-step-icon-wrapper">
-            {% if block.settings.custom_icon != blank %}
-              <img 
-                src="{{ block.settings.custom_icon | image_url: width: 120 }}" 
-                alt="{{ block.settings.heading | escape }}" 
-                loading="lazy"
-                width="40"
-                height="40"
-                class="impress-step-custom-icon"
-              >
-            {% else %}
-              <div class="impress-step-number" style="--badge-bg: {{ section.settings.badge_bg }}; --badge-color: {{ section.settings.badge_color }};">
-                {{ forloop.index }}
+        {% liquid
+          assign step_icon = block.settings.default_icon | default: 'auto'
+          if step_icon == 'auto'
+            case forloop.index
+              when 1
+                assign step_icon = 'choose'
+              when 2
+                assign step_icon = 'upload'
+              when 3
+                assign step_icon = 'review'
+              when 4
+                assign step_icon = 'receive'
+              else
+                assign step_icon = 'none'
+            endcase
+          endif
+
+          assign icon_asset = ''
+          case step_icon
+            when 'choose'
+              assign icon_asset = 'impress-step-choose.png'
+            when 'upload'
+              assign icon_asset = 'impress-step-upload.png'
+            when 'review'
+              assign icon_asset = 'impress-step-review.png'
+            when 'receive'
+              assign icon_asset = 'impress-step-receive.png'
+          endcase
+        %}
+        <div class="impress-step-card" style="--steps-index: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          <div class="impress-step-motion-layer">
+          {% if section.settings.show_icons %}
+            {% if block.settings.custom_icon != blank or icon_asset != blank %}
+              <div class="impress-step-icon-wrapper" aria-hidden="true">
+                {% if block.settings.custom_icon != blank %}
+                  <img
+                    src="{{ block.settings.custom_icon | image_url: width: 320 }}"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width="{{ visible_icon_size }}"
+                    height="{{ visible_icon_size }}"
+                    class="impress-step-custom-icon"
+                  >
+                {% else %}
+                  <img
+                    src="{{ icon_asset | asset_url }}"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width="{{ visible_icon_size }}"
+                    height="{{ visible_icon_size }}"
+                    class="impress-step-custom-icon"
+                  >
+                {% endif %}
               </div>
+            {% endif %}
+          {% endif %}
+
+          <div class="impress-step-heading-row">
+            {% if section.settings.show_numbers %}
+              <span class="impress-step-number" aria-label="Paso {{ forloop.index }}">
+                {{ forloop.index }}
+              </span>
+            {% endif %}
+            {% if block.settings.heading != blank %}
+              <h3 class="impress-step-title">{{ block.settings.heading | escape }}</h3>
             {% endif %}
           </div>
 
-          {% if block.settings.heading != blank %}
-            <h3 class="impress-step-title" style="--title-color: {{ section.settings.card_title_color }};">
-              {{ block.settings.heading }}
-            </h3>
-          {% endif %}
-
           {% if block.settings.description != blank %}
-            <p class="impress-step-description" style="--desc-color: {{ section.settings.card_desc_color }};">
-              {{ block.settings.description }}
+            <p class="impress-step-description">
+              {{ block.settings.description | escape }}
             </p>
           {% endif %}
+          </div>
         </div>
       {% endfor %}
     </div>
   </div>
-</div>
+</section>
 
 {% stylesheet %}
   .impress-steps-outer-wrapper {
@@ -67,7 +126,6 @@
     padding-bottom: var(--padding-bottom);
     box-sizing: border-box;
   }
-
   .impress-steps-container {
     max-width: var(--max-width);
     margin: 0 auto;
@@ -75,7 +133,6 @@
     padding-right: 24px;
     box-sizing: border-box;
   }
-
   .impress-steps-subheading {
     display: block;
     font-size: 13px;
@@ -85,82 +142,178 @@
     color: var(--subheading-color, #ffcc00);
     margin-bottom: 12px;
   }
-
   .impress-steps-heading {
-    font-size: 40px;
+    font-size: clamp(28px, 3vw, 40px);
     font-weight: 900;
     line-height: 1.1;
     letter-spacing: -0.8px;
     color: var(--heading-color, #ffffff);
-    margin: 0 0 48px 0;
+    margin: 0 0 48px;
   }
-
   .impress-steps-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 32px;
     width: 100%;
   }
-
   .impress-step-card {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    min-width: 0;
+    transition: transform 240ms cubic-bezier(.2,.7,.2,1);
   }
-
-  .impress-step-icon-wrapper {
-    margin-bottom: 20px;
-    min-height: 40px;
+  /* The hover lift moves the whole card; the reveal affects only its contents.
+     Keeping the transforms separate prevents the two interactions from fighting. */
+  .impress-steps-outer-wrapper[data-steps-hover="true"] .impress-step-card:hover {
+    transform: translateY(calc(-1 * var(--steps-hover-lift)));
+  }
+  .impress-step-motion-layer {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    min-width: 0;
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--steps-reveal-duration) ease,
+      transform var(--steps-reveal-duration) cubic-bezier(.2,.7,.2,1);
   }
-
-  .impress-step-number {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background-color: var(--badge-bg, #ffcc00);
-    color: var(--badge-color, #000000);
-    font-size: 16px;
-    font-weight: 900;
+  /* No JS = everything stays visible. Once revealed, cards stay visible. */
+  .impress-steps-outer-wrapper[data-steps-motion-ready="true"] .impress-step-card:not(.is-in-view) .impress-step-motion-layer {
+    opacity: 0;
+    transform: translateY(22px);
+    transition-delay: 0ms;
+  }
+  .impress-steps-outer-wrapper[data-steps-motion-ready="true"] .impress-step-card.is-in-view .impress-step-motion-layer {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: calc(var(--steps-index) * var(--steps-stagger-delay));
+  }
+  @media (hover: none) {
+    .impress-steps-outer-wrapper[data-steps-hover="true"] .impress-step-card:hover {
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .impress-steps-outer-wrapper .impress-step-card,
+    .impress-steps-outer-wrapper .impress-step-motion-layer {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+  .impress-step-icon-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
+    align-self: stretch;
+    width: 100%;
+    min-height: var(--step-icon-size);
+    margin-bottom: 24px;
   }
-
   .impress-step-custom-icon {
-    width: 40px;
-    height: 40px;
+    display: block;
+    width: var(--step-icon-size);
+    height: var(--step-icon-size);
     object-fit: contain;
   }
-
+  .impress-step-heading-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 30px;
+    margin-bottom: 10px;
+  }
+  .impress-step-number {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    border-radius: 50%;
+    background-color: var(--step-badge-bg, #ffcc00);
+    color: var(--step-badge-color, #000000);
+    font-size: 13px;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
   .impress-step-title {
+    min-width: 0;
     font-size: 20px;
     font-weight: 800;
     line-height: 1.2;
-    color: var(--title-color, #ffffff);
-    margin: 0 0 12px 0;
+    color: var(--step-title-color, #ffffff);
+    margin: 0;
   }
-
   .impress-step-description {
     font-size: 15px;
     line-height: 1.5;
-    color: var(--desc-color, #a1a1aa);
+    color: var(--step-desc-color, #a1a1aa);
     margin: 0;
+    padding-left: 0;
+    text-align: left;
+    width: 100%;
   }
-
   @media (max-width: 768px) {
-    .impress-steps-heading {
-      font-size: 28px;
-      margin-bottom: 32px;
-    }
-
-    .impress-steps-grid {
-      grid-template-columns: 1fr;
-      gap: 28px;
-    }
+    .impress-steps-heading { margin-bottom: 32px; }
+    .impress-steps-grid { grid-template-columns: 1fr; gap: 28px; }
+    /* Cards appear one at a time on narrow screens: don't delay each one by its index. */
+    .impress-steps-outer-wrapper { --steps-stagger-delay: 0ms !important; }
   }
 {% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    function initSteps(root) {
+      var sections = [];
+      if (root && root.matches && root.matches('.impress-steps-outer-wrapper')) {
+        sections = [root];
+      } else if (root && root.querySelectorAll) {
+        sections = Array.prototype.slice.call(root.querySelectorAll('.impress-steps-outer-wrapper'));
+      }
+      sections.forEach(function (section) {
+        if (section.dataset.stepsMotionInitialized === 'true') return;
+        section.dataset.stepsMotionInitialized = 'true';
+        var cards = Array.prototype.slice.call(section.querySelectorAll('.impress-step-card'));
+        var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (section.dataset.stepsAnimate !== 'true' || reducedMotion || !('IntersectionObserver' in window)) {
+          cards.forEach(function (card) { card.classList.add('is-in-view'); });
+          return;
+        }
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            // Reveal each card only once. Never remove the visible state on exit.
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-in-view');
+            observer.unobserve(entry.target);
+          });
+        }, { threshold: [0, 0.12], rootMargin: '0px 0px -8% 0px' });
+        cards.forEach(function (card) { observer.observe(card); });
+        section.dataset.stepsMotionReady = 'true';
+        section._impressStepsObserver = observer;
+      });
+    }
+
+    function start() { initSteps(document); }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start);
+    } else {
+      start();
+    }
+    document.addEventListener('shopify:section:load', function (event) {
+      initSteps(event.target);
+    });
+    document.addEventListener('shopify:section:unload', function (event) {
+      if (!event.target || !event.target.querySelectorAll) return;
+      event.target.querySelectorAll('.impress-steps-outer-wrapper').forEach(function (section) {
+        if (section._impressStepsObserver) section._impressStepsObserver.disconnect();
+      });
+    });
+  })();
+{% endjavascript %}
 
 {% schema %}
 {
@@ -217,6 +370,43 @@
     },
     {
       "type": "header",
+      "content": "Step icons and numbering"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icons",
+      "label": "Show icons above headings",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 40,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "icon_scale",
+      "label": "Icon enlargement",
+      "min": 100,
+      "max": 160,
+      "step": 10,
+      "unit": "%",
+      "default": 140,
+      "info": "Scales the existing icon size so icons grow even if you already saved the old 80px setting."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_numbers",
+      "label": "Show numbered badges beside headings",
+      "default": true
+    },
+    {
+      "type": "header",
       "content": "Cards Styling"
     },
     {
@@ -245,6 +435,52 @@
     },
     {
       "type": "header",
+      "content": "Scroll and hover animations"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_scroll_reveal",
+      "label": "Stagger steps on scroll",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "reveal_duration",
+      "label": "Reveal speed",
+      "min": 300,
+      "max": 900,
+      "step": 50,
+      "unit": "ms",
+      "default": 550
+    },
+    {
+      "type": "range",
+      "id": "stagger_delay",
+      "label": "Delay between steps",
+      "min": 0,
+      "max": 200,
+      "step": 25,
+      "unit": "ms",
+      "default": 100
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_hover_lift",
+      "label": "Lift steps on hover",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "hover_lift",
+      "label": "Hover lift distance",
+      "min": 0,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
       "content": "Section Spacing"
     },
     {
@@ -268,8 +504,40 @@
         {
           "type": "image_picker",
           "id": "custom_icon",
-          "label": "Custom Icon/Image (Optional)",
-          "info": "Replaces the default numbered circle badge if selected."
+          "label": "Custom step icon (optional)",
+          "info": "Overrides the preset icon. Numbers remain visible beside the heading."
+        },
+        {
+          "type": "select",
+          "id": "default_icon",
+          "label": "Preset icon",
+          "options": [
+            {
+              "value": "auto",
+              "label": "Automatic (step 1–4)"
+            },
+            {
+              "value": "choose",
+              "label": "Choose a product"
+            },
+            {
+              "value": "upload",
+              "label": "Upload artwork"
+            },
+            {
+              "value": "review",
+              "label": "Review order"
+            },
+            {
+              "value": "receive",
+              "label": "Receive order"
+            },
+            {
+              "value": "none",
+              "label": "No icon"
+            }
+          ],
+          "default": "auto"
         },
         {
           "type": "text",

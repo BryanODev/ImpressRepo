@@ -353,3 +353,22 @@
 .impress-sticker__view-hint{margin:0;color:#5d737e;font-size:11px;line-height:1.5}
 .impress-sticker__view-hint strong{color:#2d4c5a}
 @media(max-width:480px){.impress-sticker__view-toolbar{right:8px;bottom:8px}}
+
+/* Savings badge: display-only percentage from the selected Shopify variant metafield. */
+.impress-sticker__savings-badge {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin-left:auto;
+  padding:5px 9px;
+  border-radius:999px;
+  color:#155b3e;
+  background:#e3f5eb;
+  border:1px solid #c0e7d1;
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.01em;
+  line-height:1.2;
+  white-space:nowrap;
+}
+.impress-sticker__savings-badge[hidden] { display:none !important; }

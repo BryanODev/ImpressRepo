@@ -1,0 +1,609 @@
+{% comment %}
+  Impress Classic Navbar. New, independent section; the existing impress-header.liquid
+  is deliberately not modified. Product links can be configured under each nav group.
+  The sticky handler targets the theme's internal .page-wrapper scroller.
+{% endcomment %}
+<div
+  class="icn-shell"
+  data-icn-shell
+  data-sticky="{{ section.settings.sticky_nav }}"
+  data-icn-section="{{ section.id }}"
+  style="--icn-bg: {{ section.settings.header_bg_color }}; --icn-text: {{ section.settings.header_text_color }}; --icn-accent: {{ section.settings.accent_color }}; --icn-max: {{ section.settings.max_width }}px; --icn-logo-size: {{ section.settings.logo_max_height }}px; --icn-dropdown-width: {{ section.settings.dropdown_width }}px; --icn-nav-font-size: {{ section.settings.nav_font_size }}px; --icn-mobile-nav-font-size: {{ section.settings.mobile_nav_font_size }}px; --icn-dropdown-heading-font-size: {{ section.settings.dropdown_heading_font_size }}px; --icn-product-heading-font-size: {{ section.settings.product_heading_font_size }}px; --icn-product-description-font-size: {{ section.settings.product_description_font_size }}px; --icn-account-font-size: {{ section.settings.account_font_size }}px; --icn-wordmark-font-size: {{ section.settings.wordmark_font_size }}px;"
+>
+  <header class="icn-header" aria-label="Barra de navegación Impress">
+    <div class="icn-container">
+      <button type="button" class="icn-mobile-menu-btn" data-icn-menu-trigger aria-controls="icn-mobile-nav-{{ section.id }}" aria-expanded="false" aria-label="Abrir menú">
+        <span class="icn-hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+        <svg class="icn-close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5 19 19M19 5 5 19"/></svg>
+      </button>
+      <a class="icn-brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} — Inicio">
+        {% if section.settings.logo != blank %}
+          {{ section.settings.logo | image_url: width: 400 | image_tag: alt: shop.name, loading: 'eager', class: 'icn-logo-image' }}
+        {% else %}
+          <span class="icn-wordmark"><span class="icn-brand-main"><span class="icn-brand-yellow">i</span>m<span class="icn-brand-yellow icn-bold">press</span></span><span class="icn-brand-sub">PRINTING + SIGNS</span></span>
+        {% endif %}
+      </a>
+
+      {%- capture icn_mobile_count_text -%}{%- render 'impress-cart-order-count' -%}{%- endcapture -%}
+      {%- assign icn_count = icn_mobile_count_text | strip | plus: 0 -%}
+      <nav class="icn-nav" id="icn-mobile-nav-{{ section.id }}" aria-label="Navegación de productos">
+        {% assign icn_has_group = false %}
+        {% assign icn_has_nav_item = false %}
+        {% assign icn_mode = 'manual' %}
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'nav_link' %}
+              {% if icn_has_group %}
+                    </div>
+                  </div>
+                </div>
+                {% assign icn_has_group = false %}
+              {% endif %}
+              {% assign icn_has_nav_item = true %}
+              {% assign icn_direct_label = block.settings.title | default: 'Enlace' %}
+              {% if block.settings.link_url != blank %}
+                <a class="icn-nav-link icn-single-link" href="{{ block.settings.link_url }}" {{ block.shopify_attributes }}>{{ icn_direct_label | escape }}</a>
+              {% elsif request.design_mode %}
+                <span class="icn-nav-link icn-single-link icn-unlinked" {{ block.shopify_attributes }}>{{ icn_direct_label | escape }}</span>
+              {% endif %}
+            {% when 'nav_group' %}
+              {% if icn_has_group %}
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+              {% assign icn_has_group = true %}
+              {% assign icn_has_nav_item = true %}
+              {% assign icn_mode = block.settings.source_mode | default: 'manual' %}
+              {% assign icn_collection = block.settings.collection %}
+              {% assign icn_label = block.settings.title | default: icn_collection.title %}
+              {% assign icn_link = block.settings.link_url %}
+              {% if icn_link == blank and icn_collection != blank %}
+                {% assign icn_link = icn_collection.url %}
+              {% endif %}
+              {% if icn_link == blank %}
+                {% assign icn_link = routes.all_products_collection_url %}
+              {% endif %}
+              <div class="icn-group" data-icn-group {{ block.shopify_attributes }}>
+                <div class="icn-group-top">
+                  <a class="icn-nav-link" href="{{ icn_link }}">{{ icn_label | escape }}</a>
+                  <button type="button" class="icn-chevron-btn" data-icn-toggle aria-expanded="false" aria-controls="icn-dropdown-{{ section.id }}-{{ block.id }}" aria-label="Ver opciones de {{ icn_label | escape }}">
+                    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="m3 6 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </div>
+                <div class="icn-dropdown" id="icn-dropdown-{{ section.id }}-{{ block.id }}" data-icn-dropdown>
+                  <div class="icn-dropdown-header">
+                    <button class="icn-mobile-back" type="button" data-icn-back aria-label="Volver al menú principal">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                      <span>Volver</span>
+                    </button>
+                    <span class="icn-dropdown-title">{{ icn_label | escape }}</span>
+                    {% if block.settings.show_all_link %}
+                      <a href="{{ icn_link }}" class="icn-view-all">{{ block.settings.all_label | default: 'Ver todos' | escape }} <span aria-hidden="true">→</span></a>
+                    {% endif %}
+                  </div>
+                  <div class="icn-dropdown-list">
+                    {% if icn_mode == 'collection' %}
+                      {% if icn_collection != blank %}
+                        {% for product in icn_collection.products limit: block.settings.product_limit %}
+                          <a class="icn-product" href="{{ product.url }}">
+                            <span class="icn-product-visual">
+                              {% if product.featured_image != blank %}
+                                {{ product.featured_image | image_url: width: 128 | image_tag: class: 'icn-product-image', loading: 'lazy', alt: product.title }}
+                              {% else %}
+                                <span aria-hidden="true">✦</span>
+                              {% endif %}
+                            </span>
+                            <span class="icn-product-copy">
+                              <strong>{{ product.title | escape }} <span aria-hidden="true">↗</span></strong>
+                              {% if product.description != blank %}
+                                <small>{{ product.description | strip_html | truncate: 92 | escape }}</small>
+                              {% endif %}
+                            </span>
+                          </a>
+                        {% else %}
+                          {% if request.design_mode %}<p class="icn-editor-hint">La colección aún no tiene productos.</p>{% endif %}
+                        {% endfor %}
+                      {% elsif request.design_mode %}
+                        <p class="icn-editor-hint">Selecciona una colección en este grupo.</p>
+                      {% endif %}
+                    {% endif %}
+            {% when 'nav_product' %}
+              {% if icn_has_group and icn_mode == 'manual' %}
+                {% assign icn_product = block.settings.product %}
+                {% assign icn_card_url = block.settings.link_url %}
+                {% if icn_card_url == blank and icn_product != blank %}
+                  {% assign icn_card_url = icn_product.url %}
+                {% endif %}
+                {% assign icn_card_title = block.settings.title %}
+                {% if icn_card_title == blank and icn_product != blank %}
+                  {% assign icn_card_title = icn_product.title %}
+                {% endif %}
+                {% assign icn_card_desc = block.settings.description %}
+                {% if icn_card_desc == blank and icn_product != blank %}
+                  {% assign icn_card_desc = icn_product.description | strip_html | truncate: 92 %}
+                {% endif %}
+                {% assign icn_card_image = block.settings.image %}
+                {% if icn_card_image == blank and icn_product != blank %}
+                  {% assign icn_card_image = icn_product.featured_image %}
+                {% endif %}
+                {% if icn_card_url != blank %}<a class="icn-product" href="{{ icn_card_url }}" {{ block.shopify_attributes }}>{% else %}<div class="icn-product icn-product-unlinked" {{ block.shopify_attributes }}>{% endif %}
+                  <span class="icn-product-visual">
+                    {% if block.settings.visual_mode == 'emoji' and block.settings.icon != blank %}
+                      <span class="icn-emoji" aria-hidden="true">{{ block.settings.icon | escape }}</span>
+                    {% elsif icn_card_image != blank %}
+                      {{ icn_card_image | image_url: width: 128 | image_tag: class: 'icn-product-image', loading: 'lazy', alt: icn_card_title }}
+                    {% elsif block.settings.icon != blank %}
+                      <span class="icn-emoji" aria-hidden="true">{{ block.settings.icon | escape }}</span>
+                    {% else %}
+                      <span aria-hidden="true">✦</span>
+                    {% endif %}
+                  </span>
+                  <span class="icn-product-copy">
+                    {% if icn_card_title != blank %}<strong>{{ icn_card_title | escape }} {% if icn_card_url != blank %}<span aria-hidden="true">↗</span>{% endif %}</strong>{% endif %}
+                    {% if icn_card_desc != blank %}<small>{{ icn_card_desc | strip_html | truncate: 100 | escape }}</small>{% endif %}
+                  </span>
+                {% if icn_card_url != blank %}</a>{% else %}</div>{% endif %}
+              {% endif %}
+          {% endcase %}
+        {% endfor %}
+        {% if icn_has_group %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        {% if icn_has_nav_item == false and request.design_mode %}
+          <p class="icn-editor-hint">Añade enlaces o grupos de navegación.</p>
+        {% endif %}
+      </nav>
+
+      <div class="icn-actions">
+        {% if section.settings.show_account and shop.customer_accounts_enabled %}
+          <details class="icn-account" data-icn-account>
+            <summary class="icn-icon-btn" aria-label="Mi cuenta" title="Mi cuenta">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg>
+            </summary>
+            <div class="icn-account-dropdown">
+              {% if customer %}
+                <p class="icn-account-title">{{ section.settings.account_heading | escape }}</p>
+                <p class="icn-account-greeting">{% if customer.first_name != blank %}{{ customer.first_name | escape }}{% elsif customer.email != blank %}{{ customer.email | escape }}{% else %}Mi cuenta{% endif %}</p>
+                <a class="icn-account-link" href="{{ routes.account_url }}">Mis pedidos <span aria-hidden="true">→</span></a>
+                <a class="icn-account-link" href="{{ routes.account_profile_url }}">Mi perfil <span aria-hidden="true">→</span></a>
+                <a class="icn-account-link" href="{{ routes.account_addresses_url }}">Mis direcciones <span aria-hidden="true">→</span></a>
+                <a class="icn-account-link icn-logout" href="{{ routes.account_logout_url }}">Cerrar sesión</a>
+              {% else %}
+                <p class="icn-account-title">{{ section.settings.account_heading | escape }}</p>
+                <p class="icn-account-description">{{ section.settings.account_description | escape }}</p>
+                <a class="icn-account-primary" href="{{ routes.account_login_url }}">Iniciar sesión</a>
+                <a class="icn-account-secondary" href="{{ routes.account_register_url }}">Crear cuenta</a>
+              {% endif %}
+            </div>
+          </details>
+        {% endif %}
+
+        <a class="icn-icon-btn icn-cart-btn" href="{{ routes.cart_url }}" aria-label="Carrito" title="Carrito">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          {% if icn_count > 0 %}<span class="icn-cart-badge" data-impress-cart-count>{{ icn_count }}</span>{% endif %}
+        </a>
+      </div>
+
+    </div>
+  </header>
+</div>
+
+<script>
+(function () {
+  var shell = document.querySelector('[data-icn-section="{{ section.id }}"]');
+  if (!shell || shell.dataset.icnReady === 'true') return;
+  shell.dataset.icnReady = 'true';
+  var header = shell.querySelector('.icn-header');
+  var nav = shell.querySelector('.icn-nav');
+  var menuButton = shell.querySelector('[data-icn-menu-trigger]');
+  var account = shell.querySelector('[data-icn-account]');
+  var groups = Array.prototype.slice.call(shell.querySelectorAll('[data-icn-group]'));
+  var controller = new AbortController();
+  var signal = controller.signal;
+  var mobileMedia = window.matchMedia('(max-width: 840px)');
+  var mobileOpen = false;
+  var backgroundOverflow = null;
+  var lastHeight = 0;
+  var scroller = shell.closest('.page-wrapper');
+  var lastFixedLeft = null;
+  var lastFixedWidth = null;
+
+  function updateHeaderGeometry() {
+    if (!shell.isConnected) return;
+    var height = header.getBoundingClientRect().height;
+    if (height > 0 && Math.abs(height - lastHeight) > 0.5) {
+      lastHeight = height;
+      shell.style.setProperty('--icn-reserved-height', height + 'px');
+    }
+    var rect = shell.getBoundingClientRect();
+    if (lastFixedLeft === null || Math.abs(rect.left - lastFixedLeft) > 0.5) {
+      lastFixedLeft = rect.left;
+      shell.style.setProperty('--icn-fixed-left', rect.left + 'px');
+    }
+    if (lastFixedWidth === null || Math.abs(rect.width - lastFixedWidth) > 0.5) {
+      lastFixedWidth = rect.width;
+      shell.style.setProperty('--icn-fixed-width', rect.width + 'px');
+    }
+    // The drawer always begins immediately BELOW the visible top bar.
+    shell.style.setProperty('--icn-mobile-top', Math.max(0, header.getBoundingClientRect().bottom) + 'px');
+    if (shell.dataset.sticky === 'true' && !mobileOpen) {
+      var internalScroller = scroller && window.matchMedia('(min-width: 990px)').matches;
+      var viewportTop = internalScroller ? scroller.getBoundingClientRect().top : 0;
+      shell.classList.toggle('icn-stuck', rect.top <= viewportTop);
+    }
+  }
+  function closeGroups(except) {
+    groups.forEach(function (group) {
+      if (group === except) return;
+      group.classList.remove('is-open', 'is-dismissed');
+      var toggle = group.querySelector('[data-icn-toggle]');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    });
+    if (!except) nav.classList.remove('icn-has-submenu');
+  }
+  function openGroup(group) {
+    closeGroups(group);
+    group.classList.add('is-open');
+    group.classList.remove('is-dismissed');
+    var toggle = group.querySelector('[data-icn-toggle]');
+    if (toggle) toggle.setAttribute('aria-expanded', 'true');
+    if (account) account.open = false;
+    if (mobileMedia.matches) {
+      nav.classList.add('icn-has-submenu');
+      nav.scrollTop = 0;
+      var dropdown = group.querySelector('[data-icn-dropdown]');
+      if (dropdown) dropdown.scrollTop = 0;
+      var back = group.querySelector('[data-icn-back]');
+      if (back) back.focus({ preventScroll: true });
+    }
+  }
+  function backToMenu() {
+    var opened = groups.find(function (group) { return group.classList.contains('is-open'); });
+    closeGroups();
+    if (opened) {
+      var link = opened.querySelector('.icn-nav-link');
+      if (link) link.focus({ preventScroll: true });
+    }
+  }
+  function openMobileMenu() {
+    if (!mobileMedia.matches || mobileOpen) return;
+    mobileOpen = true;
+    closeGroups();
+    if (account) account.open = false;
+    backgroundOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    shell.classList.add('icn-menu-open');
+    menuButton.setAttribute('aria-expanded', 'true');
+    menuButton.setAttribute('aria-label', 'Cerrar menú');
+    updateHeaderGeometry();
+    var first = nav.querySelector('.icn-nav-link');
+    if (first) first.focus({ preventScroll: true });
+  }
+  function closeMobileMenu(restoreFocus) {
+    if (!mobileOpen) return;
+    mobileOpen = false;
+    closeGroups();
+    shell.classList.remove('icn-menu-open');
+    menuButton.setAttribute('aria-expanded', 'false');
+    menuButton.setAttribute('aria-label', 'Abrir menú');
+    if (backgroundOverflow !== null) document.body.style.overflow = backgroundOverflow;
+    backgroundOverflow = null;
+    updateHeaderGeometry();
+    if (restoreFocus) menuButton.focus({ preventScroll: true });
+  }
+  menuButton.addEventListener('click', function () {
+    if (mobileOpen) closeMobileMenu(true);
+    else openMobileMenu();
+  }, { signal: signal });
+  groups.forEach(function (group) {
+    var toggle = group.querySelector('[data-icn-toggle]');
+    var link = group.querySelector('.icn-nav-link');
+    var back = group.querySelector('[data-icn-back]');
+    if (link) link.addEventListener('click', function (event) {
+      if (!mobileMedia.matches) return; // desktop remains a real link
+      event.preventDefault();
+      openGroup(group);
+    }, { signal: signal });
+    if (toggle) toggle.addEventListener('click', function () {
+      if (mobileMedia.matches) { openGroup(group); return; }
+      var willOpen = !group.classList.contains('is-open');
+      closeGroups(group);
+      group.classList.toggle('is-open', willOpen);
+      group.classList.toggle('is-dismissed', !willOpen);
+      toggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      if (willOpen && account) account.open = false;
+    }, { signal: signal });
+    if (back) back.addEventListener('click', backToMenu, { signal: signal });
+    group.addEventListener('pointerleave', function () {
+      if (mobileMedia.matches) return; // touch navigation uses explicit back button
+      group.classList.remove('is-dismissed', 'is-open');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    }, { signal: signal });
+  });
+  if (account) account.addEventListener('toggle', function () {
+    if (account.open) {
+      closeGroups();
+      if (mobileOpen) closeMobileMenu(false);
+    }
+  }, { signal: signal });
+  document.addEventListener('pointerdown', function (event) {
+    if (mobileOpen) return; // the full-screen drawer is dismissed using the X
+    if (!shell.contains(event.target)) { closeGroups(); if (account) account.open = false; return; }
+    if (account && !account.contains(event.target)) account.open = false;
+    groups.forEach(function (group) {
+      if (!group.contains(event.target)) {
+        group.classList.remove('is-open');
+        var toggle = group.querySelector('[data-icn-toggle]');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }, { signal: signal });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      if (mobileOpen) {
+        if (nav.classList.contains('icn-has-submenu')) backToMenu();
+        else closeMobileMenu(true);
+        event.preventDefault();
+        return;
+      }
+      closeGroups();
+      if (account && account.open) {
+        account.open = false;
+        var summary = account.querySelector('summary');
+        if (summary) summary.focus();
+      }
+    }
+    if (mobileOpen && event.key === 'Tab') {
+      // Keep keyboard focus inside the open navigation until it is closed.
+      var selectors = 'a[href]:not([tabindex="-1"]), button:not([disabled]):not([tabindex="-1"])';
+      var candidates = [menuButton].concat(Array.prototype.slice.call(nav.querySelectorAll(selectors)), Array.prototype.slice.call(shell.querySelectorAll('.icn-actions a[href], .icn-actions summary')));
+      var focusable = candidates.filter(function (item) { return item.getClientRects().length && getComputedStyle(item).visibility !== 'hidden'; });
+      var first = focusable[0], last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+  }, { signal: signal });
+  function onResponsiveChange() {
+    if (!mobileMedia.matches) closeMobileMenu(false);
+    closeGroups();
+    updateHeaderGeometry();
+  }
+  if (mobileMedia.addEventListener) mobileMedia.addEventListener('change', onResponsiveChange, { signal: signal });
+  else mobileMedia.addListener(onResponsiveChange);
+  if (scroller) scroller.addEventListener('scroll', updateHeaderGeometry, { passive: true, signal: signal });
+  window.addEventListener('scroll', updateHeaderGeometry, { passive: true, signal: signal });
+  window.addEventListener('resize', updateHeaderGeometry, { passive: true, signal: signal });
+  if ('ResizeObserver' in window) {
+    var resizeObserver = new ResizeObserver(updateHeaderGeometry);
+    resizeObserver.observe(header);
+    resizeObserver.observe(shell);
+    signal.addEventListener('abort', function () { resizeObserver.disconnect(); }, { once: true });
+  }
+  updateHeaderGeometry();
+  document.addEventListener('shopify:section:unload', function (event) {
+    if (event.target.contains(shell)) { closeMobileMenu(false); controller.abort(); }
+  }, { signal: signal });
+}());
+</script>
+
+{% stylesheet %}
+.icn-shell { position: relative; width: 100%; font-family: system-ui, -apple-system, sans-serif; }
+.icn-shell, .icn-shell *, .icn-shell *::before, .icn-shell *::after { box-sizing: border-box; }
+.icn-shell.icn-stuck { min-height: var(--icn-reserved-height, 75px); }
+.icn-shell.icn-stuck .icn-header { position: fixed; top: 0; left: var(--icn-fixed-left, 0px); right: auto; width: var(--icn-fixed-width, 100%); z-index: 1100; }
+.icn-shell .icn-header { position: relative; z-index: 60; width: 100%; background: var(--icn-bg); color: var(--icn-text); border-bottom: 1px solid #252525; }
+.icn-shell .icn-container { max-width: var(--icn-max); margin-inline: auto; min-height: 75px; padding: 0 22px; display: flex; align-items: center; justify-content: space-between; gap: clamp(14px, 3vw, 44px); }
+.icn-shell .icn-brand { display: flex; flex-shrink: 0; align-items: center; text-decoration: none; }
+.icn-shell .icn-logo-image { display: block; width: auto; max-height: var(--icn-logo-size); object-fit: contain; }
+.icn-shell .icn-wordmark { display: flex; flex-direction: column; }
+.icn-shell .icn-brand-main { font-size: var(--icn-wordmark-font-size, 32px); line-height: .9; letter-spacing: -1px; color: #fff; }
+.icn-shell .icn-brand-yellow { color: var(--icn-accent); }
+.icn-shell .icn-bold { font-weight: 800; }
+.icn-shell .icn-brand-sub { margin-top: 2px; color: #fff; font-size: 8px; letter-spacing: 1px; font-weight: 800; }
+.icn-shell .icn-nav { position: relative; display: flex; align-items: center; justify-content: center; gap: clamp(8px, 2.4vw, 30px); flex: 1; min-width: 0; }
+.icn-shell .icn-group { position: relative; flex: 0 0 auto; }
+.icn-shell .icn-group::after { content: ''; position: absolute; top: 100%; height: 12px; left: 0; right: 0; }
+.icn-shell .icn-group-top { display: flex; align-items: center; }
+.icn-shell .icn-nav-link { color: var(--icn-text); text-decoration: none; font-size: var(--icn-nav-font-size, 15px); font-weight: 700; padding: 13px 2px; white-space: nowrap; transition: color .16s ease; }
+.icn-shell .icn-nav-link:hover, .icn-shell .icn-group.is-open .icn-nav-link { color: var(--icn-accent); }
+/* Direct links use the same typography as dropdown headings, without a chevron. */
+.icn-shell .icn-single-link { display: inline-flex; align-items: center; flex: 0 0 auto; }
+.icn-shell .icn-single-link.icn-unlinked { opacity: .65; cursor: default; }
+.icn-shell .icn-single-link small { margin-left: 5px; font-size: 10px; color: #aaa; font-weight: 400; }
+.icn-shell .icn-chevron-btn { display: inline-flex; padding: 9px 4px; margin-left: 1px; align-items: center; justify-content: center; border: 0; color: var(--icn-text); background: transparent; cursor: pointer; }
+.icn-shell .icn-chevron-btn svg { transition: transform .18s ease; }
+.icn-shell .icn-group.is-open .icn-chevron-btn svg { transform: rotate(180deg); }
+.icn-shell .icn-dropdown { position: absolute; z-index: 100; top: calc(100% + 10px); left: 50%; width: min(var(--icn-dropdown-width), calc(100vw - 28px)); max-height: min(66vh, 640px); overflow: auto; padding: 16px; border: 1px solid #353535; border-radius: 13px; background: #191919; box-shadow: 0 18px 36px rgba(0,0,0,.5); visibility: hidden; opacity: 0; pointer-events: none; transform: translate(-50%, 9px); transition: opacity .18s ease, transform .18s ease, visibility .18s; }
+.icn-shell .icn-group.is-open .icn-dropdown { visibility: visible; opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+@media (hover: hover) and (pointer: fine) {
+  .icn-shell .icn-group:not(.is-dismissed):hover .icn-dropdown,
+  .icn-shell .icn-group:focus-within .icn-dropdown { visibility: visible; opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+}
+.icn-shell .icn-dropdown-header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 10px; }
+.icn-shell .icn-dropdown-title { color: #bbb; font-size: var(--icn-dropdown-heading-font-size, 11px); font-weight: 850; letter-spacing: .9px; text-transform: uppercase; }
+.icn-shell .icn-view-all { text-decoration: none; font-size: var(--icn-product-description-font-size, 11px); color: var(--icn-accent); font-weight: 800; white-space: nowrap; }
+.icn-shell .icn-dropdown-list { display: grid; grid-template-columns: 1fr; gap: 5px; }
+.icn-shell .icn-product { display: flex; gap: 11px; align-items: center; padding: 9px; text-decoration: none; min-width: 0; border-radius: 9px; }
+.icn-shell a.icn-product:hover { background: #292929; }
+.icn-shell .icn-product-unlinked { opacity: .65; }
+.icn-shell .icn-product-visual { display: flex; flex: 0 0 48px; justify-content: center; align-items: center; width: 48px; height: 48px; border-radius: 8px; overflow: hidden; background: #303030; color: var(--icn-accent); font-size: 24px; }
+.icn-shell .icn-product-image { width: 100%; height: 100%; object-fit: cover; }
+.icn-shell .icn-product-copy { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.icn-shell .icn-product-copy strong { color: #fff; font-size: var(--icn-product-heading-font-size, 13px); line-height: 1.3; }
+.icn-shell .icn-product-copy strong span { color: var(--icn-accent); }
+.icn-shell .icn-product-copy small { font-size: var(--icn-product-description-font-size, 11px); color: #a6a6a6; line-height: 1.35; overflow-wrap: anywhere; }
+.icn-shell .icn-editor-hint { font-size: var(--icn-product-description-font-size, 11px); color: #aaa; }
+.icn-shell .icn-actions { display: flex; align-items: center; flex-shrink: 0; gap: 10px; }
+.icn-shell .icn-icon-btn { display: flex; align-items: center; justify-content: center; position: relative; padding: 7px; border: 0; background: none; color: var(--icn-text); text-decoration: none; cursor: pointer; list-style: none; }
+.icn-shell summary::-webkit-details-marker { display: none; }
+.icn-shell .icn-icon-btn:hover { opacity: .8; }
+.icn-shell .icn-cart-badge { position: absolute; top: -2px; right: -6px; display: flex; justify-content: center; align-items: center; padding: 0 4px; min-width: 16px; height: 16px; border-radius: 99px; color: #000; background: var(--icn-accent); font-size: 10px; font-weight: 800; }
+.icn-shell .icn-account { position: relative; }
+.icn-shell .icn-account-dropdown { position: absolute; top: calc(100% + 15px); right: 0; width: min(290px, calc(100vw - 28px)); padding: 18px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #333; border-radius: 12px; color: #fff; background: #1b1b1b; box-shadow: 0 20px 30px rgba(0,0,0,.55); z-index: 1001; }
+.icn-shell .icn-account-title { color: #fff; font-size: var(--icn-account-font-size, 13px); font-weight: 800; margin: 0; }
+.icn-shell .icn-account-description, .icn-shell .icn-account-greeting { color: #aaa; font-size: var(--icn-account-font-size, 13px); margin: 0; line-height: 1.45; overflow-wrap: anywhere; }
+.icn-shell .icn-account-primary, .icn-shell .icn-account-secondary { display: flex; justify-content: center; align-items: center; border-radius: 9px; padding: 11px; font-size: var(--icn-account-font-size, 13px); font-weight: 800; text-decoration: none; }
+.icn-shell .icn-account-primary { background: var(--icn-accent); color: #000; }
+.icn-shell .icn-account-secondary { color: var(--icn-accent); border: 1px solid var(--icn-accent); }
+.icn-shell .icn-account-link { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid #303030; color: #eee; text-decoration: none; font-size: var(--icn-account-font-size, 13px); }
+.icn-shell .icn-account-link:hover { color: var(--icn-accent); }
+.icn-shell .icn-logout { color: #aaa; border-bottom: 0; }
+.icn-shell :is(a, button, summary):focus-visible { outline: 2px solid var(--icn-accent); outline-offset: 3px; }
+.icn-shell .icn-mobile-menu-btn, .icn-shell .icn-mobile-back { display: none; }
+@media (max-width: 840px) {
+  .icn-shell.icn-menu-open { min-height: var(--icn-reserved-height, 75px); }
+  .icn-shell.icn-menu-open .icn-header { position: fixed; left: var(--icn-fixed-left, 0px); width: var(--icn-fixed-width, 100%); top: 0; z-index: 1202; }
+  /* Familiar mobile header: menu left, logo centered, account/cart right. */
+  .icn-shell .icn-container { min-height: 70px; padding: 10px 16px; display: grid; grid-template-columns: minmax(72px, 1fr) auto minmax(72px, 1fr); align-items: center; gap: 4px; }
+  .icn-shell .icn-brand { grid-column: 2; grid-row: 1; min-width: 0; max-width: 38vw; justify-self: center; }
+  .icn-shell .icn-logo-image { max-width: min(38vw, 178px); max-height: var(--icn-logo-size); height: auto; }
+  .icn-shell .icn-wordmark .icn-brand-main { font-size: clamp(20px, 6vw, 28px); }
+  .icn-shell .icn-actions { grid-column: 3; grid-row: 1; display: flex; justify-self: end; align-items: center; gap: 1px; min-width: 0; }
+  .icn-shell .icn-icon-btn { width: 36px; height: 40px; padding: 6px; }
+  .icn-shell .icn-icon-btn svg { width: 21px; height: 21px; }
+  .icn-shell .icn-account-dropdown { position: fixed; top: var(--icn-mobile-top, 70px); right: max(8px, calc(100vw - var(--icn-fixed-left, 0px) - var(--icn-fixed-width, 100%))); max-height: calc(100dvh - var(--icn-mobile-top, 70px) - 8px); overflow-y: auto; z-index: 1204; }
+  .icn-shell .icn-mobile-menu-btn { grid-column: 1; grid-row: 1; justify-self: start; display: flex; flex-shrink: 0; align-items: center; justify-content: center; color: var(--icn-text); border: 1px solid #373737; background: #222; border-radius: 11px; width: 44px; height: 44px; padding: 9px; cursor: pointer; }
+  .icn-shell .icn-mobile-menu-btn:hover { background: #303030; }
+  .icn-shell .icn-hamburger { display: flex; flex-direction: column; gap: 5px; width: 23px; }
+  .icn-shell .icn-hamburger span { display: block; height: 2px; width: 100%; border-radius: 3px; background: currentColor; }
+  .icn-shell .icn-close-icon { display: none; }
+  .icn-shell.icn-menu-open .icn-close-icon { display: block; }
+  .icn-shell.icn-menu-open .icn-hamburger { display: none; }
+  .icn-shell .icn-nav { display: none; }
+  .icn-shell.icn-menu-open .icn-nav {
+    display: flex; position: fixed; top: var(--icn-mobile-top, 70px); bottom: 0; left: var(--icn-fixed-left, 0px);
+    width: var(--icn-fixed-width, 100%); min-width: 0; max-height: none; z-index: 1201;
+    flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 0;
+    margin: 0; padding: 22px 18px max(24px, env(safe-area-inset-bottom));
+    overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
+    background: #171717; border-top: 1px solid #2c2c2c;
+  }
+  .icn-shell .icn-nav::before { content: 'EXPLORA IMPRESS'; color: var(--icn-accent); font-size: 11px; letter-spacing: 1.4px; font-weight: 850; padding: 7px 7px 18px; }
+  .icn-shell .icn-group { position: static; flex: 0 0 auto; width: 100%; border-bottom: 1px solid #323232; }
+  .icn-shell .icn-group::after { display: none; }
+  .icn-shell .icn-group-top { min-height: 68px; display: flex; justify-content: space-between; gap: 12px; }
+  .icn-shell .icn-nav-link { flex: 1; padding: 18px 7px; font-size: max(17px, var(--icn-mobile-nav-font-size, 13px)); line-height: 1.35; color: var(--icn-text); }
+  .icn-shell .icn-single-link { flex: 0 0 auto; width: 100%; min-height: 68px; border-bottom: 1px solid #323232; padding: 18px 7px; }
+  .icn-shell .icn-chevron-btn { width: 46px; margin: 0; padding: 12px; color: #ccc; }
+  .icn-shell .icn-chevron-btn svg { transform: rotate(-90deg); width: 18px; height: 18px; }
+  .icn-shell .icn-group.is-open .icn-chevron-btn svg { transform: rotate(-90deg); }
+  .icn-shell .icn-group:is(:hover, :focus-within) .icn-dropdown { visibility: hidden; opacity: 0; pointer-events: none; }
+  .icn-shell .icn-dropdown, .icn-shell .icn-group.is-open .icn-dropdown {
+    position: absolute; z-index: 3; top: 0; bottom: 0; left: 0; right: 0;
+    width: 100%; max-height: none; height: 100%; overflow-y: auto; overflow-x: hidden;
+    overscroll-behavior: contain; border: 0; border-radius: 0; box-shadow: none;
+    background: #171717; padding: 20px 18px 32px;
+    transform: none; transition: none; visibility: hidden; opacity: 0; pointer-events: none;
+  }
+  /* Touch menus must NEVER open the desktop hover dropdown until tapped. */
+  .icn-shell .icn-nav .icn-group .icn-dropdown { visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+  .icn-shell .icn-nav.icn-has-submenu::before { visibility: hidden; }
+  .icn-shell .icn-nav.icn-has-submenu > .icn-group { visibility: hidden; }
+  .icn-shell .icn-nav.icn-has-submenu > .icn-single-link { visibility: hidden; }
+  .icn-shell .icn-nav.icn-has-submenu > .icn-group.is-open { visibility: visible; }
+  .icn-shell .icn-nav.icn-has-submenu > .icn-group.is-open .icn-dropdown {
+    visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; transform: none;
+  }
+  .icn-shell .icn-dropdown-header { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 12px; padding: 0 0 17px; margin-bottom: 10px; }
+  .icn-shell .icn-mobile-back { display: flex; gap: 6px; align-items: center; justify-content: flex-start; border: 0; background: none; cursor: pointer; padding: 8px 0; color: var(--icn-accent); font-size: 14px; font-weight: 750; grid-column: 1 / -1; }
+  .icn-shell .icn-dropdown-title { grid-column: 1; color: #fff; font-size: max(17px, var(--icn-mobile-nav-font-size, 13px)); letter-spacing: normal; text-transform: none; }
+  .icn-shell .icn-view-all { grid-column: 2; justify-self: end; font-size: 12px; }
+  .icn-shell .icn-dropdown-list { gap: 7px; }
+  .icn-shell .icn-product { min-height: 75px; padding: 12px 9px; background: #222; border-radius: 11px; }
+  .icn-shell .icn-product-visual { flex-basis: 54px; width: 54px; height: 54px; font-size: 25px; }
+  .icn-shell .icn-product-copy strong { font-size: max(14px, var(--icn-product-heading-font-size, 13px)); }
+  .icn-shell .icn-product-copy small { font-size: max(12px, var(--icn-product-description-font-size, 11px)); }
+}
+@media (max-width: 370px) {
+  .icn-shell .icn-container { padding-inline: 10px; grid-template-columns: minmax(72px, 1fr) auto minmax(72px, 1fr); }
+  .icn-shell .icn-brand { max-width: 35vw; }
+  .icn-shell .icn-logo-image { max-width: 35vw; }
+  .icn-shell.icn-menu-open .icn-nav { padding-inline: 13px; }
+  .icn-shell .icn-dropdown, .icn-shell .icn-group.is-open .icn-dropdown { padding-inline: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .icn-shell .icn-dropdown, .icn-shell .icn-chevron-btn svg, .icn-shell .icn-nav-link { transition: none; }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Impress Classic Navbar",
+  "settings": [
+    { "type": "header", "content": "Brand" },
+    { "type": "image_picker", "id": "logo", "label": "Logo Image" },
+    { "type": "range", "id": "logo_max_height", "label": "Logo Height", "min": 20, "max": 100, "step": 2, "unit": "px", "default": 42 },
+    { "type": "header", "content": "Layout and sticky" },
+    { "type": "checkbox", "id": "sticky_nav", "label": "Keep navbar visible while scrolling", "default": true },
+    { "type": "range", "id": "max_width", "label": "Maximum content width", "min": 1000, "max": 1600, "step": 20, "unit": "px", "default": 1440 },
+    { "type": "range", "id": "dropdown_width", "label": "Dropdown width", "min": 320, "max": 640, "step": 20, "unit": "px", "default": 480 },
+    { "type": "header", "content": "Font sizes" },
+    { "type": "range", "id": "nav_font_size", "label": "Navigation links (desktop)", "min": 11, "max": 24, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "mobile_nav_font_size", "label": "Navigation links (mobile)", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 13 },
+    { "type": "range", "id": "dropdown_heading_font_size", "label": "Dropdown section heading", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 11 },
+    { "type": "range", "id": "product_heading_font_size", "label": "Dropdown product names", "min": 11, "max": 22, "step": 1, "unit": "px", "default": 13 },
+    { "type": "range", "id": "product_description_font_size", "label": "Dropdown descriptions", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 11 },
+    { "type": "range", "id": "account_font_size", "label": "Account dropdown text", "min": 11, "max": 20, "step": 1, "unit": "px", "default": 13 },
+    { "type": "range", "id": "wordmark_font_size", "label": "Text logo if no image", "min": 24, "max": 44, "step": 1, "unit": "px", "default": 32 },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "header_bg_color", "label": "Header background", "default": "#111111" },
+    { "type": "color", "id": "header_text_color", "label": "Text", "default": "#ffffff" },
+    { "type": "color", "id": "accent_color", "label": "Yellow accent", "default": "#ffd800" },
+    { "type": "header", "content": "Customer account" },
+    { "type": "checkbox", "id": "show_account", "label": "Show account icon", "default": true },
+    { "type": "text", "id": "account_heading", "label": "Account heading", "default": "Mi cuenta" },
+    { "type": "textarea", "id": "account_description", "label": "Signed-out text", "default": "Inicia sesión o crea una cuenta para ver tus pedidos." }
+  ],
+  "max_blocks": 50,
+  "blocks": [
+    {
+      "type": "nav_link",
+      "name": "Single Link",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Link label", "default": "Inicio" },
+        { "type": "url", "id": "link_url", "label": "Link destination" }
+      ]
+    },
+    {
+      "type": "nav_group",
+      "name": "Navigation Group",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Top navigation label", "default": "Productos" },
+        { "type": "url", "id": "link_url", "label": "Top link destination (optional)" },
+        { "type": "select", "id": "source_mode", "label": "Dropdown contents", "default": "manual", "options": [ { "value": "manual", "label": "Product Card blocks following this group" }, { "value": "collection", "label": "Products from collection" } ] },
+        { "type": "collection", "id": "collection", "label": "Collection (optional)" },
+        { "type": "range", "id": "product_limit", "label": "Collection product limit", "min": 2, "max": 12, "step": 1, "default": 6 },
+        { "type": "checkbox", "id": "show_all_link", "label": "Show View All link in dropdown", "default": true },
+        { "type": "text", "id": "all_label", "label": "View All label", "default": "Ver todos" }
+      ]
+    },
+    {
+      "type": "nav_product",
+      "name": "Dropdown Product Card",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Shopify product (recommended)" },
+        { "type": "text", "id": "title", "label": "Custom title (optional)" },
+        { "type": "textarea", "id": "description", "label": "Short description (optional)" },
+        { "type": "url", "id": "link_url", "label": "Custom destination (optional)" },
+        { "type": "select", "id": "visual_mode", "label": "Visual source", "default": "auto", "options": [ { "value": "auto", "label": "Image first, then emoji" }, { "value": "emoji", "label": "Emoji icon" } ] },
+        { "type": "image_picker", "id": "image", "label": "Custom image / icon (optional)" },
+        { "type": "text", "id": "icon", "label": "Emoji icon", "default": "🏷️" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Impress Classic Navbar", "blocks": [
+      { "type": "nav_group", "settings": { "title": "Stickers", "link_url": "/products/vinyl-sticker" } },
+      { "type": "nav_product", "settings": { "product": "vinyl-sticker" } },
+      { "type": "nav_group", "settings": { "title": "Banners", "link_url": "/products/banners" } },
+      { "type": "nav_product", "settings": { "product": "banners" } },
+      { "type": "nav_group", "settings": { "title": "Others", "link_url": "/collections/all" } },
+      { "type": "nav_product", "settings": { "product": "business-cards" } },
+      { "type": "nav_product", "settings": { "product": "flyers" } }
+    ] }
+  ]
+}
+{% endschema %}

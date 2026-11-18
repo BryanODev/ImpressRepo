@@ -46,6 +46,8 @@
 .impress-faq__item { background:#23252b; border-radius:16px; border:1px solid #363940; overflow:hidden; }
 .impress-faq__item[open] { border-color:#71747b; }
 .impress-faq__question { cursor:pointer; padding:19px 20px; display:flex; align-items:center; justify-content:space-between; gap:22px; color:#fff; font-size:16px; line-height:1.35; font-weight:800; list-style:none; }
+.impress-faq__question:hover, .impress-faq__question:focus-visible { color:var(--imf-accent); }
+.impress-faq__question { transition:color .18s ease; }
 .impress-faq__question::-webkit-details-marker { display:none; }
 .impress-faq__question::marker { content:''; }
 .impress-faq__question:focus-visible { outline:3px solid var(--imf-accent); outline-offset:-4px; border-radius:12px; }

@@ -171,6 +171,7 @@
                 <div class="impress-sticker__field-heading">
                   <span class="impress-sticker__step">04</span>
                   <label class="impress-sticker__label" for="ImpressPieces-{{ section.id }}">Cantidad</label>
+                  <span class="impress-sticker__savings-badge" data-impress-savings-badge hidden aria-live="polite"></span>
                 </div>
                 <select class="impress-sticker__select" id="ImpressPieces-{{ section.id }}" data-impress-pieces aria-label="Piezas por paquete"></select>
               </div>
@@ -224,7 +225,8 @@
             "id": {{ variant.id | json }},
             "options": {{ variant.options | json }},
             "price": {{ variant.price | json }},
-            "available": {{ variant.available | json }}
+            "available": {{ variant.available | json }},
+            "savingsPercent": {{ variant.metafields.custom.impress_savings.value | default: 0 | plus: 0 | json }}
           }{%- unless forloop.last -%},{%- endunless -%}
         {%- endfor -%}
       ]

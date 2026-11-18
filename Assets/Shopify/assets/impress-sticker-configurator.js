@@ -62,6 +62,7 @@
     const sizeLabel = find('[data-impress-size-label]');
     const sizeHelp = find('[data-impress-contour-size-help]');
     const piecesSelect = find('[data-impress-pieces]');
+    const savingsBadge = find('[data-impress-savings-badge]');
     const variantIdInput = find('[data-impress-variant-id]');
     const propSize = find('[data-impress-property-size]');
     const propPieces = find('[data-impress-property-pieces]');
@@ -236,7 +237,10 @@
         return {
           id: String(variant.id), shape: String(variant.options[mapping.shape]),
           finish: String(variant.options[mapping.finish]), ...pack,
-          priceCents: cents, available: Boolean(variant.available)
+          priceCents: cents, available: Boolean(variant.available),
+          savingsPercent: Number.isInteger(Number(variant.savingsPercent)) &&
+            Number(variant.savingsPercent) > 0 && Number(variant.savingsPercent) <= 100
+            ? Number(variant.savingsPercent) : 0
         };
       })
       .filter(Boolean);
@@ -286,9 +290,19 @@
         const sizeMatches = finishMatches.filter(v => v.size === state.size);
         const quantities = unique(sizeMatches.map(v => v.pieces)).sort((a, b) => a - b);
         if (!quantities.includes(state.pieces)) state.pieces = quantities[0];
-        renderSelect(piecesSelect, quantities, state.pieces);
+        // Display only. Never change the Shopify variant, cart price or add-on price.
+        renderSelect(piecesSelect, quantities, state.pieces, pieces => {
+          const variant = sizeMatches.find(v => v.pieces === Number(pieces));
+          return variant?.savingsPercent > 0
+            ? `${pieces} · Ahorra ${variant.savingsPercent}%` : String(pieces);
+        });
 
         const match = sizeMatches.find(v => v.pieces === state.pieces);
+        if (savingsBadge) {
+          const percent = match?.savingsPercent || 0;
+          savingsBadge.textContent = percent > 0 ? `Ahorra ${percent}%` : '';
+          savingsBadge.hidden = percent <= 0;
+        }
         const ready = Boolean(match && match.available);
         variantIdInput.value = match ? match.id : '';
         price.textContent = match ? money.format(match.priceCents / 100) : '—';
@@ -309,6 +323,7 @@
       shapeHost.replaceChildren();finishHost.replaceChildren();
       renderSelect(sizeSelect, [], '');renderSelect(piecesSelect, [], '');
       variantIdInput.value = '';price.textContent = '—';
+      if (savingsBadge) { savingsBadge.textContent = ''; savingsBadge.hidden = true; }
       window.ImpressAddons?.setBase(form,null);
       priceNote.textContent = 'Sin variantes Shopify válidas';submit.disabled = true;
       message.textContent = !mapping
