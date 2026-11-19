@@ -30,6 +30,9 @@
 
     {{ 'impress-addons.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'impress-addon-cart.js' | asset_url }}" defer></script>
+    {{ 'impress-global-interactions.css' | asset_url | stylesheet_tag }}
+    {{ 'impress-site-polish.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'impress-global-interactions.js' | asset_url }}" defer></script>
     {{ content_for_header }}
   </head>
 

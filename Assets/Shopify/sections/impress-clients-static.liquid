@@ -25,7 +25,7 @@
 <section
   id="impress-static-logos-{{ section.id }}"
   class="impress-static-logo-wrapper"
-  style="--imsl-bg: {{ section.settings.bg_color }}; --imsl-padding-v: {{ section.settings.vertical_padding }}px; --imsl-max-width: {{ section.settings.max_width }}px; --imsl-row-gap: {{ section.settings.row_gap }}px; --imsl-logo-gap: {{ section.settings.logo_gap }}px; --imsl-heading-color: {{ section.settings.title_color }};"
+  style="--imsl-bg: {{ section.settings.bg_color }}; --imsl-padding-v: {{ section.settings.vertical_padding }}px; --imsl-max-width: {{ section.settings.max_width }}px; --imsl-row-gap: {{ section.settings.row_gap }}px; --imsl-logo-gap: {{ section.settings.logo_gap }}px; --imsl-heading-color: {{ section.settings.title_color }}; --imsl-logo-opacity: {{ section.settings.logo_opacity | times: 0.01 }}; --imsl-logo-hover-opacity: {{ section.settings.logo_opacity | times: 0.0085 }}; --imsl-fade-duration: {{ section.settings.fade_duration }}ms;"
   aria-label="{{ section.settings.title | default: 'Clientes y organizaciones' | escape }}"
 >
   <div class="impress-static-logo-container">
@@ -43,7 +43,7 @@
             {% if block.settings.image != blank %}
               {% assign image_index = image_index | plus: 1 %}
               {% if image_index <= first_row_count %}
-                <div class="impress-static-logo-item" role="listitem" {{ block.shopify_attributes }}>
+                <div class="impress-static-logo-item" role="listitem" style="--imsl-delay: {{ image_index | minus: 1 | times: section.settings.fade_stagger }}ms;" {{ block.shopify_attributes }}>
                   {% if block.settings.link != blank %}<a href="{{ block.settings.link }}" class="impress-static-logo-link">{% endif %}
                   <div class="impress-static-logo-box" style="--imsl-logo-width: {{ block.settings.logo_width }}px;">
                     <img
@@ -68,7 +68,7 @@
               {% if block.settings.image != blank %}
                 {% assign image_index = image_index | plus: 1 %}
                 {% if image_index > first_row_count and image_index <= max_visible_logos %}
-                  <div class="impress-static-logo-item" role="listitem" {{ block.shopify_attributes }}>
+                  <div class="impress-static-logo-item" role="listitem" style="--imsl-delay: {{ image_index | minus: 1 | times: section.settings.fade_stagger }}ms;" {{ block.shopify_attributes }}>
                     {% if block.settings.link != blank %}<a href="{{ block.settings.link }}" class="impress-static-logo-link">{% endif %}
                     <div class="impress-static-logo-box" style="--imsl-logo-width: {{ block.settings.logo_width }}px;">
                       <img
@@ -139,11 +139,26 @@
   justify-content: center;
   width: var(--imsl-logo-width);
   max-width: 100%;
+  opacity: var(--imsl-logo-opacity);
   transition: transform .2s ease, opacity .2s ease;
 }
 .impress-static-logo-box:hover {
   transform: translateY(-2px);
-  opacity: .85;
+  opacity: var(--imsl-logo-hover-opacity);
+}
+/* On-scroll reveal is enabled only after JS successfully initializes. With JS off,
+   images remain visible and the section retains its original static layout. */
+.impress-static-logo-wrapper.imsl-motion-ready:not(.imsl-has-revealed) .impress-static-logo-item {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.impress-static-logo-wrapper.imsl-has-revealed .impress-static-logo-item {
+  animation: imsl-fade-in var(--imsl-fade-duration) cubic-bezier(.22,.7,.22,1) both;
+  animation-delay: var(--imsl-delay, 0ms);
+}
+@keyframes imsl-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .impress-static-logo-box img {
   width: 100%;
@@ -162,32 +177,220 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .impress-static-logo-box { transition: none; }
+  .impress-static-logo-wrapper.imsl-motion-ready .impress-static-logo-item {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 {% endstylesheet %}
+
+<script>
+(function () {
+  var sectionId = 'impress-static-logos-{{ section.id }}';
+  var fadeEnabled = {{ section.settings.enable_fade_in | json }};
+
+  function initImpressStaticLogos() {
+    var sectionEl = document.getElementById(sectionId);
+    if (!sectionEl || sectionEl.dataset.imslMotionInitialized === 'true') return;
+    sectionEl.dataset.imslMotionInitialized = 'true';
+
+    if (!fadeEnabled || !('IntersectionObserver' in window) ||
+        (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+      return;
+    }
+
+    var items = sectionEl.querySelectorAll('.impress-static-logo-item');
+    if (!items.length) return;
+
+    var observer = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          sectionEl.classList.add('imsl-has-revealed');
+          observer.disconnect(); // one reveal only, not every scroll-in
+          break;
+        }
+      }
+    }, { threshold: 0.12 });
+
+    // Add the hidden-before-reveal class only after an observer exists.
+    sectionEl.classList.add('imsl-motion-ready');
+    observer.observe(sectionEl);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initImpressStaticLogos, { once: true });
+  } else {
+    initImpressStaticLogos();
+  }
+  // Shopify Theme Editor may rerender a section without a full page refresh.
+  document.addEventListener('shopify:section:load', function (event) {
+    if (event.target && event.target.querySelector && event.target.querySelector('#' + sectionId)) {
+      initImpressStaticLogos();
+    }
+  });
+})();
+</script>
 
 {% schema %}
 {
   "name": "Impress Static Logos",
   "settings": [
-    {"type":"text","id":"title","label":"Section Heading","default":"CLIENTES Y ORGANIZACIONES ATENDIDAS"},
-    {"type":"color","id":"bg_color","label":"Background Color","default":"#ffffff"},
-    {"type":"range","id":"vertical_padding","min":10,"max":100,"step":5,"unit":"px","label":"Top & Bottom Padding","default":40},
-    {"type":"range","id":"first_row_count","label":"Logos in first row","min":1,"max":12,"step":1,"default":6},
-    {"type":"range","id":"second_row_count","label":"Logos in second row","min":1,"max":12,"step":1,"default":4},
-    {"type":"range","id":"row_gap","label":"Gap between rows","min":0,"max":100,"step":5,"unit":"px","default":45},
-    {"type":"range","id":"logo_gap","label":"Space between logos","min":16,"max":80,"step":4,"unit":"px","default":48},
-    {"type":"range","id":"max_width","label":"Section max width","min":900,"max":1600,"step":20,"unit":"px","default":1440},
-    {"type":"color","id":"title_color","label":"Heading Color","default":"#888888"}
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Heading",
+      "default": "CLIENTES Y ORGANIZACIONES ATENDIDAS"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top & Bottom Padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "first_row_count",
+      "label": "Logos in first row",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "second_row_count",
+      "label": "Logos in second row",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "row_gap",
+      "label": "Gap between rows",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 45
+    },
+    {
+      "type": "range",
+      "id": "logo_gap",
+      "label": "Space between logos",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Section max width",
+      "min": 900,
+      "max": 1600,
+      "step": 20,
+      "unit": "px",
+      "default": 1240
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Heading Color",
+      "default": "#888888"
+    },
+    {
+      "type": "header",
+      "content": "Logo visibility & animation"
+    },
+    {
+      "type": "range",
+      "id": "logo_opacity",
+      "label": "Logo opacity",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_fade_in",
+      "label": "Fade in when entering view",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "fade_duration",
+      "label": "Fade-in duration",
+      "min": 200,
+      "max": 2000,
+      "step": 100,
+      "unit": "ms",
+      "default": 800
+    },
+    {
+      "type": "range",
+      "id": "fade_stagger",
+      "label": "Delay between logos",
+      "min": 0,
+      "max": 250,
+      "step": 25,
+      "unit": "ms",
+      "default": 75
+    }
   ],
   "max_blocks": 24,
   "blocks": [
-    {"type":"logo","name":"Client Logo","settings":[
-      {"type":"text","id":"title","label":"Client Name"},
-      {"type":"image_picker","id":"image","label":"Logo Image"},
-      {"type":"range","id":"logo_width","min":60,"max":400,"step":10,"unit":"px","label":"Custom Card Width","default":180},
-      {"type":"url","id":"link","label":"Client Link (Optional)"}
-    ]}
+    {
+      "type": "logo",
+      "name": "Client Logo",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Client Name"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Logo Image"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "min": 60,
+          "max": 400,
+          "step": 10,
+          "unit": "px",
+          "label": "Custom Card Width",
+          "default": 180
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Client Link (Optional)"
+        }
+      ]
+    }
   ],
-  "presets": [{"name":"Impress Static Logos"}]
+  "presets": [
+    {
+      "name": "Impress Static Logos"
+    }
+  ]
 }
 {% endschema %}

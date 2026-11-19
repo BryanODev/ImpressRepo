@@ -14,8 +14,7 @@
         {% if section.settings.description != blank %}<p class="impress-home-cta__description">{{ section.settings.description }}</p>{% endif %}
       </div>
       <div class="impress-home-cta__actions">
-        {% if section.settings.primary_label != blank %}<a class="impress-home-cta__btn impress-home-cta__btn--primary" href="{{ section.settings.primary_link | default: '#' }}">{{ section.settings.primary_label }}</a>{% endif %}
-        {% if section.settings.secondary_label != blank %}<a class="impress-home-cta__btn impress-home-cta__btn--secondary" href="{{ section.settings.secondary_link | default: '#' }}">{{ section.settings.secondary_label }}</a>{% endif %}
+        {% if section.settings.primary_label != blank %}<a class="impress-home-cta__btn impress-home-cta__btn--primary" href="{{ section.settings.primary_link | default: '/pages/catalogo' }}">{{ section.settings.primary_label | escape }} <span aria-hidden="true">↗</span></a>{% endif %}
       </div>
     </div>
   </div>
@@ -37,8 +36,10 @@
 .impress-home-cta__description { margin: 0; max-width: 58ch; font-size: 15px; line-height: 1.6; color: #cfd4da; }
 .impress-home-cta__actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .impress-home-cta__btn { min-height: 48px; padding: 0 18px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; text-decoration: none; }
-.impress-home-cta__btn--primary { background: var(--cta-accent); color: #111; }
-.impress-home-cta__btn--secondary { background: rgba(255,255,255,.12); color: #fff; }
+.impress-home-cta__btn--primary { background: var(--cta-accent); color: #111; gap: 14px; white-space: nowrap; }
+.impress-home-cta__btn--primary:hover { transform: translateY(-2px); }
+.impress-home-cta__btn--primary { transition: transform .2s ease; }
+
 @media (max-width: 768px) { .impress-home-cta { padding-left: 16px; padding-right: 16px; } .impress-home-cta__card { padding: 24px; flex-direction: column; align-items: flex-start; } }
 {% endstylesheet %}
 {% schema %}
@@ -47,11 +48,9 @@
   "settings": [
     { "type": "text", "id": "subheading", "label": "Subheading", "default": "¿Listo para ordenar?" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Empieza por el producto que necesitas." },
-    { "type": "textarea", "id": "description", "label": "Description", "default": "Usa el configurador de stickers o banners hoy, y seguimos refinando el resto del catálogo después." },
-    { "type": "text", "id": "primary_label", "label": "Primary button label", "default": "Ordenar Stickers" },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Descubre stickers, banners, tarjetas de presentación y flyers. Encuentra la mejor opción para tu negocio." },
+    { "type": "text", "id": "primary_label", "label": "Primary button label", "default": "Explorar catálogo" },
     { "type": "url", "id": "primary_link", "label": "Primary button link" },
-    { "type": "text", "id": "secondary_label", "label": "Secondary button label", "default": "Ordenar Banners" },
-    { "type": "url", "id": "secondary_link", "label": "Secondary button link" },
     { "type": "range", "id": "max_width", "label": "Max width", "min": 900, "max": 1440, "step": 20, "unit": "px", "default": 1240 },
     { "type": "color", "id": "bg_color", "label": "Background", "default": "#0f1014" },
     { "type": "color", "id": "accent_color", "label": "Accent", "default": "#fbbf00" },

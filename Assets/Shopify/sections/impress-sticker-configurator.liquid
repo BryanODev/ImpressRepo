@@ -1,3 +1,5 @@
+<script src="{{ 'impress-configurator-ux.js' | asset_url }}" defer></script>
+{{ 'impress-configurator-ux.css' | asset_url | stylesheet_tag }}
 {{ 'impress-sticker-configurator.css' | asset_url | stylesheet_tag }}
 {{ 'impress-preview-shared.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'impress-addons.js' | asset_url }}" defer></script>
@@ -97,18 +99,20 @@
           </div>
           <div class="impress-sticker__editor-tools" data-ie-tools>
             <div class="impress-sticker__tools-heading"><strong>Personaliza tu diseño</strong><span>CONFIG v0.3</span></div>
+            <button type="button" class="impress-config-advanced-toggle" data-impress-advanced-toggle aria-controls="impress-advanced-{{ section.id }}" aria-expanded="false">Ajustes avanzados <span aria-hidden="true">⌄</span></button>
+            <div class="impress-config-advanced" id="impress-advanced-{{ section.id }}" data-impress-advanced-panel>
             <div class="impress-sticker__tool-row impress-sticker__tool-row--scale">
               <label for="ieScale-{{ section.id }}">Escala <output data-ie-scale-value>100%</output></label>
-              <input id="ieScale-{{ section.id }}" data-ie-scale type="range" min="20" max="250" step="1" value="100" disabled>
+              <div class="impress-config-adjust"><input id="ieScale-{{ section.id }}" data-ie-scale type="range" min="20" max="250" step="1" value="100" disabled><div class="impress-config-number"><input type="number" data-impress-number-for="ie-scale" aria-label="Escala en porcentaje" inputmode="numeric" min="20" max="250" step="1" value="100" disabled><span aria-hidden="true">%</span></div></div>
             </div>
             <div class="impress-sticker__tool-row impress-sticker__tool-row--rotate">
               <label for="ieRotate-{{ section.id }}">Rotación <output data-ie-rotate-value>0°</output></label>
-              <input id="ieRotate-{{ section.id }}" data-ie-rotate type="range" min="-180" max="180" step="1" value="0" disabled>
+              <div class="impress-config-adjust"><input id="ieRotate-{{ section.id }}" data-ie-rotate type="range" min="-180" max="180" step="1" value="0" disabled><div class="impress-config-number"><input type="number" data-impress-number-for="ie-rotate" aria-label="Rotación en grados" inputmode="numeric" min="-180" max="180" step="1" value="0" disabled><span aria-hidden="true">°</span></div></div>
             </div>
             <div class="impress-sticker__tool-row impress-sticker__tool-row--two">
               <div>
                 <label for="ieStroke-{{ section.id }}">Borde <output data-ie-stroke-value>0</output></label>
-                <input id="ieStroke-{{ section.id }}" data-ie-stroke type="range" min="0" max="28" step="1" value="0" disabled>
+                <div class="impress-config-adjust"><input id="ieStroke-{{ section.id }}" data-ie-stroke type="range" min="0" max="28" step="1" value="0" disabled><div class="impress-config-number"><input type="number" data-impress-number-for="ie-stroke" aria-label="Grosor del borde" inputmode="numeric" min="0" max="28" step="1" value="0" disabled><span aria-hidden="true"></span></div></div>
               </div>
               <div>
                 <label for="ieColor-{{ section.id }}">Color del borde</label>
@@ -121,6 +125,8 @@
               <label for="ieTolerance-{{ section.id }}">Sensibilidad <output data-ie-tolerance-value>35</output></label>
               <input id="ieTolerance-{{ section.id }}" data-ie-tolerance type="range" min="10" max="100" step="1" value="35" disabled>
               <small>Funciona mejor con fondos lisos. No es eliminación de fondo por IA.</small>
+            </div>
+            
             </div>
             <div class="impress-sticker__tool-bottom">
               <button type="button" data-ie-download disabled>Descargar vista PNG</button>

@@ -4,7 +4,7 @@
 .impress-paper{--ip-ink:#192b34;--ip-muted:#6d808c;--ip-line:#d9e3e8;--ip-yellow:#fbbf00;color:var(--ip-ink);font-family:inherit}
 .impress-paper *, .impress-paper *::before,.impress-paper *::after{box-sizing:border-box}
 .impress-paper [hidden]{display:none!important}
-.impress-paper__shell{max-width:1280px;margin:0 auto;padding:46px 22px 74px}
+.impress-paper__shell{max-width:1240px;margin:0 auto;padding:46px 22px 74px}
 .impress-paper__header{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:26px}
 .impress-paper__eyebrow{font-size:11px;letter-spacing:.16em;font-weight:800;color:#ed583a;margin:0 0 12px}
 .impress-paper__header h1{font-family:inherit;font-size:clamp(30px,4vw,50px);font-weight:800;line-height:1.08;letter-spacing:-.048em;margin:0}

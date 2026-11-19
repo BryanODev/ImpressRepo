@@ -1,7 +1,7 @@
 /* Impress Sticker Configurator — isolated styles, no frameworks required. */
 .impress-sticker { --ie-ink: #15252d; --ie-muted: #697981; --ie-accent: #ed583a; --ie-line: #dde5e8; --ie-bg: #f5f7f7; font-family: inherit; color: var(--ie-ink); }
 .impress-sticker *, .impress-sticker *::before, .impress-sticker *::after { box-sizing: border-box; }
-.impress-sticker__shell { max-width: 1250px; padding: 50px 22px 70px; margin: auto; }
+.impress-sticker__shell { max-width: 1240px; padding: 50px 22px 70px; margin: auto; }
 .impress-sticker__header { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin: 0 0 28px; }
 .impress-sticker__eyebrow { color: var(--ie-accent); letter-spacing: .16em; font-size: 11px; font-weight: 800; margin: 0 0 12px; }
 .impress-sticker__title { margin: 0; letter-spacing: -.045em; font-size: clamp(30px,4vw,50px); line-height: 1.1; color: var(--ie-ink); }

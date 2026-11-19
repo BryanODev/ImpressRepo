@@ -1,0 +1,56 @@
+/* IMPRESS visual rhythm: 1240px shared content alignment. Full-bleed hero is intentionally exempt. */
+:root{--impress-content-width:1240px;}
+/* Eyebrow / small metadata palette. These are text colors; decorative guide colors remain functional. */
+.impress-slidehero__eyebrow,.impress-catalog__eyebrow,.impress-benefits__eyebrow,
+.impress-blog-showcase__eyebrow,.impress-showcase__eyebrow,.impress-all-products__eyebrow,
+.impress-related__eyebrow,.impress-reviews__eyebrow,.impress-steps-subheading,
+.subheading-accent,.impress-static-logo-title,.logo-marquee-title,
+.impress-catalog-intro__eyebrow{
+  color:#888888!important;
+}
+.impress-catalog-card__eyebrow{color:#ffffff!important;}
+.impress-faq__eyebrow,.impress-home-cta__eyebrow,.impress-site-footer__eyebrow,
+.impress-site-footer__wordmark-sub{color:#fbbf00!important;}
+.impress-sticker__eyebrow,.impress-banner__eyebrow,.impress-paper__eyebrow{color:#888888!important;}
+.impress-sticker__version,.impress-banner__version,.impress-paper__version,
+.impress-sticker__tools-heading span,.impress-banner__tools-head span,
+.impress-paper__tools-head span,.impress-sticker__placeholder-small,
+.impress-banner__free-orientation,.impress-paper__field-label small,
+.impress-site-footer__bottom,.impress-site-footer__policies a,
+.impress-blog-showcase__date,.impress-blog-showcase__hint,
+.impress-catalog-intro__note{color:#888888!important;}
+.impress-catalog__all small{color:#111111!important;}
+.impress-banner__dropzone small,.impress-sticker__dropzone small,
+.impress-paper__upload small,.impress-paper__total small,.impress-banner__summary small,
+.impress-paper__empty small,.impress-sticker__bg-row small{color:#888888!important;}
+
+/* Small supporting text in the editors, product cards and nav menus. */
+.impress-sticker__preview-top,.impress-banner__preview-top,.impress-paper__preview-head,
+.impress-sticker__editor-tabs button:not(.is-active),.impress-banner__tabs button:not(.is-active),
+.impress-paper__modes button:not(.is-active),.impress-paper__sides button:not(.is-active),
+.impress-sticker__placeholder-small,.impress-sticker__legend,.impress-sticker__summary-caption,
+.impress-sticker__checkout-note,.impress-sticker__file-hint,
+.impress-banner__tilt-hint,.impress-banner__guide-note,.impress-banner__field-note,
+.impress-banner__checkout-note,.impress-banner__mount-copy small,.impress-banner__file,
+.impress-paper__guide-note,.impress-paper__field>p,.impress-paper__disclaimer,
+.impress-sticker__disclaimer,.impress-banner__disclaimer,
+.impress-addons__heading small,.impress-addons__copy small,.impress-addons__art-notes small,
+.impress-addons__group-price,.impress-addons__group-option-price,
+.impress-price-summary__row span,.impress-price-summary__grand>span,
+.impress-price-summary>small,.impress-site-footer__social a,
+.impress-showcase__disclaimer,.impress-related__head p,.impress-reviews__card figcaption,
+.icn-shell .icn-single-link small,.impress-header .col-title,
+.impress-header .item-description,.impress-header .impress-editor-note,
+.impress-header .account-dropdown-description,.impress-header .account-greeting{
+  color:#888888!important;
+}
+.impress-sticker__tools-heading span,.impress-banner__tools-head span,
+.impress-paper__tools-head span,.impress-banner__summary span,
+.impress-paper__total span,.impress-sticker__summary-pieces,
+.impress-banner__summary small,.impress-banner__free-orientation{
+  color:#888888!important;
+}
+.impress-banner__step,.impress-paper__step{color:#111111!important;}
+.impress-sticker__step{color:#fbbf00!important;}
+/* Eyebrow metadata on dark areas must remain readable. */
+.impress-site-footer__social a:hover{color:#fbbf00!important;}

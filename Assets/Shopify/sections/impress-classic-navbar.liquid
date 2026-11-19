@@ -8,7 +8,7 @@
   data-icn-shell
   data-sticky="{{ section.settings.sticky_nav }}"
   data-icn-section="{{ section.id }}"
-  style="--icn-bg: {{ section.settings.header_bg_color }}; --icn-text: {{ section.settings.header_text_color }}; --icn-accent: {{ section.settings.accent_color }}; --icn-max: {{ section.settings.max_width }}px; --icn-logo-size: {{ section.settings.logo_max_height }}px; --icn-dropdown-width: {{ section.settings.dropdown_width }}px; --icn-nav-font-size: {{ section.settings.nav_font_size }}px; --icn-mobile-nav-font-size: {{ section.settings.mobile_nav_font_size }}px; --icn-dropdown-heading-font-size: {{ section.settings.dropdown_heading_font_size }}px; --icn-product-heading-font-size: {{ section.settings.product_heading_font_size }}px; --icn-product-description-font-size: {{ section.settings.product_description_font_size }}px; --icn-account-font-size: {{ section.settings.account_font_size }}px; --icn-wordmark-font-size: {{ section.settings.wordmark_font_size }}px;"
+  style="--icn-bg: {{ section.settings.header_bg_color }}; --icn-text: {{ section.settings.header_text_color }}; --icn-accent: {{ section.settings.accent_color }}; --icn-max: {{ section.settings.max_width }}px; --icn-logo-size: {{ section.settings.logo_max_height }}px; --icn-dropdown-width: {{ section.settings.dropdown_width }}px; --icn-nav-font-size: {{ section.settings.nav_font_size }}px; --icn-mobile-nav-font-size: {{ section.settings.mobile_nav_font_size }}px; --icn-dropdown-heading-font-size: {{ section.settings.dropdown_heading_font_size }}px; --icn-product-heading-font-size: {{ section.settings.product_heading_font_size }}px; --icn-product-description-font-size: {{ section.settings.product_description_font_size }}px; --icn-account-font-size: {{ section.settings.account_font_size }}px; --icn-wordmark-font-size: {{ section.settings.wordmark_font_size }}px; --icn-min-height: {{ section.settings.nav_min_height }}px; --icn-mobile-min-height: {{ section.settings.mobile_nav_min_height }}px; --icn-logo-hover-tilt: -{{ section.settings.logo_hover_rotation }}deg; --icn-logo-hover-lift: -{{ section.settings.logo_hover_lift }}px;"
 >
   <header class="icn-header" aria-label="Barra de navegación Impress">
     <div class="icn-container">
@@ -392,11 +392,14 @@
 {% stylesheet %}
 .icn-shell { position: relative; width: 100%; font-family: system-ui, -apple-system, sans-serif; }
 .icn-shell, .icn-shell *, .icn-shell *::before, .icn-shell *::after { box-sizing: border-box; }
-.icn-shell.icn-stuck { min-height: var(--icn-reserved-height, 75px); }
+.icn-shell.icn-stuck { min-height: var(--icn-reserved-height, var(--icn-min-height, 75px)); }
 .icn-shell.icn-stuck .icn-header { position: fixed; top: 0; left: var(--icn-fixed-left, 0px); right: auto; width: var(--icn-fixed-width, 100%); z-index: 1100; }
 .icn-shell .icn-header { position: relative; z-index: 60; width: 100%; background: var(--icn-bg); color: var(--icn-text); border-bottom: 1px solid #252525; }
-.icn-shell .icn-container { max-width: var(--icn-max); margin-inline: auto; min-height: 75px; padding: 0 22px; display: flex; align-items: center; justify-content: space-between; gap: clamp(14px, 3vw, 44px); }
+.icn-shell .icn-container { max-width: var(--icn-max); margin-inline: auto; min-height: var(--icn-min-height, 75px); padding: 0 22px; display: flex; align-items: center; justify-content: space-between; gap: clamp(14px, 3vw, 44px); }
 .icn-shell .icn-brand { display: flex; flex-shrink: 0; align-items: center; text-decoration: none; }
+.icn-shell .icn-brand > * { transform-origin: center; transition: transform .3s cubic-bezier(.2,.8,.2,1); }
+@media (hover: hover) and (pointer: fine) { .icn-shell .icn-brand:hover > *, .icn-shell .icn-brand:focus-visible > * { transform: translateY(0px) rotate(-1deg); } }
+@media (prefers-reduced-motion: reduce) { .icn-shell .icn-brand > * { transition: none; } }
 .icn-shell .icn-logo-image { display: block; width: auto; max-height: var(--icn-logo-size); object-fit: contain; }
 .icn-shell .icn-wordmark { display: flex; flex-direction: column; }
 .icn-shell .icn-brand-main { font-size: var(--icn-wordmark-font-size, 32px); line-height: .9; letter-spacing: -1px; color: #fff; }
@@ -454,10 +457,10 @@
 .icn-shell :is(a, button, summary):focus-visible { outline: 2px solid var(--icn-accent); outline-offset: 3px; }
 .icn-shell .icn-mobile-menu-btn, .icn-shell .icn-mobile-back { display: none; }
 @media (max-width: 840px) {
-  .icn-shell.icn-menu-open { min-height: var(--icn-reserved-height, 75px); }
+  .icn-shell.icn-menu-open { min-height: var(--icn-reserved-height, var(--icn-mobile-min-height, 70px)); }
   .icn-shell.icn-menu-open .icn-header { position: fixed; left: var(--icn-fixed-left, 0px); width: var(--icn-fixed-width, 100%); top: 0; z-index: 1202; }
   /* Familiar mobile header: menu left, logo centered, account/cart right. */
-  .icn-shell .icn-container { min-height: 70px; padding: 10px 16px; display: grid; grid-template-columns: minmax(72px, 1fr) auto minmax(72px, 1fr); align-items: center; gap: 4px; }
+  .icn-shell .icn-container { min-height: var(--icn-mobile-min-height, 70px); padding: 10px 16px; display: grid; grid-template-columns: minmax(72px, 1fr) auto minmax(72px, 1fr); align-items: center; gap: 4px; }
   .icn-shell .icn-brand { grid-column: 2; grid-row: 1; min-width: 0; max-width: 38vw; justify-self: center; }
   .icn-shell .icn-logo-image { max-width: min(38vw, 178px); max-height: var(--icn-logo-size); height: auto; }
   .icn-shell .icn-wordmark .icn-brand-main { font-size: clamp(20px, 6vw, 28px); }
@@ -536,9 +539,13 @@
     { "type": "header", "content": "Brand" },
     { "type": "image_picker", "id": "logo", "label": "Logo Image" },
     { "type": "range", "id": "logo_max_height", "label": "Logo Height", "min": 20, "max": 100, "step": 2, "unit": "px", "default": 42 },
+    { "type": "range", "id": "logo_hover_rotation", "label": "Logo hover rotation", "min": 0, "max": 5, "step": 1, "unit": "deg", "default": 1 },
+    { "type": "range", "id": "logo_hover_lift", "label": "Logo hover upward movement", "min": 0, "max": 5, "step": 1, "unit": "px", "default": 1 },
     { "type": "header", "content": "Layout and sticky" },
+    { "type": "range", "id": "nav_min_height", "label": "Minimum navbar height (desktop)", "min": 60, "max": 150, "step": 5, "unit": "px", "default": 75 },
+    { "type": "range", "id": "mobile_nav_min_height", "label": "Minimum navbar height (mobile)", "min": 60, "max": 120, "step": 5, "unit": "px", "default": 70 },
     { "type": "checkbox", "id": "sticky_nav", "label": "Keep navbar visible while scrolling", "default": true },
-    { "type": "range", "id": "max_width", "label": "Maximum content width", "min": 1000, "max": 1600, "step": 20, "unit": "px", "default": 1440 },
+    { "type": "range", "id": "max_width", "label": "Maximum content width", "min": 1000, "max": 1600, "step": 20, "unit": "px", "default": 1240 },
     { "type": "range", "id": "dropdown_width", "label": "Dropdown width", "min": 320, "max": 640, "step": 20, "unit": "px", "default": 480 },
     { "type": "header", "content": "Font sizes" },
     { "type": "range", "id": "nav_font_size", "label": "Navigation links (desktop)", "min": 11, "max": 24, "step": 1, "unit": "px", "default": 15 },

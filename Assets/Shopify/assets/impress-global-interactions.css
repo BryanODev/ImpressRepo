@@ -1,0 +1,57 @@
+/* IMPRESS | Sitewide touch and image interactions
+ * Remove the browser's default blue/gray tap flash without disabling
+ * keyboard focus indicators or the theme's intended hover effects.
+ */
+/* Force transparent tap feedback for nested buttons, links, SVG icons,
+ * and section-specific clickable surfaces. The previous non-important
+ * declaration did not override every storefront or app stylesheet. */
+html, html *, html *::before, html *::after {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+}
+
+/* The blue rectangle can also be touch text-selection on link labels. Keep
+ * ordinary page text selectable; only disable selection on clickable UI. */
+:is(a, button, summary, [role='button'], [role='link'], input[type='button'],
+    input[type='submit'], input[type='reset']) {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Horizon and Impress sections have their own :focus-visible outlines.
+ * Remove these only for TOUCH interaction on coarse-pointer devices. Keep
+ * real keyboard focus visible (JS enables .impress-keyboard-navigation). */
+@media (hover: none) and (pointer: coarse) {
+  html:not(.impress-keyboard-navigation)
+  :is(a, button, summary, [role='button'], [role='link'], [tabindex]:not(input):not(textarea):not(select),
+      input[type='button'], input[type='submit'], input[type='reset']):is(:focus, :focus-visible) {
+    outline: none !important;
+    outline-offset: 0 !important;
+  }
+
+  /* A few theme controls draw the focus ring as a pseudo-element instead. */
+  html:not(.impress-keyboard-navigation) .close-button:focus-visible::after,
+  html:not(.impress-keyboard-navigation) .quick-add-modal__button:focus-visible::after {
+    outline: none !important;
+    border-color: transparent !important;
+  }
+
+  /* Some button focus rings use shadows rather than an outline. Do not
+   * affect permanent/default shadows or decorative hover effects. */
+  html:not(.impress-keyboard-navigation)
+  :is(a, button, summary, [role='button'], [role='link'],
+      input[type='button'], input[type='submit'], input[type='reset']):focus-visible {
+    box-shadow: none !important;
+  }
+}
+
+
+/* Disable native image dragging, selection, and (where supported)
+ * the mobile image long-press callout. Does not disable links, sliders,
+ * product galleries, or canvas-based artwork interactions.
+ */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}

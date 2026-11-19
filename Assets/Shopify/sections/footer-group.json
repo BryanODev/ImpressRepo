@@ -1,5 +1,11 @@
 /*
- * IMPRESS storefront layout. Editable in Shopify Theme Editor.
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
  */
 {
   "type": "footer",
@@ -8,13 +14,16 @@
     "impress_footer_main": {
       "type": "impress-footer",
       "settings": {
-        "max_width": 1320,
+        "max_width": 1240,
         "padding_top": 65,
         "padding_bottom": 25,
         "bg_color": "#101115",
         "accent_color": "#fbbf00",
+        "eyebrow": "IMPRESIÓN QUE DEJA HUELLA",
+        "cta_heading": "Tu idea merece verse increíble.",
+        "cta_label": "Explorar productos",
         "cta_link": "",
-        "logo": "shopify://shop_images/Impress_Logo.png",
+        "logo": "shopify://shop_images/IMPRESS_STICKERS.png",
         "brand_description": "Stickers, banners e impresión personalizada para darle vida a tus ideas y hacer que tu negocio destaque.",
         "location": "Isabela, Puerto Rico",
         "products_title": "Productos",

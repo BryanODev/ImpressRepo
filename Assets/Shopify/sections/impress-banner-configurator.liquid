@@ -1,3 +1,5 @@
+<script src="{{ 'impress-configurator-ux.js' | asset_url }}" defer></script>
+{{ 'impress-configurator-ux.css' | asset_url | stylesheet_tag }}
 {{ 'impress-banner-configurator.css' | asset_url | stylesheet_tag }}
 {{ 'impress-preview-shared.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'impress-addons.js' | asset_url }}" defer></script>
@@ -54,13 +56,17 @@
           </div>
           <div class="impress-banner__tools">
             <div class="impress-banner__tools-head"><strong>Ajusta tu arte</strong><span>EDICIÓN BÁSICA</span></div>
+            <button type="button" class="impress-config-advanced-toggle" data-impress-advanced-toggle aria-controls="impress-advanced-{{ section.id }}" aria-expanded="false">Ajustes avanzados <span aria-hidden="true">⌄</span></button>
+            <div class="impress-config-advanced" id="impress-advanced-{{ section.id }}" data-impress-advanced-panel>
             <div class="impress-banner__tool">
               <label for="IbScale-{{ section.id }}">Escala <output data-ib-scale-value>100%</output></label>
-              <input id="IbScale-{{ section.id }}" type="range" data-ib-scale min="20" max="250" step="1" value="100" disabled>
+              <div class="impress-config-adjust"><input id="IbScale-{{ section.id }}" type="range" data-ib-scale min="20" max="250" step="1" value="100" disabled><div class="impress-config-number"><input type="number" data-impress-number-for="ib-scale" aria-label="Escala en porcentaje" inputmode="numeric" min="20" max="250" step="1" value="100" disabled><span aria-hidden="true">%</span></div></div>
             </div>
             <div class="impress-banner__tool">
               <label for="IbRotate-{{ section.id }}">Rotación <output data-ib-rotate-value>0°</output></label>
-              <input id="IbRotate-{{ section.id }}" type="range" data-ib-rotate min="-180" max="180" step="1" value="0" disabled>
+              <div class="impress-config-adjust"><input id="IbRotate-{{ section.id }}" type="range" data-ib-rotate min="-180" max="180" step="1" value="0" disabled><div class="impress-config-number"><input type="number" data-impress-number-for="ib-rotate" aria-label="Rotación en grados" inputmode="numeric" min="-180" max="180" step="1" value="0" disabled><span aria-hidden="true">°</span></div></div>
+            </div>
+            
             </div>
             <div class="impress-banner__tool-bottom"><button type="button" data-ib-download disabled>Descargar vista PNG</button><span data-ib-editor-message aria-live="polite">El archivo original se conserva sin modificar.</span></div>
           </div>

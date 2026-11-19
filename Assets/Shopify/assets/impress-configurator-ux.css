@@ -1,0 +1,36 @@
+/* Mobile-first progressive disclosure for all four Impress product editors. */
+.impress-config-advanced { display:grid;gap:14px;min-width:0; }
+.impress-config-adjust{display:flex;gap:12px;align-items:center;width:100%;min-width:0;}
+.impress-config-adjust>input[type="range"]{flex:1 1 auto;min-width:0;width:100%;}
+.impress-config-number{display:flex;align-items:center;flex:0 0 auto;min-width:74px;min-height:42px;border:1px solid #c6cbd0;border-radius:10px;background:#fff;color:#111111;padding:0 9px;gap:3px;}
+.impress-config-number:focus-within{outline:2px solid #fbbf00;outline-offset:1px;border-color:#111111;}
+.impress-config-number input{appearance:textfield;-moz-appearance:textfield;width:48px;min-width:0;padding:9px 0;background:transparent;border:0!important;box-shadow:none!important;color:#111111;font-family:inherit;font-size:14px;font-weight:700;line-height:1.2;text-align:right;outline:0!important;}
+.impress-config-number input::-webkit-inner-spin-button,.impress-config-number input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+.impress-config-number input:disabled{opacity:.45;cursor:not-allowed;}
+.impress-config-number span{color:#888888;font-size:13px;font-weight:700;}
+.impress-sticker__tool-row label output,.impress-banner__tool label output,.impress-paper__range label output{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.impress-config-advanced-toggle{display:none;}
+@media (max-width: 767px){
+  [data-impress-ux-ready="true"] .impress-config-advanced-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:48px;padding:12px 14px;margin:10px 0 0;border:1px solid #d2d8dc;border-radius:12px;background:#f5f6f7;color:#111111;font:800 14px/1.3 system-ui,sans-serif;text-align:left;cursor:pointer;}
+  .impress-config-advanced-toggle span{font-size:21px;line-height:1;transition:transform .2s ease;}
+  .impress-config-advanced-toggle[aria-expanded="true"] span{transform:rotate(180deg);}
+  [data-impress-ux-ready="true"] .impress-config-advanced:not(.is-open){display:none!important;}
+  .impress-config-advanced.is-open{display:grid;gap:16px;padding-top:16px;}
+  .impress-config-adjust{gap:10px;}
+  .impress-config-number{min-height:46px;min-width:80px;}
+  .impress-config-number input{font-size:16px;}
+  .impress-config-adjust input[type="range"]{min-height:34px;accent-color:#111111;touch-action:auto;}
+  .impress-sticker__editor-actions button,.impress-banner__toolbar button,.impress-paper__toolbar button{min-height:42px;}
+  /* Essential actions stay visible; guides and redo are available under Advanced. */
+  .impress-sticker:not(.impress-config-expanded) .impress-sticker__editor-actions .impress-sticker__guides-toggle,
+  .impress-sticker:not(.impress-config-expanded) .impress-sticker__editor-actions [data-ie-action="redo"],
+  .impress-banner:not(.impress-config-expanded) .impress-banner__toolbar .impress-banner__toggle,
+  .impress-banner:not(.impress-config-expanded) .impress-banner__toolbar [data-ib-action="redo"],
+  .impress-paper:not(.impress-config-expanded) .impress-paper__toolbar label,
+  .impress-paper:not(.impress-config-expanded) .impress-paper__toolbar [data-ip-action="redo"]{display:none!important;}
+  .impress-sticker:not(.impress-config-expanded) .impress-sticker__safety-note:not([data-warning="true"]),
+  .impress-banner:not(.impress-config-expanded) .impress-banner__guide-note,
+  .impress-paper:not(.impress-config-expanded) .impress-paper__guide-note{display:none;}
+  .impress-sticker__editor-tools,.impress-banner__tools,.impress-paper__controls{overflow:visible;}
+}
+@media (prefers-reduced-motion:reduce){.impress-config-advanced-toggle span{transition:none;}}

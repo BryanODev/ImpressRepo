@@ -131,65 +131,69 @@
         "divider_color": ""
       }
     },
-    "impress_header_jQRGrQ": {
-      "type": "impress-header",
+    "impress_classic_navbar_6LDbhR": {
+      "type": "impress-classic-navbar",
       "blocks": {
-        "column_Wk8edD": {
-          "type": "column",
+        "nav_group_wfRAUr": {
+          "type": "nav_group",
           "settings": {
             "title": "Stickers",
+            "link_url": "/products/vinyl-sticker",
             "source_mode": "manual",
             "collection": "",
             "product_limit": 6,
-            "show_collection_link": true
+            "show_all_link": true,
+            "all_label": "Ver todos"
           }
         },
-        "item_card_nierEL": {
-          "type": "item_card",
+        "nav_product_VHkCti": {
+          "type": "nav_product",
           "settings": {
             "product": "vinyl-sticker",
-            "title": "Vinyl Stickers",
+            "title": "",
             "description": "",
             "link_url": "",
             "visual_mode": "auto",
-            "image": "shopify://shop_images/ChatGPT_Image_Nov_15_2026_09_51_02_PM-1.png",
             "icon": "🏷️"
           }
         },
-        "column_hymwr3": {
-          "type": "column",
+        "nav_group_HfbD9X": {
+          "type": "nav_group",
           "settings": {
             "title": "Banners",
+            "link_url": "/products/banners",
             "source_mode": "manual",
             "collection": "",
             "product_limit": 6,
-            "show_collection_link": true
+            "show_all_link": true,
+            "all_label": "Ver todos"
           }
         },
-        "item_card_xRYEhV": {
-          "type": "item_card",
+        "nav_product_64efJz": {
+          "type": "nav_product",
           "settings": {
             "product": "banners",
-            "title": "Banners",
+            "title": "",
             "description": "",
             "link_url": "",
             "visual_mode": "auto",
-            "image": "shopify://shop_images/ChatGPT_Image_Nov_15_2026_09_51_02_PM-2.png",
             "icon": "🏷️"
           }
         },
-        "column_VqtJbe": {
-          "type": "column",
+        "nav_group_ket6Qx": {
+          "type": "nav_group",
           "settings": {
-            "title": "Stationary",
+            "title": "Others",
+            "link_url": "/collections/all",
             "source_mode": "manual",
             "collection": "",
             "product_limit": 6,
-            "show_collection_link": true
+            "show_all_link": true,
+            "all_label": "Ver todos"
           }
         },
-        "item_card_eEMUJQ": {
-          "type": "item_card",
+        "nav_product_FwXnVT": {
+          "type": "nav_product",
           "settings": {
             "product": "business-cards",
             "title": "",
@@ -199,52 +203,46 @@
             "icon": "🏷️"
           }
         },
-        "item_card_gp4bEL": {
-          "type": "item_card",
+        "nav_product_CMcH6N": {
+          "type": "nav_product",
           "settings": {
             "product": "flyers",
             "title": "",
             "description": "",
             "link_url": "",
             "visual_mode": "auto",
-            "image": "shopify://shop_images/ChatGPT_Image_Nov_15_2026_09_51_03_PM-3.png",
             "icon": "🏷️"
           }
         }
       },
       "block_order": [
-        "column_Wk8edD",
-        "item_card_nierEL",
-        "column_hymwr3",
-        "item_card_xRYEhV",
-        "column_VqtJbe",
-        "item_card_eEMUJQ",
-        "item_card_gp4bEL"
+        "nav_group_wfRAUr",
+        "nav_product_VHkCti",
+        "nav_group_HfbD9X",
+        "nav_product_64efJz",
+        "nav_group_ket6Qx",
+        "nav_product_FwXnVT",
+        "nav_product_CMcH6N"
       ],
-      "name": "Stacked Custom Header",
+      "name": "Impress Classic Navbar",
       "settings": {
-        "logo": "shopify://shop_images/Impress_Logo.png",
-        "logo_max_height": 42,
+        "logo": "shopify://shop_images/IMPRESS_STICKERS.png",
+        "logo_max_height": 70,
+        "nav_min_height": 90,
+        "mobile_nav_min_height": 70,
+        "sticky_nav": true,
+        "max_width": 1240,
+        "dropdown_width": 480,
+        "nav_font_size": 20,
+        "mobile_nav_font_size": 13,
+        "dropdown_heading_font_size": 11,
+        "product_heading_font_size": 13,
+        "product_description_font_size": 11,
+        "account_font_size": 13,
+        "wordmark_font_size": 32,
         "header_bg_color": "#111111",
         "header_text_color": "#ffffff",
         "accent_color": "#ffd800",
-        "show_product_menu": true,
-        "pill_label": "Explora nuestros productos y materiales",
-        "dropdown_width": 840,
-        "banner_text": "¿Necesitas un pedido especial? Escríbenos para una cotización.",
-        "banner_btn_label": "Get Custom Quote",
-        "banner_btn_url": "",
-        "show_catalog_link": true,
-        "catalog_link_label": "Ver todos los productos",
-        "show_nav": true,
-        "menu": "",
-        "show_cta_buttons": true,
-        "show_cta_1": true,
-        "cta_1_label": "Stickers",
-        "cta_1_url": "",
-        "show_cta_2": true,
-        "cta_2_label": "Banners",
-        "cta_2_url": "",
         "show_account": true,
         "account_heading": "Mi cuenta",
         "account_description": "Inicia sesión o crea una cuenta para ver tus pedidos."
@@ -254,6 +252,6 @@
   "order": [
     "header_section",
     "impress_header_announcements_y8fWJr",
-    "impress_header_jQRGrQ"
+    "impress_classic_navbar_6LDbhR"
   ]
 }

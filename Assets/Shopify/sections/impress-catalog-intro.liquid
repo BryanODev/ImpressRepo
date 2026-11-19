@@ -1,0 +1,28 @@
+<section class="impress-catalog-intro" style="--ici-bg:{{ section.settings.bg_color }};--ici-ink:{{ section.settings.text_color }};--ici-eyebrow:{{ section.settings.eyebrow_color }}">
+  <div class="impress-catalog-intro__inner">
+    <div class="impress-catalog-intro__copy">
+      {% if section.settings.eyebrow != blank %}<p class="impress-catalog-intro__eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
+      <h1>{{ section.settings.heading | escape }}</h1>
+      <p class="impress-catalog-intro__lead">{{ section.settings.description | escape }}</p>
+    </div>
+    <div class="impress-catalog-intro__aside">
+      <span class="impress-catalog-intro__note">01 — Elige tu producto</span>
+      <span class="impress-catalog-intro__note">02 — Personaliza las opciones</span>
+      <span class="impress-catalog-intro__note">03 — Sube tu arte y ordena</span>
+    </div>
+  </div>
+</section>
+{% stylesheet %}
+.impress-catalog-intro{background:var(--ici-bg);color:var(--ici-ink);padding:clamp(42px,6vw,85px) 20px 34px;}
+.impress-catalog-intro__inner{max-width:1240px;margin:auto;display:flex;align-items:end;justify-content:space-between;gap:34px;}
+.impress-catalog-intro__copy{max-width:810px;}
+.impress-catalog-intro__eyebrow{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--ici-eyebrow);font-weight:850;margin:0 0 18px;}
+.impress-catalog-intro h1{color:inherit;margin:0 0 16px;font-size:clamp(42px,6vw,78px);line-height:1.02;letter-spacing:-.055em;font-weight:900;}
+.impress-catalog-intro__lead{font-size:clamp(16px,1.8vw,19px);line-height:1.65;color:var(--ici-ink);opacity:.8;margin:0;max-width:58ch;}
+.impress-catalog-intro__aside{display:grid;gap:10px;flex:0 0 265px;padding-bottom:5px;}
+.impress-catalog-intro__note{font-size:12px;font-weight:750;color:#888888;padding:9px 0;border-bottom:1px solid #dddddd;}
+@media(max-width:780px){.impress-catalog-intro{padding:40px 16px 22px;}.impress-catalog-intro__inner{flex-direction:column;align-items:stretch;gap:24px}.impress-catalog-intro__aside{flex:auto;grid-template-columns:1fr;gap:0}.impress-catalog-intro__note{padding:7px 0}}
+{% endstylesheet %}
+{% schema %}
+{"name":"Impress Catalog Intro","settings":[{"type":"text","id":"eyebrow","label":"Etiqueta","default":"IMPRESS / CATÁLOGO"},{"type":"text","id":"heading","label":"Título","default":"Tu próxima impresión comienza aquí."},{"type":"textarea","id":"description","label":"Descripción","default":"Stickers, banners, tarjetas de presentación y flyers hechos para tu negocio. Elige un producto y configúralo a tu manera."},{"type":"color","id":"bg_color","label":"Fondo","default":"#ffffff"},{"type":"color","id":"text_color","label":"Texto","default":"#111111"},{"type":"color","id":"eyebrow_color","label":"Etiqueta","default":"#888888"}],"presets":[{"name":"Impress Catalog Intro"}]}
+{% endschema %}
