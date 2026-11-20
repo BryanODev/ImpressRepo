@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+<defs><mask id="imf-fb-mask"><rect width="24" height="24" fill="white"/><path d="M13.68 22V13.63h2.82l.43-3.31h-3.25V8.21c0-.96.27-1.61 1.64-1.61h1.75V3.64c-.30-.04-1.34-.13-2.55-.13-2.53 0-4.26 1.55-4.26 4.40v2.41H7.39v3.31h2.87V22h3.42Z" fill="black"/></mask></defs>
+<rect x="1.35" y="1.35" width="21.3" height="21.3" rx="1.45" fill="white" mask="url(#imf-fb-mask)"/>
+</svg>

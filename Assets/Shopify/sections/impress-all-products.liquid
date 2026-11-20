@@ -29,7 +29,7 @@
             <a href="{{ item.url }}" class="impress-all-products__card">
               <div class="impress-all-products__media">
                 {% if item.featured_image != blank %}
-                  {{ item.featured_image | image_url: width: 740 | image_tag: loading: 'lazy', widths: '300, 500, 740', sizes: '(max-width: 650px) 90vw, (max-width: 990px) 45vw, 25vw', alt: item.title }}
+                  {{ item.featured_image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '360, 540, 740, 1000', sizes: '(max-width: 600px) calc(100vw - 32px), (max-width: 900px) 50vw, 33vw', alt: item.title, class: 'impress-all-products__photo', style: 'position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; object-position: center; padding: 0; margin: 0;' }}
                 {% else %}<span aria-hidden="true">IMPRESS ✦</span>{% endif %}
               </div>
               <div class="impress-all-products__content">
@@ -55,7 +55,7 @@
 .impress-all-products{background:#f9fafb;padding:60px 20px 80px;font-family:system-ui,sans-serif}
 .impress-all-products__inner{max-width:1240px;margin:auto}
 .impress-all-products__intro{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:36px}
-.impress-all-products__eyebrow{font-size:12px;color:#9b7500;letter-spacing:1.5px;font-weight:850;margin:0 0 12px}
+.impress-all-products__eyebrow{font-size:12px;color:#888888;letter-spacing:1.5px;font-weight:850;margin:0 0 12px}
 .impress-all-products__intro h1{font-size:clamp(38px,4.5vw,64px);font-weight:900;line-height:1.05;letter-spacing:-.045em;color:#15171b;margin:0 0 14px}
 .impress-all-products__intro p:not(.impress-all-products__eyebrow){font-size:16px;color:#656a73;max-width:60ch;line-height:1.6;margin:0}
 .impress-all-products__sort{display:flex;flex-direction:column;gap:6px;min-width:190px;font-size:12px;font-weight:750;color:#45494f}
@@ -63,13 +63,58 @@
 .impress-all-products__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
 .impress-all-products__card{border-radius:22px;overflow:hidden;display:block;background:#fff;color:#181a20;border:1px solid #e8eaed;text-decoration:none;transition:box-shadow .2s,transform .2s}
 .impress-all-products__card:hover{transform:translateY(-4px);box-shadow:0 14px 32px #00000017}
-.impress-all-products__media{height:250px;background:#edf0f2;display:flex;justify-content:center;align-items:center;color:#5e6268;font-weight:900}
-.impress-all-products__media img{width:100%;height:100%;object-fit:contain;padding:14px}
+/* The image AREA is square. The text/content below is intentionally outside this square. */
+.impress-all-products__media{
+  position:relative;
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:1 / 1;
+  min-width:0;
+  padding:0;
+  margin:0;
+  overflow:hidden;
+  background:#edf0f2;
+  color:#5e6268;
+  font-weight:900;
+}
+/* Override Horizon/global image rules; fill the square rather than centering a small square image. */
+.impress-all-products .impress-all-products__media > img,
+.impress-all-products .impress-all-products__media > img.impress-all-products__photo{
+  position:absolute!important;
+  top:0!important;
+  right:0!important;
+  bottom:0!important;
+  left:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:100%!important;
+  min-height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  padding:0!important;
+  margin:0!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  aspect-ratio:auto!important;
+  border-radius:0!important;
+  transform:none!important;
+}
+/* Keep the image-less placeholder visibly centered, without changing media dimensions. */
+.impress-all-products__media > span{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
 .impress-all-products__content{padding:23px}.impress-all-products__content h2{font-size:23px;line-height:1.18;font-weight:850;margin:0 0 9px;color:#171a1e}.impress-all-products__content p{color:#6b6f77;font-size:14px;line-height:1.6;margin:0 0 22px;min-height:40px}
 .impress-all-products__meta{display:flex;justify-content:space-between;gap:10px;align-items:center}.impress-all-products__meta span{font-size:17px;font-weight:850}.impress-all-products__meta b{font-size:12px;background:#fbbf00;padding:9px 12px;border-radius:999px;white-space:nowrap}
 .impress-all-products__pagination{margin-top:40px;display:flex;justify-content:center;gap:25px;align-items:center;font-size:14px}.impress-all-products__pagination a{color:#15181e;font-weight:750;text-decoration:none}
 @media(max-width:900px){.impress-all-products__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){.impress-all-products{padding:50px 16px}.impress-all-products__intro{flex-direction:column;align-items:start}.impress-all-products__grid{grid-template-columns:1fr}.impress-all-products__media{height:220px}}
+@media(max-width:600px){.impress-all-products{padding:50px 16px}.impress-all-products__intro{flex-direction:column;align-items:start}.impress-all-products__grid{grid-template-columns:1fr}.impress-all-products__media{aspect-ratio:1 / 1;height:auto}}
 {% endstylesheet %}
 {% schema %}
 {"name":"Impress All Products","settings":[

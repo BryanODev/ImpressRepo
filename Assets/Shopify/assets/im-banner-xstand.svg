@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000" fill="none">
+ <defs>
+  <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f0f2f5"/><stop offset="1" stop-color="#cdd5de"/></linearGradient>
+  <linearGradient id="poster" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe37d"/><stop offset="1" stop-color="#f8b600"/></linearGradient>
+  <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="7" dy="19" stdDeviation="15" flood-color="#121923" flood-opacity=".25"/></filter>
+ </defs>
+ <rect width="1000" height="1000" fill="url(#wall)"/>
+ <ellipse cx="490" cy="892" rx="335" ry="31" fill="#5f6876" opacity=".2"/>
+ <g transform="rotate(-3 500 430)">
+  <path d="M300 132 710 870M705 132 291 870" stroke="#7d8794" stroke-width="14" stroke-linecap="round"/>
+  <path d="M500 500V901M380 902h240" stroke="#828b95" stroke-width="12" stroke-linecap="round"/>
+  <rect x="261" y="114" width="472" height="722" rx="7" fill="#fff" filter="url(#shadow)"/>
+  <rect x="273" y="126" width="448" height="698" rx="2" fill="url(#poster)"/>
+  <path d="m273 470 448-130v484H273z" fill="#1b2026"/>
+  <path d="m273 470 448-130v50L273 520z" fill="#fff"/>
+  <text x="494" y="245" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="55" fill="#111820">IMPRIME</text>
+  <text x="494" y="318" text-anchor="middle" font-family="Arial,sans-serif" font-size="60" font-weight="900" fill="#111820">EN GRANDE</text>
+  <circle cx="498" cy="507" r="76" fill="#fbbf00"/><path d="m464 501 28 31 48-55" stroke="#111820" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="494" y="655" text-anchor="middle" font-family="Arial,sans-serif" font-size="42" font-weight="900" fill="#fff">DESTACA</text>
+  <text x="494" y="716" text-anchor="middle" font-family="Arial,sans-serif" font-size="52" font-weight="900" fill="#fbbf00">TU MARCA</text>
+  <g fill="#c9d1d9" stroke="#596675" stroke-width="3"><circle cx="280" cy="138" r="8"/><circle cx="715" cy="138" r="8"/><circle cx="280" cy="815" r="8"/><circle cx="715" cy="815" r="8"/></g>
+ </g>
+</svg>

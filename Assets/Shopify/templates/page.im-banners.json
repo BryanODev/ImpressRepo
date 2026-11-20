@@ -1,0 +1,257 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main_hero": {
+      "type": "impress-simple-hero",
+      "settings": {
+        "eyebrow": "IMPRESS / BANNERS",
+        "heading": "Banners que hacen destacar tu negocio.",
+        "intro": "Haz que tu mensaje se vea a lo grande. Descubre banners personalizados para promociones, negocios y eventos.",
+        "button_text": "Explorar banners",
+        "button_link": "#banners-productos",
+        "fallback_art": "banners",
+        "hero_bg": "#111111",
+        "accent": "#fbbf00"
+      }
+    },
+    "main_products": {
+      "type": "impress-product-main-selection",
+      "blocks": {
+        "product_1": {
+          "type": "product_card",
+          "settings": {
+            "title": "Banners",
+            "description": "Banners personalizados para anunciar tu negocio, promociones o eventos.",
+            "product": "",
+            "fallback_handle": "banners",
+            "custom_url": "",
+            "fallback_art": "banners"
+          }
+        },
+        "product_2": {
+          "type": "product_card",
+          "settings": {
+            "title": "Roll-Up Banners",
+            "description": "Una solución vertical para exhibiciones, ferias y presentaciones.",
+            "product": "",
+            "fallback_handle": "",
+            "custom_url": "",
+            "fallback_art": "rollup"
+          }
+        },
+        "product_3": {
+          "type": "product_card",
+          "settings": {
+            "title": "X-Stand Banners",
+            "description": "Presenta tus ideas con un soporte vertical diseñado para destacar.",
+            "product": "",
+            "fallback_handle": "",
+            "custom_url": "",
+            "fallback_art": "xstand"
+          }
+        }
+      },
+      "block_order": [
+        "product_1",
+        "product_2",
+        "product_3"
+      ],
+      "settings": {
+        "eyebrow": "EXPLORA LAS OPCIONES",
+        "heading": "Un formato para cada ocasión.",
+        "description": "Conoce los formatos disponibles y los próximos productos que estamos preparando.",
+        "anchor_id": "banners-productos",
+        "card_bg": "#ffffff"
+      }
+    },
+    "banner_info": {
+      "type": "impress-products-info",
+      "settings": {
+        "eyebrow": "IMPRESIÓN DE GRAN FORMATO",
+        "heading": "Tu mensaje, donde todos puedan verlo.",
+        "subheading": "Banners personalizados para promociones, eventos y espacios comerciales.",
+        "body": "<p>Un banner bien diseñado ayuda a que tu mensaje se vea desde el primer vistazo. Ya sea para anunciar una oferta, presentar tu negocio o destacar en un evento, el formato y la ubicación hacen la diferencia.</p><p>En Impress puedes configurar tu banner según las opciones disponibles y subir tu arte para impresión. Si necesitas un formato de exhibición diferente, pronto podrás explorar también nuestros Roll-Up y X-Stand Banners.</p>",
+        "features_label": "Opciones de banners",
+        "cta_text": "",
+        "cta_link": "/products/banners",
+        "external_video": "",
+        "fallback_visual": "banners",
+        "media_caption": "Ejemplo ilustrativo de un banner impreso",
+        "media_side": "right",
+        "mobile_order": "text_first",
+        "media_ratio": "1.24",
+        "image_fit": "contain",
+        "media_radius": 22,
+        "media_padding": 10,
+        "media_background": "#eef0f2",
+        "max_width": 1240,
+        "column_gap": 70,
+        "padding_top": 75,
+        "padding_bottom": 75,
+        "background": "#ffffff",
+        "accent": "#fbbf00"
+      }
+    },
+    "impress_products_info_NBz3LK": {
+      "type": "impress-products-info",
+      "name": "IM Products Info",
+      "settings": {
+        "eyebrow": "SOBRE NUESTROS PRODUCTOS",
+        "heading": "Encuentra la impresión ideal para tu proyecto.",
+        "subheading": "",
+        "body": "<p>Descubre las opciones disponibles y elige la que mejor se adapte a tu negocio, evento o proyecto personal.</p><p>Consulta tamaños, materiales y acabados directamente desde la página de cada producto antes de ordenar.</p>",
+        "features_label": "Características y opciones",
+        "cta_text": "Explorar productos",
+        "cta_link": "",
+        "fallback_visual": "stickers",
+        "media_caption": "",
+        "media_side": "left",
+        "mobile_order": "text_first",
+        "media_ratio": "1.24",
+        "image_fit": "cover",
+        "media_radius": 22,
+        "media_padding": 0,
+        "media_background": "#f0f1f2",
+        "max_width": 1240,
+        "column_gap": 70,
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "background": "#ffffff",
+        "accent": "#fbbf00"
+      }
+    },
+    "banner_faq": {
+      "type": "impress-home-faq",
+      "blocks": {
+        "faq_banner_1": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Qué tipo de banner puedo pedir ahora?",
+            "answer": "Actualmente puedes configurar y ordenar Banners desde nuestra tienda. Los formatos Roll-Up y X-Stand aparecerán como Próximamente hasta que estén disponibles."
+          }
+        },
+        "faq_banner_2": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Cómo elijo el tamaño y las opciones?",
+            "answer": "En la página de Banners encontrarás las medidas y opciones de acabado disponibles para tu pedido, junto con sus precios."
+          }
+        },
+        "faq_banner_3": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Tengo que subir mi propio diseño?",
+            "answer": "Puedes cargar tu archivo durante la configuración. Si el producto tiene servicio de diseño o preparación de arte, podrás revisar esa opción antes de ordenar."
+          }
+        },
+        "faq_banner_4": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Qué diferencia hay entre un banner, un Roll-Up y un X-Stand?",
+            "answer": "El banner convencional es un impreso flexible para diferentes soportes. El Roll-Up utiliza una base retráctil y el X-Stand un soporte en forma de X. Confirma las opciones de cada formato al estar disponible."
+          }
+        },
+        "faq_banner_5": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Puedo usar un banner para un evento o negocio?",
+            "answer": "Sí. Son útiles para señalización temporal, promociones, exhibiciones y eventos, según el espacio, el material y el método de instalación."
+          }
+        },
+        "faq_banner_6": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Cuándo recibiré mi pedido?",
+            "answer": "La preparación y entrega dependen de la configuración y la cantidad. Consulta las opciones disponibles al comprar o contáctanos si tienes una fecha específica."
+          }
+        }
+      },
+      "block_order": [
+        "faq_banner_1",
+        "faq_banner_2",
+        "faq_banner_3",
+        "faq_banner_4",
+        "faq_banner_5",
+        "faq_banner_6"
+      ],
+      "settings": {
+        "eyebrow": "PREGUNTAS SOBRE BANNERS",
+        "heading": "¿Tienes preguntas?",
+        "description": "Lo esencial antes de configurar tu banner y enviar tu diseño.",
+        "contact_label": "Hablar con Impress",
+        "contact_link": "",
+        "max_width": 1240,
+        "padding_top": 65,
+        "padding_bottom": 65,
+        "bg_color": "#111216",
+        "accent_color": "#fbbf00"
+      }
+    },
+    "im_feature_cards_4mcW47": {
+      "type": "im-feature-cards",
+      "blocks": {
+        "card_QhbNWc": {
+          "type": "card",
+          "settings": {
+            "eyebrow": "STICKERS",
+            "title": "Stickers para cada idea",
+            "description": "Encuentra el estilo ideal para tu proyecto.",
+            "link": ""
+          }
+        },
+        "card_TCGh4e": {
+          "type": "card",
+          "settings": {
+            "eyebrow": "USOS",
+            "title": "Hechos para destacar",
+            "description": "Descubre nuevas formas de promocionar tu marca.",
+            "link": ""
+          }
+        },
+        "card_T9yzww": {
+          "type": "card",
+          "settings": {
+            "eyebrow": "PRODUCTOS",
+            "title": "Más posibilidades",
+            "description": "Explora otras opciones de impresión.",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "card_QhbNWc",
+        "card_TCGh4e",
+        "card_T9yzww"
+      ],
+      "name": "IM Feature Cards",
+      "settings": {
+        "heading": "¿Buscas algo diferente?",
+        "description": "<p>Descubre más ideas y formas de aprovechar nuestros productos personalizados.</p>",
+        "columns": 3,
+        "card_ratio": "4/5",
+        "card_gap": 30,
+        "corner_radius": 16,
+        "max_width": 1240,
+        "padding_top": 70,
+        "padding_bottom": 70,
+        "background": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "main_hero",
+    "main_products",
+    "banner_info",
+    "impress_products_info_NBz3LK",
+    "banner_faq",
+    "im_feature_cards_4mcW47"
+  ]
+}

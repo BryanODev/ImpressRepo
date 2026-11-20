@@ -1,5 +1,11 @@
 /*
- * IMPRESS storefront layout. Editable in Shopify Theme Editor.
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
  */
 {
   "sections": {
@@ -61,30 +67,17 @@
         "heading": "Preguntas sobre tus pedidos",
         "description": "Te ayudamos a escoger el producto adecuado.",
         "contact_label": "Contáctanos",
+        "contact_link": "",
         "max_width": 1240,
         "padding_top": 55,
         "padding_bottom": 60,
         "bg_color": "#111216",
         "accent_color": "#fbbf00"
       }
-    },
-    "journal": {
-      "type": "impress-home-blog",
-      "settings": {
-        "eyebrow": "BLOG IMPRESS",
-        "heading": "Ideas y consejos para imprimir mejor",
-        "description": "Guías, materiales e inspiración para tu próximo proyecto.",
-        "button_label": "Ver artículos",
-        "limit": 3,
-        "max_width": 1240,
-        "bg_color": "#f7f8f9",
-        "accent_color": "#fbbf00"
-      }
     }
   },
   "order": [
     "main",
-    "general_faq",
-    "journal"
+    "general_faq"
   ]
 }

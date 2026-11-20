@@ -1,16 +1,36 @@
-IMPRESS CLASSIC NAVBAR — SUBTLE LOGO HOVER
+IMPRESS — Unified Category Landing Sections
 
-Replace only:
-  sections/impress-classic-navbar.liquid
+New reusable sections:
+  sections/impress-simple-hero.liquid
+  sections/impress-product-main-selection.liquid
 
-What changed:
-  * Logo hover now defaults to 1 degree counterclockwise and 1px upward.
-  * Two new controls in Theme Editor > Impress Classic Navbar > Brand:
-      Logo hover rotation: 0–5 deg, default 1
-      Logo hover upward movement: 0–5px, default 1
-  * Set both to 0 for no movement.
+Updated templates:
+  templates/page.impress-stickers.json
+  templates/page.im-banners.json
 
-Existing navigation groups, single links, mobile menu, and sticky navbar are unchanged.
+Banner artwork assets:
+  assets/im-banners-hero.svg
+  assets/im-banner-rollup.svg
+  assets/im-banner-xstand.svg
 
-If your current theme already has a configured Impress Classic Navbar section,
-the new controls use their defaults until you modify them in Theme Editor.
+Both page templates now have TWO independent sections at the top:
+  1. Impress Simple Hero
+  2. Impress Product Main Selection
+
+Both sections work for any category; the templates set different copy,
+images, and product cards. Other info, FAQ, and review sections are reused.
+
+The first Sticker card uses product handle vinyl-sticker.
+The first Banner card uses product handle banners.
+The other cards remain Próximamente until a product/link is assigned.
+
+IMPORTANT: Replacing page JSON templates overwrites edits you made to
+those templates in Shopify after your uploaded Shopify.zip. Back up your
+current templates first. If you need to preserve edits, update only the
+two combined-section entries and the template order.
+
+After installing, delete the old sections:
+  sections/impress-stickers-home.liquid
+  sections/im-banners-home.liquid
+
+No header/nav files are included or changed.

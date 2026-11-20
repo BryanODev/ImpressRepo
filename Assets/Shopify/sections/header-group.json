@@ -138,7 +138,7 @@
           "type": "nav_group",
           "settings": {
             "title": "Stickers",
-            "link_url": "/products/vinyl-sticker",
+            "link_url": "shopify://pages/stickers",
             "source_mode": "manual",
             "collection": "",
             "product_limit": 6,
@@ -226,8 +226,10 @@
       ],
       "name": "Impress Classic Navbar",
       "settings": {
-        "logo": "shopify://shop_images/IMPRESS_STICKERS.png",
-        "logo_max_height": 70,
+        "logo": "shopify://shop_images/IMPRESS_STICKERS_f2e08097-61dc-4417-915a-e3af84a73918.png",
+        "logo_max_height": 46,
+        "logo_hover_rotation": 1,
+        "logo_hover_lift": 1,
         "nav_min_height": 90,
         "mobile_nav_min_height": 70,
         "sticky_nav": true,

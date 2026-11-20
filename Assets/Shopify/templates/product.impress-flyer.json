@@ -1,11 +1,48 @@
 /*
- * IMPRESS storefront layout. Editable in Shopify Theme Editor.
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
  */
 {
   "sections": {
     "main": {
       "type": "impress-flyer-configurator",
-      "settings": {}
+      "settings": {
+        "heading": "Personaliza tus flyers",
+        "subtitle": "Elige formato y caras. Sube tu diseño y edita cada lado por separado."
+      }
+    },
+    "impress_products_info_gbmYK8": {
+      "type": "impress-products-info",
+      "settings": {
+        "eyebrow": "STICKERS PERSONALIZADOS",
+        "heading": "Stickers para tus ideas, marcas y proyectos.",
+        "subheading": "",
+        "body": "<p>Desde personalizar tus productos hasta compartir tu marca, los stickers de vinilo son una forma versátil de hacer que tus diseños destaquen.</p><p>Elige las opciones disponibles en el configurador y sube tu arte cuando estés listo para ordenar.</p>",
+        "features_label": "Características y opciones",
+        "cta_text": "",
+        "cta_link": "/products/vinyl-sticker",
+        "external_video": "",
+        "fallback_visual": "stickers",
+        "media_caption": "",
+        "media_side": "left",
+        "mobile_order": "text_first",
+        "media_ratio": "1.24",
+        "image_fit": "cover",
+        "media_radius": 22,
+        "media_padding": 0,
+        "media_background": "#f0f1f2",
+        "max_width": 1240,
+        "column_gap": 70,
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "background": "#ffffff",
+        "accent": "#fbbf00"
+      }
     },
     "product_faq": {
       "type": "impress-home-faq",
@@ -58,6 +95,7 @@
         "heading": "Antes de hacer tu pedido",
         "description": "Respuestas sobre archivos, personalización y producción.",
         "contact_label": "Contáctanos",
+        "contact_link": "",
         "max_width": 1240,
         "padding_top": 55,
         "padding_bottom": 60,
@@ -69,6 +107,8 @@
       "type": "impress-related-products",
       "settings": {
         "heading": "También te puede interesar",
+        "collection": "",
+        "excluded_tags": "Service",
         "limit": 4,
         "max_width": 1240
       }
@@ -76,6 +116,7 @@
   },
   "order": [
     "main",
+    "impress_products_info_gbmYK8",
     "product_faq",
     "related_products"
   ]

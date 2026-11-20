@@ -10,6 +10,10 @@
   --imf-max: {{ section.settings.max_width }}px;
   --imf-pad-top: {{ section.settings.padding_top }}px;
   --imf-pad-bottom: {{ section.settings.padding_bottom }}px;
+  --imf-social-size: {{ section.settings.social_icon_size }}px;
+  --imf-social-gap: {{ section.settings.social_icon_gap }}px;
+  --imf-social-opacity: {{ section.settings.social_icon_opacity | divided_by: 100.0 }};
+  --imf-social-align: {{ section.settings.social_icon_align }};
 " aria-label="Pie de página de Impress">
   <div class="impress-site-footer__light" aria-hidden="true"></div>
   <div class="impress-site-footer__inner">
@@ -40,6 +44,18 @@
             <span class="impress-site-footer__wordmark-sub">PRINTING + SIGNS</span>
           {% endif %}
         </a>
+        {% if section.settings.show_credit %}
+          <div class="impress-site-footer__credit" style="--imf-credit-logo-width: {{ section.settings.credit_logo_width }}px;" aria-label="{{ section.settings.credit_text | escape }} Impress">
+            {% if section.settings.credit_text != blank %}
+              <span class="impress-site-footer__credit-label">{{ section.settings.credit_text | escape }}</span>
+            {% endif %}
+            {% if section.settings.credit_logo != blank %}
+              <img class="impress-site-footer__credit-logo" src="{{ section.settings.credit_logo | image_url: width: 360 }}" alt="Impress" width="{{ section.settings.credit_logo.width }}" height="{{ section.settings.credit_logo.height }}" loading="lazy">
+            {% else %}
+              <img class="impress-site-footer__credit-logo" src="{{ 'impress-footer-credit-logo.png' | asset_url }}" alt="Impress" width="1028" height="236" loading="lazy">
+            {% endif %}
+          </div>
+        {% endif %}
         {% if section.settings.brand_description != blank %}
           <p class="impress-site-footer__description">{{ section.settings.brand_description | escape }}</p>
         {% endif %}
@@ -111,16 +127,51 @@
         {% if section.settings.whatsapp != blank %}
           {% assign clean_whatsapp = section.settings.whatsapp | remove: ' ' | remove: '(' | remove: ')' | remove: '-' | remove: '+' | remove: '.' %}
           <a class="impress-site-footer__whatsapp" href="https://wa.me/{{ clean_whatsapp }}" target="_blank" rel="noopener noreferrer">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.7L3 21l4.4-1.2A9 9 0 1 0 12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5c0 3.3 3.1 6.2 6.4 6.7l1.1-1.5-2-.9-.8.9a6.8 6.8 0 0 1-2.6-2.5l.8-.9-.9-1.9-2 .1Z" fill="currentColor"/></svg>
+            <img class="impress-site-footer__whatsapp-icon" src="{{ 'impress-footer-whatsapp.svg' | asset_url }}" alt="" width="21" height="21" loading="lazy">
             Escríbenos por WhatsApp
             <span aria-hidden="true">↗</span>
           </a>
         {% endif %}
-        {% if section.settings.instagram_url != blank or section.settings.facebook_url != blank %}
-          <div class="impress-site-footer__social" aria-label="Redes sociales">
-            {% if section.settings.instagram_url != blank %}<a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">Instagram ↗</a>{% endif %}
-            {% if section.settings.facebook_url != blank %}<a href="{{ section.settings.facebook_url }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">Facebook ↗</a>{% endif %}
-          </div>
+        {% comment %}Separate white-only icon row; existing WhatsApp contact button above stays unchanged.{% endcomment %}
+        {% assign social_whatsapp_href = section.settings.social_whatsapp_url %}
+        {% if social_whatsapp_href == blank and section.settings.whatsapp != blank %}
+          {% assign social_whatsapp_phone = section.settings.whatsapp | remove: ' ' | remove: '(' | remove: ')' | remove: '-' | remove: '+' | remove: '.' %}
+          {% assign social_whatsapp_href = 'https://wa.me/' | append: social_whatsapp_phone %}
+        {% endif %}
+        {% assign show_social_row = false %}
+        {% if section.settings.show_instagram_icon and section.settings.instagram_url != blank %}{% assign show_social_row = true %}{% endif %}
+        {% if section.settings.show_facebook_icon and section.settings.facebook_url != blank %}{% assign show_social_row = true %}{% endif %}
+        {% if section.settings.show_whatsapp_social_icon and social_whatsapp_href != blank %}{% assign show_social_row = true %}{% endif %}
+        {% if show_social_row %}
+          <nav class="impress-site-footer__social" aria-label="Redes sociales">
+            {% if section.settings.show_instagram_icon and section.settings.instagram_url != blank %}
+              <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+                {% if section.settings.social_instagram_image != blank %}
+                  <img src="{{ section.settings.social_instagram_image | image_url: width: 128 }}" alt="" width="{{ section.settings.social_icon_size }}" height="{{ section.settings.social_icon_size }}" loading="lazy">
+                {% else %}
+                  <img src="{{ 'impress-footer-instagram.svg' | asset_url }}" alt="" width="{{ section.settings.social_icon_size }}" height="{{ section.settings.social_icon_size }}" loading="lazy">
+                {% endif %}
+              </a>
+            {% endif %}
+            {% if section.settings.show_facebook_icon and section.settings.facebook_url != blank %}
+              <a href="{{ section.settings.facebook_url }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+                {% if section.settings.social_facebook_image != blank %}
+                  <img src="{{ section.settings.social_facebook_image | image_url: width: 128 }}" alt="" width="{{ section.settings.social_icon_size }}" height="{{ section.settings.social_icon_size }}" loading="lazy">
+                {% else %}
+                  <img src="{{ 'impress-footer-facebook.svg' | asset_url }}" alt="" width="{{ section.settings.social_icon_size }}" height="{{ section.settings.social_icon_size }}" loading="lazy">
+                {% endif %}
+              </a>
+            {% endif %}
+            {% if section.settings.show_whatsapp_social_icon and social_whatsapp_href != blank %}
+              <a href="{{ social_whatsapp_href }}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" title="WhatsApp">
+                {% if section.settings.social_whatsapp_image != blank %}
+                  <img src="{{ section.settings.social_whatsapp_image | image_url: width: 128 }}" alt="" width="{{ section.settings.social_icon_size }}" height="{{ section.settings.social_icon_size }}" loading="lazy">
+                {% else %}
+                  <img src="{{ 'impress-footer-whatsapp-white.svg' | asset_url }}" alt="" width="{{ section.settings.social_icon_size }}" height="{{ section.settings.social_icon_size }}" loading="lazy">
+                {% endif %}
+              </a>
+            {% endif %}
+          </nav>
         {% endif %}
       </div>
     </div>
@@ -149,6 +200,9 @@
 .impress-site-footer__main { display:grid; grid-template-columns:minmax(250px,1.45fr) minmax(145px,.75fr) minmax(145px,.8fr) minmax(240px,1.08fr); gap:clamp(24px,3.3vw,52px); padding-block:52px 54px; }
 .impress-site-footer__brand { display:inline-flex; flex-direction:column; align-items:flex-start; text-decoration:none; color:#fff !important; max-width:240px; }
 .impress-site-footer__brand img { max-width:235px; max-height:80px; width:auto; height:auto; object-fit:contain; }
+.impress-site-footer__credit { margin-top:18px; display:flex; align-items:center; flex-wrap:wrap; gap:11px; }
+.impress-site-footer__credit-label { color:#888888; font-size:10px; line-height:1.3; font-weight:750; letter-spacing:1.2px; text-transform:uppercase; white-space:nowrap; }
+.impress-site-footer__credit-logo { display:block; flex:0 1 auto; width:var(--imf-credit-logo-width); max-width:100%; height:auto; object-fit:contain; }
 .impress-site-footer__wordmark { font-size:clamp(32px,3vw,42px); font-weight:700; letter-spacing:-.08em; line-height:.95; }
 .impress-site-footer__wordmark span { font-weight:900; }
 .impress-site-footer__wordmark b { color:var(--imf-accent); font-weight:900; }
@@ -166,11 +220,13 @@
 .impress-site-footer__contact-line svg { color:var(--imf-accent); flex:0 0 auto; }
 .impress-site-footer__whatsapp { display:inline-flex; align-items:center; justify-content:center; gap:9px; color:#fff; text-decoration:none; border:1px solid rgba(255,255,255,.2); border-radius:13px; min-height:47px; padding:10px 13px; font-size:13px; font-weight:800; margin-top:9px; background:rgba(255,255,255,.035); transition:background .2s ease,border-color .2s ease; }
 .impress-site-footer__whatsapp:hover { border-color:var(--imf-accent); background:rgba(251,191,0,.07); }
-.impress-site-footer__whatsapp svg { color:#36d975; flex:0 0 auto; }
+.impress-site-footer__whatsapp-icon { display:block; width:21px; height:21px; flex:0 0 21px; object-fit:contain; }
 .impress-site-footer__whatsapp span { color:var(--imf-accent); margin-left:3px; }
-.impress-site-footer__social { display:flex; flex-wrap:wrap; gap:12px 18px; margin-top:18px; }
-.impress-site-footer__social a { color:#aeb1ba; font-size:12px; font-weight:750; text-decoration:none; }
-.impress-site-footer__social a:hover { color:var(--imf-accent); }
+.impress-site-footer__social { display:flex; justify-content:var(--imf-social-align,flex-start); align-items:center; flex-wrap:wrap; gap:var(--imf-social-gap,18px); margin-top:18px; }
+.impress-site-footer__social a { display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; min-width:44px; min-height:44px; padding:0; border:0; border-radius:0; background:none; box-shadow:none; text-decoration:none; opacity:var(--imf-social-opacity,1); transition:opacity .2s ease,transform .2s ease; }
+.impress-site-footer__social a:hover { background:none; border:0; box-shadow:none; opacity:1; transform:translateY(-2px); }
+.impress-site-footer__social a img { width:var(--imf-social-size,28px); height:var(--imf-social-size,28px); max-width:none; display:block; object-fit:contain; filter:brightness(0) invert(1); user-select:none; -webkit-user-drag:none; }
+.impress-site-footer__social a:focus-visible { outline:2px solid var(--imf-accent); outline-offset:2px; border-radius:2px; }
 .impress-site-footer__bottom { border-top:1px solid rgba(255,255,255,.14); padding-top:23px; display:flex; gap:24px; align-items:center; justify-content:space-between; color:#818793; font-size:12px; line-height:1.5; }
 .impress-site-footer__policies { display:flex; gap:11px 22px; align-items:center; justify-content:flex-end; flex-wrap:wrap; }
 .impress-site-footer__policies a { color:#9da2ad; text-decoration:none; transition:color .2s ease; }
@@ -178,7 +234,7 @@
 .impress-site-footer :is(a):focus-visible { outline:3px solid var(--imf-accent); outline-offset:4px; }
 @media(max-width:1050px){ .impress-site-footer__main { grid-template-columns:repeat(2,minmax(0,1fr)); gap:36px; } .impress-site-footer__brand-col { max-width:460px; } }
 @media(max-width:690px){ .impress-site-footer__inner { width:calc(100% - 32px); } .impress-site-footer__prelude { flex-direction:column; align-items:flex-start; } .impress-site-footer__cta { width:100%; } .impress-site-footer__main { grid-template-columns:repeat(2,minmax(0,1fr)); padding-block:36px; gap:34px 17px; } .impress-site-footer__brand-col { grid-column:1/-1; } .impress-site-footer__contact { grid-column:1/-1; } .impress-site-footer__nav h3,.impress-site-footer__contact h3 { margin-bottom:16px; } .impress-site-footer__bottom { align-items:flex-start; flex-direction:column; gap:14px; } .impress-site-footer__policies { justify-content:flex-start; } }
-@media(prefers-reduced-motion:reduce){ .impress-site-footer__cta,.impress-site-footer__nav a,.impress-site-footer__contact-line,.impress-site-footer__whatsapp { transition:none; } .impress-site-footer__cta:hover { transform:none; } }
+@media(prefers-reduced-motion:reduce){ .impress-site-footer__cta,.impress-site-footer__nav a,.impress-site-footer__contact-line,.impress-site-footer__whatsapp,.impress-site-footer__social a { transition:none; } .impress-site-footer__cta:hover,.impress-site-footer__social a:hover { transform:none; } }
 {% endstylesheet %}
 
 {% schema %}
@@ -201,6 +257,11 @@
     {"type":"url","id":"cta_link","label":"Enlace del botón"},
     {"type":"header","content":"Identidad de marca"},
     {"type":"image_picker","id":"logo","label":"Logo (opcional)"},
+    {"type":"header","content":"Crédito de Impress"},
+    {"type":"checkbox","id":"show_credit","label":"Mostrar crédito de Impress","default":true},
+    {"type":"text","id":"credit_text","label":"Texto del crédito","default":"Hecho por"},
+    {"type":"range","id":"credit_logo_width","label":"Tamaño del logo de Impress","min":60,"max":180,"step":5,"unit":"px","default":110},
+    {"type":"image_picker","id":"credit_logo","label":"Otro logo de Impress (opcional)"},
     {"type":"textarea","id":"brand_description","label":"Descripción","default":"Stickers, banners e impresión personalizada para darle vida a tus ideas y hacer que tu negocio destaque."},
     {"type":"text","id":"location","label":"Ubicación","default":"Isabela, Puerto Rico"},
     {"type":"header","content":"Enlaces de productos"},
@@ -219,9 +280,21 @@
     {"type":"text","id":"phone","label":"Teléfono","default":"(787) 291-4054"},
     {"type":"text","id":"email","label":"Email","default":"impressisabela@gmail.com"},
     {"type":"text","id":"whatsapp","label":"WhatsApp (con 1 al inicio)","default":"19394897806"},
-    {"type":"header","content":"Redes sociales (opcionales)"},
-    {"type":"url","id":"instagram_url","label":"Instagram"},
-    {"type":"url","id":"facebook_url","label":"Facebook"}
+    {"type":"header","content":"Iconos de redes sociales"},
+    {"type":"paragraph","content":"Iconos blancos sin botones. Configura los enlaces para mostrarlos. El botón grande de WhatsApp se mantiene aparte."},
+    {"type":"checkbox","id":"show_instagram_icon","label":"Mostrar Instagram","default":true},
+    {"type":"url","id":"instagram_url","label":"Enlace Instagram"},
+    {"type":"image_picker","id":"social_instagram_image","label":"Cambiar icono Instagram"},
+    {"type":"checkbox","id":"show_facebook_icon","label":"Mostrar Facebook","default":true},
+    {"type":"url","id":"facebook_url","label":"Enlace Facebook"},
+    {"type":"image_picker","id":"social_facebook_image","label":"Cambiar icono Facebook"},
+    {"type":"checkbox","id":"show_whatsapp_social_icon","label":"Mostrar WhatsApp blanco","default":true},
+    {"type":"url","id":"social_whatsapp_url","label":"Enlace WhatsApp (opcional)"},
+    {"type":"image_picker","id":"social_whatsapp_image","label":"Cambiar icono WhatsApp"},
+    {"type":"range","id":"social_icon_size","label":"Tamaño de iconos","min":16,"max":48,"step":2,"unit":"px","default":28},
+    {"type":"range","id":"social_icon_gap","label":"Separación de iconos","min":4,"max":40,"step":2,"unit":"px","default":18},
+    {"type":"range","id":"social_icon_opacity","label":"Opacidad de iconos","min":40,"max":100,"step":5,"unit":"%","default":100},
+    {"type":"select","id":"social_icon_align","label":"Alineación de iconos","options":[{"value":"flex-start","label":"Izquierda"},{"value":"center","label":"Centro"},{"value":"flex-end","label":"Derecha"}],"default":"flex-start"}
   ],
   "presets": [{"name":"Impress Footer"}]
 }

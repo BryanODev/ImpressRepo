@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1200 750" fill="none">
+ <defs>
+  <linearGradient id="yellow" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe57e"/><stop offset=".56" stop-color="#fbbf00"/><stop offset="1" stop-color="#e99900"/></linearGradient>
+  <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#cfd5dc"/></linearGradient>
+  <linearGradient id="dark" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#30343b"/><stop offset="1" stop-color="#0d1014"/></linearGradient>
+  <radialGradient id="glow"><stop stop-color="#fbbf00" stop-opacity=".35"/><stop offset="1" stop-color="#fbbf00" stop-opacity="0"/></radialGradient>
+  <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="20"/></filter>
+  <filter id="glowshadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="12" dy="20" stdDeviation="14" flood-color="#000" flood-opacity=".65"/></filter>
+  <pattern id="grain" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="5" cy="8" r="1" fill="white" opacity=".09"/><circle cx="23" cy="28" r="1.3" fill="white" opacity=".08"/></pattern>
+ </defs>
+ <ellipse cx="675" cy="310" rx="570" ry="420" fill="url(#glow)"/>
+ <path d="M56 626h1100" stroke="#8b8e92" stroke-width="2" opacity=".27"/>
+ <ellipse cx="710" cy="660" rx="420" ry="40" fill="#000" opacity=".55" filter="url(#shadow)"/>
+ <!-- X-stand behind the banner -->
+ <g transform="translate(72 90) rotate(-11 140 245)" opacity=".9" filter="url(#glowshadow)">
+  <path d="M117 80L240 485M240 80L117 485" stroke="#aeb3ba" stroke-width="12" stroke-linecap="round"/>
+  <path d="M180 475v58m-60 0h120" stroke="#9299a1" stroke-width="10" stroke-linecap="round"/>
+  <rect x="52" y="22" width="247" height="418" rx="5" fill="#e9edf1"/>
+  <rect x="65" y="35" width="221" height="392" fill="url(#yellow)"/>
+  <path d="M65 290q111-125 221 0v137H65z" fill="#111820"/>
+  <path d="M65 285q110-135 221-7" stroke="white" stroke-width="16" opacity=".9"/>
+  <text x="175" y="172" font-family="Arial,sans-serif" fill="#111820" font-weight="900" font-size="39" text-anchor="middle">ESTAMOS</text>
+  <text x="175" y="217" font-family="Arial,sans-serif" fill="#111820" font-weight="900" font-size="47" text-anchor="middle">AQUÍ</text>
+  <text x="175" y="370" font-family="Arial,sans-serif" fill="#fff" font-weight="900" font-size="24" text-anchor="middle">TU NEGOCIO</text>
+  <g fill="#d7dee6"><circle cx="69" cy="39" r="5"/><circle cx="283" cy="39" r="5"/><circle cx="69" cy="423" r="5"/><circle cx="283" cy="423" r="5"/></g>
+ </g>
+ <!-- Large vinyl banner -->
+ <g transform="translate(240 178) rotate(-4 377 230)" filter="url(#glowshadow)">
+  <rect x="-12" y="-10" width="778" height="461" rx="16" fill="#e2e4e8"/>
+  <rect x="0" y="0" width="754" height="437" rx="8" fill="url(#dark)"/>
+  <path d="M0 0h754v105H0z" fill="url(#yellow)"/>
+  <path d="M0 105h754v10H0z" fill="#ffe17a" opacity=".6"/>
+  <text x="45" y="74" fill="#111820" font-family="Arial,sans-serif" font-size="69" font-weight="900" letter-spacing="-3">IMPRESS</text>
+  <text x="44" y="203" fill="#fff" font-family="Arial,sans-serif" font-size="72" font-weight="900" letter-spacing="-3">HAZTE</text>
+  <text x="44" y="291" fill="url(#yellow)" font-family="Arial,sans-serif" font-size="94" font-weight="900" letter-spacing="-4">NOTAR.</text>
+  <path d="M44 328H445" stroke="#fbbf00" stroke-width="6"/>
+  <text x="45" y="370" fill="#e3e8ee" font-family="Arial,sans-serif" font-size="26" font-weight="700">BANNERS PERSONALIZADOS</text>
+  <g transform="translate(543 145)"><circle cx="94" cy="100" r="90" fill="#fbbf00"/><circle cx="94" cy="100" r="63" fill="#111820"/><path d="M58 117l29-47 23 24 24-39" stroke="#fbbf00" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/><path d="m111 55 26 0 0 26" stroke="#fbbf00" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <g fill="#b5bdc6" stroke="#59636d" stroke-width="2"><circle cx="20" cy="18" r="8"/><circle cx="377" cy="18" r="8"/><circle cx="734" cy="18" r="8"/><circle cx="20" cy="416" r="8"/><circle cx="377" cy="416" r="8"/><circle cx="734" cy="416" r="8"/></g>
+  <path d="M13 3v425" stroke="white" opacity=".24" stroke-width="4"/>
+  <rect x="0" y="0" width="754" height="437" fill="url(#grain)"/>
+ </g>
+ <!-- Roll-up sign behind/right -->
+ <g transform="translate(920 95) rotate(10 106 285)" filter="url(#glowshadow)">
+  <path d="M103 47v566" stroke="#87909c" stroke-width="8"/>
+  <rect x="9" y="13" width="216" height="510" rx="8" fill="#eef1f4"/>
+  <rect x="18" y="23" width="198" height="489" fill="url(#yellow)"/>
+  <path d="M18 240h198v272H18z" fill="#14171b"/>
+  <path d="m18 226 198-124v40L18 265z" fill="white"/>
+  <circle cx="121" cy="158" r="50" fill="#111820"/>
+  <path d="m96 157 18 22 29-41" stroke="#fbbf00" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="117" y="329" fill="white" font-family="Arial,sans-serif" font-size="28" font-weight="900" text-anchor="middle">GRANDES</text>
+  <text x="117" y="370" fill="white" font-family="Arial,sans-serif" font-size="37" font-weight="900" text-anchor="middle">IDEAS</text>
+  <path d="M7 520h222l22 26v22H-15v-22z" fill="#adb5bf"/>
+  <rect x="-8" y="541" width="250" height="28" rx="12" fill="#d9dfe6"/>
+  <rect x="10" y="557" width="214" height="12" rx="6" fill="#9299a3"/>
+ </g>
+ <path d="m1013 27 10 20 23 4-20 11-3 23-12-20-22-7 21-9z" fill="#fbbf00"/>
+ <circle cx="1108" cy="85" r="7" fill="#fbbf00" opacity=".75"/>
+ <path d="m73 679 24-14m24 1 20-18" stroke="#fbbf00" stroke-width="6" stroke-linecap="round"/>
+</svg>

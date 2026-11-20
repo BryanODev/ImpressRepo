@@ -1,62 +1,162 @@
-{% if product != blank %}
 {% liquid
-  assign related_collection = section.settings.collection
-  if related_collection == blank
-    assign related_collection = product.collections.first
+  comment
+    Always show real storefront products by default.
+    An explicitly selected collection takes priority; if it has no eligible
+    products, fall back to the built-in All Products collection.
+    Do not depend on product.collections or a manually curated product list.
+  endcomment
+  assign source_collection = section.settings.collection
+  if source_collection == blank
+    assign source_collection = collections['all']
   endif
-  if related_collection == blank
-    assign related_collection = collections['all']
-  endif
-  assign related_count = 0
+  assign shown_count = 0
+  assign excluded_tags = section.settings.excluded_tags | split: ','
 %}
 <section class="impress-related" style="--irp-max:{{ section.settings.max_width }}px">
   <div class="impress-related__inner">
-    <div class="impress-related__head"><div><p>DESCUBRE MÁS</p><h2>{{ section.settings.heading | escape }}</h2></div><a href="{{ routes.all_products_collection_url }}">Ver catálogo <span aria-hidden="true">→</span></a></div>
+    <div class="impress-related__head">
+      <div>
+        <p>DESCUBRE MÁS</p>
+        <h2>{{ section.settings.heading | escape }}</h2>
+      </div>
+      <a href="{{ routes.all_products_collection_url }}">Ver catálogo <span aria-hidden="true">→</span></a>
+    </div>
     <div class="impress-related__grid">
-      {% for item in related_collection.products limit: 30 %}
-        {% assign is_service = false %}
-        {% if item.tags contains 'impress-addon' or item.type == 'Service' or item.type == 'Servicio' or item.variants.first.metafields.custom.impress_addon_role.value != blank or item.variants.first.metafields.custom.impress_addon_group.value != blank %}{% assign is_service = true %}{% endif %}
-        {% if item.id != product.id and is_service == false and related_count < section.settings.limit %}
-          {% assign related_count = related_count | plus: 1 %}
-          <a class="impress-related__card" href="{{ item.url }}">
-            <div class="impress-related__media">
-              {% if item.featured_image != blank %}
-                {{ item.featured_image | image_url: width: 650 | image_tag: loading: 'lazy', widths: '300, 500, 650', sizes: '(max-width: 750px) 48vw, 25vw', alt: item.title }}
-              {% else %}<span aria-hidden="true">IMPRESS ✦</span>{% endif %}
-            </div>
-            <div class="impress-related__details"><h3>{{ item.title | escape }}</h3><span>{{ item.price_min | money }}{% if item.price_varies %} +{% endif %}</span><b aria-hidden="true">↗</b></div>
-          </a>
+      {% for pass in (1..2) %}
+        {% if pass == 2 %}
+          {% if section.settings.collection == blank or shown_count > 0 %}
+            {% break %}
+          {% endif %}
+          {% assign source_collection = collections['all'] %}
         {% endif %}
+
+        {% for item in source_collection.products limit: 50 %}
+          {% if shown_count >= section.settings.limit %}{% break %}{% endif %}
+          {% if item != blank %}
+            {% liquid
+              assign exclude_item = false
+              if section.settings.excluded_tags != blank
+                for blocked_tag in excluded_tags
+                  assign blocked_tag_normalized = blocked_tag | strip | downcase
+                  if blocked_tag_normalized != blank
+                    for product_tag in item.tags
+                      assign product_tag_normalized = product_tag | strip | downcase
+                      if product_tag_normalized == blocked_tag_normalized
+                        assign exclude_item = true
+                        break
+                      endif
+                    endfor
+                  endif
+                  if exclude_item
+                    break
+                  endif
+                endfor
+              endif
+            %}
+            {% if item.id != product.id and exclude_item == false %}
+              {% assign shown_count = shown_count | plus: 1 %}
+              <a class="impress-related__card" href="{{ item.url }}">
+                <div class="impress-related__media">
+                  {% if item.featured_image != blank %}
+                    {{ item.featured_image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '360, 540, 740, 1000', sizes: '(max-width: 750px) 48vw, 25vw', alt: item.title, class: 'impress-related__photo', style: 'position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; object-position: center; padding: 0; margin: 0;' }}
+                  {% else %}
+                    <span aria-hidden="true">IMPRESS ✦</span>
+                  {% endif %}
+                </div>
+                <div class="impress-related__details">
+                  <h3>{{ item.title | escape }}</h3>
+                  <span>{{ item.price_min | money }}{% if item.price_varies %} +{% endif %}</span>
+                  <b aria-hidden="true">↗</b>
+                </div>
+              </a>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% if shown_count >= section.settings.limit %}{% break %}{% endif %}
       {% endfor %}
     </div>
-    {% if related_count == 0 %}<p class="impress-related__none">Explora nuestro catálogo para descubrir otros productos.</p>{% endif %}
+    {% if shown_count == 0 %}
+      <p class="impress-related__none">No hay otros productos disponibles. <a href="{{ routes.all_products_collection_url }}">Ver catálogo completo →</a></p>
+    {% endif %}
   </div>
 </section>
-{% endif %}
 {% stylesheet %}
 .impress-related{padding:70px 20px;background:#f7f8f9;font-family:system-ui,sans-serif}
 .impress-related__inner{max-width:var(--irp-max,1240px);margin:auto}
 .impress-related__head{display:flex;align-items:end;justify-content:space-between;gap:15px;margin-bottom:30px}
-.impress-related__head p{font-size:12px;letter-spacing:1.2px;font-weight:850;color:#987300;margin:0 0 9px}
+.impress-related__head p{font-size:12px;letter-spacing:1.2px;font-weight:850;color:#888888;margin:0 0 9px}
 .impress-related__head h2{font-size:clamp(30px,3vw,44px);line-height:1.1;letter-spacing:-.03em;margin:0;color:#14171b}
 .impress-related__head a{font-size:14px;font-weight:750;text-decoration:none;color:#121417;white-space:nowrap}
 .impress-related__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
 .impress-related__card{background:white;border:1px solid #e4e7ea;border-radius:18px;overflow:hidden;color:#14171b;text-decoration:none;transition:transform .18s}
 .impress-related__card:hover{transform:translateY(-4px)}
-.impress-related__media{height:180px;display:flex;align-items:center;justify-content:center;background:#eeeff2;color:#222;font-weight:900}
-.impress-related__media img{width:100%;height:100%;object-fit:contain;padding:10px}
+/* The image AREA is square. The text/content below is intentionally outside this square. */
+.impress-related__media{
+  position:relative;
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:1 / 1;
+  min-width:0;
+  padding:0;
+  margin:0;
+  overflow:hidden;
+  background:#edf0f2;
+  color:#5e6268;
+  font-weight:900;
+}
+/* Override Horizon/global image rules; fill the square rather than centering a small square image. */
+.impress-related .impress-related__media > img,
+.impress-related .impress-related__media > img.impress-related__photo{
+  position:absolute!important;
+  top:0!important;
+  right:0!important;
+  bottom:0!important;
+  left:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:100%!important;
+  min-height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  padding:0!important;
+  margin:0!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  aspect-ratio:auto!important;
+  border-radius:0!important;
+  transform:none!important;
+}
+/* Keep the image-less placeholder visibly centered, without changing media dimensions. */
+.impress-related__media > span{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+
 .impress-related__details{padding:18px;display:grid;grid-template-columns:1fr auto;gap:5px}
 .impress-related__details h3{font-size:17px;line-height:1.25;margin:0;grid-column:1/-1}
-.impress-related__details span{font-size:14px;color:#626975}.impress-related__details b{font-size:20px}
+.impress-related__details span{font-size:14px;color:#626975}
+.impress-related__details b{font-size:20px}
 .impress-related__none{font-size:14px;color:#656a73}
+.impress-related__none a{color:#111111;text-decoration:underline;font-weight:700}
 @media(max-width:850px){.impress-related__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:530px){.impress-related{padding:50px 16px}.impress-related__grid{gap:12px}.impress-related__media{height:120px}.impress-related__head{align-items:start;flex-direction:column}}
+@media(max-width:530px){.impress-related{padding:50px 16px}.impress-related__grid{gap:12px}.impress-related__head{align-items:start;flex-direction:column}}
 {% endstylesheet %}
 {% schema %}
-{"name":"Impress Related Products","settings":[
-{"type":"text","id":"heading","label":"Título","default":"También te puede interesar"},
-{"type":"collection","id":"collection","label":"Colección de relacionados (opcional)"},
-{"type":"range","id":"limit","label":"Productos","min":2,"max":8,"step":1,"default":4},
-{"type":"range","id":"max_width","label":"Ancho","min":900,"max":1440,"step":20,"default":1240}
-],"presets":[{"name":"Impress Related Products"}]}
+{
+  "name": "Impress Related Products",
+  "settings": [
+    {"type": "text", "id": "heading", "label": "Título", "default": "También te puede interesar"},
+    {"type": "collection", "id": "collection", "label": "Colección (opcional)", "info": "Si no eliges ninguna, se muestran productos del catálogo automáticamente."},
+    {"type": "text", "id": "excluded_tags", "label": "Etiquetas a excluir", "info": "Escribe las etiquetas de producto a ignorar, separadas por comas. Ejemplo: ocultar-relacionados, servicios. Vacío = no excluir por etiqueta."},
+    {"type": "range", "id": "limit", "label": "Productos", "min": 2, "max": 8, "step": 1, "default": 4},
+    {"type": "range", "id": "max_width", "label": "Ancho", "min": 900, "max": 1440, "step": 20, "default": 1240}
+  ],
+  "presets": [{"name": "Impress Related Products"}]
+}
 {% endschema %}

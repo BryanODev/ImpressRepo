@@ -1,0 +1,187 @@
+{{ 'imstickers-hero.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'imstickers-hero.js' | asset_url }}" defer></script>
+
+{% comment %}
+  IM Stickers Hero — independently addable slideshow.
+  Does not modify or depend on the existing Impress Hero section.
+  The existing Impress hero assets are used as optional, built-in demo visuals.
+{% endcomment %}
+<section
+  id="ImStickersHero-{{ section.id }}"
+  class="ims-hero{% if section.settings.contained %} ims-hero--contained{% endif %}"
+  data-imstickers-hero
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-interval="{{ section.settings.autoplay_seconds | times: 1000 }}"
+  data-pause-hover="{{ section.settings.pause_hover }}"
+  style="--ims-bg: {{ section.settings.background_color }}; --ims-text: {{ section.settings.text_color }}; --ims-accent: {{ section.settings.accent_color }}; --ims-muted: {{ section.settings.muted_color }}; --ims-height: {{ section.settings.desktop_height }}px; --ims-mobile-image-height: {{ section.settings.mobile_image_height }}px; --ims-max: {{ section.settings.content_width }}px; --ims-outer-top: {{ section.settings.padding_top }}px; --ims-outer-bottom: {{ section.settings.padding_bottom }}px; --ims-radius: {{ section.settings.corner_radius }}px;"
+>
+  <div class="ims-hero__viewport" aria-roledescription="carousel" aria-label="{{ section.settings.carousel_label | escape }}" data-ims-viewport>
+    {% if section.blocks.size > 0 %}
+      {% for block in section.blocks %}
+        {% liquid
+          assign img_desktop = block.settings.desktop_image | default: block.settings.mobile_image
+          assign img_alt = block.settings.image_alt | default: img_desktop.alt | default: ''
+          assign fallback_asset = 'impress-hero-sticker-collage.png'
+          assign default_primary = '/products/vinyl-sticker'
+          if block.settings.fallback_visual == 'banners'
+            assign fallback_asset = 'impress-showcase-banners.svg'
+            assign default_primary = '/products/banners'
+          elsif block.settings.fallback_visual == 'business'
+            assign fallback_asset = 'impress-hero-business-cards.svg'
+            assign default_primary = '/products/business-cards'
+          elsif block.settings.fallback_visual == 'flyers'
+            assign fallback_asset = 'impress-hero-flyers.svg'
+            assign default_primary = '/products/flyers'
+          endif
+          assign primary_href = block.settings.primary_url | default: default_primary
+          assign secondary_href = block.settings.secondary_url | default: '/collections/all'
+          assign img_loading = 'lazy'
+          assign img_priority = 'auto'
+          if forloop.first
+            assign img_loading = 'eager'
+            assign img_priority = 'high'
+          endif
+        %}
+        <article
+          class="ims-hero__slide{% if forloop.first %} is-active{% endif %}"
+          data-ims-slide
+          data-block-id="{{ block.id }}"
+          aria-roledescription="slide"
+          aria-label="Diapositiva {{ forloop.index }} de {{ section.blocks.size }}"
+          aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+          {% unless forloop.first %}inert{% endunless %}
+          style="--ims-slide-bg: {{ block.settings.slide_background }}; --ims-image-position: {{ block.settings.image_position }}; --ims-image-scale: {{ block.settings.image_scale | divided_by: 100.0 }};"
+          {{ block.shopify_attributes }}
+        >
+          <div class="ims-hero__inner">
+            <div class="ims-hero__copy">
+
+              {% if block.settings.heading != blank %}
+                <{{ block.settings.heading_tag }} class="ims-hero__title">{{ block.settings.heading | escape | newline_to_br }}</{{ block.settings.heading_tag }}>
+              {% endif %}
+
+              {% if block.settings.description != blank %}
+                <p class="ims-hero__description">{{ block.settings.description | escape | newline_to_br }}</p>
+              {% endif %}
+              {% if block.settings.primary_text != blank or block.settings.secondary_text != blank %}
+                <div class="ims-hero__actions">
+                  {% if block.settings.primary_text != blank %}
+                    <a class="ims-hero__button ims-hero__button--primary" href="{{ primary_href }}">{{ block.settings.primary_text | escape }}</a>
+                  {% endif %}
+                  {% if block.settings.secondary_text != blank %}
+                    <a class="ims-hero__button ims-hero__button--secondary" href="{{ secondary_href }}">{{ block.settings.secondary_text | escape }}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+                    </a>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="ims-hero__media ims-hero__media--{{ block.settings.image_fit }}{% if img_desktop == blank and block.settings.fallback_visual == 'stickers' %} ims-hero__media--collage{% endif %}">
+            {% if img_desktop != blank %}
+              {% if block.settings.mobile_image != blank %}
+                <picture>
+                  <source media="(max-width: 749px)" srcset="{{ block.settings.mobile_image | image_url: width: 480 }} 480w, {{ block.settings.mobile_image | image_url: width: 750 }} 750w, {{ block.settings.mobile_image | image_url: width: 1100 }} 1100w" sizes="100vw">
+                  {{ img_desktop | image_url: width: 2000 | image_tag: widths: '480, 750, 990, 1200, 1500, 1800, 2000', sizes: '(max-width: 749px) 100vw, 60vw', loading: img_loading, fetchpriority: img_priority, alt: img_alt, class: 'ims-hero__image' }}
+                </picture>
+              {% else %}
+                {{ img_desktop | image_url: width: 2000 | image_tag: widths: '480, 750, 990, 1200, 1500, 1800, 2000', sizes: '(max-width: 749px) 100vw, 60vw', loading: img_loading, fetchpriority: img_priority, alt: img_alt, class: 'ims-hero__image' }}
+              {% endif %}
+            {% else %}
+              <img class="ims-hero__image" src="{{ fallback_asset | asset_url }}" width="1672" height="941" alt="" loading="{{ img_loading }}" {% if forloop.first %}fetchpriority="high"{% endif %}>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    {% else %}
+      <article class="ims-hero__slide is-active" data-ims-slide aria-roledescription="slide" aria-label="Vista de ejemplo" aria-hidden="false" style="--ims-slide-bg:#151515;--ims-image-position:center;--ims-image-scale:1;">
+        <div class="ims-hero__inner"><div class="ims-hero__copy">
+          <h2 class="ims-hero__title">Stickers que destacan tu marca.</h2>
+          <p class="ims-hero__description">Añade diapositivas desde el editor de temas para personalizar este hero.</p>
+        </div></div>
+        <div class="ims-hero__media ims-hero__media--cover ims-hero__media--collage"><img class="ims-hero__image" src="{{ 'impress-hero-sticker-collage.png' | asset_url }}" width="1672" height="941" alt=""></div>
+      </article>
+    {% endif %}
+
+    {% if section.blocks.size > 1 %}
+      <div class="ims-hero__navigation" role="group" aria-label="Controles del slideshow">
+        <div class="ims-hero__navigation-inner">
+          <span class="ims-hero__counter" aria-hidden="true" data-ims-counter>01 / {% if section.blocks.size < 10 %}0{% endif %}{{ section.blocks.size }}</span>
+          <div class="ims-hero__dots" role="group" aria-label="Elegir diapositiva">
+            {% for block in section.blocks %}
+              <button type="button" class="ims-hero__dot{% if forloop.first %} is-active{% endif %}" data-ims-dot="{{ forloop.index0 }}" aria-label="Ver diapositiva {{ forloop.index }}" aria-current="{% if forloop.first %}true{% else %}false{% endif %}"><span></span></button>
+            {% endfor %}
+          </div>
+          <div class="ims-hero__arrows">
+            <button type="button" class="ims-hero__arrow" data-ims-prev aria-label="Diapositiva anterior">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+            </button>
+            <button type="button" class="ims-hero__arrow" data-ims-next aria-label="Diapositiva siguiente">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <span class="ims-hero__sr-only" aria-live="polite" aria-atomic="true" data-ims-announcement></span>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "IM Stickers Hero",
+  "tag": "section",
+  "class": "shopify-imstickers-hero",
+  "settings": [
+    {"type":"header","content":"Slideshow"},
+    {"type":"checkbox","id":"autoplay","label":"Reproducir automáticamente","default":true},
+    {"type":"range","id":"autoplay_seconds","label":"Segundos por diapositiva","min":3,"max":12,"step":1,"unit":"s","default":6},
+    {"type":"checkbox","id":"pause_hover","label":"Pausar al pasar el mouse","default":true},
+    {"type":"text","id":"carousel_label","label":"Nombre accesible","default":"Productos destacados de Impress"},
+    {"type":"header","content":"Diseño"},
+    {"type":"checkbox","id":"contained","label":"Mostrar dentro de una tarjeta","default":false},
+    {"type":"range","id":"content_width","label":"Ancho máximo del contenido","min":1000,"max":1440,"step":20,"unit":"px","default":1240},
+    {"type":"range","id":"desktop_height","label":"Altura mínima en desktop","min":420,"max":760,"step":20,"unit":"px","default":520},
+    {"type":"range","id":"mobile_image_height","label":"Altura de imagen en móvil","min":180,"max":400,"step":10,"unit":"px","default":260},
+    {"type":"range","id":"corner_radius","label":"Radio de esquinas (tarjeta)","min":0,"max":36,"step":2,"unit":"px","default":20},
+    {"type":"range","id":"padding_top","label":"Separación superior","min":0,"max":80,"step":4,"unit":"px","default":0},
+    {"type":"range","id":"padding_bottom","label":"Separación inferior","min":0,"max":80,"step":4,"unit":"px","default":0},
+    {"type":"header","content":"Colores"},
+    {"type":"color","id":"background_color","label":"Fondo por defecto","default":"#151515"},
+    {"type":"color","id":"text_color","label":"Texto","default":"#ffffff"},
+    {"type":"color","id":"accent_color","label":"Botón principal y detalles","default":"#fbbf00"},
+    {"type":"color","id":"muted_color","label":"Texto secundario","default":"#ffffff"}
+  ],
+  "blocks": [
+    {"type":"slide","name":"Diapositiva","settings":[
+      {"type":"header","content":"Texto"},
+      {"type":"textarea","id":"heading","label":"Título","default":"Stickers que destacan tu marca."},
+      {"type":"select","id":"heading_tag","label":"Etiqueta del título","options":[{"value":"h1","label":"H1"},{"value":"h2","label":"H2"}],"default":"h2"},
+      {"type":"textarea","id":"description","label":"Descripción","default":"Calidad de impresión para tu próximo proyecto. Personaliza el tamaño, la cantidad y el acabado."},
+      {"type":"header","content":"Botones"},
+      {"type":"text","id":"primary_text","label":"Texto del botón principal","default":"Crear mis stickers"},
+      {"type":"url","id":"primary_url","label":"Enlace principal"},
+      {"type":"text","id":"secondary_text","label":"Texto del enlace secundario","default":"Ver todos los productos"},
+      {"type":"url","id":"secondary_url","label":"Enlace secundario"},
+      {"type":"header","content":"Imagen"},
+      {"type":"image_picker","id":"desktop_image","label":"Imagen (desktop)"},
+      {"type":"image_picker","id":"mobile_image","label":"Imagen móvil (opcional)"},
+      {"type":"text","id":"image_alt","label":"Descripción de imagen (alt)"},
+      {"type":"select","id":"fallback_visual","label":"Imagen de ejemplo si no subes una","options":[{"value":"stickers","label":"Stickers"},{"value":"banners","label":"Banners"},{"value":"business","label":"Business Cards"},{"value":"flyers","label":"Flyers"}],"default":"stickers"},
+      {"type":"select","id":"image_fit","label":"Cómo mostrar imagen","options":[{"value":"cover","label":"Llenar espacio"},{"value":"contain","label":"Mostrar completa"}],"default":"cover"},
+      {"type":"select","id":"image_position","label":"Posición de imagen","options":[{"value":"left","label":"Izquierda"},{"value":"center","label":"Centro"},{"value":"right","label":"Derecha"}],"default":"center"},
+      {"type":"range","id":"image_scale","label":"Escala de imagen","min":80,"max":140,"step":5,"unit":"%","default":100},
+      {"type":"color","id":"slide_background","label":"Fondo de diapositiva","default":"#151515"}
+    ]}
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {"name":"IM Stickers Hero","blocks":[
+      {"type":"slide","settings":{"heading":"Stickers personalizados para tu marca.","description":"Haz que tu marca sea imposible de ignorar. Personaliza tus stickers con el tamaño, acabado y cantidad que necesitas.","primary_text":"Crear stickers","secondary_text":"Ver catálogo","fallback_visual":"stickers","image_fit":"cover"}},
+      {"type":"slide","settings":{"heading":"Que todos vean tu mensaje.","description":"Destaca tus promociones, eventos y aperturas con banners personalizados.","primary_text":"Ordenar banners","secondary_text":"Ver catálogo","fallback_visual":"banners","image_fit":"contain"}},
+      {"type":"slide","settings":{"heading":"Haz una gran primera impresión.","description":"Tarjetas de presentación personalizadas para conectar con tus próximos clientes.","primary_text":"Crear tarjetas","secondary_text":"Ver catálogo","fallback_visual":"business","image_fit":"contain"}},
+      {"type":"slide","settings":{"heading":"Promociona lo que más importa.","description":"Flyers personalizados para eventos, negocios y ofertas que merecen atención.","primary_text":"Ordenar flyers","secondary_text":"Ver catálogo","fallback_visual":"flyers","image_fit":"contain"}}
+    ]}
+  ]
+}
+{% endschema %}

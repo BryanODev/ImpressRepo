@@ -1,0 +1,177 @@
+{% comment %}
+  IM | Products Info
+  Reusable editorial image/video + information section.
+  Keep the original section filename for existing Shopify template compatibility.
+{% endcomment %}
+<section
+  id="im-products-info-{{ section.id }}"
+  class="im-products-info{% if section.settings.media_side == 'left' %} im-products-info--media-left{% endif %}{% if section.settings.mobile_order == 'image_first' %} im-products-info--mobile-image-first{% endif %}"
+  style="
+    --ipi-bg:{{ section.settings.background }};
+    --ipi-accent:{{ section.settings.accent }};
+    --ipi-media-bg:{{ section.settings.media_background }};
+    --ipi-max:{{ section.settings.max_width }}px;
+    --ipi-gap:{{ section.settings.column_gap }}px;
+    --ipi-top:{{ section.settings.padding_top }}px;
+    --ipi-bottom:{{ section.settings.padding_bottom }}px;
+    --ipi-ratio:{{ section.settings.media_ratio }};
+    --ipi-fit:{{ section.settings.image_fit }};
+    --ipi-media-radius:{{ section.settings.media_radius }}px;
+    --ipi-media-padding:{{ section.settings.media_padding }}px;
+  "
+  aria-labelledby="ipi-title-{{ section.id }}"
+>
+  <div class="im-products-info__inner">
+    <div class="im-products-info__copy">
+      {% if section.settings.eyebrow != blank %}
+        <p class="im-products-info__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h2 class="im-products-info__heading" id="ipi-title-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+      {% endif %}
+      {% if section.settings.subheading != blank %}
+        <p class="im-products-info__subheading">{{ section.settings.subheading | escape }}</p>
+      {% endif %}
+      {% if section.settings.body != blank %}
+        <div class="im-products-info__body rte">{{ section.settings.body }}</div>
+      {% endif %}
+
+      {% if section.blocks.size > 0 %}
+        <ul class="im-products-info__features" aria-label="{{ section.settings.features_label | escape }}">
+          {% for block in section.blocks %}
+            {% if block.settings.title != blank or block.settings.description != blank %}
+              <li class="im-products-info__feature" {{ block.shopify_attributes }}>
+                <span class="im-products-info__feature-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 4.5 18.5 7l2.5 10.5-11 3-3-5-3.5-5 1.5-6Z" fill="var(--ipi-accent,#fbbf00)" stroke="#111111" stroke-width="1.35" stroke-linejoin="round"/>
+                    <path d="m8.5 12 2.4 2.4 5-5.1" stroke="#111111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="im-products-info__feature-copy">
+                  {% if block.settings.title != blank %}<strong>{{ block.settings.title | escape }}</strong>{% endif %}
+                  {% if block.settings.description != blank %}<span>{% if block.settings.title != blank %} — {% endif %}{{ block.settings.description | escape }}</span>{% endif %}
+                </span>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+      {% if section.settings.cta_link != blank and section.settings.cta_text != blank %}
+        <a class="im-products-info__link" href="{{ section.settings.cta_link }}">{{ section.settings.cta_text | escape }} <span aria-hidden="true">↗</span></a>
+      {% endif %}
+    </div>
+
+    <div class="im-products-info__media">
+      {% if section.settings.shopify_video != blank %}
+        {{ section.settings.shopify_video | video_tag: controls: true, autoplay: false, loop: false, image_size: '1200x', class: 'im-products-info__video', playsinline: true }}
+      {% elsif section.settings.external_video != blank %}
+        {{ section.settings.external_video | external_video_tag: class: 'im-products-info__video', loading: 'lazy' }}
+      {% elsif section.settings.image != blank %}
+        {% assign product_info_alt = section.settings.image.alt | default: section.settings.heading %}
+        {{ section.settings.image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '360, 540, 750, 1000, 1300, 1600', sizes: '(max-width: 790px) 90vw, 46vw', class: 'im-products-info__image', alt: product_info_alt }}
+      {% elsif section.settings.fallback_visual == 'stickers' %}
+        <img src="{{ 'impress-showcase-stickers.jpg' | asset_url }}" width="1500" height="1000" class="im-products-info__image" loading="lazy" alt="Muestra de productos impresos">
+      {% elsif section.settings.fallback_visual == 'banners' %}
+        <img src="{{ 'impress-showcase-banners.svg' | asset_url }}" width="1200" height="900" class="im-products-info__image" loading="lazy" alt="Ejemplo ilustrativo de un banner">
+      {% elsif request.design_mode %}
+        <div class="im-products-info__placeholder">Selecciona una imagen o video en el editor.</div>
+      {% endif %}
+      {% if section.settings.shopify_video == blank and section.settings.external_video == blank %}
+        {% if section.settings.media_caption != blank %}
+          <span class="im-products-info__caption">{{ section.settings.media_caption | escape }}</span>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.im-products-info,.im-products-info *{box-sizing:border-box}
+.im-products-info{width:100%;padding:var(--ipi-top,80px) 20px var(--ipi-bottom,80px);background:var(--ipi-bg,#ffffff);color:#111111;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.im-products-info__inner{max-width:var(--ipi-max,1240px);margin-inline:auto;display:grid;grid-template-columns:minmax(0,1.03fr) minmax(0,1fr);grid-template-areas:"copy media";gap:clamp(24px,5vw,var(--ipi-gap,70px));align-items:center}
+.im-products-info--media-left .im-products-info__inner{grid-template-columns:minmax(0,1fr) minmax(0,1.03fr);grid-template-areas:"media copy"}
+.im-products-info__copy{grid-area:copy;min-width:0}
+.im-products-info__media{grid-area:media;position:relative;display:flex;align-items:center;justify-content:center;width:100%;min-width:0;aspect-ratio:var(--ipi-ratio,1.24);padding:var(--ipi-media-padding,0px);overflow:hidden;border-radius:var(--ipi-media-radius,22px);background:var(--ipi-media-bg,#f0f1f2)}
+.im-products-info__image,.im-products-info__video,.im-products-info__media iframe,.im-products-info__media video{display:block;width:100%!important;height:100%!important;min-width:0;max-width:none!important;object-fit:var(--ipi-fit,cover);object-position:center;border:0}
+.im-products-info__media iframe,.im-products-info__media video{object-fit:contain}
+.im-products-info__eyebrow{color:#888888;letter-spacing:.14em;font-size:11px;font-weight:850;line-height:1.4;margin:0 0 14px;text-transform:uppercase}
+.im-products-info__heading{margin:0 0 18px;color:#111111;font-size:clamp(31px,3.4vw,47px);font-weight:900;letter-spacing:-.045em;line-height:1.1;text-wrap:balance}
+.im-products-info__subheading{font-size:clamp(15px,1.5vw,18px);line-height:1.5;font-weight:800;color:#111111;margin:0 0 18px}
+.im-products-info__body{max-width:65ch;color:#444a52;font-size:15px;line-height:1.75}
+.im-products-info__body p{margin:0 0 17px}
+.im-products-info__body p:last-child{margin-bottom:0}
+.im-products-info__body h2,.im-products-info__body h3,.im-products-info__body h4{color:#111111;font-weight:800;line-height:1.25;margin:22px 0 10px}
+.im-products-info__body strong{color:#111111;font-weight:800}
+.im-products-info__body ul,.im-products-info__body ol{margin:0 0 17px;padding-left:24px}
+.im-products-info__body a{color:#111111;text-decoration:underline;text-decoration-color:var(--ipi-accent,#fbbf00);text-underline-offset:3px}
+.im-products-info__features{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:16px}
+.im-products-info__feature{display:flex;align-items:flex-start;gap:14px;color:#343840;font-size:15px;line-height:1.55}
+.im-products-info__feature-icon{flex:0 0 22px;display:flex;align-items:flex-start;justify-content:center;margin-top:1px}
+.im-products-info__feature-icon svg{display:block;width:20px;height:20px}
+.im-products-info__feature-copy{min-width:0}
+.im-products-info__feature-copy strong{color:#111111;font-weight:800}
+.im-products-info__feature-copy span{color:#343840}
+.im-products-info__link{display:inline-flex;align-items:center;gap:12px;text-decoration:none;border-bottom:2px solid var(--ipi-accent,#fbbf00);font-size:14px;font-weight:850;color:#111111;margin-top:22px;padding-bottom:7px;transition:transform .2s ease}
+.im-products-info__link:hover{transform:translateY(-2px)}
+.im-products-info__link:focus-visible{outline:3px solid var(--ipi-accent,#fbbf00);outline-offset:5px}
+.im-products-info__caption{position:absolute;bottom:17px;left:17px;z-index:1;padding:10px 13px;color:#ffffff;background:rgba(17,17,17,.82);border-radius:10px;font-size:12px;font-weight:850}
+.im-products-info__placeholder{display:grid;place-items:center;min-height:240px;width:100%;color:#888888;font-size:13px;text-align:center;padding:25px;border:1px dashed #ccd1d7;border-radius:10px}
+@media(max-width:790px){
+  .im-products-info{padding:var(--ipi-top,80px) 16px var(--ipi-bottom,80px)}
+  .im-products-info__inner,.im-products-info--media-left .im-products-info__inner{grid-template-columns:minmax(0,1fr);grid-template-areas:"copy" "media";gap:27px}
+  .im-products-info--mobile-image-first .im-products-info__inner,.im-products-info--media-left.im-products-info--mobile-image-first .im-products-info__inner{grid-template-areas:"media" "copy"}
+  .im-products-info__media{width:100%;max-width:680px;margin-inline:auto}
+  .im-products-info__heading{font-size:clamp(29px,6.6vw,40px)}
+  .im-products-info__body,.im-products-info__feature{font-size:14px}
+  .im-products-info__features{gap:14px}
+}
+@media(prefers-reduced-motion:reduce){.im-products-info__link{transition:none}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "IM Products Info",
+  "settings": [
+    {"type":"header","content":"Contenido"},
+    {"type":"text","id":"eyebrow","label":"Etiqueta pequeña","default":"SOBRE NUESTROS PRODUCTOS"},
+    {"type":"text","id":"heading","label":"Título","default":"Encuentra la impresión ideal para tu proyecto."},
+    {"type":"text","id":"subheading","label":"Subtítulo destacado"},
+    {"type":"richtext","id":"body","label":"Texto","default":"<p>Descubre las opciones disponibles y elige la que mejor se adapte a tu negocio, evento o proyecto personal.</p><p>Consulta tamaños, materiales y acabados directamente desde la página de cada producto antes de ordenar.</p>"},
+    {"type":"text","id":"features_label","label":"Nombre accesible de la lista","default":"Características y opciones"},
+    {"type":"text","id":"cta_text","label":"Texto de enlace","default":"Explorar productos"},
+    {"type":"url","id":"cta_link","label":"Destino del enlace"},
+    {"type":"header","content":"Imagen o video"},
+    {"type":"video","id":"shopify_video","label":"Video desde Shopify"},
+    {"type":"video_url","id":"external_video","label":"O video de YouTube/Vimeo","accept":["youtube","vimeo"]},
+    {"type":"image_picker","id":"image","label":"Imagen"},
+    {"type":"select","id":"fallback_visual","label":"Imagen de respaldo (opcional)","options":[{"value":"stickers","label":"Stickers"},{"value":"banners","label":"Banners"},{"value":"none","label":"Sin imagen"}],"default":"stickers"},
+    {"type":"text","id":"media_caption","label":"Texto sobre la imagen (opcional)"},
+    {"type":"select","id":"media_side","label":"Posición de imagen/video","options":[{"value":"left","label":"Izquierda"},{"value":"right","label":"Derecha"}],"default":"right"},
+    {"type":"select","id":"mobile_order","label":"Orden en móvil","options":[{"value":"text_first","label":"Texto primero"},{"value":"image_first","label":"Imagen primero"}],"default":"text_first"},
+    {"type":"select","id":"media_ratio","label":"Proporción de imagen","options":[{"value":"1.24","label":"Horizontal original"},{"value":"1","label":"Cuadrada 1:1"},{"value":"1.5","label":"Horizontal 3:2"},{"value":"0.8","label":"Vertical 4:5"}],"default":"1.24"},
+    {"type":"select","id":"image_fit","label":"Ajuste de imagen","options":[{"value":"cover","label":"Llenar (recortar)"},{"value":"contain","label":"Mostrar completa"}],"default":"cover"},
+    {"type":"range","id":"media_radius","label":"Redondeo de imagen","min":0,"max":32,"step":2,"unit":"px","default":22},
+    {"type":"range","id":"media_padding","label":"Espacio interior de imagen","min":0,"max":60,"step":5,"unit":"px","default":0},
+    {"type":"color","id":"media_background","label":"Fondo de imagen","default":"#f0f1f2"},
+    {"type":"header","content":"Diseño y espaciado"},
+    {"type":"range","id":"max_width","label":"Ancho máximo","min":900,"max":1400,"step":20,"unit":"px","default":1240},
+    {"type":"range","id":"column_gap","label":"Separación entre columnas","min":20,"max":120,"step":10,"unit":"px","default":70},
+    {"type":"range","id":"padding_top","label":"Espacio superior","min":0,"max":120,"step":5,"unit":"px","default":80},
+    {"type":"range","id":"padding_bottom","label":"Espacio inferior","min":0,"max":120,"step":5,"unit":"px","default":80},
+    {"type":"color","id":"background","label":"Color de fondo","default":"#ffffff"},
+    {"type":"color","id":"accent","label":"Acento","default":"#fbbf00"}
+  ],
+  "blocks": [
+    {"type":"feature","name":"Punto destacado","settings":[
+      {"type":"text","id":"title","label":"Texto en negrita","default":"Característica"},
+      {"type":"textarea","id":"description","label":"Explicación","default":"Describe aquí una característica del producto."}
+    ]}
+  ],
+  "max_blocks": 12,
+  "presets": [{"name":"IM Products Info","blocks":[
+    {"type":"feature","settings":{"title":"Materiales","description":"Consulta las opciones de impresión disponibles."}},
+    {"type":"feature","settings":{"title":"Acabados","description":"Elige la presentación que mejor combine con tu diseño."}},
+    {"type":"feature","settings":{"title":"Personalización","description":"Configura los detalles de tu pedido a tu manera."}}
+  ]}]
+}
+{% endschema %}

@@ -1,33 +1,18 @@
-# Impress Shopify v0.4.4 — Artwork formats + removal of sharing links
+# Impress Related Products — square full-bleed images
 
-## Upload into a DUPLICATED Shopify theme
+IMPORTANT: The screenshot is of **Impress Related Products**, NOT Impress All Products.
+This ZIP fixes the correct section.
 
-Copy the files under `assets/`, `sections/`, and `snippets/` to those same folders in Shopify. You can replace the existing files with the names in this ZIP. **Do not overwrite your homepage JSON or product variants.**
+## Installation
+Replace only `sections/impress-related-products.liquid` in your development Shopify theme.
+The package intentionally does NOT contain `impress-all-products.liquid`.
 
-New shared file: `assets/impress-artwork-preview.js`. This must be uploaded along with the editor/controller changes.
+## What changed
+- The image area is exactly **1:1**, based on card width, at every viewport.
+- It uses the identical image handling from the already-fixed All Products section:
+  absolute image positioning, zero padding, `object-fit:cover !important`, centered cropping, and global-CSS overrides.
+- The hardcoded 180px desktop and 120px mobile image heights were removed.
+- Card titles, prices, links, the optional collection, and tag-exclusion settings are unchanged.
+- The entire card isn't square; the image area above the details is.
 
-## New workflow
-
-- No external artwork URLs, no second preview file, no external-storage link field.
-- One direct upload per side (front / back if applicable), maximum 20 MB per file.
-- Accepted types: SVG, PNG, JPG, JPEG, TIF, TIFF, PDF.
-- Clicking the empty editor still opens the same file picker.
-- Original is kept unchanged as a Shopify line-item file property. An edited PNG reference is prepared as a separate line-item property.
-- PNG/JPEG/SVG can display locally without extra dependencies.
-- PDF and TIFF first-page previews need the browser to fetch pinned JavaScript decoders from cdnjs/jsDelivr/unpkg. No separate Node.js server or paid hosting required, but they will not preview if those CDNs are blocked.
-- SVG previews are sanitized; user-supplied original files are not modified.
-- Multi-page PDF/TIFF: only FIRST PAGE visible/editable; original full file still goes to Shopify.
-
-## Before showing this to your boss
-
-1. Upload a PNG and place a test order. Check Shopify Admin > Orders for **Arte original** and **Vista editada**.
-2. Repeat for SVG, JPG/JPEG, TIF and PDF, and check which formats Shopify actually retains. **Acceptance by the local editor is not proof Shopify retains every file type.**
-3. Repeat a double-sided Business Card or Flyer order; verify both front and back originals/previews.
-4. Check the 20 MB behavior and file accessibility in the order detail.
-
-## Limitations
-
-- 20 MB is the configured storefront file-size ceiling, not a promise that Shopify accepts all formats on product forms.
-- Some PDFs and TIFFs may fail to render due to unsupported compression, password protection, or browser memory limits. The UI shows an error; checkout will not silently treat a missing preview as completed artwork.
-- The edited PNG is a design reference, not guaranteed to be print-ready (bleed, DPI, CMYK, fonts).
-- No hosting/back-end changes. Pricing and product variants are untouched.
+Note: cover crops photo edges if source and square aspect ratios differ. A source file with its own built-in background/margins cannot be cropped away independently, but the displayed photo fills the media area.

@@ -1,0 +1,147 @@
+<section id="impress-simple-hero-{{ section.id }}" class="ibland" style="--ibl-accent:{{ section.settings.accent }};--ibl-hero-bg:{{ section.settings.hero_bg }}" aria-labelledby="hero-title-{{ section.id }}">
+  <div class="ibland__hero">
+    <div class="ibland__hero-inner">
+      <div class="ibland__hero-content">
+        {% if section.settings.eyebrow != blank %}<p class="ibland__eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
+        <h1 id="hero-title-{{ section.id }}">{{ section.settings.heading | escape }}</h1>
+        {% if section.settings.intro != blank %}<p class="ibland__intro">{{ section.settings.intro | escape }}</p>{% endif %}
+        {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+          <a class="ibland__hero-cta" href="{{ section.settings.button_link }}">{{ section.settings.button_text | escape }} <span aria-hidden="true">↓</span></a>
+        {% endif %}
+      </div>
+      <div class="ibland__hero-art" aria-hidden="true">
+        {% if section.settings.hero_image != blank %}
+          {{ section.settings.hero_image | image_url: width: 1500 | image_tag: loading: 'eager', widths: '500, 750, 1100, 1500', sizes: '(max-width: 749px) 100vw, 52vw', class: 'ibland__hero-image', alt: '' }}
+        {% elsif section.settings.fallback_art == 'banners' %}
+          <img src="{{ 'im-banners-hero.svg' | asset_url }}" class="ibland__hero-image" width="1600" height="1000" alt="" loading="eager">
+        {% elsif section.settings.fallback_art == 'stickers' %}
+          <img src="{{ 'impress-hero-sticker-collage.png' | asset_url }}" class="ibland__hero-image" width="1672" height="941" alt="" loading="eager">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+
+.ibland,.ibland *{box-sizing:border-box}
+.ibland{font-family:system-ui,-apple-system,sans-serif;background:#f7f8f9;color:#111111}
+.ibland__hero{background:var(--ibl-hero-bg,#111111);color:white;overflow:hidden}
+.ibland__hero-inner{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:1fr 1.03fr;min-height:410px;position:relative}
+.ibland__hero-content{padding:64px 22px 67px 0;position:relative;z-index:2;align-self:center;max-width:570px}
+.ibland__eyebrow{font-size:11px;font-weight:850;letter-spacing:.15em;text-transform:uppercase;color:var(--ibl-accent,#fbbf00);margin:0 0 16px}
+.ibland__hero h1{margin:0 0 19px;color:#fff;font-size:clamp(43px,4.6vw,69px);letter-spacing:-.05em;line-height:1.04;font-weight:900;text-wrap:balance}
+.ibland__intro{font-size:17px;line-height:1.65;color:#e2e2e2;max-width:49ch;margin:0 0 28px}
+.ibland__hero-cta{display:inline-flex;gap:16px;align-items:center;padding:15px 22px;background:var(--ibl-accent,#fbbf00);color:#111!important;border-radius:10px;font-size:14px;font-weight:850;text-decoration:none;transition:transform .2s ease}
+.ibland__hero-cta:hover{transform:translateY(-3px)}
+.ibland__hero-art{position:absolute;z-index:1;inset:0 max(-120px,calc((1240px - 100vw)/2)) 0 47%;overflow:hidden;pointer-events:none}
+.ibland__hero-image{width:100%;height:100%;display:block;object-fit:contain;object-position:center right}
+.ibland__hero-art:after{content:"";inset:0;position:absolute;background:linear-gradient(90deg,var(--ibl-hero-bg,#111111),transparent 26%)}
+.ibland__catalog{padding:72px 20px 82px;scroll-margin-top:110px}
+.ibland__catalog-inner{max-width:1240px;margin:0 auto}
+.ibland__heading-row{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:29px}
+.ibland__eyebrow--dark{color:#888888;margin-bottom:11px}
+.ibland__heading-row h2{font-size:clamp(31px,3.3vw,45px);margin:0 0 10px;line-height:1.12;letter-spacing:-.035em;font-weight:900;color:#111}
+.ibland__catalog-description{margin:0;color:#60656d;font-size:15px;line-height:1.6}
+.ibland__category-count{font-weight:750;font-size:12px;color:#888888;padding-bottom:7px;white-space:nowrap}
+.ibland__cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.ibland__card{background:var(--ibl-card-bg,#ffffff);border:1px solid #e0e4e7;min-width:0;border-radius:22px;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease}
+.ibland__card:hover{transform:translateY(-4px);box-shadow:0 14px 40px #11111116}
+.ibland__card-media{position:relative;aspect-ratio:1/1;background:#e8ebec;overflow:hidden}
+.ibland__card-img,.ibland__card-graphic>img{width:100%!important;height:100%!important;max-width:none!important;display:block;object-fit:cover!important;object-position:center!important;padding:0!important}
+.ibland__card-graphic{width:100%;height:100%;display:grid;place-items:center;background:#f0f1f4;position:relative;overflow:hidden}
+.ibland__coming{position:absolute;top:15px;left:15px;background:#111;color:#fff;font-size:10px;font-weight:800;letter-spacing:.05em;padding:9px 11px;border-radius:100px}
+.ibland__card-body{padding:23px 23px 24px}
+.ibland__card-copy{min-height:105px}
+.ibland__card h3{font-size:22px;font-weight:900;letter-spacing:-.025em;line-height:1.15;margin:0 0 9px}
+.ibland__card-copy p{font-size:13px;color:#686c73;line-height:1.55;margin:0}
+.ibland__card-bottom{display:flex;justify-content:space-between;align-items:center;gap:9px}
+.ibland__card-price{font-size:14px;font-weight:850;color:#111}
+.ibland__card-status{font-size:12px;color:#888888}
+.ibland__card-link{font-weight:800;font-size:12px;text-decoration:none;color:#111!important;background:#fbbf00;border-radius:100px;display:inline-flex;align-items:center;gap:8px;padding:12px 14px;white-space:nowrap}
+.ibland__card-link:hover{background:#ffdc42}
+.ibland__card-disabled{color:#888888;font-size:11px;font-weight:750}
+.ibland a:focus-visible{outline:3px solid #fbbf00;outline-offset:3px}
+@media(max-width:1280px){.ibland__hero-content{padding-left:28px}.ibland__hero-art{right:0}}
+@media(max-width:900px){.ibland__cards{grid-template-columns:repeat(2,minmax(0,1fr))}.ibland__hero-inner{min-height:350px}.ibland__hero-content{max-width:480px;padding:40px 16px 45px 28px}.ibland__hero-art{left:54%;right:0}.ibland__hero h1{font-size:44px}}
+@media(max-width:680px){.ibland__hero-inner{display:flex;flex-direction:column;min-height:0}.ibland__hero-content{padding:37px 19px 22px;width:100%;max-width:none}.ibland__hero h1{max-width:14ch;font-size:clamp(37px,9vw,52px)}.ibland__intro{font-size:15px;margin-bottom:19px}.ibland__hero-art{position:relative;inset:auto;width:100%;height:220px}.ibland__hero-art:after{background:linear-gradient(180deg,var(--ibl-hero-bg,#111111),transparent 25%)}.ibland__catalog{padding:53px 16px 58px}.ibland__heading-row{display:block}.ibland__category-count{display:block;margin-top:11px}.ibland__cards{grid-template-columns:1fr;gap:17px}.ibland__card-copy{min-height:0;margin-bottom:22px}.ibland__card-media{aspect-ratio:1/1}.ibland__card-body{padding:18px 19px 20px}}
+@media(prefers-reduced-motion:reduce){.ibland__card,.ibland__hero-cta{transition:none}.ibland__card:hover,.ibland__hero-cta:hover{transform:none}}
+
+</style>
+{% schema %}
+{
+  "name": "Impress Simple Hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Etiqueta",
+      "default": "IMPRESS"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "Imprime tus ideas a lo grande."
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Descripción",
+      "default": "Explora nuestros productos personalizados."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Texto del botón",
+      "default": "Explorar productos"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Enlace del botón"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Imagen principal"
+    },
+    {
+      "type": "select",
+      "id": "fallback_art",
+      "label": "Imagen predeterminada",
+      "options": [
+        {
+          "value": "none",
+          "label": "Ninguna"
+        },
+        {
+          "value": "stickers",
+          "label": "Stickers"
+        },
+        {
+          "value": "banners",
+          "label": "Banners"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "color",
+      "id": "hero_bg",
+      "label": "Fondo",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Color de botón",
+      "default": "#fbbf00"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Impress Simple Hero"
+    }
+  ]
+}
+{% endschema %}
