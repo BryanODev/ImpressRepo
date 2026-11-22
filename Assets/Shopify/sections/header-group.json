@@ -161,7 +161,7 @@
           "type": "nav_group",
           "settings": {
             "title": "Banners",
-            "link_url": "/products/banners",
+            "link_url": "shopify://pages/banners",
             "source_mode": "manual",
             "collection": "",
             "product_limit": 6,
@@ -173,6 +173,28 @@
           "type": "nav_product",
           "settings": {
             "product": "banners",
+            "title": "",
+            "description": "",
+            "link_url": "",
+            "visual_mode": "auto",
+            "icon": "🏷️"
+          }
+        },
+        "nav_product_R4k3Jh": {
+          "type": "nav_product",
+          "settings": {
+            "product": "roll-up-banner",
+            "title": "",
+            "description": "",
+            "link_url": "",
+            "visual_mode": "auto",
+            "icon": "🏷️"
+          }
+        },
+        "nav_product_cCaGta": {
+          "type": "nav_product",
+          "settings": {
+            "product": "x-stand-banner",
             "title": "",
             "description": "",
             "link_url": "",
@@ -220,6 +242,8 @@
         "nav_product_VHkCti",
         "nav_group_HfbD9X",
         "nav_product_64efJz",
+        "nav_product_R4k3Jh",
+        "nav_product_cCaGta",
         "nav_group_ket6Qx",
         "nav_product_FwXnVT",
         "nav_product_CMcH6N"

@@ -1,0 +1,153 @@
+{{ 'impress-banner-configurator.css' | asset_url | stylesheet_tag }}
+{{ 'impress-preview-shared.css' | asset_url | stylesheet_tag }}
+{{ 'impress-configurator-ux.css' | asset_url | stylesheet_tag }}
+{{ 'impress-stand-configurator.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'impress-configurator-ux.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-addons.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-editor-core.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-artwork-source.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-artwork-preview.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-artwork-quality.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-stand-editor.js' | asset_url }}" defer></script>
+<script src="{{ 'impress-stand-configurator.js' | asset_url }}" defer></script>
+
+{% liquid
+  assign stand_kind = section.settings.stand_type
+  assign stand_name = 'Roll-Up Banner'
+  assign stand_width = 33
+  assign stand_height = 72
+  assign stand_size = '33 in ancho × 72 in alto'
+  if stand_kind == 'xstand'
+    assign stand_name = 'X-Stand Banner'
+    assign stand_width = 23.5
+    assign stand_height = 60
+    assign stand_size = '23.5 in ancho × 60 in alto'
+  endif
+  assign form_id = 'ImpressStandForm-' | append: section.id
+%}
+<section class="impress-banner impress-stand" id="ImpressStand-{{ section.id }}"
+  data-impress-stand data-stand-type="{{ stand_kind }}" data-stand-width="{{ stand_width }}" data-stand-height="{{ stand_height }}"
+  data-variant-count="{{ product.variants_count }}"
+  data-selected-variant="{{ product.selected_or_first_available_variant.id }}"
+  data-currency="{{ cart.currency.iso_code | default: shop.currency | escape }}">
+  <div class="impress-banner__shell">
+    <header class="impress-banner__header">
+      <div>
+        <p class="impress-banner__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        <h1 class="impress-banner__title">{{ section.settings.title | default: stand_name | escape }}</h1>
+        <p class="impress-banner__subtitle">{{ section.settings.subtitle | escape }}</p>
+      </div>
+      <span class="impress-banner__version">IMPRESS / STAND EDITOR</span>
+    </header>
+    {% if product == blank %}
+      <div class="impress-banner__notice">Esta sección necesita un producto de Shopify. Asígnala a una plantilla de producto.</div>
+    {% else %}
+    <div class="impress-banner__layout">
+      <div class="impress-banner__left">
+        <div class="impress-banner__preview">
+          <div class="impress-banner__preview-top"><span><span class="impress-banner__dot"></span> IMPRESS EDITOR</span><span data-ib-mount-caption>CON BASE</span></div>
+          <div class="impress-banner__tabs" role="group" aria-label="Modo de vista">
+            <button type="button" class="is-active" data-ib-mode="edit">Editar diseño</button>
+            <button type="button" data-ib-mode="final">Vista con soporte</button>
+          </div>
+          <div class="impress-banner__stage" data-ib-stage data-ib-view="edit">
+            <div class="impress-quality" data-impress-quality hidden role="status" aria-live="polite" aria-atomic="true"><span class="impress-quality__resolution" data-impress-quality-resolution></span><strong class="impress-quality__dpi" data-impress-quality-status></strong></div>
+            <canvas data-ib-canvas class="impress-banner__canvas" role="img" aria-label="Lienzo de impresión en posición vertical"></canvas>
+            <div data-ib-final-layer class="impress-banner__final-layer" aria-hidden="true"><canvas class="impress-banner__final-canvas" data-ib-final-canvas></canvas></div>
+            <button type="button" class="impress-banner__empty impress-preview-upload" data-ib-empty aria-label="Seleccionar archivo para el diseño"><svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-3v-3"/></svg><strong>Subir diseño</strong><small>Haz clic para seleccionar tu archivo</small></button>
+            <span class="impress-banner__tilt-hint">Mueve el cursor o arrastra para girar la estructura</span>
+          </div>
+          <div class="impress-stand__viewer-controls" data-stand-viewer hidden>
+            <label for="StandViewAngle-{{ section.id }}">Girar conjunto <output data-stand-angle-value>0°</output></label>
+            <input id="StandViewAngle-{{ section.id }}" data-stand-view-angle type="range" min="-55" max="55" step="1" value="0" aria-label="Rotación 3D de la estructura">
+            <button type="button" data-stand-view-reset>Restablecer vista</button>
+          </div>
+          <div class="impress-banner__toolbar">
+            <button type="button" data-ib-action="undo" disabled>↶ Deshacer</button>
+            <button type="button" data-ib-action="redo" disabled>↷ Rehacer</button>
+            <button type="button" data-ib-action="center" disabled>⊙ Centrar arte</button>
+            <label class="impress-banner__toggle impress-banner__toggle--cut"><input type="checkbox" data-ib-show-cut checked><span>Corte</span></label>
+            <label class="impress-banner__toggle impress-banner__toggle--mount"><input type="checkbox" data-ib-show-mount checked><span>Sujeción</span></label>
+          </div>
+          <p class="impress-banner__guide-note" data-ib-guide-note>{% if stand_kind == 'rollup' %}Líneas azules: zona de sujeción provisional de 0.25″ arriba y abajo.{% else %}Puntos azules: áreas orientativas de tensión en las esquinas.{% endif %} Validar con producción.</p>
+        </div>
+        <div class="impress-banner__tools">
+          <div class="impress-banner__tools-head"><strong>Ajusta tu arte</strong><span>EDICIÓN</span></div>
+          <button type="button" class="impress-config-advanced-toggle" data-impress-advanced-toggle aria-controls="impress-advanced-{{ section.id }}" aria-expanded="false">Ajustes avanzados <span aria-hidden="true">⌄</span></button>
+          <div class="impress-config-advanced" id="impress-advanced-{{ section.id }}" data-impress-advanced-panel>
+            <div class="impress-banner__tool">
+              <label for="StandScale-{{ section.id }}">Escala <output data-ib-scale-value>100%</output></label>
+              <div class="impress-config-adjust"><input id="StandScale-{{ section.id }}" data-ib-scale type="range" min="20" max="250" step="1" value="100" disabled><div class="impress-config-number"><input type="number" data-impress-number-for="ib-scale" aria-label="Escala del diseño (%)" min="20" max="250" step="1" value="100" disabled><span aria-hidden="true">%</span></div></div>
+            </div>
+            <div class="impress-banner__tool">
+              <label for="StandRotate-{{ section.id }}">Rotación del arte <output data-ib-rotate-value>0°</output></label>
+              <div class="impress-config-adjust"><input id="StandRotate-{{ section.id }}" data-ib-rotate type="range" min="-180" max="180" step="1" value="0" disabled><div class="impress-config-number"><input type="number" data-impress-number-for="ib-rotate" aria-label="Rotación del diseño (°)" min="-180" max="180" step="1" value="0" disabled><span aria-hidden="true">°</span></div></div>
+            </div>
+          </div>
+          <div class="impress-banner__tool-bottom"><button type="button" data-ib-download disabled>Descargar vista PNG</button><span data-ib-editor-message aria-live="polite">El original se conserva sin modificar.</span></div>
+        </div>
+        <p class="impress-banner__disclaimer">La vista del soporte y sus guías son ilustrativas, no un plano de fabricación. El archivo original se conserva para producción; la vista PNG no lo sustituye.</p>
+      </div>
+      <div class="impress-banner__right">
+        {% form 'product', product, id: form_id, class: 'impress-banner__form' %}
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-ib-variant-id>
+          <input type="hidden" name="properties[Impress - Producto]" value="{{ stand_name }}">
+          <input type="hidden" name="properties[Impress - Base]" data-ib-property-mount>
+          <input type="hidden" name="properties[Impress - Tamaño]" value="{{ stand_size }}" data-ib-property-size>
+          <input type="hidden" name="properties[Impress - Editor]" value="Stand CONFIG v1.0">
+          <input type="hidden" name="properties[_Impress - Edición]" data-ib-project>
+          <input type="file" class="impress-banner__hidden-file" name="properties[Vista editada]" data-ib-output-file accept="image/png" tabindex="-1" aria-hidden="true">
+          <div class="impress-banner__field">
+            <div class="impress-banner__field-head"><span class="impress-banner__step">01</span><span class="impress-banner__field-title">Base del {{ stand_name }}</span></div>
+            <div class="impress-banner__mounts impress-stand__bases" data-ib-mounts role="radiogroup" aria-label="Base o sin base">
+              <label class="impress-banner__mount-card"><input type="radio" name="base-{{ section.id }}" value="with" data-stand-base checked><span class="impress-banner__mount-surface"><span class="impress-stand__base-icon" aria-hidden="true">▰</span><span class="impress-banner__mount-copy"><strong class="impress-banner__mount-label">Con base</strong><small>Incluye soporte ilustrado</small></span></span></label>
+              <label class="impress-banner__mount-card"><input type="radio" name="base-{{ section.id }}" value="without" data-stand-base><span class="impress-banner__mount-surface"><span class="impress-stand__base-icon" aria-hidden="true">▯</span><span class="impress-banner__mount-copy"><strong class="impress-banner__mount-label">Sin base</strong><small>Solo impresión</small></span></span></label>
+            </div>
+          </div>
+          <div class="impress-banner__field">
+            <div class="impress-banner__field-head"><span class="impress-banner__step">02</span><span class="impress-banner__field-title">Tamaño de impresión</span></div>
+            <div class="impress-stand__fixed-size"><strong>{{ stand_size }}</strong><span>Tamaño fijo</span></div>
+            <p class="impress-banner__field-note">Ancho × alto. La impresión se mantiene vertical.</p>
+          </div>
+          <div class="impress-banner__field">
+            <div class="impress-banner__field-head"><span class="impress-banner__step">03</span><label for="StandQty-{{ section.id }}" class="impress-banner__field-title">Cantidad</label></div>
+            <div class="impress-banner__qty">
+              <button type="button" data-ib-qty-down aria-label="Reducir cantidad">−</button>
+              <input type="number" id="StandQty-{{ section.id }}" data-ib-quantity name="quantity" min="1" max="100" step="1" value="1" inputmode="numeric">
+              <button type="button" data-ib-qty-up aria-label="Aumentar cantidad">+</button>
+            </div>
+          </div>
+          <div class="impress-banner__field">
+            <div class="impress-banner__field-head"><span class="impress-banner__step">04</span><label for="StandArt-{{ section.id }}" class="impress-banner__field-title">Sube tu arte original</label></div>
+            <label for="StandArt-{{ section.id }}" class="impress-banner__dropzone"><span class="impress-banner__upload-icon" aria-hidden="true">↑</span><strong data-ib-file-label>Seleccionar archivo</strong><small>SVG, PNG, JPG, JPEG, TIF o PDF · máx. 20 MB</small></label>
+            <input id="StandArt-{{ section.id }}" class="impress-banner__file" type="file" name="properties[Arte original]" accept=".svg,.png,.jpg,.jpeg,.tif,.tiff,.pdf" data-ib-art-input required>
+            <p class="impress-banner__field-note" data-ib-file-hint>El archivo original se guarda para impresión. Puedes ver su primera página si es PDF/TIFF.</p>
+          </div>
+          <div class="impress-banner__mount-summary" data-ib-mount-summary role="status">Selecciona la base del soporte.</div>
+          {% render 'impress-addon-picker', product: product, section_id: section.id %}
+          {% render 'impress-price-summary', main_attr: 'data-ib-total', note_attr: 'data-ib-price-note', note_text: 'Precios reales de Shopify para esta combinación.' %}
+          <p class="impress-banner__message" data-ib-message role="status" aria-live="polite"></p>
+          <button type="submit" class="impress-banner__submit" data-ib-submit disabled>Añadir al carrito <span aria-hidden="true">→</span></button>
+          <p class="impress-banner__checkout-note">Los precios y la disponibilidad provienen de las variantes Shopify.</p>
+        {% endform %}
+      </div>
+    </div>
+    <script type="application/json" data-ib-variants>[{% for variant in product.variants %}{"id":{{ variant.id | json }},"options":{{ variant.options | json }},"price":{{ variant.price | json }},"available":{{ variant.available | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}]</script>
+    {% endif %}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Impress Stand Editor",
+  "tag": "section",
+  "class": "impress-stand-section",
+  "enabled_on": {"templates": ["product"]},
+  "settings": [
+    {"type":"select","id":"stand_type","label":"Tipo de soporte","options":[{"value":"rollup","label":"Roll-Up"},{"value":"xstand","label":"X-Stand"}],"default":"rollup"},
+    {"type":"text","id":"eyebrow","label":"Etiqueta superior","default":"IMPRESS / FORMATO VERTICAL"},
+    {"type":"text","id":"title","label":"Título","default":"Personaliza tu stand banner"},
+    {"type":"textarea","id":"subtitle","label":"Subtítulo","default":"Elige la base, sube tu arte y revisa tu impresión antes de ordenar."}
+  ],
+  "presets": [{"name":"Impress Stand Editor"}]
+}
+{% endschema %}

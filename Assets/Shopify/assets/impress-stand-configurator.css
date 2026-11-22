@@ -1,0 +1,18 @@
+/* Stand variants reuse the existing Impress banner layout, file upload, editor UX. */
+.impress-stand .impress-banner__shell{max-width:1240px}
+.impress-stand .impress-banner__stage,.impress-stand .impress-banner__canvas,.impress-stand .impress-banner__final-canvas{height:480px;min-height:480px}
+.impress-stand .impress-banner__preview{overflow:visible}
+.impress-stand .impress-banner__stage{overflow:hidden;border-radius:12px}
+.impress-stand__fixed-size{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid #d7e0e6;background:#f8fafb;border-radius:10px;padding:16px 14px;color:#111111;font-size:14px}
+.impress-stand__fixed-size span{font-size:11px;color:#888888;font-weight:700;white-space:nowrap}
+.impress-stand__base-icon{font-size:28px;color:#fbbf00;min-width:42px;text-align:center;filter:drop-shadow(1px 2px 0 #111)}
+.impress-stand__bases .impress-banner__mount-card input:checked + .impress-banner__mount-surface{transform:none;background:#fffdf2}
+.impress-stand__viewer-controls{padding:12px 10px 6px;display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center}
+.impress-stand__viewer-controls[hidden]{display:none!important}
+.impress-stand__viewer-controls label{display:flex;justify-content:space-between;font-size:12px;color:#1b3038;font-weight:750;grid-column:1/-1}
+.impress-stand__viewer-controls input{accent-color:#fbbf00;width:100%;min-height:30px}
+.impress-stand__viewer-controls button{border:1px solid #d2dce0;background:white;color:#111;border-radius:8px;padding:8px 10px;font-size:11px;font-weight:750;cursor:pointer}
+.impress-stand .impress-banner__tilt-hint{bottom:12px}
+.impress-stand .impress-banner__guide-note{color:#888888}
+@media(max-width:960px){.impress-stand .impress-banner__stage,.impress-stand .impress-banner__canvas,.impress-stand .impress-banner__final-canvas{height:460px;min-height:460px}}
+@media(max-width:620px){.impress-stand .impress-banner__stage,.impress-stand .impress-banner__canvas,.impress-stand .impress-banner__final-canvas{height:390px;min-height:390px}.impress-stand .impress-banner__preview{padding:14px}.impress-stand__bases{grid-template-columns:repeat(2,minmax(0,1fr))!important}.impress-stand__fixed-size{font-size:12px}}

@@ -1,0 +1,141 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "impress-stand-configurator",
+      "settings": {
+        "stand_type": "xstand",
+        "eyebrow": "IMPRESS / BANNERS VERTICALES",
+        "title": "X-Stand Banners",
+        "subtitle": "Personaliza tu X-Stand. Elige con base o sin base y sube tu arte para imprimir 23.5″ de ancho × 60″ de alto."
+      }
+    },
+    "impress_products_info_9awExa": {
+      "type": "impress-products-info",
+      "settings": {
+        "eyebrow": "SOBRE LOS X-STAND BANNERS",
+        "heading": "Una presentación profesional con X-Stand.",
+        "subheading": "El mismo diseño, con o sin estructura.",
+        "body": "<p>El X-Stand presenta tu mensaje en formato vertical de 23.5″ × 60″, ideal para eventos, exhibiciones y promociones en interiores.</p><p>Elige si deseas recibir la base en X o solo el material impreso. La posición exacta de los puntos de tensión y el tipo de ojales deben confirmarse con producción.</p>",
+        "features_label": "Características y opciones",
+        "cta_text": "",
+        "cta_link": "",
+        "external_video": "",
+        "fallback_visual": "banners",
+        "media_caption": "",
+        "media_side": "right",
+        "mobile_order": "text_first",
+        "media_ratio": "1.24",
+        "image_fit": "contain",
+        "media_radius": 22,
+        "media_padding": 0,
+        "media_background": "#f0f1f2",
+        "max_width": 1240,
+        "column_gap": 70,
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "background": "#ffffff",
+        "accent": "#fbbf00"
+      }
+    },
+    "product_faq": {
+      "type": "impress-home-faq",
+      "blocks": {
+        "faq_1": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Qué tamaño tiene la impresión?",
+            "answer": "La medida fija es 23.5″ de ancho por 60″ de alto. La orientación es vertical."
+          }
+        },
+        "faq_2": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Qué incluye la opción Con base?",
+            "answer": "Incluye el material impreso y la estructura del soporte seleccionada. Los detalles finales de montaje se deben confirmar con producción."
+          }
+        },
+        "faq_3": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Qué sucede si elijo Sin base?",
+            "answer": "Ordenas solamente el material impreso. No se incluye cassette, tubos, varillas ni patas de soporte."
+          }
+        },
+        "faq_4": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Las líneas de montaje se imprimen?",
+            "answer": "No. Las líneas y puntos del editor son guías visuales de sujeción, no se imprimen en el archivo de vista editada."
+          }
+        },
+        "faq_5": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Cómo subo el diseño?",
+            "answer": "Puedes cargar SVG, PNG, JPG, TIFF o PDF. Verifica la vista previa y el indicador de resolución antes de añadir el producto al carrito."
+          }
+        },
+        "faq_6": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Puedo ver el soporte girando?",
+            "answer": "Sí. En Vista con soporte puedes mover el cursor o usar el control Girar conjunto para inclinar la estructura ilustrativa completa."
+          }
+        },
+        "faq_7": {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Cómo se calcula el precio?",
+            "answer": "El precio depende de la variante real de Shopify (Con base o Sin base) y la cantidad. Las opciones no configuradas no se pueden comprar."
+          }
+        }
+      },
+      "block_order": [
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4",
+        "faq_5",
+        "faq_6",
+        "faq_7"
+      ],
+      "settings": {
+        "eyebrow": "PREGUNTAS FRECUENTES",
+        "heading": "Preguntas sobre X-Stand",
+        "description": "Lo importante antes de ordenar tu X-Stand personalizado.",
+        "contact_label": "Contáctanos",
+        "contact_link": "",
+        "max_width": 1240,
+        "padding_top": 55,
+        "padding_bottom": 60,
+        "bg_color": "#111216",
+        "accent_color": "#fbbf00"
+      }
+    },
+    "related_products": {
+      "type": "impress-related-products",
+      "settings": {
+        "heading": "También te puede interesar",
+        "collection": "",
+        "excluded_tags": "Service",
+        "limit": 4,
+        "max_width": 1240
+      }
+    }
+  },
+  "order": [
+    "main",
+    "impress_products_info_9awExa",
+    "product_faq",
+    "related_products"
+  ]
+}
