@@ -46,13 +46,17 @@
                 <div class="impress-static-logo-item" role="listitem" style="--imsl-delay: {{ image_index | minus: 1 | times: section.settings.fade_stagger }}ms;" {{ block.shopify_attributes }}>
                   {% if block.settings.link != blank %}<a href="{{ block.settings.link }}" class="impress-static-logo-link">{% endif %}
                   <div class="impress-static-logo-box" style="--imsl-logo-width: {{ block.settings.logo_width }}px;">
-                    <img
-                      src="{{ block.settings.image | image_url: width: 800 }}"
-                      alt="{{ block.settings.title | default: block.settings.image.alt | default: 'Logo de cliente' | escape }}"
-                      width="{{ block.settings.image.width }}"
-                      height="{{ block.settings.image.height }}"
-                      loading="lazy"
-                    >
+                    <img class="impress-static-logo-image--color" src="{{ block.settings.image | image_url: width: 800 }}" alt="{{ block.settings.title | default: block.settings.image.alt | default: 'Logo de cliente' | escape }}" width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}" loading="lazy">
+
+                    {% if block.settings.bw_image != blank %}
+
+                      <img class="impress-static-logo-image--bw" src="{{ block.settings.bw_image | image_url: width: 800 }}" alt="" width="{{ block.settings.bw_image.width }}" height="{{ block.settings.bw_image.height }}" loading="lazy" aria-hidden="true">
+
+                    {% else %}
+
+                      <img class="impress-static-logo-image--bw impress-static-logo-image--bw-auto" src="{{ block.settings.image | image_url: width: 800 }}" alt="" width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}" loading="lazy" aria-hidden="true">
+
+                    {% endif %}
                   </div>
                   {% if block.settings.link != blank %}</a>{% endif %}
                 </div>
@@ -71,13 +75,17 @@
                   <div class="impress-static-logo-item" role="listitem" style="--imsl-delay: {{ image_index | minus: 1 | times: section.settings.fade_stagger }}ms;" {{ block.shopify_attributes }}>
                     {% if block.settings.link != blank %}<a href="{{ block.settings.link }}" class="impress-static-logo-link">{% endif %}
                     <div class="impress-static-logo-box" style="--imsl-logo-width: {{ block.settings.logo_width }}px;">
-                      <img
-                        src="{{ block.settings.image | image_url: width: 800 }}"
-                        alt="{{ block.settings.title | default: block.settings.image.alt | default: 'Logo de cliente' | escape }}"
-                        width="{{ block.settings.image.width }}"
-                        height="{{ block.settings.image.height }}"
-                        loading="lazy"
-                      >
+                      <img class="impress-static-logo-image--color" src="{{ block.settings.image | image_url: width: 800 }}" alt="{{ block.settings.title | default: block.settings.image.alt | default: 'Logo de cliente' | escape }}" width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}" loading="lazy">
+
+                      {% if block.settings.bw_image != blank %}
+
+                        <img class="impress-static-logo-image--bw" src="{{ block.settings.bw_image | image_url: width: 800 }}" alt="" width="{{ block.settings.bw_image.width }}" height="{{ block.settings.bw_image.height }}" loading="lazy" aria-hidden="true">
+
+                      {% else %}
+
+                        <img class="impress-static-logo-image--bw impress-static-logo-image--bw-auto" src="{{ block.settings.image | image_url: width: 800 }}" alt="" width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}" loading="lazy" aria-hidden="true">
+
+                      {% endif %}
                     </div>
                     {% if block.settings.link != blank %}</a>{% endif %}
                   </div>
@@ -140,11 +148,13 @@
   width: var(--imsl-logo-width);
   max-width: 100%;
   opacity: var(--imsl-logo-opacity);
+  position:relative;
+  display:grid;
   transition: transform .2s ease, opacity .2s ease;
 }
 .impress-static-logo-box:hover {
   transform: translateY(-2px);
-  opacity: var(--imsl-logo-hover-opacity);
+  opacity: var(--imsl-logo-opacity);
 }
 /* On-scroll reveal is enabled only after JS successfully initializes. With JS off,
    images remain visible and the section retains its original static layout. */
@@ -164,8 +174,19 @@
   width: 100%;
   height: auto;
   object-fit: contain;
-  display: block;
+  grid-area:1 / 1;
+  transition:opacity .32s ease;
 }
+.impress-static-logo-image--color{opacity:1}
+.impress-static-logo-image--bw{opacity:0}
+.impress-static-logo-image--bw-auto{filter:grayscale(1);}
+@media(hover:hover) and (pointer:fine){
+  .impress-static-logo-rows:has(.impress-static-logo-item:hover) .impress-static-logo-item:not(:hover) .impress-static-logo-image--color{opacity:0}
+  .impress-static-logo-rows:has(.impress-static-logo-item:hover) .impress-static-logo-item:not(:hover) .impress-static-logo-image--bw{opacity:1}
+}
+/* Keyboard users receive the same feedback while tabbing through linked logos. */
+.impress-static-logo-rows:has(.impress-static-logo-link:focus-visible) .impress-static-logo-item:not(:focus-within) .impress-static-logo-image--color{opacity:0}
+.impress-static-logo-rows:has(.impress-static-logo-link:focus-visible) .impress-static-logo-item:not(:focus-within) .impress-static-logo-image--bw{opacity:1}
 .impress-static-logo-link:focus-visible {
   outline: 2px solid #f8db00;
   outline-offset: 5px;
@@ -367,8 +388,9 @@
         {
           "type": "image_picker",
           "id": "image",
-          "label": "Logo Image"
+          "label": "Logo a color"
         },
+        {"type":"image_picker","id":"bw_image","label":"Logo blanco y negro (opcional)"},
         {
           "type": "range",
           "id": "logo_width",

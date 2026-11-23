@@ -64,3 +64,36 @@
 }
 @media (max-width:360px){.ims-hero__inner{padding-left:17px;padding-right:17px}.ims-hero__title{font-size:31px}.ims-hero__button{font-size:13px;padding:10px 12px}.ims-hero__navigation-inner{margin-left:17px;max-width:calc(100% - 34px)}.ims-hero__description{font-size:14px}}
 @media (prefers-reduced-motion:reduce){.ims-hero__slide,.ims-hero__image,.ims-hero__button,.ims-hero__dot span,.ims-hero__arrow{transition:none!important;animation:none!important}}
+
+/* IMPRESS 2026 — reduced, cleaner hero. Desktop retains its original controls. */
+.ims-hero__viewport{background:#151515}
+.ims-hero__slide{background-image:radial-gradient(circle at 67% 38%,rgba(255,255,255,.045),transparent 43%)}
+.ims-hero__title{font-size:clamp(38px,3.7vw,57px);line-height:1.06;letter-spacing:-.045em}
+.ims-hero__description{color:#e1e1e1;max-width:42ch}
+.ims-hero__button--primary{border-radius:12px;min-width:0;padding:13px 23px;box-shadow:0 7px 20px rgba(0,0,0,.17)}
+.ims-hero__media:not(.ims-hero__media--contain)::after{background:linear-gradient(90deg,var(--ims-slide-bg,#151515) 0%,transparent 38%)}
+@media(max-width:749px){
+  /* Keep the artwork beside the copy rather than in a second, tall row. */
+  .ims-hero__slide{min-height:clamp(310px,calc(var(--ims-mobile-image-height,200px) + 130px),380px);display:block}
+  .ims-hero__inner{min-height:inherit;display:flex;align-items:center;padding:22px 18px 60px;margin:0;width:100%;position:relative;z-index:3}
+  .ims-hero__copy{width:min(76%,310px);max-width:310px}
+  .ims-hero__title{font-size:clamp(25px,6.9vw,32px);max-width:13ch;line-height:1.09;margin:0 0 11px;letter-spacing:-.036em}
+  .ims-hero__description{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;font-size:12.5px;line-height:1.42;max-width:30ch;margin:0 0 13px;color:#eee}
+  .ims-hero__actions{gap:7px 12px;flex-wrap:wrap}
+  .ims-hero__button{min-height:40px;font-size:12px;padding:10px 13px}
+  .ims-hero__button--primary{border-radius:10px;box-shadow:none}
+  .ims-hero__button--secondary{min-height:32px;padding:5px 0}
+  .ims-hero__media{position:absolute;inset:0 0 0 27%;height:100%;min-height:0;width:auto;z-index:1}
+  .ims-hero__media--contain{padding:16px 0 35px}
+  .ims-hero__media::after,.ims-hero__media:not(.ims-hero__media--contain)::after{display:block;background:linear-gradient(90deg,var(--ims-slide-bg,#151515) 0%,color-mix(in srgb,var(--ims-slide-bg,#151515) 94%,transparent) 12%,transparent 96%)}
+  .ims-hero__media--contain::after{display:block}
+  .ims-hero__navigation{bottom:7px}
+  .ims-hero__navigation-inner{margin-left:16px;max-width:calc(100% - 32px);transform:scale(.91);transform-origin:left bottom}
+}
+@media(max-width:359px){
+  .ims-hero__inner{padding-left:14px;padding-right:14px}
+  .ims-hero__copy{width:77%}
+  .ims-hero__title{font-size:24px}
+  .ims-hero__description{-webkit-line-clamp:2;line-clamp:2}
+  .ims-hero__navigation-inner{margin-left:12px}
+}

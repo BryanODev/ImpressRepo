@@ -66,6 +66,28 @@
 @media(max-width:680px){.ibland__hero-inner{display:flex;flex-direction:column;min-height:0}.ibland__hero-content{padding:37px 19px 22px;width:100%;max-width:none}.ibland__hero h1{max-width:14ch;font-size:clamp(37px,9vw,52px)}.ibland__intro{font-size:15px;margin-bottom:19px}.ibland__hero-art{position:relative;inset:auto;width:100%;height:220px}.ibland__hero-art:after{background:linear-gradient(180deg,var(--ibl-hero-bg,#111111),transparent 25%)}.ibland__catalog{padding:53px 16px 58px}.ibland__heading-row{display:block}.ibland__category-count{display:block;margin-top:11px}.ibland__cards{grid-template-columns:1fr;gap:17px}.ibland__card-copy{min-height:0;margin-bottom:22px}.ibland__card-media{aspect-ratio:1/1}.ibland__card-body{padding:18px 19px 20px}}
 @media(prefers-reduced-motion:reduce){.ibland__card,.ibland__hero-cta{transition:none}.ibland__card:hover,.ibland__hero-cta:hover{transform:none}}
 
+/* Clean, smaller category hero, scoped to the shared hero section only. */
+#impress-simple-hero-{{ section.id }} .ibland__hero-inner{min-height:365px}
+#impress-simple-hero-{{ section.id }} .ibland__hero-content{padding-top:43px;padding-bottom:43px}
+#impress-simple-hero-{{ section.id }} .ibland__hero h1{font-size:clamp(36px,4.1vw,58px);line-height:1.07;letter-spacing:-.04em;margin-bottom:13px}
+#impress-simple-hero-{{ section.id }} .ibland__intro{font-size:15px;line-height:1.55;margin-bottom:22px;max-width:47ch}
+#impress-simple-hero-{{ section.id }} .ibland__hero-cta{border-radius:12px;padding:13px 21px;box-shadow:0 8px 18px rgba(0,0,0,.15)}
+#impress-simple-hero-{{ section.id }} .ibland__hero-art:after{background:linear-gradient(90deg,var(--ibl-hero-bg,#111111),transparent 55%)}
+@media(max-width:680px){
+  #impress-simple-hero-{{ section.id }} .ibland__hero-inner{min-height:328px;display:block;overflow:hidden}
+  #impress-simple-hero-{{ section.id }} .ibland__hero-content{position:relative;z-index:2;max-width:320px;width:75%;padding:35px 0 30px 18px}
+  #impress-simple-hero-{{ section.id }} .ibland__hero h1{font-size:clamp(26px,7vw,34px);line-height:1.1;max-width:15ch;margin:0 0 12px}
+  #impress-simple-hero-{{ section.id }} .ibland__intro{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;max-width:28ch;font-size:12.5px;line-height:1.45;margin:0 0 17px;color:#eee}
+  #impress-simple-hero-{{ section.id }} .ibland__hero-cta{min-height:42px;padding:11px 14px;font-size:12px;line-height:1.1;gap:9px}
+  #impress-simple-hero-{{ section.id }} .ibland__hero-art{position:absolute;inset:0 0 0 28%;width:auto;height:auto}
+  #impress-simple-hero-{{ section.id }} .ibland__hero-image{object-position:center right;object-fit:cover}
+  #impress-simple-hero-{{ section.id }} .ibland__hero-art:after{background:linear-gradient(90deg,var(--ibl-hero-bg,#111111) 0%,rgba(17,17,17,.91) 21%,transparent 99%)}
+}
+@media(max-width:360px){
+  #impress-simple-hero-{{ section.id }} .ibland__hero-content{width:78%;padding-left:15px}
+  #impress-simple-hero-{{ section.id }} .ibland__hero h1{font-size:25px}
+  #impress-simple-hero-{{ section.id }} .ibland__intro{-webkit-line-clamp:2;line-clamp:2}
+}
 </style>
 {% schema %}
 {

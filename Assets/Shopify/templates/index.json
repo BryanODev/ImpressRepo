@@ -99,8 +99,8 @@
         "carousel_label": "Productos destacados de Impress",
         "contained": false,
         "content_width": 1240,
-        "desktop_height": 560,
-        "mobile_image_height": 260,
+        "desktop_height": 500,
+        "mobile_image_height": 200,
         "corner_radius": 20,
         "padding_top": 0,
         "padding_bottom": 0,
@@ -116,7 +116,7 @@
         "product_card_6Wf6CW": {
           "type": "product_card",
           "settings": {
-            "card_image": "shopify://shop_images/Impress_Mark.png",
+            "card_image": "shopify://shop_images/Peeling_Yellow_P_Sticker_Emblem.png",
             "eyebrow": "Ordena online",
             "title": "Stickers",
             "description": "Para logos, packaging, promociones y diseños personalizados.",
@@ -127,7 +127,7 @@
         "product_card_NywYwM": {
           "type": "product_card",
           "settings": {
-            "card_image": "shopify://shop_images/Impress_Mark.png",
+            "card_image": "shopify://shop_images/Burger_House_Banners_Isolated_1.png",
             "eyebrow": "Formato grande",
             "title": "Banners",
             "description": "Haz destacar tu mensaje con impresiones en formato grande.",
@@ -138,7 +138,7 @@
         "product_card_49eeR3": {
           "type": "product_card",
           "settings": {
-            "card_image": "shopify://shop_images/Impress_Mark.png",
+            "card_image": "shopify://shop_images/Elegant_Teal_Psychology_Business_Cards.png",
             "eyebrow": "Impresión comercial",
             "title": "Business Cards",
             "description": "Dale a cada contacto una primera impresión profesional.",
@@ -149,7 +149,7 @@
         "product_card_GW8p74": {
           "type": "product_card",
           "settings": {
-            "card_image": "shopify://shop_images/Impress_Mark.png",
+            "card_image": "shopify://shop_images/Veterinary_Clinic_Flyer_Mockup.png",
             "eyebrow": "Marketing impreso",
             "title": "Flyers & Leaflets",
             "description": "Promueve eventos, servicios y ofertas con piezas impresas.",
@@ -176,8 +176,8 @@
         "corner_radius": 22,
         "grid_gap": 22,
         "image_edge_to_edge": false,
-        "image_scale": 100,
-        "image_area_width": 40,
+        "image_scale": 110,
+        "image_area_width": 55,
         "image_padding": 0,
         "image_fit": "contain",
         "max_width": 1240,
@@ -194,6 +194,7 @@
         "step_rkHRdG": {
           "type": "step",
           "settings": {
+            "custom_icon": "shopify://shop_images/01_Elige_tu_producto.png",
             "default_icon": "auto",
             "heading": "Elige tu producto",
             "description": "Selecciona el tamaño, acabado y cantidad disponibles."
@@ -202,6 +203,7 @@
         "step_gaJijn": {
           "type": "step",
           "settings": {
+            "custom_icon": "shopify://shop_images/02_Sube_tu_arte.png",
             "default_icon": "auto",
             "heading": "Sube tu arte",
             "description": "Adjunta tu diseño desde la página del producto."
@@ -210,6 +212,7 @@
         "step_Q8rx8W": {
           "type": "step",
           "settings": {
+            "custom_icon": "shopify://shop_images/03_Revisa_tu_pedido.png",
             "default_icon": "auto",
             "heading": "Revisa tu pedido",
             "description": "Confirma tus opciones y la vista previa antes de comprar."
@@ -218,6 +221,7 @@
         "step_JX9cLJ": {
           "type": "step",
           "settings": {
+            "custom_icon": "shopify://shop_images/04_Recibe_tu_orden.png",
             "default_icon": "auto",
             "heading": "Recibe tu orden",
             "description": "Selecciona la opción disponible de envío o recogido al finalizar."
@@ -239,8 +243,8 @@
         "heading": "De tu idea a la impresión, paso a paso.",
         "heading_color": "#ffffff",
         "show_icons": true,
-        "icon_size": 80,
-        "icon_scale": 140,
+        "icon_size": 120,
+        "icon_scale": 160,
         "show_numbers": true,
         "badge_bg": "#ffcc00",
         "badge_color": "#000000",
@@ -301,6 +305,7 @@
           "settings": {
             "title": "",
             "image": "shopify://shop_images/Asset_4.png",
+            "bw_image": "shopify://shop_images/Burger_House_Banners_Isolated.png",
             "logo_width": 180,
             "link": ""
           }
@@ -400,7 +405,7 @@
         "logo_gap": 52,
         "max_width": 1240,
         "title_color": "#888888",
-        "logo_opacity": 60,
+        "logo_opacity": 100,
         "enable_fade_in": true,
         "fade_duration": 1600,
         "fade_stagger": 75
